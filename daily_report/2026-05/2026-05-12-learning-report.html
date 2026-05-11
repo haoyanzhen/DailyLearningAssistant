@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2026-05-12 Learning Note Report</title>
+    <link rel="stylesheet" href="./style/learning-note-v1.css" />
+  </head>
+  <body>
+    <main class="page">
+      <nav class="report-nav" aria-label="学习日报导航">
+        <a href="../../index.html?archive=1">返回学习归档</a>
+      </nav>
+
+      <section class="hero">
+        <div class="eyebrow">Learning Note · Evidence Boundary</div>
+        <h1>2026-05-12 学习笔记日报</h1>
+        <p>
+          今天的学习重点不是新增业务功能，而是一次关于自动化日报系统“证据边界”的复盘：当多个仓库在当日窗口内没有可确认提交，
+          且 AInote 目录缺少 Git 元数据时，系统应该如何诚实地区分“没有提交”“无法确认”和“只能作为背景理解”。
+        </p>
+        <div class="meta-grid">
+          <div class="meta-item">
+            <span class="meta-label">统计窗口</span>
+            <span class="meta-value">2026-05-12 00:00 至 2026-05-13 00:00 +0800</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">提交情况</span>
+            <span class="meta-value">可读取仓库当日提交数为 0</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">特殊输入</span>
+            <span class="meta-value">AInote 缺少 .git 元数据，无法读取提交历史</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">核心主题</span>
+            <span class="meta-value">空提交窗口、可信证据、多 Agent 边界</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">一、今日知识点概览</h2>
+        <p class="lead">
+          这一天的材料把 Git 提交记录、时间窗口、事件日志和内容生成连成一条线：自动化系统不是为了让日报显得丰富而补写内容，
+          而是要先判断哪些事实可验证、哪些信息只能谨慎表达，再决定下游 Agent 应该生成什么。
+        </p>
+        <div class="stat-grid">
+          <div class="stat-card">
+            <strong>事实来源</strong>
+            <span>Git 仓库元数据、事件日志、版本边界与目录边界，决定系统能否读取可靠的提交事实。</span>
+          </div>
+          <div class="stat-card">
+            <strong>时间判断</strong>
+            <span>时间区间与时间窗口过滤定义“今天”，空提交窗口则要求系统明确记录检查结果为空。</span>
+          </div>
+          <div class="stat-card">
+            <strong>生成约束</strong>
+            <span>数据来源可信度、多 Agent 职责隔离和基于证据的内容生成，约束日报不能越过上游材料。</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">二、今日知识主线</h2>
+        <p>
+          今天的主线可以概括为：一个基于 Git 提交记录的自动化日报系统，必须在空提交窗口、仓库元数据缺失、工作区状态与提交事实混杂时，
+          保持输入边界清晰、证据可信、后续生成不越界。
+        </p>
+        <p>
+          这条主线的价值在于，它把“没有新增提交”从一个看似无内容的状态，转化成对自动化系统健壮性的检查。可靠的日报不只是会总结丰富输入，
+          也要能在材料有限时写清楚：检查过什么、没有发现什么、哪些内容无法确认。
+        </p>
+        <div class="highlight">
+          今日结论：空输入不是失败；把空输入写成可追溯、可复核、不会误导下游的事实，是自动化日报系统的基本功。
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="knowledge-grid">
+          <article class="knowledge-card">
+            <h3>1. Git 仓库元数据</h3>
+            <p>
+              项目文件像书的正文，<code>.git</code> 目录像修订档案馆。没有 <code>.git</code>，目录仍然可能有内容，
+              但系统无法通过 Git 证明今天发生过哪些提交。因此 AInote 的正确表述是“目录存在但无法读取提交历史”，不是“确认无变化”。
+            </p>
+          </article>
+
+          <article class="knowledge-card">
+            <h3>2. 时间窗口过滤</h3>
+            <p>
+              日报只关心指定自然日内的提交，所以必须用带时区的时间窗口筛选事件。今天使用的是
+              <code>[2026-05-12 00:00:00, 2026-05-13 00:00:00)</code>，包含起点、不包含终点，避免午夜边界重复统计。
+            </p>
+          </article>
+
+          <article class="knowledge-card">
+            <h3>3. 事件日志</h3>
+            <p>
+              Git commit 是按时间排列的事件：谁在何时提交了什么，以及变更了哪些文件。日报从事件日志生成，而不是从想象生成；
+              当日志没有当天事件时，结论就应是“没有可确认的新增提交事件”。
+            </p>
+          </article>
+
+          <article class="knowledge-card">
+            <h3>4. 空提交窗口处理</h3>
+            <p>
+              空提交窗口是正常状态，不等于系统失败。好的流水线会写明检查窗口、提交数为 0、结论为空，而不是留下空白文件，
+              也不是回溯历史内容来填充当天日报。
+            </p>
+          </article>
+
+          <article class="knowledge-card">
+            <h3>5. 数据来源可信度</h3>
+            <p>
+              自动化报告里的每句话都要能回答“凭什么”。可确认提交事实强于可观察工作区状态，工作区状态强于历史背景，
+              推测必须最谨慎。今天的关键约束就是不要把未提交状态或历史背景写成当天新增事实。
+            </p>
+          </article>
+
+          <article class="knowledge-card">
+            <h3>6. 多 Agent 职责隔离</h3>
+            <p>
+              工作总结、概念提炼、知识讲解和日报发布分别由不同 Agent 完成。每个阶段都应消费上游产物，而不是越权改写事实；
+              发布 Agent 的任务是把知识讲解整理成页面，并更新归档入口。
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">三、概念之间的关联</h2>
+        <p class="lead">
+          今天的概念不是彼此孤立的知识卡片，而是组成了一条从事实获取到内容发布的可靠性链路。
+        </p>
+        <ul>
+          <li><strong>事实来源层：</strong>Git 仓库元数据、版本边界与目录边界、事件日志，决定哪些仓库能被可信分析。</li>
+          <li><strong>筛选判断层：</strong>时间区间、时间窗口过滤、空提交窗口处理，决定如何界定“今天”以及如何表达无提交结果。</li>
+          <li><strong>生成组织层：</strong>提交驱动的自动化流水线、多 Agent 职责隔离、数据来源可信度、基于证据的内容生成，决定后续文本如何不越界。</li>
+        </ul>
+        <div class="highlight">
+          三层合在一起说明：自动化日报不是“能写就写”，而是先确认内容从哪里来、是否属于今天、是否被证据支持，然后再生成。
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">四、今日最值得记住的一句话</h2>
+        <p class="lead">
+          当证据为空时，可靠系统的价值不在于补出热闹内容，而在于把“已经检查且无法确认”的边界讲清楚。
+        </p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">五、可继续探索的问题</h2>
+        <ul>
+          <li>如果目录缺少 <code>.git</code>，但来自远程仓库压缩包，系统应标记为不可追踪，还是尝试补全外部版本信息？</li>
+          <li>跨时区协作时，每日窗口应该以提交者本地时区、服务器时区，还是项目约定时区为准？</li>
+          <li>连续多天出现空提交窗口时，系统应只记录事实，还是提醒用户检查自动化配置是否失效？</li>
+          <li>自动化报告是否应该为每条结论标注证据等级，例如“来自提交日志”“来自工作区状态”“来自历史背景”？</li>
+          <li>多 Agent 流水线是否应为每个阶段定义机器可检查的输出 schema，减少下游误读？</li>
+        </ul>
+      </section>
+
+      <section class="footer-note">
+        <p>
+          数据来源：<code>prework/2026-05/2026-05-12/knowledge_explaination.md</code>。本页严格基于该知识讲解整理，
+          不引入未被当天材料支持的新增业务功能、物理主题或论文内容。
+        </p>
+      </section>
+    </main>
+  </body>
+</html>
