@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>每日拾光学习簿</title>
+    <meta
+      name="description"
+      content="每日学习日报导航与知识讲解归档，记录代码、概念与长期学习轨迹。"
+    />
+    <link rel="stylesheet" href="./style/main.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar" aria-label="站点标题">
+        <a class="brand" href="./" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="#latest">最新日报</a>
+          <a href="#archive">学习归档</a>
+          <a href="#about">关于</a>
+        </nav>
+      </header>
+
+      <main class="workspace">
+        <aside class="archive-panel" id="archive" aria-label="历史学习日报">
+          <div class="panel-title">
+            <span>
+              <strong>学习档案</strong>
+              <small id="archive-count">正在整理归档</small>
+            </span>
+          </div>
+          <div class="archive-actions">
+            <button class="ghost-button" id="latest-button" type="button">查看最新</button>
+          </div>
+          <nav class="archive-tree" id="archive-tree" aria-label="按年月日选择学习日报">
+            <p class="muted">正在加载学习日报...</p>
+          </nav>
+        </aside>
+
+        <section class="reader" id="latest" aria-live="polite">
+          <div class="reader-hero">
+            <div>
+              <p class="date-line" id="report-weekday">今日学习</p>
+              <h1 id="report-title">正在打开学习簿...</h1>
+              <p class="intro" id="report-summary">
+                正在读取最新学习日报和历史归档。
+              </p>
+            </div>
+            <div class="desk-scene" aria-hidden="true">
+              <span class="sun"></span>
+              <span class="leaf leaf-one"></span>
+              <span class="leaf leaf-two"></span>
+              <span class="notebook"></span>
+              <span class="mug"></span>
+            </div>
+          </div>
+
+          <article class="report-card" id="report-content">
+            <div class="loading-state">
+              <span class="loader" aria-hidden="true"></span>
+              <p>正在把今天的学习线索串起来...</p>
+            </div>
+          </article>
+
+          <section class="about-panel" id="about" aria-label="关于每日学习">
+            <h2>这本学习簿如何更新</h2>
+            <p>
+              每日自动化任务会汇总各仓库提交记录，提炼概念关联，再生成知识讲解和学习日报。
+              主页读取 <code>prework/manifest.json</code> 来展示最新日报，并按年、月、日组织历史入口。
+            </p>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <script src="./style/app.js" defer></script>
+  </body>
+</html>
