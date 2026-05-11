@@ -443,6 +443,34 @@ h1 {
   color: #f7fbf1;
 }
 
+.archive-guide {
+  display: grid;
+  gap: 16px;
+  align-content: center;
+  min-height: 280px;
+}
+
+.archive-guide h2 {
+  margin-top: 0;
+}
+
+.primary-link {
+  display: inline-flex;
+  width: fit-content;
+  min-height: 44px;
+  align-items: center;
+  padding: 10px 16px;
+  border-radius: 8px;
+  color: #ffffff;
+  background: var(--green);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.primary-link:hover {
+  background: #257439;
+}
+
 .loading-state,
 .empty-state {
   display: grid;

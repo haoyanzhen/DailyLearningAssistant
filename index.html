@@ -21,9 +21,9 @@
           </span>
         </a>
         <nav class="topnav" aria-label="快速入口">
-          <a href="#latest">最新日报</a>
-          <a href="#archive">学习归档</a>
-          <a href="#about">关于</a>
+          <a href="./">最新日报</a>
+          <a href="./?archive=1">学习归档</a>
+          <a href="./?archive=1#about">关于</a>
         </nav>
       </header>
 
@@ -72,7 +72,7 @@
             <h2>这本学习簿如何更新</h2>
             <p>
               每日自动化任务会汇总各仓库提交记录，提炼概念关联，再生成知识讲解和学习日报。
-              主页读取 <code>prework/manifest.json</code> 来展示最新日报，并按年、月、日组织历史入口。
+              主页读取 <code>daily_report/manifest.json</code> 来定位最新 HTML 日报；访问首页时自动跳转到最新日报，访问归档模式时按年、月、日组织历史入口。
             </p>
           </section>
         </section>

@@ -1,4 +1,4 @@
-const manifestPath = "./prework/manifest.json";
+const manifestPath = "./daily_report/manifest.json";
 
 const state = {
   reports: [],
@@ -8,11 +8,11 @@ const state = {
 const fallbackManifest = {
   reports: [
     {
-      date: "2026-05-11",
-      title: "日常学习推送助手起步记录",
+      date: "2026-05-02",
+      title: "2026-05-02 学习笔记日报",
       summary:
-        "今天完成了每日学习静态主页的第一版搭建，明确了从仓库变更、概念提炼到学习日报展示的自动化链路。",
-      path: "./prework/2026-05-11/learning_report.md",
+        "围绕 Project Workspace、Construction Workspace 和流程式步骤容器完成工作台分层与入口收口。",
+      path: "./daily_report/2026-05/2026-05-02-learning-report.html",
     },
   ],
 };
@@ -32,23 +32,27 @@ document.addEventListener("DOMContentLoaded", init);
 async function init() {
   const manifest = await loadManifest();
   state.reports = normalizeReports(manifest.reports);
-  renderArchive();
 
-  const requestedDate = new URLSearchParams(location.search).get("date");
-  const initialReport =
-    state.reports.find((report) => report.date === requestedDate) || state.reports[0];
+  const params = new URLSearchParams(location.search);
+  const archiveMode = params.get("archive") === "1";
+  const requestedDate = params.get("date");
+  const requestedReport = state.reports.find((report) => report.date === requestedDate);
 
-  if (initialReport) {
-    await selectReport(initialReport.date, { replaceUrl: Boolean(requestedDate) });
-  } else {
+  if (!state.reports.length) {
     renderEmptySite();
+    return;
   }
 
-  els.latestButton.addEventListener("click", () => {
-    if (state.reports[0]) {
-      selectReport(state.reports[0].date);
-    }
-  });
+  if (!archiveMode) {
+    redirectToReport(requestedReport || state.reports[0]);
+    return;
+  }
+
+  const activeReport = requestedReport || state.reports[0];
+  renderArchive(activeReport.date);
+  renderArchiveIntro(activeReport);
+
+  els.latestButton.addEventListener("click", () => redirectToReport(state.reports[0]));
 }
 
 async function loadManifest() {
@@ -76,7 +80,7 @@ function normalizeReports(reports = []) {
     .sort((a, b) => b.date.localeCompare(a.date));
 }
 
-function renderArchive() {
+function renderArchive(activeDate) {
   els.archiveCount.textContent = state.reports.length
     ? `${state.reports.length} 篇日报`
     : "暂无日报";
@@ -88,7 +92,7 @@ function renderArchive() {
 
   const groups = groupReports(state.reports);
   const latest = state.reports[0];
-  const currentMonth = latest.date.slice(0, 7);
+  const currentMonth = activeDate.slice(0, 7);
 
   els.archiveTree.innerHTML = Object.entries(groups)
     .map(([year, months]) => {
@@ -102,7 +106,7 @@ function renderArchive() {
               const label = `${Number(report.date.slice(8, 10))}日`;
               const latestMark = report.date === latest.date ? "<span>最新</span>" : "<span></span>";
               return `
-                <button class="day-link" type="button" data-date="${report.date}">
+                <button class="day-link" type="button" data-date="${escapeAttribute(report.date)}" data-path="${escapeAttribute(report.path)}">
                   <span>${label}</span>
                   ${latestMark}
                 </button>
@@ -127,7 +131,13 @@ function renderArchive() {
     .join("");
 
   els.archiveTree.querySelectorAll(".day-link").forEach((button) => {
-    button.addEventListener("click", () => selectReport(button.dataset.date));
+    button.classList.toggle("is-active", button.dataset.date === activeDate);
+    button.addEventListener("click", () => {
+      redirectToReport({
+        date: button.dataset.date,
+        path: button.dataset.path,
+      });
+    });
   });
 }
 
@@ -141,69 +151,36 @@ function groupReports(reports) {
   }, {});
 }
 
-async function selectReport(date, options = {}) {
-  const report = state.reports.find((item) => item.date === date);
-  if (!report) {
+function redirectToReport(report) {
+  if (!report?.path) {
     return;
   }
+  location.replace(report.path);
+}
 
+function renderArchiveIntro(report) {
   state.activeDate = report.date;
   els.title.textContent = report.title;
   els.summary.textContent = report.summary;
   els.weekday.textContent = formatDate(report.date);
-  markActiveDay(report.date);
-  renderLoading();
-
-  if (!options.replaceUrl) {
-    const url = new URL(location.href);
-    url.searchParams.set("date", report.date);
-    history.replaceState(null, "", url);
-  }
-
-  try {
-    const response = await fetch(report.path, { cache: "no-store" });
-    if (!response.ok) {
-      throw new Error(`Report request failed: ${response.status}`);
-    }
-    const markdown = await response.text();
-    els.content.innerHTML = markdownToHtml(markdown);
-  } catch (error) {
-    els.content.innerHTML = `
-      <div class="empty-state">
-        <div>
-          <h2>日报还在路上</h2>
-          <p>已经找到 ${report.date} 的归档入口，但暂时无法读取正文文件。</p>
-        </div>
-      </div>
-    `;
-    console.warn(error);
-  }
-}
-
-function markActiveDay(date) {
-  els.archiveTree.querySelectorAll(".day-link").forEach((button) => {
-    button.classList.toggle("is-active", button.dataset.date === date);
-  });
-}
-
-function renderLoading() {
   els.content.innerHTML = `
-    <div class="loading-state">
-      <span class="loader" aria-hidden="true"></span>
-      <p>正在展开这一天的学习日报...</p>
+    <div class="archive-guide">
+      <h2>学习日报归档</h2>
+      <p>这里保留历史日报入口。访问首页时会自动打开最新日报，点击左侧日期可直接跳转到对应的 HTML 日报页面。</p>
+      <a class="primary-link" href="${escapeAttribute(report.path)}">打开当前选中的日报</a>
     </div>
   `;
 }
 
 function renderEmptySite() {
   els.title.textContent = "学习簿等第一篇日报";
-  els.summary.textContent = "后续自动化任务生成学习日报后，这里会默认显示最新一天的内容。";
+  els.summary.textContent = "后续自动化任务生成 HTML 学习日报后，首页会默认跳转到最新一天的内容。";
   els.weekday.textContent = "暂无归档";
   els.content.innerHTML = `
     <div class="empty-state">
       <div>
         <h2>暂无学习日报</h2>
-        <p>请让每日自动化任务生成 <code>prework/manifest.json</code> 和对应日报文件。</p>
+        <p>请让每日自动化任务生成 <code>daily_report/manifest.json</code> 和对应 HTML 日报文件。</p>
       </div>
     </div>
   `;
@@ -219,94 +196,8 @@ function formatDate(dateText) {
   }).format(date);
 }
 
-function markdownToHtml(markdown) {
-  const lines = markdown.replace(/\r\n/g, "\n").split("\n");
-  const html = [];
-  let listType = null;
-  let inCode = false;
-  let codeLines = [];
-
-  for (const rawLine of lines) {
-    const line = rawLine.trimEnd();
-
-    if (line.startsWith("```")) {
-      if (inCode) {
-        html.push(`<pre><code>${escapeHtml(codeLines.join("\n"))}</code></pre>`);
-        codeLines = [];
-        inCode = false;
-      } else {
-        closeList();
-        inCode = true;
-      }
-      continue;
-    }
-
-    if (inCode) {
-      codeLines.push(rawLine);
-      continue;
-    }
-
-    if (!line.trim()) {
-      closeList();
-      continue;
-    }
-
-    if (line.startsWith("### ")) {
-      closeList();
-      html.push(`<h3>${inlineMarkdown(line.slice(4))}</h3>`);
-    } else if (line.startsWith("## ")) {
-      closeList();
-      html.push(`<h2>${inlineMarkdown(line.slice(3))}</h2>`);
-    } else if (line.startsWith("# ")) {
-      closeList();
-      html.push(`<h2>${inlineMarkdown(line.slice(2))}</h2>`);
-    } else if (line.startsWith("> ")) {
-      closeList();
-      html.push(`<blockquote>${inlineMarkdown(line.slice(2))}</blockquote>`);
-    } else if (/^[-*]\s+/.test(line)) {
-      openList("ul");
-      html.push(`<li>${inlineMarkdown(line.replace(/^[-*]\s+/, ""))}</li>`);
-    } else if (/^\d+\.\s+/.test(line)) {
-      openList("ol");
-      html.push(`<li>${inlineMarkdown(line.replace(/^\d+\.\s+/, ""))}</li>`);
-    } else {
-      closeList();
-      html.push(`<p>${inlineMarkdown(line)}</p>`);
-    }
-  }
-
-  if (inCode) {
-    html.push(`<pre><code>${escapeHtml(codeLines.join("\n"))}</code></pre>`);
-  }
-  closeList();
-  return html.join("");
-
-  function openList(type) {
-    if (listType === type) {
-      return;
-    }
-    closeList();
-    listType = type;
-    html.push(`<${type}>`);
-  }
-
-  function closeList() {
-    if (!listType) {
-      return;
-    }
-    html.push(`</${listType}>`);
-    listType = null;
-  }
-}
-
-function inlineMarkdown(text) {
-  return escapeHtml(text)
-    .replace(/`([^`]+)`/g, "<code>$1</code>")
-    .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
-}
-
-function escapeHtml(value) {
-  return value
+function escapeAttribute(value) {
+  return String(value)
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
