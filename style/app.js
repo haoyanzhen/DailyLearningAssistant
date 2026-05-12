@@ -1,8 +1,11 @@
 const manifestPath = "./daily_report/manifest.json";
+const knowledgeManifestPath = "./knowledge_log/manifest.json";
 
 const state = {
   reports: [],
+  knowledgeMonths: [],
   activeDate: null,
+  activeKnowledgeMonth: null,
 };
 
 const fallbackManifest = {
@@ -15,6 +18,10 @@ const fallbackManifest = {
       path: "./daily_report/2026-05/2026-05-02-learning-report.html",
     },
   ],
+};
+
+const fallbackKnowledgeManifest = {
+  months: [],
 };
 
 const els = {
@@ -31,12 +38,26 @@ document.addEventListener("DOMContentLoaded", init);
 
 async function init() {
   const manifest = await loadManifest();
+  const knowledgeManifest = await loadKnowledgeManifest();
   state.reports = normalizeReports(manifest.reports);
+  state.knowledgeMonths = normalizeKnowledgeMonths(knowledgeManifest.months);
 
   const params = new URLSearchParams(location.search);
+  const knowledgeMode = params.get("knowledge") === "1";
   const archiveMode = params.get("archive") === "1";
   const requestedDate = params.get("date");
+  const requestedMonth = params.get("month");
   const requestedReport = state.reports.find((report) => report.date === requestedDate);
+  const requestedKnowledgeMonth = state.knowledgeMonths.find((month) => month.key === requestedMonth);
+
+  if (knowledgeMode) {
+    renderKnowledgeArchive(requestedKnowledgeMonth?.key || state.knowledgeMonths[0]?.key);
+    await renderKnowledgeMonth(requestedKnowledgeMonth || state.knowledgeMonths[0]);
+    els.latestButton.addEventListener("click", () => {
+      location.href = "./?archive=1";
+    });
+    return;
+  }
 
   if (!state.reports.length) {
     renderEmptySite();
@@ -56,15 +77,27 @@ async function init() {
 }
 
 async function loadManifest() {
+  return loadJson(manifestPath, fallbackManifest, "Using fallback learning report manifest.");
+}
+
+async function loadKnowledgeManifest() {
+  return loadJson(
+    knowledgeManifestPath,
+    fallbackKnowledgeManifest,
+    "Using fallback knowledge log manifest.",
+  );
+}
+
+async function loadJson(path, fallback, message) {
   try {
-    const response = await fetch(manifestPath, { cache: "no-store" });
+    const response = await fetch(path, { cache: "no-store" });
     if (!response.ok) {
       throw new Error(`Manifest request failed: ${response.status}`);
     }
     return await response.json();
   } catch (error) {
-    console.info("Using fallback learning report manifest.", error);
-    return fallbackManifest;
+    console.info(message, error);
+    return fallback;
   }
 }
 
@@ -78,6 +111,23 @@ function normalizeReports(reports = []) {
       path: report.path,
     }))
     .sort((a, b) => b.date.localeCompare(a.date));
+}
+
+function normalizeKnowledgeMonths(months = []) {
+  return months
+    .filter((month) => month.year && month.month && month.path)
+    .map((month) => {
+      const monthNumber = String(month.month).padStart(2, "0");
+      const key = `${month.year}-${monthNumber}`;
+      return {
+        key,
+        year: String(month.year),
+        month: monthNumber,
+        title: month.title || `${month.year}年${Number(monthNumber)}月教学记录`,
+        path: month.path,
+      };
+    })
+    .sort((a, b) => b.key.localeCompare(a.key));
 }
 
 function renderArchive(activeDate) {
@@ -151,6 +201,62 @@ function groupReports(reports) {
   }, {});
 }
 
+function groupKnowledgeMonths(months) {
+  return months.reduce((acc, month) => {
+    acc[month.year] ||= [];
+    acc[month.year].push(month);
+    return acc;
+  }, {});
+}
+
+function renderKnowledgeArchive(activeMonth) {
+  els.archiveCount.textContent = state.knowledgeMonths.length
+    ? `${state.knowledgeMonths.length} 个月度记录`
+    : "暂无记录";
+  els.latestButton.textContent = "查看日报归档";
+
+  const panelTitle = document.querySelector(".panel-title strong");
+  if (panelTitle) {
+    panelTitle.textContent = "教学记录";
+  }
+
+  if (!state.knowledgeMonths.length) {
+    els.archiveTree.innerHTML = '<p class="muted">还没有可展示的教学记录。</p>';
+    return;
+  }
+
+  const groups = groupKnowledgeMonths(state.knowledgeMonths);
+  els.archiveTree.innerHTML = Object.entries(groups)
+    .map(([year, months]) => {
+      const yearOpen = months.some((month) => month.key === activeMonth);
+      const monthButtons = months
+        .map((month) => `
+          <button class="day-link month-link" type="button" data-month="${escapeAttribute(month.key)}" data-path="${escapeAttribute(month.path)}">
+            <span>${Number(month.month)}月</span>
+            <span>${month.key === state.knowledgeMonths[0].key ? "最新" : ""}</span>
+          </button>
+        `)
+        .join("");
+      return `
+        <details ${yearOpen ? "open" : ""}>
+          <summary>${year}年</summary>
+          ${monthButtons}
+        </details>
+      `;
+    })
+    .join("");
+
+  els.archiveTree.querySelectorAll(".month-link").forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.month === activeMonth);
+    button.addEventListener("click", () => {
+      const month = state.knowledgeMonths.find((item) => item.key === button.dataset.month);
+      renderKnowledgeArchive(month.key);
+      renderKnowledgeMonth(month);
+      history.replaceState(null, "", `./?knowledge=1&month=${encodeURIComponent(month.key)}`);
+    });
+  });
+}
+
 function redirectToReport(report) {
   if (!report?.path) {
     return;
@@ -170,6 +276,82 @@ function renderArchiveIntro(report) {
       <a class="primary-link" href="${escapeAttribute(report.path)}">打开当前选中的日报</a>
     </div>
   `;
+}
+
+async function renderKnowledgeMonth(month) {
+  state.activeKnowledgeMonth = month?.key || null;
+  els.weekday.textContent = "教学记录";
+
+  if (!month) {
+    els.title.textContent = "暂无教学记录";
+    els.summary.textContent = "月度教学记录生成后，会在这里按年份和月份归档展示。";
+    els.content.innerHTML = `
+      <div class="empty-state">
+        <div>
+          <h2>暂无教学记录</h2>
+          <p>请让每日自动化任务生成 <code>knowledge_log/manifest.json</code> 和对应月度记录文件。</p>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  els.title.textContent = month.title;
+  els.summary.textContent = "按月整理每日三个正式讲解概念，并为后续讲解留下参考线索。";
+  els.content.innerHTML = `
+    <div class="loading-state">
+      <span class="loader" aria-hidden="true"></span>
+      <p>正在读取${Number(month.month)}月教学记录...</p>
+    </div>
+  `;
+
+  try {
+    const response = await fetch(month.path, { cache: "no-store" });
+    if (!response.ok) {
+      throw new Error(`Knowledge log request failed: ${response.status}`);
+    }
+    const markdown = await response.text();
+    const table = extractKnowledgeTable(markdown);
+    if (!table) {
+      throw new Error("No table found in knowledge log.");
+    }
+    els.content.innerHTML = `
+      <div class="knowledge-log-view">
+        <div class="knowledge-log-header">
+          <h2>${escapeHtml(month.title)}</h2>
+          <a class="primary-link" href="${escapeAttribute(month.path)}">打开原始记录</a>
+        </div>
+        <div class="knowledge-table-wrap">${table}</div>
+      </div>
+    `;
+    resolveEmbeddedLinks(els.content.querySelector(".knowledge-table-wrap"), month.path);
+  } catch (error) {
+    console.info("Unable to render knowledge log.", error);
+    els.content.innerHTML = `
+      <div class="empty-state">
+        <div>
+          <h2>暂无教学记录</h2>
+          <p>未能读取当前月份的教学记录文件。</p>
+        </div>
+      </div>
+    `;
+  }
+}
+
+function extractKnowledgeTable(markdown) {
+  const match = markdown.match(/<table[\s\S]*?<\/table>/i);
+  return match ? match[0] : "";
+}
+
+function resolveEmbeddedLinks(container, sourcePath) {
+  const sourceUrl = new URL(sourcePath, location.href);
+  container.querySelectorAll("a[href]").forEach((anchor) => {
+    const href = anchor.getAttribute("href");
+    if (!href || /^(https?:|mailto:|#)/i.test(href)) {
+      return;
+    }
+    anchor.href = new URL(href, sourceUrl).href;
+  });
 }
 
 function renderEmptySite() {
@@ -203,4 +385,11 @@ function escapeAttribute(value) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
 }
