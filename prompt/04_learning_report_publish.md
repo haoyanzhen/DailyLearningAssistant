@@ -31,6 +31,7 @@
    - 条目包含 `date`、`title`、`summary`、`path`。
    - 保证最新日期排在 `reports` 列表最前面。
 5. 确认 `index.html` 可以通过 manifest 默认跳转到最新 HTML 日报，并在 `index.html?archive=1` 中显示归档入口。
+6. 自动提交 git 更改并推送到 github 上。
 
 学习日报应包含：
 
