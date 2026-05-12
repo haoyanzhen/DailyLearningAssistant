@@ -12,9 +12,10 @@
 
 ```text
 ./prework/YYYY-MM/YYYY-MM-DD/concept_relevance.md
+./knowledge_log/YYYY-MM-knowledge-log.md
 ```
 
-根据其中的概念清单和概念关联，生成详细知识讲解，并保存为：
+根据其中的概念清单和概念关联，以及过往知识点讲解历史，选择要讲的知识概念，并生成详细知识讲解，保存为：
 
 ```text
 ./prework/YYYY-MM/YYYY-MM-DD/knowledge_explaination.md

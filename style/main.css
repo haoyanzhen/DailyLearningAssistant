@@ -8,8 +8,10 @@
   --line: #e3ddcf;
   --green: #2f8f46;
   --green-soft: #e8f4e7;
+  --green-wash: #f4faf2;
   --gold: #f2b705;
   --gold-soft: #fff4cc;
+  --cream: #f7f2e7;
   --shadow: 0 20px 50px rgba(56, 47, 28, 0.1);
   --radius: 8px;
   font-family:
@@ -29,10 +31,8 @@ body {
   margin: 0;
   min-height: 100vh;
   color: var(--ink);
-  background:
-    radial-gradient(circle at 7% 8%, rgba(242, 183, 5, 0.18), transparent 19rem),
-    radial-gradient(circle at 92% 14%, rgba(47, 143, 70, 0.15), transparent 20rem),
-    linear-gradient(135deg, #fffdf8 0%, var(--bg) 45%, #f7fbf1 100%);
+  background: linear-gradient(135deg, #fffdf8 0%, var(--bg) 48%, #f4f9ef 100%);
+  text-rendering: optimizeLegibility;
 }
 
 body::before {
@@ -101,9 +101,10 @@ button {
 .brand strong {
   display: block;
   color: #2e7d3f;
-  font-size: clamp(28px, 4vw, 54px);
+  font-size: clamp(26px, 3.4vw, 46px);
   font-weight: 900;
-  line-height: 0.95;
+  line-height: 1.02;
+  text-wrap: balance;
 }
 
 .brand small {
@@ -284,8 +285,10 @@ h3 {
 
 h1 {
   max-width: 880px;
-  font-size: clamp(32px, 4.8vw, 64px);
+  font-size: clamp(32px, 4.4vw, 58px);
   font-weight: 920;
+  line-height: 1.12;
+  text-wrap: balance;
 }
 
 .intro {
@@ -293,7 +296,8 @@ h1 {
   margin: 18px 0 0;
   color: var(--muted);
   font-size: 18px;
-  line-height: 1.85;
+  line-height: 1.75;
+  text-wrap: pretty;
 }
 
 .desk-scene {
@@ -383,10 +387,12 @@ h1 {
 }
 
 .report-card h2 {
-  margin-top: 28px;
+  margin-top: 32px;
+  margin-bottom: 14px;
   padding-left: 12px;
   border-left: 5px solid var(--green);
   font-size: 25px;
+  text-wrap: balance;
 }
 
 .report-card h2:first-child {
@@ -394,17 +400,21 @@ h1 {
 }
 
 .report-card h3 {
-  margin-top: 22px;
+  margin-top: 24px;
+  margin-bottom: 10px;
   color: #2f6539;
   font-size: 19px;
+  text-wrap: balance;
 }
 
 .report-card p,
 .report-card li,
 .about-panel p {
+  max-width: 78ch;
   color: #3f493d;
   font-size: 16px;
-  line-height: 1.9;
+  line-height: 1.85;
+  text-wrap: pretty;
 }
 
 .report-card ul,
@@ -515,9 +525,9 @@ h1 {
 
 .knowledge-table-wrap {
   overflow-x: auto;
-  border: 1px solid var(--line);
+  border: 1px solid #d8dfcf;
   border-radius: var(--radius);
-  background: var(--paper-strong);
+  background: #ffffff;
 }
 
 .knowledge-table-wrap table {
@@ -528,26 +538,40 @@ h1 {
 
 .knowledge-table-wrap th,
 .knowledge-table-wrap td {
-  padding: 14px 16px;
-  border: 1px solid var(--line);
+  padding: 15px 16px;
+  border: 1px solid #d8dfcf;
   vertical-align: top;
   color: #3f493d;
   font-size: 15px;
-  line-height: 1.7;
+  line-height: 1.75;
+  text-wrap: pretty;
 }
 
 .knowledge-table-wrap th {
   color: #2f422f;
-  background: var(--green-soft);
+  background: var(--cream);
   font-weight: 850;
   text-align: left;
 }
 
+.knowledge-table-wrap tbody tr:nth-child(odd) td {
+  background: #ffffff;
+}
+
+.knowledge-table-wrap tbody tr:nth-child(even) td {
+  background: var(--green-wash);
+}
+
 .knowledge-table-wrap td:first-child {
   width: 124px;
-  background: #fffaf0;
+  background: #eef6ea;
   font-weight: 800;
   text-align: center;
+}
+
+.knowledge-table-wrap tbody tr:nth-child(even) td:first-child,
+.knowledge-table-wrap tbody tr:nth-child(odd) td:first-child {
+  background: #eef6ea;
 }
 
 .knowledge-table-wrap a {
@@ -597,6 +621,9 @@ h1 {
 
 .hero h1 {
   margin: 0;
+  max-width: 780px;
+  font-size: clamp(34px, 4.6vw, 56px);
+  line-height: 1.13;
 }
 
 .hero p {
@@ -604,7 +631,8 @@ h1 {
   margin: 18px 0 0;
   color: var(--muted);
   font-size: 18px;
-  line-height: 1.85;
+  line-height: 1.75;
+  text-wrap: pretty;
 }
 
 .meta-grid,
@@ -633,11 +661,13 @@ h1 {
   margin-bottom: 6px;
   color: var(--muted);
   font-size: 13px;
+  line-height: 1.45;
 }
 
 .meta-value {
   color: #2f422f;
   font-weight: 750;
+  line-height: 1.55;
 }
 
 .section {
@@ -658,10 +688,12 @@ h1 {
 }
 
 .lead {
+  max-width: 82ch;
   margin: 0 0 22px;
   color: #3f493d;
   font-size: 16px;
-  line-height: 1.9;
+  line-height: 1.85;
+  text-wrap: pretty;
 }
 
 .stat-grid {
@@ -680,9 +712,11 @@ h1 {
 .knowledge-card p,
 .footer-note p,
 .panel p {
+  max-width: 78ch;
   color: #3f493d;
   font-size: 16px;
-  line-height: 1.9;
+  line-height: 1.85;
+  text-wrap: pretty;
 }
 
 .commit-grid,
@@ -700,6 +734,8 @@ h1 {
   margin: 0 0 10px;
   color: #2f6539;
   font-size: 19px;
+  line-height: 1.35;
+  text-wrap: balance;
 }
 
 .tag-row {
