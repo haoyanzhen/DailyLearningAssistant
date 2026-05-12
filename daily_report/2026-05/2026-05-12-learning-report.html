@@ -1,170 +1,198 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2026-05-12 Learning Note Report</title>
-    <link rel="stylesheet" href="./style/learning-note-v1.css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-05-12 学习笔记日报</title>
+    <meta
+      name="description"
+      content="2026-05-12 学习日报：多阶段自动化流水线、材料一致性校验与注意力机制。"
+    />
+    <link rel="stylesheet" href="../../style/main.css?v=20260512" />
   </head>
   <body>
     <main class="page">
-      <nav class="report-nav" aria-label="学习日报导航">
-        <a href="../../index.html?archive=1">返回学习归档</a>
-      </nav>
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+        </nav>
+      </header>
 
       <section class="hero">
-        <div class="eyebrow">Learning Note · Evidence Boundary</div>
-        <h1>2026-05-12 学习笔记日报</h1>
+        <p class="eyebrow">Learning Report · 2026-05-12</p>
+        <h1>在复杂信息系统里，让信息正确流动</h1>
         <p>
-          今天的学习重点不是新增业务功能，而是一次关于自动化日报系统“证据边界”的复盘：当多个仓库在当日窗口内没有可确认提交，
-          且 AInote 目录缺少 Git 元数据时，系统应该如何诚实地区分“没有提交”“无法确认”和“只能作为背景理解”。
+          今天的学习主线从工程自动化展开：把仓库变更拆成可接力的日报流水线，
+          用一致性校验守住材料质量，再借注意力机制理解模型如何在大量上下文中动态选择关键信息。
         </p>
         <div class="meta-grid">
           <div class="meta-item">
-            <span class="meta-label">统计窗口</span>
-            <span class="meta-value">2026-05-12 00:00 至 2026-05-13 00:00 +0800</span>
+            <span class="meta-label">今日主题</span>
+            <span class="meta-value">信息组织、校验与路由</span>
           </div>
           <div class="meta-item">
-            <span class="meta-label">提交情况</span>
-            <span class="meta-value">可读取仓库当日提交数为 0</span>
+            <span class="meta-label">工程关键词</span>
+            <span class="meta-value">多阶段自动化流水线</span>
           </div>
           <div class="meta-item">
-            <span class="meta-label">特殊输入</span>
-            <span class="meta-value">AInote 缺少 .git 元数据，无法读取提交历史</span>
+            <span class="meta-label">质量关键词</span>
+            <span class="meta-value">材料一致性校验</span>
           </div>
           <div class="meta-item">
-            <span class="meta-label">核心主题</span>
-            <span class="meta-value">空提交窗口、可信证据、多 Agent 边界</span>
+            <span class="meta-label">模型关键词</span>
+            <span class="meta-value">注意力机制</span>
           </div>
         </div>
       </section>
 
       <section class="section panel">
-        <h2 class="section-title">一、今日知识点概览</h2>
+        <h2 class="section-title">今日知识点概览</h2>
         <p class="lead">
-          这一天的材料把 Git 提交记录、时间窗口、事件日志和内容生成连成一条线：自动化系统不是为了让日报显得丰富而补写内容，
-          而是要先判断哪些事实可验证、哪些信息只能谨慎表达，再决定下游 Agent 应该生成什么。
+          今天的三个知识点分别落在软件工程、学习系统质量保障和大语言模型基础原理上。
+          它们看似分散，其实都在处理同一个问题：信息很多时，系统如何决定什么该被传递、什么必须被校验、什么值得被重点关注。
         </p>
         <div class="stat-grid">
-          <div class="stat-card">
-            <strong>事实来源</strong>
-            <span>Git 仓库元数据、事件日志、版本边界与目录边界，决定系统能否读取可靠的提交事实。</span>
-          </div>
-          <div class="stat-card">
-            <strong>时间判断</strong>
-            <span>时间区间与时间窗口过滤定义“今天”，空提交窗口则要求系统明确记录检查结果为空。</span>
-          </div>
-          <div class="stat-card">
-            <strong>生成约束</strong>
-            <span>数据来源可信度、多 Agent 职责隔离和基于证据的内容生成，约束日报不能越过上游材料。</span>
-          </div>
+          <article class="stat-card">
+            <strong>多阶段自动化流水线</strong>
+            <span>把“仓库提交到学习日报”的复杂任务拆成工作总结、概念提炼、知识讲解和网页发布四段。</span>
+          </article>
+          <article class="stat-card">
+            <strong>材料一致性校验</strong>
+            <span>检查题目、notebook、参考答案、用户答案和测试口径是否真正对应，而不只看文件数量。</span>
+          </article>
+          <article class="stat-card">
+            <strong>注意力机制</strong>
+            <span>通过 Q/K/V、softmax 权重和多头结构，让模型在上下文中动态选择最相关的信息。</span>
+          </article>
         </div>
       </section>
 
       <section class="section panel">
-        <h2 class="section-title">二、今日知识主线</h2>
-        <p>
-          今天的主线可以概括为：一个基于 Git 提交记录的自动化日报系统，必须在空提交窗口、仓库元数据缺失、工作区状态与提交事实混杂时，
-          保持输入边界清晰、证据可信、后续生成不越界。
+        <h2 class="section-title">今日知识主线</h2>
+        <p class="lead">
+          `DailyLearningAssistant` 正在把日报生成拆成多个独立 Agent 接力完成的流程：
+          每个阶段读取稳定的中间文件，输出下一阶段可检查的产物。与此同时，
+          `interview_prepare` 把学习检查从“有没有新增内容”推进到“材料是否一致、答案是否对齐、风险是否可解释”。
         </p>
         <p>
-          这条主线的价值在于，它把“没有新增提交”从一个看似无内容的状态，转化成对自动化系统健壮性的检查。可靠的日报不只是会总结丰富输入，
-          也要能在材料有限时写清楚：检查过什么、没有发现什么、哪些内容无法确认。
+          因此，今天最值得记住的主线不是某个单点功能，而是一种系统观：
+          自动化要靠清晰边界稳定传递信息，质量审计要靠一致性校验识别隐蔽错位，
+          模型理解要靠注意力机制把有限计算资源放到关键上下文上。
         </p>
-        <div class="highlight">
-          今日结论：空输入不是失败；把空输入写成可追溯、可复核、不会误导下游的事实，是自动化日报系统的基本功。
-        </div>
       </section>
 
       <section class="section">
-        <div class="knowledge-grid">
-          <article class="knowledge-card">
-            <h3>1. Git 仓库元数据</h3>
+        <div class="commit-grid">
+          <article class="commit-card">
+            <div class="tag-row">
+              <span class="tag">软件工程</span>
+              <span class="tag warm">四星</span>
+            </div>
+            <h3>重点概念一：多阶段自动化流水线</h3>
             <p>
-              项目文件像书的正文，<code>.git</code> 目录像修订档案馆。没有 <code>.git</code>，目录仍然可能有内容，
-              但系统无法通过 Git 证明今天发生过哪些提交。因此 AInote 的正确表述是“目录存在但无法读取提交历史”，不是“确认无变化”。
+              多阶段自动化流水线不是简单地“按顺序跑几个脚本”，而是把复杂任务拆成职责清楚、
+              输入输出稳定、失败后可定位的阶段。今天的日报系统就像一家小型日报工厂：
+              第一阶段生成各仓库工作总结，第二阶段提炼概念关联，第三阶段写知识讲解，
+              第四阶段发布 HTML 日报并维护 manifest。
             </p>
+            <p>
+              这个设计的关键是文件契约。上一阶段必须把结果放到约定路径，下一阶段只读取约定内容。
+              这样一来，如果最后日报内容有问题，可以一路回查到底是提交总结、概念提炼、知识讲解还是发布阶段出了偏差。
+            </p>
+            <div class="highlight">
+              工程启发：中间产物不是多余文件，而是自动化系统的检查点和复盘证据。
+            </div>
           </article>
 
-          <article class="knowledge-card">
-            <h3>2. 时间窗口过滤</h3>
+          <article class="commit-card">
+            <div class="tag-row">
+              <span class="tag">测试工程</span>
+              <span class="tag warm">三星</span>
+            </div>
+            <h3>重点概念二：材料一致性校验</h3>
             <p>
-              日报只关心指定自然日内的提交，所以必须用带时区的时间窗口筛选事件。今天使用的是
-              <code>[2026-05-12 00:00:00, 2026-05-13 00:00:00)</code>，包含起点、不包含终点，避免午夜边界重复统计。
+              材料一致性校验解决的是“材料看起来齐全，但是否真的对齐”的问题。
+              就像教材、练习册和答案册如果来自不同版本，数量再完整也会误导学习者。
             </p>
+            <p>
+              一致性校验通常分三层：存在性校验确认文件在不在，结构校验确认题目数量和章节顺序是否一致，
+              语义校验确认第几题的答案是否真的回答第几题。它比单纯统计文件数量更接近真实质量。
+            </p>
+            <div class="highlight">
+              质量启发：最危险的问题不是系统崩溃，而是系统看起来正常却给出错位反馈。
+            </div>
           </article>
 
-          <article class="knowledge-card">
-            <h3>3. 事件日志</h3>
+          <article class="commit-card">
+            <div class="tag-row">
+              <span class="tag">大语言模型</span>
+              <span class="tag warm">四星</span>
+            </div>
+            <h3>重点概念三：注意力机制</h3>
             <p>
-              Git commit 是按时间排列的事件：谁在何时提交了什么，以及变更了哪些文件。日报从事件日志生成，而不是从想象生成；
-              当日志没有当天事件时，结论就应是“没有可确认的新增提交事件”。
+              注意力机制让模型在处理当前位置时，计算它应该关注序列中的哪些其他位置，以及关注多少。
+              在 Transformer 中，Q 表示“我想找什么信息”，K 表示“我有什么可匹配特征”，V 表示“我能提供什么内容”。
             </p>
+            <p>
+              缩放点积注意力可以概括为：先用 Q 和 K 计算相关性分数，再用 softmax 转成权重，
+              最后用权重对 V 加权求和。多头注意力则让模型从多个角度同时观察上下文。
+            </p>
+            <pre><code>Attention(Q, K, V) = softmax(QK^T / sqrt(d_k)) V</code></pre>
+            <div class="highlight">
+              模型启发：注意力把固定规则的信息处理，变成了基于内容相关性的动态信息路由。
+            </div>
           </article>
 
-          <article class="knowledge-card">
-            <h3>4. 空提交窗口处理</h3>
+          <article class="commit-card">
+            <div class="tag-row">
+              <span class="tag">概念关联</span>
+              <span class="tag warm">主线总结</span>
+            </div>
+            <h3>概念之间的关联</h3>
             <p>
-              空提交窗口是正常状态，不等于系统失败。好的流水线会写明检查窗口、提交数为 0、结论为空，而不是留下空白文件，
-              也不是回溯历史内容来填充当天日报。
+              多阶段流水线关注信息如何分阶段传递；材料一致性校验关注传递的信息是否真正对齐；
+              注意力机制关注模型内部如何选择相关信息。三者共享一个底层问题：
+              如何在复杂信息系统中，让信息在正确边界内、以正确结构、流向正确位置。
             </p>
-          </article>
-
-          <article class="knowledge-card">
-            <h3>5. 数据来源可信度</h3>
-            <p>
-              自动化报告里的每句话都要能回答“凭什么”。可确认提交事实强于可观察工作区状态，工作区状态强于历史背景，
-              推测必须最谨慎。今天的关键约束就是不要把未提交状态或历史背景写成当天新增事实。
-            </p>
-          </article>
-
-          <article class="knowledge-card">
-            <h3>6. 多 Agent 职责隔离</h3>
-            <p>
-              工作总结、概念提炼、知识讲解和日报发布分别由不同 Agent 完成。每个阶段都应消费上游产物，而不是越权改写事实；
-              发布 Agent 的任务是把知识讲解整理成页面，并更新归档入口。
-            </p>
+            <ul>
+              <li>流水线提供传递路径，让复杂任务可拆解、可复盘。</li>
+              <li>一致性校验提供质量约束，让路径上的内容不悄悄错位。</li>
+              <li>注意力机制提供选择策略，让模型把上下文资源分配给更关键的信息。</li>
+            </ul>
           </article>
         </div>
       </section>
 
       <section class="section panel">
-        <h2 class="section-title">三、概念之间的关联</h2>
-        <p class="lead">
-          今天的概念不是彼此孤立的知识卡片，而是组成了一条从事实获取到内容发布的可靠性链路。
-        </p>
-        <ul>
-          <li><strong>事实来源层：</strong>Git 仓库元数据、版本边界与目录边界、事件日志，决定哪些仓库能被可信分析。</li>
-          <li><strong>筛选判断层：</strong>时间区间、时间窗口过滤、空提交窗口处理，决定如何界定“今天”以及如何表达无提交结果。</li>
-          <li><strong>生成组织层：</strong>提交驱动的自动化流水线、多 Agent 职责隔离、数据来源可信度、基于证据的内容生成，决定后续文本如何不越界。</li>
-        </ul>
-        <div class="highlight">
-          三层合在一起说明：自动化日报不是“能写就写”，而是先确认内容从哪里来、是否属于今天、是否被证据支持，然后再生成。
-        </div>
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <blockquote>
+          好的学习系统不只是收集信息，而是要让信息在正确的边界内、以正确的结构、流向正确的位置。
+        </blockquote>
       </section>
 
       <section class="section panel">
-        <h2 class="section-title">四、今日最值得记住的一句话</h2>
-        <p class="lead">
-          当证据为空时，可靠系统的价值不在于补出热闹内容，而在于把“已经检查且无法确认”的边界讲清楚。
-        </p>
-      </section>
-
-      <section class="section panel">
-        <h2 class="section-title">五、可继续探索的问题</h2>
+        <h2 class="section-title">可继续探索的问题</h2>
         <ul>
-          <li>如果目录缺少 <code>.git</code>，但来自远程仓库压缩包，系统应标记为不可追踪，还是尝试补全外部版本信息？</li>
-          <li>跨时区协作时，每日窗口应该以提交者本地时区、服务器时区，还是项目约定时区为准？</li>
-          <li>连续多天出现空提交窗口时，系统应只记录事实，还是提醒用户检查自动化配置是否失效？</li>
-          <li>自动化报告是否应该为每条结论标注证据等级，例如“来自提交日志”“来自工作区状态”“来自历史背景”？</li>
-          <li>多 Agent 流水线是否应为每个阶段定义机器可检查的输出 schema，减少下游误读？</li>
+          <li>如果某个中间产物为空，自动化流水线应该跳过、生成空报告，还是生成“今日无明确概念”的说明？</li>
+          <li>如何设计检查器，发现“题目和答案数量一致但题号错位”的隐蔽问题？</li>
+          <li>标准自注意力为什么在长文本上计算成本很高，mask 又如何约束模型不要看到未来 token？</li>
+          <li>多 Agent 流水线中，哪些信息适合写入文件契约，哪些信息适合留在 Agent 独立上下文里？</li>
         </ul>
       </section>
 
       <section class="footer-note">
         <p>
-          数据来源：<code>prework/2026-05/2026-05-12/knowledge_explaination.md</code>。本页严格基于该知识讲解整理，
-          不引入未被当天材料支持的新增业务功能、物理主题或论文内容。
+          数据来源：`prework/2026-05/2026-05-12/knowledge_explaination.md`。
+          本页复用站点公共样式 `../../style/main.css`，并可从
+          <a href="../../index.html?archive=1">学习归档</a> 返回历史日报入口。
         </p>
       </section>
     </main>

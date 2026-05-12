@@ -497,6 +497,184 @@ h1 {
   font-size: 22px;
 }
 
+.page {
+  position: relative;
+  z-index: 1;
+  width: min(1120px, 100%);
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.page > .topbar {
+  margin-bottom: 18px;
+}
+
+.hero,
+.panel,
+.commit-card,
+.knowledge-card,
+.footer-note {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--paper-strong);
+  box-shadow: var(--shadow);
+}
+
+.hero {
+  min-height: 300px;
+  padding: clamp(28px, 5vw, 56px);
+  background:
+    linear-gradient(110deg, rgba(255, 253, 248, 0.95) 0%, rgba(255, 253, 248, 0.8) 58%, transparent 58%),
+    linear-gradient(135deg, rgba(232, 244, 231, 0.95), rgba(255, 244, 204, 0.78));
+}
+
+.eyebrow {
+  margin: 0 0 12px;
+  color: var(--green);
+  font-size: 15px;
+  font-weight: 850;
+}
+
+.hero h1 {
+  margin: 0;
+}
+
+.hero p {
+  max-width: 760px;
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1.85;
+}
+
+.meta-grid,
+.stat-grid,
+.commit-grid,
+.knowledge-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.meta-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: 28px;
+}
+
+.meta-item,
+.stat-card {
+  padding: 16px 18px;
+  border: 1px solid rgba(227, 221, 207, 0.9);
+  border-radius: var(--radius);
+  background: rgba(255, 253, 248, 0.78);
+}
+
+.meta-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.meta-value {
+  color: #2f422f;
+  font-weight: 750;
+}
+
+.section {
+  margin-top: 24px;
+}
+
+.panel,
+.footer-note {
+  padding: clamp(22px, 4vw, 38px);
+}
+
+.section-title {
+  margin: 0 0 14px;
+  padding-left: 12px;
+  border-left: 5px solid var(--green);
+  color: var(--ink);
+  font-size: 25px;
+}
+
+.lead {
+  margin: 0 0 22px;
+  color: #3f493d;
+  font-size: 16px;
+  line-height: 1.9;
+}
+
+.stat-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.stat-card strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #2f6539;
+  font-size: 19px;
+}
+
+.stat-card span,
+.commit-card p,
+.knowledge-card p,
+.footer-note p,
+.panel p {
+  color: #3f493d;
+  font-size: 16px;
+  line-height: 1.9;
+}
+
+.commit-grid,
+.knowledge-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.commit-card,
+.knowledge-card {
+  padding: 24px;
+}
+
+.commit-card h3,
+.knowledge-card h3 {
+  margin: 0 0 10px;
+  color: #2f6539;
+  font-size: 19px;
+}
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.tag {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 8px;
+  color: #315d39;
+  background: rgba(232, 244, 231, 0.75);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.tag.warm {
+  color: #6d5818;
+  background: var(--gold-soft);
+}
+
+.highlight {
+  margin: 18px 0 0;
+  padding: 16px 18px;
+  border-left: 5px solid var(--gold);
+  border-radius: 8px;
+  background: var(--gold-soft);
+  color: #5e5127;
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
@@ -505,6 +683,10 @@ h1 {
 
 @media (max-width: 960px) {
   .page-shell {
+    padding: 12px;
+  }
+
+  .page {
     padding: 12px;
   }
 
@@ -530,6 +712,13 @@ h1 {
 
   .reader-hero {
     min-height: auto;
+  }
+
+  .meta-grid,
+  .stat-grid,
+  .commit-grid,
+  .knowledge-grid {
+    grid-template-columns: 1fr;
   }
 
   .desk-scene {
@@ -566,7 +755,10 @@ h1 {
   .reader-hero,
   .report-card,
   .about-panel,
-  .archive-panel {
+  .archive-panel,
+  .hero,
+  .panel,
+  .footer-note {
     padding: 18px;
   }
 
