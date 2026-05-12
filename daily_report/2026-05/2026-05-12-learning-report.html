@@ -90,8 +90,8 @@
             <p class="eyebrow">Read Mode</p>
             <h2 class="section-title">今日三节小课</h2>
             <p class="lead">
-              默认用简读快速浏览；切到精读后，三个知识点会一起展开为完整篇章。
-              也可以只展开其中一张卡片，先挑最想学的概念深入。
+              默认用简读快速浏览；切到精读后，三张卡片仍作为目录，
+              下方会展开当前选中的完整讲义文章。
             </p>
           </div>
           <div class="read-mode-toggle" role="group" aria-label="阅读模式">
@@ -128,7 +128,78 @@
               <div class="highlight">记忆句：好的流水线不是把事情变复杂，而是让复杂事情有秩序。</div>
             </div>
 
-            <div class="lesson-deep">
+            <button class="lesson-expand" type="button" data-lesson="pipeline" aria-expanded="false">展开精读</button>
+          </article>
+
+          <article class="lesson-card" id="consistency">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">测试工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>材料一致性校验</h3>
+              <p>Material Consistency Validation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <p class="lesson-summary">
+                检查学习材料之间是否在结构、题号、答案和语义上真正对应，而不只看文件是否存在。
+              </p>
+              <h4>核心理解</h4>
+              <ul>
+                <li>数量相等不代表结构一致，结构存在也不代表语义对齐。</li>
+                <li>校验要分层：存在性、结构、语义，越往后越接近真实质量。</li>
+                <li>最危险的问题不是缺文件，而是文件看似齐全却给出错位反馈。</li>
+              </ul>
+              <h4>小例子</h4>
+              <p>
+                题目、notebook 和答案文件都存在，但答案函数名、输入格式或题号错位，学习者仍会得到错误反馈。
+              </p>
+              <div class="highlight">记忆句：材料可靠不等于文件齐全，而是题目、答案和测试口径真的对齐。</div>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="consistency" aria-expanded="false">展开精读</button>
+          </article>
+
+          <article class="lesson-card" id="attention">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">大语言模型</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>注意力机制</h3>
+              <p>Attention Mechanism</p>
+            </header>
+
+            <div class="lesson-brief">
+              <p class="lesson-summary">
+                让模型在大量信息中动态判断哪些部分更值得关注，从而更有效地分配计算和表达资源。
+              </p>
+              <h4>核心理解</h4>
+              <ul>
+                <li>Q 表示“我想找什么”，K 表示“我有什么特征”，V 表示“我能提供什么内容”。</li>
+                <li>注意力先算相关性，再用 softmax 变成权重，最后对 V 加权求和。</li>
+                <li>多头注意力让模型从多个角度同时观察上下文。</li>
+              </ul>
+              <h4>小例子</h4>
+              <p>
+                读到“猫坐在垫子上，它睡着了”时，模型处理“它”会更关注“猫”，而不是“垫子”。
+              </p>
+              <div class="highlight">记忆句：注意力机制把“按顺序传话”变成了“按内容找重点”。</div>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="attention" aria-expanded="false">展开精读</button>
+          </article>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="pipeline">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>多阶段自动化流水线</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
               <h4>完整讲解</h4>
               <p>
                 可以把多阶段自动化流水线想象成一家小型日报工厂。第一位同学负责查看仓库里今天发生了什么；
@@ -178,39 +249,14 @@
                 <li>中间产物应该使用 Markdown、JSON，还是二者结合？</li>
                 <li>哪些信息应该通过文件传递，哪些信息应该留在 Agent 独立上下文里？</li>
               </ol>
-            </div>
+            </article>
 
-            <button class="lesson-expand" type="button" aria-expanded="false">展开精读</button>
-          </article>
-
-          <article class="lesson-card" id="consistency">
-            <header class="lesson-card-header">
-              <div class="tag-row">
-                <span class="tag">测试工程</span>
-                <span class="tag warm">★★★</span>
-              </div>
-              <h3>材料一致性校验</h3>
-              <p>Material Consistency Validation</p>
-            </header>
-
-            <div class="lesson-brief">
-              <p class="lesson-summary">
-                检查学习材料之间是否在结构、题号、答案和语义上真正对应，而不只看文件是否存在。
-              </p>
-              <h4>核心理解</h4>
-              <ul>
-                <li>数量相等不代表结构一致，结构存在也不代表语义对齐。</li>
-                <li>校验要分层：存在性、结构、语义，越往后越接近真实质量。</li>
-                <li>最危险的问题不是缺文件，而是文件看似齐全却给出错位反馈。</li>
-              </ul>
-              <h4>小例子</h4>
-              <p>
-                题目、notebook 和答案文件都存在，但答案函数名、输入格式或题号错位，学习者仍会得到错误反馈。
-              </p>
-              <div class="highlight">记忆句：材料可靠不等于文件齐全，而是题目、答案和测试口径真的对齐。</div>
-            </div>
-
-            <div class="lesson-deep">
+            <article class="lesson-detail" data-lesson-detail="consistency">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 测试工程</p>
+                <h3>材料一致性校验</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
               <h4>完整讲解</h4>
               <p>
                 可以从备考场景理解材料一致性校验。桌上有教材、练习册、答案册，看起来很齐全。
@@ -261,39 +307,14 @@ answers/problem_01.py</code></pre>
                 <li>哪些错误应该标为高风险：答案缺失、答案错位、样例不足，还是章节索引错误？</li>
                 <li>如果参考答案本身也可能有错，系统应该如何引入人工复核或多重验证？</li>
               </ol>
-            </div>
+            </article>
 
-            <button class="lesson-expand" type="button" aria-expanded="false">展开精读</button>
-          </article>
-
-          <article class="lesson-card" id="attention">
-            <header class="lesson-card-header">
-              <div class="tag-row">
-                <span class="tag">大语言模型</span>
-                <span class="tag warm">★★★★</span>
-              </div>
-              <h3>注意力机制</h3>
-              <p>Attention Mechanism</p>
-            </header>
-
-            <div class="lesson-brief">
-              <p class="lesson-summary">
-                让模型在大量信息中动态判断哪些部分更值得关注，从而更有效地分配计算和表达资源。
-              </p>
-              <h4>核心理解</h4>
-              <ul>
-                <li>Q 表示“我想找什么”，K 表示“我有什么特征”，V 表示“我能提供什么内容”。</li>
-                <li>注意力先算相关性，再用 softmax 变成权重，最后对 V 加权求和。</li>
-                <li>多头注意力让模型从多个角度同时观察上下文。</li>
-              </ul>
-              <h4>小例子</h4>
-              <p>
-                读到“猫坐在垫子上，它睡着了”时，模型处理“它”会更关注“猫”，而不是“垫子”。
-              </p>
-              <div class="highlight">记忆句：注意力机制把“按顺序传话”变成了“按内容找重点”。</div>
-            </div>
-
-            <div class="lesson-deep">
+            <article class="lesson-detail" data-lesson-detail="attention">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 大语言模型</p>
+                <h3>注意力机制</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
               <h4>完整讲解</h4>
               <p>
                 从阅读理解开始看注意力机制。句子“小明把书放进书包，因为它太重了”里，“它”大概率指“书”，不是“书包”。
@@ -344,10 +365,8 @@ answers/problem_01.py</code></pre>
                 <li>mask 在 Transformer 中有什么作用？为什么解码器生成下一个 token 时不能看到未来 token？</li>
                 <li>多头注意力中的不同头是否真的学到了不同功能？如果某些头被剪掉，模型性能会怎样变化？</li>
               </ol>
-            </div>
-
-            <button class="lesson-expand" type="button" aria-expanded="false">展开精读</button>
-          </article>
+            </article>
+          </div>
         </div>
       </section>
 
@@ -380,6 +399,11 @@ answers/problem_01.py</code></pre>
       const lessonSection = document.querySelector("#lesson-section");
       const modeButtons = document.querySelectorAll(".read-mode-toggle button");
       const expandButtons = document.querySelectorAll(".lesson-expand");
+      const lessonCards = document.querySelectorAll(".lesson-card");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const detailArticles = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+      let activeLesson = null;
 
       function setReadMode(mode) {
         lessonSection.dataset.readMode = mode;
@@ -389,21 +413,47 @@ answers/problem_01.py</code></pre>
           button.setAttribute("aria-pressed", String(active));
         });
 
-        if (mode === "deep") {
-          document.querySelectorAll(".lesson-card").forEach((card) => {
-            card.classList.remove("is-expanded");
-          });
-          expandButtons.forEach((button) => {
-            button.setAttribute("aria-expanded", "true");
-            button.textContent = "已显示精读";
-          });
-        } else {
-          expandButtons.forEach((button) => {
-            const expanded = button.closest(".lesson-card").classList.contains("is-expanded");
-            button.setAttribute("aria-expanded", String(expanded));
-            button.textContent = expanded ? "收起精读" : "展开精读";
-          });
+        if (mode === "deep" && !activeLesson) {
+          openLesson("pipeline", { scroll: false });
         }
+
+        if (mode === "brief") {
+          closeLesson();
+        }
+      }
+
+      function openLesson(lesson, options = {}) {
+        activeLesson = lesson;
+        detailPanel.classList.add("is-open");
+        detailPanel.dataset.activeLesson = lesson;
+        lessonCards.forEach((card) => {
+          card.classList.toggle("is-active", card.id === lesson);
+        });
+        detailArticles.forEach((article) => {
+          article.classList.toggle("is-active", article.dataset.lessonDetail === lesson);
+        });
+        expandButtons.forEach((button) => {
+          const expanded = button.dataset.lesson === lesson;
+          button.setAttribute("aria-expanded", String(expanded));
+          button.textContent = expanded ? "正在精读" : "阅读精读";
+        });
+
+        if (options.scroll !== false) {
+          window.setTimeout(() => {
+            detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 140);
+        }
+      }
+
+      function closeLesson() {
+        activeLesson = null;
+        detailPanel.classList.remove("is-open");
+        lessonCards.forEach((card) => card.classList.remove("is-active"));
+        detailArticles.forEach((article) => article.classList.remove("is-active"));
+        expandButtons.forEach((button) => {
+          button.setAttribute("aria-expanded", "false");
+          button.textContent = "阅读精读";
+        });
       }
 
       modeButtons.forEach((button) => {
@@ -412,15 +462,17 @@ answers/problem_01.py</code></pre>
 
       expandButtons.forEach((button) => {
         button.addEventListener("click", () => {
-          if (lessonSection.dataset.readMode === "deep") {
+          if (activeLesson === button.dataset.lesson) {
             setReadMode("brief");
+            return;
           }
-          const card = button.closest(".lesson-card");
-          card.classList.toggle("is-expanded");
-          const expanded = card.classList.contains("is-expanded");
-          button.setAttribute("aria-expanded", String(expanded));
-          button.textContent = expanded ? "收起精读" : "展开精读";
+          setReadMode("deep");
+          openLesson(button.dataset.lesson);
         });
+      });
+
+      closeButtons.forEach((button) => {
+        button.addEventListener("click", () => setReadMode("brief"));
       });
 
       setReadMode("brief");
