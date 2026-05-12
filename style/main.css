@@ -710,6 +710,8 @@ h1 {
 .stat-card span,
 .commit-card p,
 .knowledge-card p,
+.lesson-card p,
+.lesson-card li,
 .footer-note p,
 .panel p {
   max-width: 78ch;
@@ -722,6 +724,196 @@ h1 {
 .commit-grid,
 .knowledge-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.lesson-section {
+  display: grid;
+  gap: 18px;
+}
+
+.lesson-toolbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.lesson-toolbar .section-title {
+  margin-bottom: 10px;
+}
+
+.read-mode-toggle {
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid #d8dfcf;
+  border-radius: 8px;
+  background: var(--green-wash);
+}
+
+.read-mode-toggle button {
+  min-width: 72px;
+  min-height: 38px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  color: #315d39;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 850;
+}
+
+.read-mode-toggle button:hover {
+  background: #ffffff;
+}
+
+.read-mode-toggle button.is-active {
+  border-color: rgba(47, 143, 70, 0.22);
+  color: #ffffff;
+  background: var(--green);
+}
+
+.lesson-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  align-items: start;
+}
+
+.lesson-card {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+  min-height: 100%;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--paper-strong);
+  box-shadow: var(--shadow);
+}
+
+.lesson-card-header {
+  display: grid;
+  gap: 8px;
+}
+
+.lesson-card-header h3 {
+  color: #2f6539;
+  font-size: 24px;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+
+.lesson-card-header p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 750;
+}
+
+.lesson-summary {
+  margin: 0 0 16px;
+  padding: 14px 16px;
+  border-left: 5px solid var(--green);
+  border-radius: 8px;
+  background: var(--green-wash);
+  font-weight: 750;
+}
+
+.lesson-card h4 {
+  margin: 18px 0 8px;
+  color: #263b28;
+  font-size: 16px;
+  line-height: 1.35;
+}
+
+.lesson-card ul,
+.lesson-card ol {
+  margin: 8px 0 0;
+  padding-left: 1.25rem;
+}
+
+.lesson-card pre {
+  overflow: auto;
+  padding: 14px;
+  border-radius: 8px;
+  background: #1f2a20;
+  color: #f7fbf1;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.lesson-card pre code {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.lesson-deep {
+  display: none;
+  min-width: 0;
+}
+
+.lesson-section[data-read-mode="deep"] .lesson-card .lesson-brief {
+  display: none;
+}
+
+.lesson-section[data-read-mode="deep"] .lesson-card .lesson-deep,
+.lesson-section[data-read-mode="brief"] .lesson-card.is-expanded .lesson-deep {
+  display: block;
+}
+
+.lesson-section[data-read-mode="brief"] .lesson-card.is-expanded .lesson-brief {
+  display: none;
+}
+
+.lesson-expand {
+  width: 100%;
+  min-height: 42px;
+  align-self: end;
+  border: 1px solid rgba(47, 143, 70, 0.24);
+  border-radius: 8px;
+  color: #315d39;
+  background: var(--green-soft);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 850;
+}
+
+.lesson-expand:hover {
+  background: #f2faef;
+}
+
+.lesson-section[data-read-mode="deep"] .lesson-expand {
+  cursor: default;
+  opacity: 0.72;
+}
+
+.mini-table {
+  display: block;
+  overflow-x: auto;
+  width: 100%;
+  margin-top: 10px;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.mini-table th,
+.mini-table td {
+  padding: 10px 12px;
+  border: 1px solid #d8dfcf;
+  color: #3f493d;
+  font-size: 14px;
+  line-height: 1.65;
+  text-align: left;
+  vertical-align: top;
+  word-break: break-word;
+}
+
+.mini-table th {
+  color: #2f422f;
+  background: var(--cream);
+  font-weight: 850;
 }
 
 .commit-card,
@@ -813,8 +1005,13 @@ h1 {
   .meta-grid,
   .stat-grid,
   .commit-grid,
-  .knowledge-grid {
+  .knowledge-grid,
+  .lesson-grid {
     grid-template-columns: 1fr;
+  }
+
+  .lesson-toolbar {
+    display: grid;
   }
 
   .desk-scene {
@@ -854,6 +1051,7 @@ h1 {
   .archive-panel,
   .hero,
   .panel,
+  .lesson-card,
   .footer-note {
     padding: 18px;
   }
@@ -874,5 +1072,13 @@ h1 {
   .knowledge-log-header {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .read-mode-toggle {
+    width: 100%;
+  }
+
+  .read-mode-toggle button {
+    flex: 1;
   }
 }

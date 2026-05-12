@@ -40,16 +40,16 @@
             <span class="meta-value">信息组织、校验与路由</span>
           </div>
           <div class="meta-item">
-            <span class="meta-label">工程关键词</span>
-            <span class="meta-value">多阶段自动化流水线</span>
+            <span class="meta-label">阅读模式</span>
+            <span class="meta-value">简读 / 精读</span>
           </div>
           <div class="meta-item">
-            <span class="meta-label">质量关键词</span>
-            <span class="meta-value">材料一致性校验</span>
+            <span class="meta-label">知识点</span>
+            <span class="meta-value">3 个并列讲解</span>
           </div>
           <div class="meta-item">
-            <span class="meta-label">模型关键词</span>
-            <span class="meta-value">注意力机制</span>
+            <span class="meta-label">学习路径</span>
+            <span class="meta-value">工程流程 → 质量校验 → 模型路由</span>
           </div>
         </div>
       </section>
@@ -63,15 +63,15 @@
         <div class="stat-grid">
           <article class="stat-card">
             <strong>多阶段自动化流水线</strong>
-            <span>把“仓库提交到学习日报”的复杂任务拆成工作总结、概念提炼、知识讲解和网页发布四段。</span>
+            <span>把复杂任务拆成职责清楚、输入输出稳定、失败后可定位的多个阶段。</span>
           </article>
           <article class="stat-card">
             <strong>材料一致性校验</strong>
-            <span>检查题目、notebook、参考答案、用户答案和测试口径是否真正对应，而不只看文件数量。</span>
+            <span>检查题目、notebook、参考答案、用户答案和测试口径是否真正对应。</span>
           </article>
           <article class="stat-card">
             <strong>注意力机制</strong>
-            <span>通过 Q/K/V、softmax 权重和多头结构，让模型在上下文中动态选择最相关的信息。</span>
+            <span>通过 Q/K/V、softmax 权重和多头结构，让模型动态选择相关信息。</span>
           </article>
         </div>
       </section>
@@ -79,97 +79,285 @@
       <section class="section panel">
         <h2 class="section-title">今日知识主线</h2>
         <p class="lead">
-          `DailyLearningAssistant` 正在把日报生成拆成多个独立 Agent 接力完成的流程：
-          每个阶段读取稳定的中间文件，输出下一阶段可检查的产物。与此同时，
-          `interview_prepare` 把学习检查从“有没有新增内容”推进到“材料是否一致、答案是否对齐、风险是否可解释”。
-        </p>
-        <p>
-          因此，今天最值得记住的主线不是某个单点功能，而是一种系统观：
-          自动化要靠清晰边界稳定传递信息，质量审计要靠一致性校验识别隐蔽错位，
-          模型理解要靠注意力机制把有限计算资源放到关键上下文上。
+          今天的主线不是某个单点功能，而是一种系统观：自动化要靠清晰边界稳定传递信息，
+          质量审计要靠一致性校验识别隐蔽错位，模型理解要靠注意力机制把有限计算资源放到关键上下文上。
         </p>
       </section>
 
-      <section class="section">
-        <div class="commit-grid">
-          <article class="commit-card">
-            <div class="tag-row">
-              <span class="tag">软件工程</span>
-              <span class="tag warm">四星</span>
-            </div>
-            <h3>重点概念一：多阶段自动化流水线</h3>
-            <p>
-              多阶段自动化流水线不是简单地“按顺序跑几个脚本”，而是把复杂任务拆成职责清楚、
-              输入输出稳定、失败后可定位的阶段。今天的日报系统就像一家小型日报工厂：
-              第一阶段生成各仓库工作总结，第二阶段提炼概念关联，第三阶段写知识讲解，
-              第四阶段发布 HTML 日报并维护 manifest。
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-toolbar panel">
+          <div>
+            <p class="eyebrow">Read Mode</p>
+            <h2 class="section-title">今日三节小课</h2>
+            <p class="lead">
+              默认用简读快速浏览；切到精读后，三个知识点会一起展开为完整篇章。
+              也可以只展开其中一张卡片，先挑最想学的概念深入。
             </p>
-            <p>
-              这个设计的关键是文件契约。上一阶段必须把结果放到约定路径，下一阶段只读取约定内容。
-              这样一来，如果最后日报内容有问题，可以一路回查到底是提交总结、概念提炼、知识讲解还是发布阶段出了偏差。
-            </p>
-            <div class="highlight">
-              工程启发：中间产物不是多余文件，而是自动化系统的检查点和复盘证据。
+          </div>
+          <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+            <button class="is-active" type="button" data-mode="brief">简读</button>
+            <button type="button" data-mode="deep">精读</button>
+          </div>
+        </div>
+
+        <div class="lesson-grid">
+          <article class="lesson-card" id="pipeline">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>多阶段自动化流水线</h3>
+              <p>Multi-stage Automation Pipeline</p>
+            </header>
+
+            <div class="lesson-brief">
+              <p class="lesson-summary">
+                把复杂任务拆成职责清晰、产物稳定、可检查可复盘的多个自动化阶段。
+              </p>
+              <h4>核心理解</h4>
+              <ul>
+                <li>复杂任务不要交给一个巨大步骤完成，而要拆成观察、提炼、讲解、发布等阶段。</li>
+                <li>阶段之间靠文件契约接力：上一阶段输出什么，下一阶段读取什么，都要稳定。</li>
+                <li>中间产物不是负担，而是定位错误、复盘过程和改进系统的证据。</li>
+              </ul>
+              <h4>小例子</h4>
+              <p>
+                日报系统先生成各仓库工作总结，再提炼概念关联，接着写知识讲解，最后发布 HTML 页面。
+              </p>
+              <div class="highlight">记忆句：好的流水线不是把事情变复杂，而是让复杂事情有秩序。</div>
             </div>
+
+            <div class="lesson-deep">
+              <h4>完整讲解</h4>
+              <p>
+                可以把多阶段自动化流水线想象成一家小型日报工厂。第一位同学负责查看仓库里今天发生了什么；
+                第二位同学不直接看仓库，而是阅读第一位同学写出的总结，再提炼概念；
+                第三位同学阅读概念文件，把概念讲清楚；第四位同学再把讲解整理成网页，发布成学习日报。
+              </p>
+              <p>
+                它的关键不只是“分成四步”，而是每一步都有明确的文件契约。所谓文件契约，就是提前约好：
+                上一阶段把结果放在哪里、用什么格式写、下一阶段只读哪些内容、不要随便越界补充。
+              </p>
+              <pre><code>work_summary_*.md
+  → concept_relevance.md
+  → knowledge_explaination.md
+  → daily_report/YYYY-MM-DD-learning-report.html</code></pre>
+              <p>
+                这个设计最重要的好处是可复盘。如果最后日报讲错了，可以一路往回查：
+                是知识讲解阶段误解了概念，还是概念提炼阶段扩展过度，还是最早的仓库总结没有准确读取提交记录。
+              </p>
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>复杂任务拆阶段：不要让一个 Agent 同时负责观察、筛选、讲解、发布。</li>
+                <li>阶段之间靠产物传递信息：用 Markdown、JSON、HTML 等文件作为可检查的中间结果。</li>
+                <li>每一阶段只做自己该做的事：职责越清楚，系统越容易维护。</li>
+              </ol>
+              <h4>具体例子</h4>
+              <p>
+                如果今天五个仓库都有变化，系统不应该直接要求一个模型“读取所有仓库、找知识点、写讲解、生成网页、更新首页”。
+                这个请求太大，风险也太集中。使用流水线后，每个仓库先生成自己的 `work_summary_*.md`，
+                再统一进入概念提炼和知识讲解阶段，最后 HTML 发布阶段只负责网页化展示。
+              </p>
+              <h4>常见误区</h4>
+              <ul>
+                <li>阶段不是越多越专业。拆分标准应该是职责是否不同、输入输出是否稳定、失败后是否方便定位。</li>
+                <li>文件名对上不等于有契约。真正的契约还包括内容结构、字段语义、日期范围和可信来源。</li>
+                <li>自动化不等于不需要审查。越自动化，越需要中间结果可读、可查、可回滚。</li>
+              </ul>
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>Prompt 分工</td><td>每个 prompt 对应一个阶段，让不同 Agent 承担不同职责。</td></tr>
+                <tr><td>中间产物契约</td><td>流水线能稳定接力，依赖文件格式和语义稳定。</td></tr>
+                <tr><td>上下文压缩</td><td>前一阶段把大量信息压缩成摘要，后一阶段不用重复读取全部原始材料。</td></tr>
+              </table>
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果 `concept_relevance.md` 为空，后续阶段应该跳过、生成空报告，还是生成说明？</li>
+                <li>中间产物应该使用 Markdown、JSON，还是二者结合？</li>
+                <li>哪些信息应该通过文件传递，哪些信息应该留在 Agent 独立上下文里？</li>
+              </ol>
+            </div>
+
+            <button class="lesson-expand" type="button" aria-expanded="false">展开精读</button>
           </article>
 
-          <article class="commit-card">
-            <div class="tag-row">
-              <span class="tag">测试工程</span>
-              <span class="tag warm">三星</span>
+          <article class="lesson-card" id="consistency">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">测试工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>材料一致性校验</h3>
+              <p>Material Consistency Validation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <p class="lesson-summary">
+                检查学习材料之间是否在结构、题号、答案和语义上真正对应，而不只看文件是否存在。
+              </p>
+              <h4>核心理解</h4>
+              <ul>
+                <li>数量相等不代表结构一致，结构存在也不代表语义对齐。</li>
+                <li>校验要分层：存在性、结构、语义，越往后越接近真实质量。</li>
+                <li>最危险的问题不是缺文件，而是文件看似齐全却给出错位反馈。</li>
+              </ul>
+              <h4>小例子</h4>
+              <p>
+                题目、notebook 和答案文件都存在，但答案函数名、输入格式或题号错位，学习者仍会得到错误反馈。
+              </p>
+              <div class="highlight">记忆句：材料可靠不等于文件齐全，而是题目、答案和测试口径真的对齐。</div>
             </div>
-            <h3>重点概念二：材料一致性校验</h3>
-            <p>
-              材料一致性校验解决的是“材料看起来齐全，但是否真的对齐”的问题。
-              就像教材、练习册和答案册如果来自不同版本，数量再完整也会误导学习者。
-            </p>
-            <p>
-              一致性校验通常分三层：存在性校验确认文件在不在，结构校验确认题目数量和章节顺序是否一致，
-              语义校验确认第几题的答案是否真的回答第几题。它比单纯统计文件数量更接近真实质量。
-            </p>
-            <div class="highlight">
-              质量启发：最危险的问题不是系统崩溃，而是系统看起来正常却给出错位反馈。
+
+            <div class="lesson-deep">
+              <h4>完整讲解</h4>
+              <p>
+                可以从备考场景理解材料一致性校验。桌上有教材、练习册、答案册，看起来很齐全。
+                但如果教材是第二版，练习册是第三版，答案册却是第一版，第 5 题的答案可能根本不是同一道题。
+                你以为自己错了，其实是材料没有对齐。
+              </p>
+              <p>
+                学习系统里的材料也是如此。它关心的不只是“有多少 Markdown 文件”“有多少 notebook”“有多少答案”，
+                而是这些材料之间是否能一一对应：源内容是否存在，notebook 是否匹配源内容，参考答案是否覆盖练习，
+                用户答案是否按同样题目结构提交，测试统计是否能反映真实质量。
+              </p>
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>存在性校验：文件在不在？目录有没有？索引能不能找到？</li>
+                <li>结构校验：题目数量是否一致？章节顺序是否一致？字段格式是否一致？</li>
+                <li>语义校验：第 3 题的答案是不是第 3 题的答案？输入输出口径是否和题面一致？</li>
+              </ol>
+              <p>
+                很多自动化检查只做到第一层，于是报告看起来很好看：文件都在，文件都能打开。
+                但真正影响学习体验的是第二层和第三层。如果题目和答案错位，学习者会在错误反馈里浪费大量时间。
+              </p>
+              <h4>具体例子</h4>
+              <pre><code>problems.md
+notebooks/problem_01.ipynb
+answers/problem_01.py</code></pre>
+              <p>
+                表面上看，题目、notebook、答案都有了。但一致性校验会继续追问：
+                `problems.md` 的第 1 题是否就是 `problem_01.ipynb` 里的题？
+                notebook 的输入格式是否和题面一致？答案的函数名、参数和输出格式是否能被测试器正确调用？
+                用户答案通过的测试是否和参考答案使用同一套 EXPECTED 标准？
+              </p>
+              <h4>常见误区</h4>
+              <ul>
+                <li>文件数量一致不说明材料完整。10 份题目和 10 份答案不保证版本、章节、题号正确对应。</li>
+                <li>通过公开样例不说明算法可靠。公开样例覆盖有限，测试口径不同，质量结论也不同。</li>
+                <li>一致性校验不是整理文件的小活，它涉及解析、索引、状态维护、测试口径和风险分级。</li>
+              </ul>
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>自动化检查报告</td><td>一致性校验结果需要被报告展示出来，方便定位缺口。</td></tr>
+                <tr><td>测试口径设计</td><td>判断“通过”之前，必须先定义用什么标准测试。</td></tr>
+                <tr><td>中间产物契约</td><td>学习日报流水线中的 Markdown 文件也需要类似的一致性契约。</td></tr>
+              </table>
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何设计检查器，自动发现“题目和答案数量一致但题号错位”的问题？</li>
+                <li>哪些错误应该标为高风险：答案缺失、答案错位、样例不足，还是章节索引错误？</li>
+                <li>如果参考答案本身也可能有错，系统应该如何引入人工复核或多重验证？</li>
+              </ol>
             </div>
+
+            <button class="lesson-expand" type="button" aria-expanded="false">展开精读</button>
           </article>
 
-          <article class="commit-card">
-            <div class="tag-row">
-              <span class="tag">大语言模型</span>
-              <span class="tag warm">四星</span>
-            </div>
-            <h3>重点概念三：注意力机制</h3>
-            <p>
-              注意力机制让模型在处理当前位置时，计算它应该关注序列中的哪些其他位置，以及关注多少。
-              在 Transformer 中，Q 表示“我想找什么信息”，K 表示“我有什么可匹配特征”，V 表示“我能提供什么内容”。
-            </p>
-            <p>
-              缩放点积注意力可以概括为：先用 Q 和 K 计算相关性分数，再用 softmax 转成权重，
-              最后用权重对 V 加权求和。多头注意力则让模型从多个角度同时观察上下文。
-            </p>
-            <pre><code>Attention(Q, K, V) = softmax(QK^T / sqrt(d_k)) V</code></pre>
-            <div class="highlight">
-              模型启发：注意力把固定规则的信息处理，变成了基于内容相关性的动态信息路由。
-            </div>
-          </article>
+          <article class="lesson-card" id="attention">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">大语言模型</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>注意力机制</h3>
+              <p>Attention Mechanism</p>
+            </header>
 
-          <article class="commit-card">
-            <div class="tag-row">
-              <span class="tag">概念关联</span>
-              <span class="tag warm">主线总结</span>
+            <div class="lesson-brief">
+              <p class="lesson-summary">
+                让模型在大量信息中动态判断哪些部分更值得关注，从而更有效地分配计算和表达资源。
+              </p>
+              <h4>核心理解</h4>
+              <ul>
+                <li>Q 表示“我想找什么”，K 表示“我有什么特征”，V 表示“我能提供什么内容”。</li>
+                <li>注意力先算相关性，再用 softmax 变成权重，最后对 V 加权求和。</li>
+                <li>多头注意力让模型从多个角度同时观察上下文。</li>
+              </ul>
+              <h4>小例子</h4>
+              <p>
+                读到“猫坐在垫子上，它睡着了”时，模型处理“它”会更关注“猫”，而不是“垫子”。
+              </p>
+              <div class="highlight">记忆句：注意力机制把“按顺序传话”变成了“按内容找重点”。</div>
             </div>
-            <h3>概念之间的关联</h3>
-            <p>
-              多阶段流水线关注信息如何分阶段传递；材料一致性校验关注传递的信息是否真正对齐；
-              注意力机制关注模型内部如何选择相关信息。三者共享一个底层问题：
-              如何在复杂信息系统中，让信息在正确边界内、以正确结构、流向正确位置。
-            </p>
-            <ul>
-              <li>流水线提供传递路径，让复杂任务可拆解、可复盘。</li>
-              <li>一致性校验提供质量约束，让路径上的内容不悄悄错位。</li>
-              <li>注意力机制提供选择策略，让模型把上下文资源分配给更关键的信息。</li>
-            </ul>
+
+            <div class="lesson-deep">
+              <h4>完整讲解</h4>
+              <p>
+                从阅读理解开始看注意力机制。句子“小明把书放进书包，因为它太重了”里，“它”大概率指“书”，不是“书包”。
+                人类读到“它太重了”时，会自动回头看前文，把注意力放在“书”这个词上。
+              </p>
+              <p>
+                注意力机制做的事情也类似：当模型处理一个位置的信息时，它会计算这个位置应该关注序列中哪些其他位置，以及关注多少。
+              </p>
+              <h4>原理逻辑</h4>
+              <p>在 Transformer 里，注意力机制通常用三个向量来描述：</p>
+              <ul>
+                <li><strong>Q（Query，查询）</strong>：我现在想找什么信息？</li>
+                <li><strong>K（Key，键）</strong>：我这里有什么特征，能不能被别人匹配到？</li>
+                <li><strong>V（Value，值）</strong>：如果别人关注我，我能提供什么内容？</li>
+              </ul>
+              <p>
+                数学上，缩放点积注意力大致做三步：用 Q 和 K 做点积得到相关性分数；
+                对分数进行缩放和 softmax，变成权重；用这些权重对 V 加权求和，得到汇聚后的信息。
+              </p>
+              <pre><code>Attention(Q, K, V) = softmax(QK^T / sqrt(d_k)) V</code></pre>
+              <p>
+                这里的 `sqrt(d_k)` 是缩放项。向量维度越高，点积分数可能越大，softmax 后会过于尖锐，
+                导致训练不稳定；缩放能让分数更温和。多头注意力则让多个“注意力头”从不同角度观察信息：
+                有的头关注主谓关系，有的头关注指代关系，有的头关注位置邻近词。
+              </p>
+              <h4>具体例子</h4>
+              <p>
+                考虑“猫坐在垫子上，它睡着了”。当模型处理“它”时，Q 可以理解为“我要找这个代词指代的对象”。
+                前面每个词都有自己的 K 和 V。模型计算“它”的 Q 与“猫”“坐在”“垫子”等词的 K 的匹配程度，
+                通常“猫”会得到较高权重，因为“睡着了”的主体更可能是猫。
+              </p>
+              <h4>常见误区</h4>
+              <ul>
+                <li>注意力权重有时能提供直观线索，但不能简单等同于“模型真正的推理原因”。</li>
+                <li>注意力不只用于文本，也用于图像、语音、多模态和推荐系统。</li>
+                <li>注意力很强，但长序列上的标准自注意力有平方级复杂度，计算代价并不低。</li>
+              </ul>
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>线性代数运算</td><td>Q/K/V 投影、点积、矩阵乘法都是线性代数计算。</td></tr>
+                <tr><td>LSTM 状态更新</td><td>LSTM 依靠状态逐步传递信息，注意力允许位置之间直接建立联系。</td></tr>
+                <tr><td>混合专家模型</td><td>注意力选择 token 间的信息路径，MOE 通过门控选择专家网络，二者都体现动态路由。</td></tr>
+              </table>
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>为什么标准自注意力在长文本上计算成本很高？复杂度来自哪里？</li>
+                <li>mask 在 Transformer 中有什么作用？为什么解码器生成下一个 token 时不能看到未来 token？</li>
+                <li>多头注意力中的不同头是否真的学到了不同功能？如果某些头被剪掉，模型性能会怎样变化？</li>
+              </ol>
+            </div>
+
+            <button class="lesson-expand" type="button" aria-expanded="false">展开精读</button>
           </article>
         </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">
+          多阶段流水线解决“信息如何分阶段传递”；材料一致性校验解决“传递的信息是否对齐”；
+          注意力机制解决“模型内部如何选择信息”。三者共同说明：复杂系统的关键不是信息越多越好，
+          而是信息必须被可靠地组织、校验和路由。
+        </p>
       </section>
 
       <section class="section panel">
@@ -177,16 +365,6 @@
         <blockquote>
           好的学习系统不只是收集信息，而是要让信息在正确的边界内、以正确的结构、流向正确的位置。
         </blockquote>
-      </section>
-
-      <section class="section panel">
-        <h2 class="section-title">可继续探索的问题</h2>
-        <ul>
-          <li>如果某个中间产物为空，自动化流水线应该跳过、生成空报告，还是生成“今日无明确概念”的说明？</li>
-          <li>如何设计检查器，发现“题目和答案数量一致但题号错位”的隐蔽问题？</li>
-          <li>标准自注意力为什么在长文本上计算成本很高，mask 又如何约束模型不要看到未来 token？</li>
-          <li>多 Agent 流水线中，哪些信息适合写入文件契约，哪些信息适合留在 Agent 独立上下文里？</li>
-        </ul>
       </section>
 
       <section class="footer-note">
@@ -197,5 +375,55 @@
         </p>
       </section>
     </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll(".read-mode-toggle button");
+      const expandButtons = document.querySelectorAll(".lesson-expand");
+
+      function setReadMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => {
+          const active = button.dataset.mode === mode;
+          button.classList.toggle("is-active", active);
+          button.setAttribute("aria-pressed", String(active));
+        });
+
+        if (mode === "deep") {
+          document.querySelectorAll(".lesson-card").forEach((card) => {
+            card.classList.remove("is-expanded");
+          });
+          expandButtons.forEach((button) => {
+            button.setAttribute("aria-expanded", "true");
+            button.textContent = "已显示精读";
+          });
+        } else {
+          expandButtons.forEach((button) => {
+            const expanded = button.closest(".lesson-card").classList.contains("is-expanded");
+            button.setAttribute("aria-expanded", String(expanded));
+            button.textContent = expanded ? "收起精读" : "展开精读";
+          });
+        }
+      }
+
+      modeButtons.forEach((button) => {
+        button.addEventListener("click", () => setReadMode(button.dataset.mode));
+      });
+
+      expandButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          if (lessonSection.dataset.readMode === "deep") {
+            setReadMode("brief");
+          }
+          const card = button.closest(".lesson-card");
+          card.classList.toggle("is-expanded");
+          const expanded = card.classList.contains("is-expanded");
+          button.setAttribute("aria-expanded", String(expanded));
+          button.textContent = expanded ? "收起精读" : "展开精读";
+        });
+      });
+
+      setReadMode("brief");
+    </script>
   </body>
 </html>
