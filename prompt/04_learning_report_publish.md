@@ -39,6 +39,8 @@
    - 保证最新月份排在 `months` 列表最前面。
 4. 确认 `index.html` 可以通过 manifest 默认跳转到最新 HTML 日报，在 `index.html?archive=1` 中显示日报归档入口，并在 `index.html?knowledge=1` 中按年份折叠展示月度教学记录入口。
 5. 将缓存区文件自动提交为新的 git commit 并与 github 进行同步。
+   - 执行 `git push` 前必须先检测网络与 GitHub SSH 认证是否可用，例如运行 `ssh -o BatchMode=yes -o ConnectTimeout=10 -T -p 443 git@ssh.github.com`；如果检测失败，应先尝试刷新/恢复当前任务的网络权限或运行环境，再重试检测和 `git push`，不得在未确认网络可用时直接结束同步步骤。
+   - 提交文件时应至少包含工作区所有既有变更。
 
 学习日报应包含：
 
