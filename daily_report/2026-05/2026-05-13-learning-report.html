@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-05-13 学习笔记日报</title>
+    <meta
+      name="description"
+      content="2026-05-13 学习日报：契约式开发、渐进披露、状态机与并发锁。"
+    />
+    <link rel="stylesheet" href="../../style/main.css?v=20260513" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-05-13</p>
+        <h1>先把边界、流程和运行状态讲清楚</h1>
+        <p>
+          今天的学习主线聚焦 AI 参与复杂工程之后的秩序感：先用契约式开发规定系统边界，
+          再用渐进披露组织复杂内容，最后用状态机与并发锁保护长任务和多 Agent 协作的运行态。
+        </p>
+        <div class="meta-grid">
+          <div class="meta-item">
+            <span class="meta-label">今日主题</span>
+            <span class="meta-value">AI 工程协作秩序</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">阅读模式</span>
+            <span class="meta-value">简读 / 精读</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">知识点</span>
+            <span class="meta-value">3 个并列讲解</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">学习路径</span>
+            <span class="meta-value">边界 → 展示 → 运行态</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日知识点概览</h2>
+        <p class="lead">
+          今天的三个知识点都在回答同一个问题：复杂系统怎样不被“看起来很聪明”的自动化带偏。
+          契约式开发让 AI 和人都知道边界，渐进披露让复杂知识按深度被读到，状态机与并发锁让运行中的系统不会互相踩踏。
+        </p>
+        <div class="stat-grid">
+          <article class="stat-card">
+            <strong>契约式开发</strong>
+            <span>在实现前明确产品目标、API、数据、权限、错误路径和验收标准。</span>
+          </article>
+          <article class="stat-card">
+            <strong>渐进披露</strong>
+            <span>把同一份复杂内容分成简读和精读，让用户先抓主线再进入细节。</span>
+          </article>
+          <article class="stat-card">
+            <strong>状态机与并发锁</strong>
+            <span>用状态迁移和关键资源保护，避免长任务、多窗口、多 Agent 操作互相覆盖。</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日知识主线</h2>
+        <p class="lead">
+          当 AI 参与复杂工程时，真正重要的不是让它多写代码，而是先把输入输出、展示层次、
+          状态变化、权限边界和验收条件讲清楚。自动化越强，越需要可审核、可复盘、可理解的轨道。
+        </p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-toolbar panel">
+          <div>
+            <p class="eyebrow">Read Mode</p>
+            <h2 class="section-title">今日三节小课</h2>
+            <p class="lead">
+              简读帮助快速建立地图；精读会在三张卡片下方展开完整文章。
+              切到精读后，卡片会变成目录，用来切换不同概念。
+            </p>
+          </div>
+          <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+            <button class="is-active" type="button" data-mode="brief">简读</button>
+            <button type="button" data-mode="deep">精读</button>
+          </div>
+        </div>
+
+        <div class="lesson-grid">
+          <article class="lesson-card" id="contract">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>契约式开发</h3>
+              <p>Contract-based Development</p>
+            </header>
+
+            <div class="lesson-brief">
+              <p class="lesson-summary">
+                先把系统边界、输入输出、权限规则和验收标准讲清楚，再让实现服从这些约定。
+              </p>
+              <h4>核心要点</h4>
+              <ul>
+                <li>契约不只是 API 文档，也包括业务规则、数据约束、错误路径和人工审核边界。</li>
+                <li>AI 很会补细节，边界不清时也很容易自作主张。</li>
+                <li>好契约固定关键边界，同时给具体实现留下合理空间。</li>
+              </ul>
+              <h4>小例子</h4>
+              <p>
+                “上传 PDF 并补全元数据”要说明登录要求、解析顺序、外部数据源失败策略、LLM 草稿是否需要用户确认。
+              </p>
+              <div class="highlight">记忆句：先签清楚接口合同，再让代码开始奔跑。</div>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="contract" aria-expanded="false">阅读精读</button>
+          </article>
+
+          <article class="lesson-card" id="disclosure">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">人机交互</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>渐进披露</h3>
+              <p>Progressive Disclosure</p>
+            </header>
+
+            <div class="lesson-brief">
+              <p class="lesson-summary">
+                不一次性塞满所有信息，而是按注意力、任务阶段和理解深度逐步呈现内容。
+              </p>
+              <h4>核心要点</h4>
+              <ul>
+                <li>渐进披露不是隐藏信息，而是安排信息出场顺序。</li>
+                <li>简读负责判断和回忆，精读负责完整学习。</li>
+                <li>入口必须清楚，过度折叠会让页面变成寻找答案的负担。</li>
+              </ul>
+              <h4>小例子</h4>
+              <p>
+                学习日报先展示今日主线和一句话解释，点击精读后再展开原理、例子、误区和开放问题。
+              </p>
+              <div class="highlight">记忆句：好的界面不是少给信息，而是让信息按时出现。</div>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="disclosure" aria-expanded="false">阅读精读</button>
+          </article>
+
+          <article class="lesson-card" id="state-lock">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">后端工程</span>
+                <span class="tag warm">★★★★★</span>
+              </div>
+              <h3>状态机与并发锁</h3>
+              <p>State Machine and Concurrency Lock</p>
+            </header>
+
+            <div class="lesson-brief">
+              <p class="lesson-summary">
+                状态机规定系统能从哪里走到哪里，并发锁保证关键资源不会被多个操作同时改乱。
+              </p>
+              <h4>核心要点</h4>
+              <ul>
+                <li>状态字段本身不够，真正重要的是状态迁移规则。</li>
+                <li>前端禁用按钮只能改善体验，不能替代后端或数据层的并发保护。</li>
+                <li>锁要缩小范围、缩短持有时间，并明确抢不到锁时的失败策略。</li>
+              </ul>
+              <h4>小例子</h4>
+              <p>
+                同一个 Project 最多只能有一个 active Run，开始运行前要先获取 Project 级锁。
+              </p>
+              <div class="highlight">记忆句：状态机管路线，锁管同一时间谁能过门。</div>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="state-lock" aria-expanded="false">阅读精读</button>
+          </article>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="contract">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>契约式开发</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>
+                可以先从做饭理解契约。你和朋友说“你买菜，我炒菜”，这只是粗分工。朋友可能买十斤土豆回来，
+                你却准备做清蒸鱼；你以为他会买葱姜蒜，他以为调料家里都有。问题不一定是没人努力，而是约定太模糊。
+              </p>
+              <p>
+                契约式协作会提前说明今天做什么菜、需要哪些食材、每种食材多少、最晚几点买回来、买不到鱼用什么替代、
+                谁负责确认最终菜单。放到软件工程里，契约式开发就是在正式实现之前，先把产品目标、架构边界、API 输入输出、
+                数据模型、权限规则、错误处理和验收标准写成明确约定。代码实现必须服从这些约定。
+              </p>
+              <p>
+                在 AI 辅助开发里，契约尤其重要。AI 很擅长补全细节，但边界不清时也容易根据常见模式自行补字段、补权限、
+                补流程，甚至把安全逻辑写得过于宽松。所以 Product Brief、Architecture Note、Data Model、API Contract、
+                Vertical Slice 和人工审核边界，本质上都在做同一件事：先建立契约，再让 AI 在契约内工作。
+              </p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>边界清晰：功能需求描述用户能力和业务规则，不应过早混入数据库字段名和展示层细节。</li>
+                <li>责任清晰：前端负责展示交互，后端负责业务规则，数据库负责持久化约束，AI 生成候选实现，人类审查高风险部分。</li>
+                <li>验证清晰：契约要能被检查，例如禁用账号会话失效、密钥不得明文展示、同一 Project 不能同时创建两个 active Run。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>
+                如果要做“上传 PDF 论文并补全元数据”，模糊需求可能只有一句“用户上传 PDF，系统自动识别论文信息”。
+                契约式开发会写清楚：用户必须登录；PDF 上传后先本地解析标题、作者、年份；不完整时再查外部数据源；
+                仍不完整时可调用 LLM 生成候选草稿；LLM 草稿不得直接覆盖正式元数据，必须由用户确认；
+                远程 PDF 访问必须使用鉴权或签名 URL；解析失败时保留原始文件并返回可理解的错误状态。
+              </p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>契约不是只有 API 文档。业务规则、权限边界、错误路径、数据约束、人工审核范围和验收标准也属于契约。</li>
+                <li>契约不是越细越好。好契约固定关键边界，但不把每个函数名、每个 UI 细节都提前锁死。</li>
+                <li>用了 AI 不是可以少写契约，而是更要写清楚契约。强模型会主动补全内容，边界不清就容易偏离真实需求。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>API 契约</td><td>规定系统之间如何通信，是契约式开发的重要落点。</td></tr>
+                <tr><td>Schema 分层</td><td>区分展示数据、接口数据和持久化数据，避免层次混乱。</td></tr>
+                <tr><td>AI 决策边界</td><td>说明哪些实现可交给 AI，哪些安全、权限、状态逻辑必须人工重点审核。</td></tr>
+                <tr><td>垂直切片开发</td><td>用一条完整功能链验证契约是否真的闭合。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>一个好的 API 契约应该包含哪些字段、错误码和权限说明？</li>
+                <li>如何判断某条需求是在描述用户能力，还是已经过早泄漏实现细节？</li>
+                <li>在 AI 辅助开发中，哪些模块必须提高人工审核强度？</li>
+              </ol>
+            </article>
+
+            <article class="lesson-detail" data-lesson-detail="disclosure">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 人机交互</p>
+                <h3>渐进披露</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>
+                想象你打开一份体检报告。如果第一页直接塞满几十项指标、医学缩写、参考区间和检查说明，很容易马上头大。
+                如果第一页先告诉你总体是否正常、哪几项需要关注、是否需要复查、想看细节可以展开每个指标，理解成本就会低很多。
+              </p>
+              <p>
+                渐进披露指的是：不要一次性把所有信息、功能和选项全部展示给用户，而是按照用户的注意力、任务阶段和理解深度，
+                逐步呈现更详细的内容。它不是隐藏信息，而是安排信息出场顺序。好的渐进披露像一位老师，先告诉你结论，
+                再慢慢展开推导、例子和拓展阅读。
+              </p>
+              <p>
+                学习日报里的“简读/精读”就是典型应用。简读适合快速回顾：今天讲了什么、主线是什么、结论是什么；
+                精读适合深入学习：完整讲解、例子、误区、关联概念和开放问题。同一份内容服务两类阅读状态，
+                用户不必在“太浅”和“太累”之间二选一。
+              </p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>降低认知负担：人的注意力有限，先展示主线和关键行动可以帮助用户建立心理地图。</li>
+                <li>匹配任务阶段：刚打开日报时用户需要判断是否值得读，决定深入后才需要完整解释和更多例子。</li>
+                <li>保护高级功能：基础功能直接可见，高级能力在需要时展开，既照顾新手也照顾熟练用户。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>
+                如果今天日报有契约式开发、渐进披露、状态机与并发锁三个概念，不使用渐进披露时，页面可能一口气展示几千字。
+                使用渐进披露后，可以先显示今日主线和三条一句话结论；每个概念先显示领域、难度和核心解释；
+                点击“精读”后再展开完整原理、例子、误区和开放问题。这样既不牺牲完整性，也不强迫每位读者每次都从头精读。
+              </p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>渐进披露不是把内容藏起来。隐藏会让用户找不到，渐进披露要让用户在合适时机找到。</li>
+                <li>折叠不是越多越清爽。常用信息应该直接可见，低频细节才适合收起。</li>
+                <li>摘要不能替代正文。简读负责帮助判断和回忆，精读负责完整学习。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>公共设计系统</td><td>统一简读、精读、卡片、表格等组件的视觉语言。</td></tr>
+                <tr><td>Manifest 驱动导航</td><td>决定用户如何进入不同日期和不同层级的学习内容。</td></tr>
+                <tr><td>多阶段自动化流水线</td><td>流水线生产内容，渐进披露组织内容的呈现层次。</td></tr>
+                <tr><td>信息架构</td><td>渐进披露依赖清晰的信息分类和层级关系。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>哪些信息应该默认展示，哪些信息应该放到精读或详情层？</li>
+                <li>怎样设计简读模式，才能既短小又不误导？</li>
+                <li>渐进披露和搜索、目录、标签系统应该如何配合？</li>
+              </ol>
+            </article>
+
+            <article class="lesson-detail" data-lesson-detail="state-lock">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 后端工程</p>
+                <h3>状态机与并发锁</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>
+                状态机可以理解成一张路线图。学生作业可能有未提交、已提交、批改中、需要修改、已完成这些状态。
+                它们之间不能随便跳：未提交可以变成已提交，但不应该直接变成已完成；批改中可以变成需要修改或已完成，
+                但不该突然回到未提交，除非有特殊规则。
+              </p>
+              <p>
+                状态机就是用明确的状态和迁移规则描述系统行为的方法。它回答：系统可能处于哪些状态；
+                每个状态下允许发生哪些动作；动作发生后状态会变成什么。AI Agent 状态机、Run 状态、取消、暂停、
+                恢复、重试和只读状态，都属于这个问题。
+              </p>
+              <p>
+                并发锁处理的是另一类风险：多个事情同时发生。两个用户几乎同时点击“开始构建”，或者两个自动化任务同时处理同一个 Project，
+                如果没有保护，就可能创建两个 active Run，两个任务都以为自己是唯一正在运行的任务，最后互相覆盖结果。
+                并发锁要求关键资源正在被一个操作使用时，其他操作必须等待、失败或进入队列。
+              </p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>状态机规定这个 Run 现在是什么状态，以及当前状态下能做什么动作。</li>
+                <li>并发锁保证同一时间不会有两个操作同时把状态改乱。</li>
+                <li>二者结合后，可以在进入 running 的瞬间获取 Project 级锁，抢不到就拒绝创建新的 Run。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一个 Project 自动构建知识库时，可以设计如下状态：</p>
+              <table class="mini-table">
+                <tr><th>状态</th><th>含义</th><th>允许动作</th></tr>
+                <tr><td><code>idle</code></td><td>当前没有运行任务</td><td>start</td></tr>
+                <tr><td><code>queued</code></td><td>已排队等待执行</td><td>cancel</td></tr>
+                <tr><td><code>running</code></td><td>正在执行</td><td>pause、cancel</td></tr>
+                <tr><td><code>paused</code></td><td>已暂停</td><td>resume、cancel</td></tr>
+                <tr><td><code>failed</code></td><td>执行失败</td><td>retry、archive</td></tr>
+                <tr><td><code>completed</code></td><td>执行完成</td><td>archive、start_new</td></tr>
+                <tr><td><code>cancelled</code></td><td>用户取消</td><td>retry、archive</td></tr>
+              </table>
+              <p>
+                用户点击 start 时，后端先尝试获取 Project 级锁。如果锁获取成功，并且当前没有 active Run，
+                才创建新 Run 并把状态改为 queued 或 running。锁获取失败时，系统返回“该 Project 已有任务正在启动或运行”，
+                而不是偷偷创建第二个任务。
+              </p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>前端按钮禁用不能解决并发。用户可能开两个窗口，请求也可能来自 API、脚本或重试机制。</li>
+                <li>状态字段不是随便加几个字符串就够。真正重要的是哪些状态能转到哪些状态，谁有权限触发，失败时如何处理。</li>
+                <li>锁不是单纯让系统变慢。没有锁可能导致数据损坏，工程上要缩小锁范围、缩短持有时间、明确失败策略。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>MVP 范围控制</td><td>首版可以减少复杂状态，但不能省略关键状态边界。</td></tr>
+                <tr><td>验收标准设计</td><td>并发保护和状态迁移应写成可测试的验收条件。</td></tr>
+                <tr><td>内容修改保护</td><td>防止多个 Agent 或流程同时覆盖人工内容。</td></tr>
+                <tr><td>多阶段自动化流水线</td><td>流水线运行时需要状态记录、失败恢复和重跑规则。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>状态机应该写在代码里、数据库里，还是文档和测试里都要有？</li>
+                <li>数据库事务、乐观锁、悲观锁分别适合哪些并发场景？</li>
+                <li>长任务系统如何设计暂停、恢复、取消和重试，才能既安全又好用？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">
+          契约式开发负责在开工前讲清楚系统边界，避免 AI 和人各自脑补；渐进披露负责把复杂知识按阅读深度组织起来，
+          让学习者先抓主线再看细节；状态机与并发锁负责在系统运行时守住秩序，避免长任务、重跑、多人操作和多 Agent 协作把数据改乱。
+        </p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <blockquote>
+          高质量 AI 协作不是放任模型自由生成，而是把边界、层次、状态和验收条件设计清楚。
+        </blockquote>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+          <li>哪些工程文档最适合作为 AI 辅助开发前的“契约入口”？</li>
+          <li>简读和精读之间应该如何分工，才能既不重复也不割裂？</li>
+          <li>长任务系统中，哪些状态迁移必须由后端强制校验，而不能交给前端约束？</li>
+        </ol>
+      </section>
+
+      <section class="footer-note">
+        <p>
+          数据来源：`prework/2026-05/2026-05-13/knowledge_explaination.md`。
+          本页复用站点公共样式 `../../style/main.css`，并可从
+          <a href="../../index.html?archive=1">学习归档</a> 返回历史日报入口。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll(".read-mode-toggle button");
+      const expandButtons = document.querySelectorAll(".lesson-expand");
+      const lessonCards = document.querySelectorAll(".lesson-card");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const detailArticles = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+      let activeLesson = null;
+
+      function setReadMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => {
+          const active = button.dataset.mode === mode;
+          button.classList.toggle("is-active", active);
+          button.setAttribute("aria-pressed", String(active));
+        });
+
+        if (mode === "deep" && !activeLesson) {
+          openLesson("contract", { scroll: false });
+        }
+
+        if (mode === "brief") {
+          closeLesson();
+        }
+      }
+
+      function openLesson(lesson, options = {}) {
+        activeLesson = lesson;
+        detailPanel.classList.add("is-open");
+        detailPanel.dataset.activeLesson = lesson;
+        lessonCards.forEach((card) => {
+          card.classList.toggle("is-active", card.id === lesson);
+        });
+        detailArticles.forEach((article) => {
+          article.classList.toggle("is-active", article.dataset.lessonDetail === lesson);
+        });
+        expandButtons.forEach((button) => {
+          const expanded = button.dataset.lesson === lesson;
+          button.setAttribute("aria-expanded", String(expanded));
+          button.textContent = expanded ? "正在精读" : "阅读精读";
+        });
+
+        if (options.scroll !== false) {
+          window.setTimeout(() => {
+            detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 140);
+        }
+      }
+
+      function closeLesson() {
+        activeLesson = null;
+        detailPanel.classList.remove("is-open");
+        lessonCards.forEach((card) => card.classList.remove("is-active"));
+        detailArticles.forEach((article) => article.classList.remove("is-active"));
+        expandButtons.forEach((button) => {
+          button.setAttribute("aria-expanded", "false");
+          button.textContent = "阅读精读";
+        });
+      }
+
+      modeButtons.forEach((button) => {
+        button.addEventListener("click", () => setReadMode(button.dataset.mode));
+      });
+
+      expandButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          if (activeLesson === button.dataset.lesson) {
+            setReadMode("brief");
+            return;
+          }
+          setReadMode("deep");
+          openLesson(button.dataset.lesson);
+        });
+      });
+
+      closeButtons.forEach((button) => {
+        button.addEventListener("click", () => setReadMode("brief"));
+      });
+
+      setReadMode("brief");
+    </script>
+  </body>
+</html>
