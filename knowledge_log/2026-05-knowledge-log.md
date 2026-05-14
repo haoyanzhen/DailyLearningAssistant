@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-05/2026-05-14-learning-report.html">2026-05-14</a>
+      </td>
+      <td>Manifest 驱动的发布契约</td>
+      <td>软件工程 / 静态站点发布 / 前端工程</td>
+      <td>★★★</td>
+      <td>用结构化清单维护页面入口，让静态资源不仅存在，而且能被主页发现和导航。</td>
+      <td>后续可继续讲“资源索引一致性”“静态站点构建”或“manifest schema 设计”。</td>
+    </tr>
+    <tr>
+      <td>发布前置校验</td>
+      <td>软件工程 / DevOps / 自动化发布</td>
+      <td>★★★★</td>
+      <td>在关键发布动作前检查网络、认证和远程能力，避免本地完成但线上未同步的半完成状态。</td>
+      <td>后续可继续讲“CI/CD 检查清单”“阻断式校验”或“发布状态机”。</td>
+    </tr>
+    <tr>
+      <td>Prompt 约束工程</td>
+      <td>大语言模型 / Agent 工作流工程 / 软件工程</td>
+      <td>★★★★</td>
+      <td>把输入、输出、操作边界和失败处理写进提示词，让 Agent 在清晰规则内执行任务。</td>
+      <td>后续可继续讲“Agent 行为契约”“工具权限边界”或“提示词规则优先级”。</td>
+    </tr>
+    <tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-05/2026-05-13-learning-report.html">2026-05-13</a>
       </td>
       <td>契约式开发</td>

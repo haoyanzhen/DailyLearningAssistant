@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-05-14 学习笔记日报</title>
+    <meta
+      name="description"
+      content="2026-05-14 学习日报：Manifest 驱动的发布契约、发布前置校验、Prompt 约束工程。"
+    />
+    <link rel="stylesheet" href="../../style/main.css?v=20260514" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-05-14</p>
+        <h1>让自动化发布真正走完最后一公里</h1>
+        <p>
+          今天的主线聚焦“可靠发布”：内容生成以后，还要被 manifest 正确索引，
+          在推送前完成网络与认证校验，并把这些规则写进 Agent prompt，形成可重复执行的工程边界。
+        </p>
+        <div class="meta-grid">
+          <div class="meta-item">
+            <span class="meta-label">今日主题</span>
+            <span class="meta-value">自动化发布可靠性</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">阅读模式</span>
+            <span class="meta-value">简读 / 精读</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">知识点</span>
+            <span class="meta-value">3 个并列讲解</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">学习路径</span>
+            <span class="meta-value">索引 → 校验 → 约束</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日知识点概览</h2>
+        <p class="lead">
+          自动化系统不能只会生成文件。一个可发布、可导航、可复盘的系统，需要同时维护资源索引、
+          远程发布条件和 Agent 行为规则。今天的三个概念正好把这条链路串起来。
+        </p>
+        <div class="stat-grid">
+          <article class="stat-card">
+            <strong>Manifest 驱动的发布契约</strong>
+            <span>用结构化清单把静态页面变成主页和归档都能发现的资源。</span>
+          </article>
+          <article class="stat-card">
+            <strong>发布前置校验</strong>
+            <span>在推送前确认网络、认证和远程写入能力，减少半完成发布。</span>
+          </article>
+          <article class="stat-card">
+            <strong>Prompt 约束工程</strong>
+            <span>把文件边界、校验步骤和失败报告写进 Agent 的长期行为规则。</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日知识主线</h2>
+        <p class="lead">
+          自动化发布不是“生成 HTML”这么简单。HTML 是内容本体，manifest 是入口契约，
+          GitHub 推送是远程可见性的前提，而 prompt 约束则让 Agent 每次都按同一套规则收尾。
+        </p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-toolbar panel">
+          <div>
+            <p class="eyebrow">Read Mode</p>
+            <h2 class="section-title">今日三节小课</h2>
+            <p class="lead">
+              简读用于快速建立地图；精读会在三张卡片下方展开完整文章。
+              切到精读后，卡片会变成目录，用来切换不同概念。
+            </p>
+          </div>
+          <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+            <button class="is-active" type="button" data-mode="brief">简读</button>
+            <button type="button" data-mode="deep">精读</button>
+          </div>
+        </div>
+
+        <div class="lesson-grid">
+          <article class="lesson-card" id="manifest-contract">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">静态站点发布</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>Manifest 驱动的发布契约</h3>
+              <p>Manifest-driven Publishing Contract</p>
+            </header>
+
+            <div class="lesson-brief">
+              <p class="lesson-summary">
+                页面文件存在不等于用户能找到它，manifest 要把资源登记成站点可读取的入口。
+              </p>
+              <h4>核心要点</h4>
+              <ul>
+                <li>manifest 是程序读取的资源目录，不只是给人看的列表。</li>
+                <li>发布要同时保证 HTML 存在、manifest 有记录、路径指向真实文件。</li>
+                <li>字段和路径格式一旦被主页依赖，就像 API 一样成为契约。</li>
+              </ul>
+              <h4>小例子</h4>
+              <p>
+                今天生成了 <code>2026-05-14-learning-report.html</code>，但 manifest 没更新时，首页仍可能停在昨天。
+              </p>
+              <div class="highlight">记忆句：文件上架只是开始，目录登记才让读者找得到。</div>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="manifest-contract" aria-expanded="false">阅读精读</button>
+          </article>
+
+          <article class="lesson-card" id="preflight">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">DevOps</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>发布前置校验</h3>
+              <p>Pre-release Validation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <p class="lesson-summary">
+                在关键发布动作前确认外部条件，避免本地完成却没有真正同步到线上。
+              </p>
+              <h4>核心要点</h4>
+              <ul>
+                <li>本地生成成功和远程发布成功是两种状态。</li>
+                <li>网络、SSH 认证、远程权限都属于发布链路的一部分。</li>
+                <li>失败时要诚实说明：已生成、已提交、未推送，还是完整发布。</li>
+              </ul>
+              <h4>小例子</h4>
+              <p>
+                <code>git push</code> 前先运行 SSH 探针，确认 GitHub 认证可用后再推送。
+              </p>
+              <div class="highlight">记忆句：发布前先看路通不通，别把本地完成误报成线上完成。</div>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="preflight" aria-expanded="false">阅读精读</button>
+          </article>
+
+          <article class="lesson-card" id="prompt-constraints">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">LLM Agent</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>Prompt 约束工程</h3>
+              <p>Prompt Constraint Engineering</p>
+            </header>
+
+            <div class="lesson-brief">
+              <p class="lesson-summary">
+                不只告诉 Agent 要产出什么，还要告诉它读取什么、能改什么、如何校验和如何报告失败。
+              </p>
+              <h4>核心要点</h4>
+              <ul>
+                <li>长期自动化 prompt 应沉淀输入、输出、边界、失败路径和验收标准。</li>
+                <li>过程约束和输出格式同样重要，很多事故发生在生成前后。</li>
+                <li>Prompt 约束能降风险，但仍要配合测试、日志、权限和人工审核。</li>
+              </ul>
+              <h4>小例子</h4>
+              <p>
+                把“推送前检测网络与 GitHub SSH 认证”写进发布 prompt，让后续每次运行默认执行。
+              </p>
+              <div class="highlight">记忆句：给 Agent 的 prompt，也是一份工程契约。</div>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="prompt-constraints" aria-expanded="false">阅读精读</button>
+          </article>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="manifest-contract">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>Manifest 驱动的发布契约</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>
+                可以把静态网站想象成图书馆。一本书放在书架上，只说明它物理存在；读者要找到它，还需要目录系统。
+                如果书已经上架，但目录没有登记，它在读者体验里就像消失了一样。静态网站里的
+                <code>manifest.json</code> 正是这样的目录。
+              </p>
+              <p>
+                今天的日报会生成到 <code>daily_report/2026-05/2026-05-14-learning-report.html</code>。
+                但主页还需要知道有哪些日报、最新日报是哪篇、归档入口应该指向哪里。把这些信息写进
+                <code>daily_report/manifest.json</code>，页面才会从孤立文件变成站点导航能发现的资源。
+              </p>
+              <p>
+                所谓 Manifest 驱动的发布契约，就是系统约定一个 manifest 作为资源索引：发布流程不仅生成资源，
+                还要更新清单；访问方则按清单寻找、展示和导航资源。这里的“驱动”表示它是程序依赖的数据源，
+                “契约”表示字段、路径、排序和语义必须稳定。
+              </p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>资源存在不等于资源可达。HTML 存在只是生成成功，manifest 记录才代表导航可发现。</li>
+                <li>索引文件把离散页面组织成系统。主页可以用它生成归档、默认打开最新日报、展示日期入口。</li>
+                <li>契约让自动化阶段可以衔接。生成 Agent、发布 Agent 和主页脚本依靠稳定字段交接。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设今天生成了日报文件，却没有更新 manifest，首页默认入口可能仍然指向 2026-05-13。</p>
+              <p>
+                另一种失败是 manifest 已经写入 2026-05-14，但路径拼错成
+                <code>2026-05-14-report.html</code>。这时用户能看到入口，却会点到不存在的文件。
+                所以可靠发布必须检查文件存在、日期记录存在、路径真实、主页读取后能展示正确入口。
+              </p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为 manifest 只是人工备忘录。真正的 manifest 常常是给程序读取的接口。</li>
+                <li>误以为页面生成成功就等于发布成功。索引缺失或路径错误都会让发布不可达。</li>
+                <li>误以为 manifest 结构可以随意改。被主页依赖后，它就要像 API 契约一样谨慎维护。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>静态资源索引</td><td>manifest 是把一组静态页面暴露给程序的索引形式。</td></tr>
+                <tr><td>状态可追溯性</td><td>清单能帮助确认某天日报是否进入站点入口。</td></tr>
+                <tr><td>多阶段自动化流水线</td><td>不同阶段用稳定文件契约交接内容和入口。</td></tr>
+                <tr><td>契约式开发</td><td>manifest 的字段和语义就是生成方与消费方之间的契约。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>日报站点的 manifest 至少需要哪些字段，才能支持归档、默认展示和搜索？</li>
+                <li>当 manifest 指向的文件不存在时，发布流程应该中断、警告，还是自动修复？</li>
+                <li>如果日报数量达到几千篇，manifest 是否还适合一次性加载？</li>
+              </ol>
+            </article>
+
+            <article class="lesson-detail" data-lesson-detail="preflight">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · DevOps</p>
+                <h3>发布前置校验</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>
+                发布可以用寄快递来理解。礼物包装好了，只相当于本地文件生成；真正寄出去前，还要确认地址正确、
+                快递站可用、运费支付、包裹能被揽收。否则只能说“我准备好了”，不能说“对方会收到”。
+              </p>
+              <p>
+                对 GitHub Pages 静态网站来说，完整链路包括生成 HTML、更新 manifest、提交 Git、推送到 GitHub，
+                再由 GitHub Pages 提供访问。前两步发生在本地，后几步依赖网络、SSH 认证和远程仓库权限。
+                其中任何一环失败，线上用户都可能看不到新日报。
+              </p>
+              <p>
+                发布前置校验就是在关键发布动作前，先检查那些可能导致发布失败的外部条件。它的目标不是制造仪式感，
+                而是把失败提前、把状态说清楚，并避免自动化任务把“本地已完成”误报为“线上已发布”。
+              </p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>把失败提前。SSH 认证不可用时，越早发现越好，报告也更清楚。</li>
+                <li>区分本地完成和远程完成。GitHub Pages 的线上可见性依赖远程仓库收到新提交。</li>
+                <li>让自动化有诚实终态。任务要说明自己是已生成、已提交未推送，还是完整同步。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一个发布任务可以在推送前运行：</p>
+              <pre><code>ssh -o BatchMode=yes -o ConnectTimeout=10 -T -p 443 git@ssh.github.com
+git remote -v
+git status --short</code></pre>
+              <p>
+                这些检查分别回答：当前机器能否通过 SSH 连接 GitHub，推送目标是否是预期仓库，
+                本地是否还有需要纳入提交的改动。如果 SSH 认证失败，任务应明确报告远程发布未完成。
+              </p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为前置校验拖慢发布。几秒钟检查通常比一次失败发布便宜得多。</li>
+                <li>误以为等 <code>git push</code> 失败再报错就够。提前探测能给出更可操作的原因。</li>
+                <li>误以为校验越多越好。好的校验应该针对关键风险，不制造低价值噪声。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>GitHub Pages 发布</td><td>远程推送成功是静态页面线上可见的重要前提。</td></tr>
+                <tr><td>半完成状态</td><td>前置校验减少或清楚标记本地完成但线上未更新的状态。</td></tr>
+                <tr><td>CI/CD</td><td>持续部署流程大量依赖发布前检查和阻断规则。</td></tr>
+                <tr><td>状态可追溯性</td><td>校验结果写入日志后，失败原因更容易复盘。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>发布脚本应该如何区分警告和阻断错误？</li>
+                <li>哪些前置校验适合本地执行，哪些更适合交给 CI 执行？</li>
+                <li>网络偶发失败时，自动化任务应该立即失败、重试，还是等待人工确认？</li>
+              </ol>
+            </article>
+
+            <article class="lesson-detail" data-lesson-detail="prompt-constraints">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · LLM Agent</p>
+                <h3>Prompt 约束工程</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>
+                普通提示词工程常常强调“让模型完成任务”，例如要求它写一篇结构清晰的学习日报。
+                Prompt 约束工程更进一步：它要求模型在正确边界内完成任务，明确读取哪些文件、能修改哪些文件、
+                生成后如何验证、失败时如何报告。
+              </p>
+              <p>
+                LLM 很擅长根据上下文补全下一步，但它不天然知道项目规则。你说“发布日报”，它可能理解成生成 HTML；
+                你说“可靠发布日报”，它仍可能不知道还要更新 manifest、检查首页导航、提交 Git、验证推送。
+                因此，关键工程经验必须写进 prompt，变成长期可复用的行为约束。
+              </p>
+              <p>
+                今天材料中的例子是：发布 prompt 增加了 <code>git push</code> 前的网络与 GitHub SSH 认证检测要求。
+                这把一次人工经验沉淀成以后每次自动化都要执行的规则，让 Agent 不再依赖临场发挥。
+              </p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>把隐性经验显性化。人类知道的发布习惯，要写成 Agent 可见的规则。</li>
+                <li>把目标拆成可检查步骤。发布成功要拆成读取、生成、更新索引、验证、提交、推送和报告。</li>
+                <li>给失败路径命名。输入缺失、认证失败、远程不可达、文件冲突都应有明确处理方式。</li>
+                <li>限制操作边界。Prompt 要说明哪些文件可改、哪些不能覆盖、哪些状态不能假装成功。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一句“生成今天的学习日报并发布”太模糊，更可靠的 prompt 会写成：</p>
+              <pre><code>1. 读取 prework/YYYY-MM/YYYY-MM-DD/knowledge_explaination.md。
+2. 生成 daily_report/YYYY-MM/YYYY-MM-DD-learning-report.html。
+3. 更新 daily_report/manifest.json，并确保最新日报指向当天文件。
+4. 不要覆盖 prework 中的输入文件。
+5. git push 前先检测网络与 GitHub SSH 认证。
+6. 如果 push 失败，说明本地文件、提交和远程同步状态。</code></pre>
+              <p>
+                这个版本的价值不在于更长，而在于把关键边界变成 Agent 可以执行和自检的步骤。
+              </p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为 prompt 越长越可靠。长而混乱、规则互相矛盾的 prompt 反而会降低稳定性。</li>
+                <li>误以为写了规则就一定不会犯错。Prompt 约束不能替代测试、日志、权限控制和人工审核。</li>
+                <li>误以为只要约束输出格式。很多自动化失败发生在读取错误输入、覆盖文件或跳过验证时。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>提示词工程</td><td>Prompt 约束工程是提示词工程在自动化安全场景中的深化。</td></tr>
+                <tr><td>多 Agent 职责分工</td><td>每个 Agent 的 prompt 都应该规定自己的职责边界。</td></tr>
+                <tr><td>发布前置校验</td><td>可以通过 prompt 固化为每次发布前必须执行的步骤。</td></tr>
+                <tr><td>契约式开发</td><td>Prompt 约束就是人和 Agent 之间的行为契约。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何判断一条规则应该写进长期自动化 prompt，还是只在单次任务中临时说明？</li>
+                <li>Agent 的行为边界哪些适合靠 prompt 约束，哪些必须靠权限系统或工具层限制？</li>
+                <li>当 prompt 规则之间发生冲突时，应该如何设计优先级？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">
+          Manifest 驱动的发布契约解决“内容如何被站点发现”；发布前置校验解决“内容能否真正同步到远程”；
+          Prompt 约束工程解决“Agent 为什么会稳定执行这些步骤”。三者合起来，就是一套可导航、可同步、
+          可复盘的自动化发布闭环。
+        </p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <blockquote>
+          Manifest 定义发布入口，前置校验保障发布链路，prompt 约束让 Agent 每次都按可靠流程工作。
+        </blockquote>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+          <li>日报站点的 manifest 未来是否需要支持搜索、标签和分页？</li>
+          <li>自动化发布失败时，怎样把“本地状态”和“远程状态”报告得最清楚？</li>
+          <li>哪些发布经验值得沉淀为 prompt 规则，哪些更应该放进脚本或权限系统？</li>
+        </ol>
+      </section>
+
+      <section class="footer-note">
+        <p>
+          数据来源：`prework/2026-05/2026-05-14/knowledge_explaination.md`。
+          本页复用站点公共样式 `../../style/main.css`，并可从
+          <a href="../../index.html?archive=1">学习归档</a> 返回历史日报入口。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll(".read-mode-toggle button");
+      const expandButtons = document.querySelectorAll(".lesson-expand");
+      const lessonCards = document.querySelectorAll(".lesson-card");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const detailArticles = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+      let activeLesson = null;
+
+      function setReadMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => {
+          const active = button.dataset.mode === mode;
+          button.classList.toggle("is-active", active);
+          button.setAttribute("aria-pressed", String(active));
+        });
+
+        if (mode === "deep" && !activeLesson) {
+          openLesson("manifest-contract", { scroll: false });
+        }
+
+        if (mode === "brief") {
+          closeLesson();
+        }
+      }
+
+      function openLesson(lesson, options = {}) {
+        activeLesson = lesson;
+        detailPanel.classList.add("is-open");
+        detailPanel.dataset.activeLesson = lesson;
+        lessonCards.forEach((card) => {
+          card.classList.toggle("is-active", card.id === lesson);
+        });
+        detailArticles.forEach((article) => {
+          article.classList.toggle("is-active", article.dataset.lessonDetail === lesson);
+        });
+        expandButtons.forEach((button) => {
+          const expanded = button.dataset.lesson === lesson;
+          button.setAttribute("aria-expanded", String(expanded));
+          button.textContent = expanded ? "正在精读" : "阅读精读";
+        });
+
+        if (options.scroll !== false) {
+          window.setTimeout(() => {
+            detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 140);
+        }
+      }
+
+      function closeLesson() {
+        activeLesson = null;
+        detailPanel.classList.remove("is-open");
+        lessonCards.forEach((card) => card.classList.remove("is-active"));
+        detailArticles.forEach((article) => article.classList.remove("is-active"));
+        expandButtons.forEach((button) => {
+          button.setAttribute("aria-expanded", "false");
+          button.textContent = "阅读精读";
+        });
+      }
+
+      modeButtons.forEach((button) => {
+        button.addEventListener("click", () => setReadMode(button.dataset.mode));
+      });
+
+      expandButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          if (activeLesson === button.dataset.lesson) {
+            setReadMode("brief");
+            return;
+          }
+          setReadMode("deep");
+          openLesson(button.dataset.lesson);
+        });
+      });
+
+      closeButtons.forEach((button) => {
+        button.addEventListener("click", () => setReadMode("brief"));
+      });
+
+      setReadMode("brief");
+    </script>
+  </body>
+</html>
