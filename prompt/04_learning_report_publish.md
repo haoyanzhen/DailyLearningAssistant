@@ -39,7 +39,21 @@
    - 保证最新月份排在 `months` 列表最前面。
 4. 确认 `index.html` 可以通过 manifest 默认跳转到最新 HTML 日报，在 `index.html?archive=1` 中显示日报归档入口，并在 `index.html?knowledge=1` 中按年份折叠展示月度教学记录入口。
 5. 将缓存区文件自动提交为新的 git commit 并与 github 进行同步。
-   - 执行 `git push` 前必须先检测网络与 GitHub SSH 认证是否可用，例如运行 `ssh -o BatchMode=yes -o ConnectTimeout=10 -T -p 443 git@ssh.github.com`；如果检测失败，应先尝试刷新/恢复当前任务的网络权限或运行环境，再重试检测和 `git push`，不得在未确认网络可用时直接结束同步步骤。
+   - 自动化运行环境必须具备可用的网络与 DNS 出口；至少需要能解析并访问 `github.com`、`ssh.github.com`，并允许 TCP 443。若运行环境本身未授权网络访问，应先恢复/切换到具备网络权限的 runner，再执行远程同步，不要把 runner 网络限制误判为 Git 或 SSH key 问题。
+   - 执行 `git push` 前必须分段检测网络、GitHub SSH 认证和远端可读性，按顺序运行：
+
+     ```bash
+     dscacheutil -q host -a name ssh.github.com
+     ssh -o BatchMode=yes -o ConnectTimeout=10 -T -p 443 git@ssh.github.com
+     git ls-remote origin refs/heads/main
+     ```
+
+   - 如果预检失败，应按失败阶段分类报告并处理：
+     - DNS/网络不可达：例如 `ssh.github.com` 无法解析，说明当前自动化 runner 没有可用网络/DNS 出口；应尝试刷新网络权限、切换运行环境或等待网络恢复后重试。
+     - SSH 认证失败：说明网络可达但 GitHub 身份认证不可用；应检查 `~/.ssh/config`、`~/.ssh/id_ed25519`、ssh-agent/Keychain 和 GitHub 公钥配置。
+     - 远端读取失败：说明 SSH 可能可用但仓库远端、权限或 GitHub 服务状态异常；应检查 `git remote -v` 和仓库访问权限。
+   - 对 DNS/网络类失败至少进行 2-3 次延迟重试，例如等待 10 秒、30 秒、60 秒后重新执行分段预检；只有全部预检通过后才执行 `git push`。
+   - `git push` 后必须确认同步结果：若返回 `Everything up-to-date` 或远端 `main` 已指向本地提交，可视为同步完成；若 push 被拒绝或失败，必须明确说明本地 commit、`origin/main` 和远端同步状态。
    - 提交文件时应至少包含工作区所有既有变更。
 
 学习日报应包含：
