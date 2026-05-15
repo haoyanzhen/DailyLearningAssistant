@@ -1,0 +1,545 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-05-15 学习笔记日报</title>
+    <meta
+      name="description"
+      content="2026-05-15 学习日报：Transformer 前向推理流程、上下文管理、可测试需求。"
+    />
+    <link rel="stylesheet" href="../../style/main.css?v=20260515" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-05-15</p>
+        <h1>把不确定的问题，变成可计算、可管理、可验证的流程</h1>
+        <p>
+          今天从 LLM 的一次前向生成出发，连接到 Agent 如何管理上下文，
+          再落到软件需求怎样写成可验收条件。主线很清楚：复杂系统需要把模糊目标拆成稳定步骤。
+        </p>
+        <div class="meta-grid">
+          <div class="meta-item">
+            <span class="meta-label">今日主题</span>
+            <span class="meta-value">可靠 AI 工作流</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">阅读模式</span>
+            <span class="meta-value">简读 / 精读</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">知识点</span>
+            <span class="meta-value">3 个并列讲解</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">学习路径</span>
+            <span class="meta-value">计算 → 上下文 → 验收</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日知识点概览</h2>
+        <p class="lead">
+          今天的三个概念分别回答三个层次的问题：模型怎样把文字变成概率输出，
+          Agent 怎样让输入材料保持聚焦，工程需求怎样从一句愿望变成可以测试的验收条件。
+        </p>
+        <div class="stat-grid">
+          <article class="stat-card">
+            <strong>Transformer 前向推理流程</strong>
+            <span>从文本、分词、嵌入、注意力到词表概率，理解 LLM 一次生成的计算链路。</span>
+          </article>
+          <article class="stat-card">
+            <strong>上下文管理</strong>
+            <span>控制 Agent 看到什么、先看什么、看多少，让有限注意力服务当前任务。</span>
+          </article>
+          <article class="stat-card">
+            <strong>可测试需求</strong>
+            <span>把“要做什么”写成触发条件、边界、不变量和验收方式都清楚的工程条款。</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日知识主线</h2>
+        <p class="lead">
+          LLM 的输出来自可拆解的前向推理流水线；Agent 自动化要通过上下文管理提高输入质量；
+          软件工程中的需求则要写成可测试、可验收、可覆盖边界的条件。可靠不是让模型多想想，
+          而是让输入、过程和验收都变得清晰可控。
+        </p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-toolbar panel">
+          <div>
+            <p class="eyebrow">Read Mode</p>
+            <h2 class="section-title">今日三节小课</h2>
+            <p class="lead">
+              简读用于快速建立地图；精读会在三张卡片下方展开完整文章。
+              切到精读后，卡片会变成目录，用来切换不同概念。
+            </p>
+          </div>
+          <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+            <button class="is-active" type="button" data-mode="brief">简读</button>
+            <button type="button" data-mode="deep">精读</button>
+          </div>
+        </div>
+
+        <div class="lesson-grid">
+          <article class="lesson-card" id="transformer-forward">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">大语言模型</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>Transformer 前向推理流程</h3>
+              <p>Transformer Forward Inference Pipeline</p>
+            </header>
+
+            <div class="lesson-brief">
+              <p class="lesson-summary">
+                LLM 看起来在说话，底层是在反复把上下文转成向量计算，并预测下一个 token 的概率。
+              </p>
+              <h4>核心要点</h4>
+              <ul>
+                <li>文字先经过分词，变成模型词表中的 token id。</li>
+                <li>Embedding 和位置编码把 token 变成带顺序感的向量表示。</li>
+                <li>Transformer Block 整合上下文，LM Head 输出词表上的候选分数。</li>
+              </ul>
+              <h4>小例子</h4>
+              <p>
+                输入“Transformer 的核心机制是”，模型会让“注意力”“Self”“多头”等候选获得不同概率。
+              </p>
+              <div class="highlight">记忆句：生成不是一次写完，而是一轮轮预测下一个 token。</div>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="transformer-forward" aria-expanded="false">阅读精读</button>
+          </article>
+
+          <article class="lesson-card" id="context-management">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">Agent 工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>上下文管理</h3>
+              <p>Context Management</p>
+            </header>
+
+            <div class="lesson-brief">
+              <p class="lesson-summary">
+                给 Agent 的材料不是越多越好，关键是让它在当前任务中看到正确、相关、有优先级的信息。
+              </p>
+              <h4>核心要点</h4>
+              <ul>
+                <li>容量管理决定哪些材料值得进入有限上下文窗口。</li>
+                <li>相关性、顺序和结构会影响模型怎样使用信息。</li>
+                <li>复杂任务应分阶段交接稳定产物，减少噪声和过期结论。</li>
+              </ul>
+              <h4>小例子</h4>
+              <p>
+                生成知识讲解时，提供今天的概念文件和月度记录，比塞入所有历史日报更稳定。
+              </p>
+              <div class="highlight">记忆句：好上下文不是更多材料，而是当前任务最该看的材料。</div>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="context-management" aria-expanded="false">阅读精读</button>
+          </article>
+
+          <article class="lesson-card" id="testable-requirements">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>可测试需求</h3>
+              <p>Testable Requirements</p>
+            </header>
+
+            <div class="lesson-brief">
+              <p class="lesson-summary">
+                好需求不只说明目标，还要说明什么条件下发生、结果是什么、边界怎样处理、如何验收。
+              </p>
+              <h4>核心要点</h4>
+              <ul>
+                <li>触发条件、预期结果和边界条件要能被观察和复现。</li>
+                <li>不变量要写清楚，避免高风险操作破坏共享数据。</li>
+                <li>验收方式可以直接转成测试用例、检查清单和审阅标准。</li>
+              </ul>
+              <h4>小例子</h4>
+              <p>
+                “安全删除项目”太模糊；写清软删除、二次确认、资产范围、幂等和失败重试才可测试。
+              </p>
+              <div class="highlight">记忆句：可测试需求，是给抽象形容词装上尺子。</div>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="testable-requirements" aria-expanded="false">阅读精读</button>
+          </article>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="transformer-forward">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 大语言模型</p>
+                <h3>Transformer 前向推理流程</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>
+                可以把大语言模型想象成一条精密的翻译流水线。它翻译的不是中文到英文，
+                而是把人能读懂的文字一步步翻译成机器能计算的数字，再把计算结果翻译回下一个最可能出现的 token。
+              </p>
+              <p>
+                假设输入“人工智能正在改变”，模型并不是一次性理解整句话然后写完整篇文章。
+                更准确地说，它要回答一个局部问题：在已有上下文后面，下一个 token 可能是什么。
+              </p>
+              <p>
+                这条流程通常从文本输入开始。神经网络不能直接处理文字，所以分词器先把文本切成 token。
+                BPE 分词会从小单位出发，不断合并语料中常见的相邻片段，形成既能表示常见词、
+                又能覆盖陌生词的词表。每个 token 对应一个整数 id，但 id 本身没有语义，
+                Embedding 层会把这些 id 查表成稠密向量，像是在高维语义空间中给 token 找到坐标。
+              </p>
+              <p>
+                接着模型加入位置信息。注意力机制擅长判断谁和谁相关，但它不天然知道序列顺序。
+                位置编码就像给每个 token 的向量加上座位号，让模型知道第一个、第二个和最后一个位置并不相同。
+                然后，多层 Transformer Block 会通过 Self-Attention 和前馈网络反复加工这些向量。
+                注意力让每个 token 根据上下文重新组织信息，前馈网络则在每个位置上继续做非线性变换。
+              </p>
+              <p>
+                最后一层隐藏向量会进入 LM Head。假设词表有十万个 token，LM Head 就会给十万个候选 token
+                各自打分，这些分数叫 logits。logits 再通过 softmax 或采样策略变成概率分布。
+                选中的 token 会接回原上下文，进入下一轮推理，这就是自回归生成。
+              </p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>文字先被转换成 token id，让离散文本进入模型词表。</li>
+                <li>Embedding 把 token id 变成可计算向量，位置编码补上顺序信息。</li>
+                <li>Transformer Block 通过注意力和前馈网络整合上下文语义。</li>
+                <li>LM Head 把隐藏状态映射为词表分数，再形成下一个 token 的概率分布。</li>
+              </ol>
+              <pre><code>文字 -> token id -> 向量 -> 带位置的向量 -> 上下文加工 -> 词表分数 -> 下一个 token 概率</code></pre>
+
+              <h4>具体例子</h4>
+              <p>
+                输入“今天我们学习 Transformer，它的核心机制是”，模型会先分词、嵌入、加入位置，
+                再经过多层 Transformer Block。最后，LM Head 可能让“注意力”“Self”“多头”“编码器”等候选获得较高分数。
+              </p>
+              <table class="mini-table">
+                <tr><th>候选 token</th><th>可能原因</th></tr>
+                <tr><td>注意力</td><td>前文出现 Transformer，常见搭配是核心机制是注意力。</td></tr>
+                <tr><td>Self</td><td>英文材料中常接 Self-Attention。</td></tr>
+                <tr><td>多头</td><td>Transformer 常见术语包含多头注意力。</td></tr>
+                <tr><td>编码器</td><td>如果上下文偏原始论文介绍，可能讨论编码器/解码器结构。</td></tr>
+              </table>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为模型一次性生成整篇文章。实际生成通常是一轮轮预测 token。</li>
+                <li>误以为 token 等于汉字或英文单词。token 可能是字、词、子词、标点或字节片段。</li>
+                <li>误以为 Embedding 的每个维度都能直接解释成人类标签。它更像统计关系压缩出的坐标。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>BPE 分词</td><td>前向流程入口，把文字转成 token id。</td></tr>
+                <tr><td>Token Embedding</td><td>把离散 id 变成神经网络可计算的向量。</td></tr>
+                <tr><td>位置编码与 RoPE</td><td>给序列加入顺序信息，使注意力利用位置关系。</td></tr>
+                <tr><td>Self-Attention</td><td>让 token 根据上下文重新组织表示。</td></tr>
+                <tr><td>LM Head</td><td>把隐藏状态映射为整个词表上的候选分数。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>为什么 Self-Attention 可以并行处理训练序列，而自回归生成仍要一步步生成？</li>
+                <li>RoPE 为什么更适合表达相对位置关系？</li>
+                <li>温度、top-k、top-p 怎样改变生成文本的稳定性和创造性？</li>
+              </ol>
+            </article>
+
+            <article class="lesson-detail" data-lesson-detail="context-management">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · Agent 工程</p>
+                <h3>上下文管理</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>
+                想象你正在准备考试。老师给你一本重点讲义，你可能学得很快；
+                如果老师把整个图书馆都搬到桌上，并说答案都在里面，你反而会失去方向。
+                Agent 也是这样。能处理长上下文，不等于把所有材料都塞进去就会更好。
+              </p>
+              <p>
+                上下文越长，越可能混入旧信息、无关细节、相互冲突的要求和过期结论。
+                模型在生成时会根据上下文预测后续内容，如果重要信息被埋得太深，或者噪声材料太多，
+                输出就可能跑偏。上下文管理就是控制输入材料：哪些要给，哪些暂时不给；先给什么，
+                后给什么；哪些是硬约束，哪些只是参考；多 Agent 协作时，每个 Agent 应该看到怎样的材料。
+              </p>
+              <p>
+                它的目标不是让模型知道一切，而是让模型在当前任务中知道足够正确、足够相关、
+                足够有优先级的信息。今天材料里，上下文管理同时出现在 Agent 协作和 LLM 架构教学中：
+                前者关注怎样给 Agent 聚焦输入，后者关注模型怎样在上下文窗口中通过注意力使用信息。
+              </p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>容量管理：模型上下文窗口有限，要决定当前任务最需要哪些片段。</li>
+                <li>相关性管理：直接相关材料优先进入上下文，背景材料可以摘要化，无关材料应剔除。</li>
+                <li>顺序与结构管理：清楚分区任务目标、硬约束、输入材料和输出格式。</li>
+                <li>阶段管理：复杂任务拆成多个阶段，每个阶段接收上一个阶段的稳定产物。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>任务是让 Agent 根据当天材料生成知识讲解。</p>
+              <p>
+                差的做法是把所有仓库文件、所有日报、所有旧 prompt、所有历史聊天一次性塞给 Agent，
+                然后只说“写今天的知识讲解”。它可能不知道哪些文件才是今天输入，可能重复讲昨天的概念，
+                也可能引用过期信息。
+              </p>
+              <p>
+                好的做法是提供今天的 <code>concept_relevance.md</code>、当月 <code>knowledge_log</code>、
+                当前任务 prompt，以及必要时一篇风格参考。这样 Agent 的注意力会集中在今日概念、
+                历史避重和指定格式三个关键点上。
+              </p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为上下文越长，结果越好。长上下文同时提供证据和噪声。</li>
+                <li>误以为只要写了约束，模型一定会遵守。重要约束应该清晰、靠前、结构化。</li>
+                <li>误以为上下文管理只是 prompt 技巧。它还涉及文件组织、阶段产物、检索策略和失败恢复。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>上下文窗口</td><td>上下文管理首先受模型可处理长度限制影响。</td></tr>
+                <tr><td>注意力机制</td><td>注意力决定模型如何分配关注，上下文管理决定材料如何进入这个范围。</td></tr>
+                <tr><td>渐进披露</td><td>把复杂信息分阶段给出，是上下文管理的重要策略。</td></tr>
+                <tr><td>多 Agent 串行审阅</td><td>每个 Agent 使用聚焦上下文，可以分别检查不同风险。</td></tr>
+                <tr><td>Prompt Engineering 中的上下文裁剪</td><td>裁剪是上下文管理在 prompt 层面的具体操作。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>怎样判断一段材料应该原文进入上下文，还是摘要后进入上下文？</li>
+                <li>多 Agent 审阅中，每个 Agent 应该共享完整历史，还是只共享最终结论？</li>
+                <li>检索增强生成怎样帮助系统动态选择相关上下文？</li>
+              </ol>
+            </article>
+
+            <article class="lesson-detail" data-lesson-detail="testable-requirements">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>可测试需求</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>
+                “系统应该安全地删除 Project”听起来正确，但几乎没法测试。什么叫安全？
+                删哪些？谁能删？失败怎么办？相比之下，如果需求写明先软删除、项目所有者二次确认后才清理私有资产、
+                不得删除全局 papers 记录、不得影响其他项目、重复触发应保持结果一致，开发和测试就能据此行动。
+              </p>
+              <p>
+                可测试需求的核心思想是：需求不仅要表达目标，还要表达可观察、可判断、可复现的验收条件。
+                它要让开发、测试、产品和 AI 编码 Agent 都能回答同一个问题：做到什么程度才算完成。
+              </p>
+              <p>
+                一个需求要变得可测试，通常需要补齐触发条件、预期结果、边界条件、不变量和验收方式。
+                触发条件说明什么时候发生、谁触发、前置状态是什么；预期结果说明系统应该产生哪些变化；
+                边界条件处理重复请求、权限不足、部分资产不存在、网络失败等情况；不变量说明绝对不能破坏的东西；
+                验收方式则把需求落到单元测试、集成测试、权限测试、幂等测试、日志检查或人工清单上。
+              </p>
+              <p>
+                今天材料中的发布前置校验、失败分类与重试策略、软删除与二次确认、幂等操作，
+                都属于可测试需求的好朋友。它们共同把一句宽泛的“系统要可靠”，拆成可执行、可观察、
+                可验证的工程条款。
+              </p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>把模糊形容词改写成可观察行为，例如快、稳定、安全分别对应时间、状态和边界。</li>
+                <li>把成功路径和失败路径同时写清，避免实现只覆盖最顺的情况。</li>
+                <li>把不可破坏的不变量显式列出，让高风险操作有清晰保护范围。</li>
+                <li>把验收方式前置到需求阶段，让需求直接服务测试和审阅。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>Project 私人资产清理可以写成一组可验证要求：</p>
+              <table class="mini-table">
+                <tr><th>测试点</th><th>可验证要求</th></tr>
+                <tr><td>权限</td><td>只有 Project 所有者或授权管理员可以发起清理。</td></tr>
+                <tr><td>资产范围</td><td>清理 PDF、解析文本、向量索引、图谱文件、运行历史和临时文件。</td></tr>
+                <tr><td>保护范围</td><td>不删除全局 papers 身份记录，不影响其他 Project 的派生资产。</td></tr>
+                <tr><td>二次确认</td><td>用户确认影响范围后才执行不可逆清理。</td></tr>
+                <tr><td>软删除</td><td>默认先把 Project 标记为软删除，支持恢复窗口或审计。</td></tr>
+                <tr><td>幂等</td><td>同一清理请求重复执行，不应重复报错或误删额外数据。</td></tr>
+                <tr><td>部分失败</td><td>某个资产删除失败时记录错误，并允许安全重试。</td></tr>
+              </table>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为需求写得越短越高级。简洁很好，但不能牺牲可验证性。</li>
+                <li>误以为测试是测试工程师后面再想的事。可测试性应该在需求阶段就设计进去。</li>
+                <li>误以为只测试成功路径就够。复杂系统的风险常在权限、网络、重复提交和部分失败中。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>失败分类与重试策略</td><td>可测试需求要说明不同失败类型如何处理。</td></tr>
+                <tr><td>幂等操作</td><td>重复执行是否安全，是后台流程需求的重要验收点。</td></tr>
+                <tr><td>软删除与二次确认</td><td>把高风险操作拆成可恢复、可确认的阶段。</td></tr>
+                <tr><td>全局实体与私有派生资产分离</td><td>为清理需求提供数据边界和不变量。</td></tr>
+                <tr><td>发布前置校验</td><td>把发布成功拆成多个可测试前置条件。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>一个需求文档最少应包含哪些字段，才能让 AI 编码 Agent 稳定实现？</li>
+                <li>对于“用户体验要好”这类软目标，怎样写成可测试需求？</li>
+                <li>幂等性应该由接口层保证，还是由任务队列和数据库共同保证？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">
+          Transformer 前向推理流程说明模型输出如何由输入计算而来；上下文管理说明既然输入会影响输出，
+          Agent 就要认真选择和组织材料；可测试需求则说明工程目标不能停留在愿望，而要能被检查和验收。
+          三者串起来，就是“模型如何计算 → Agent 如何接收上下文 → 工程目标如何被验证”。
+        </p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <blockquote>
+          可靠的 AI 工作流不是让模型多想想，而是让输入、过程和验收都变得清晰可控。
+        </blockquote>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+          <li>怎样把长上下文任务拆成多个稳定、可复核的 Agent 阶段？</li>
+          <li>哪些需求边界最适合写进 prompt，哪些必须落实到测试和权限系统？</li>
+          <li>理解 Transformer 前向流程后，应该如何更有意识地设计输入材料？</li>
+        </ol>
+      </section>
+
+      <section class="footer-note">
+        <p>
+          数据来源：`prework/2026-05/2026-05-15/knowledge_explaination.md`。
+          本页复用站点公共样式 `../../style/main.css`，并可从
+          <a href="../../index.html?archive=1">学习归档</a> 返回历史日报入口。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll(".read-mode-toggle button");
+      const expandButtons = document.querySelectorAll(".lesson-expand");
+      const lessonCards = document.querySelectorAll(".lesson-card");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const detailArticles = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+      let activeLesson = null;
+
+      function setReadMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => {
+          const active = button.dataset.mode === mode;
+          button.classList.toggle("is-active", active);
+          button.setAttribute("aria-pressed", String(active));
+        });
+
+        if (mode === "deep" && !activeLesson) {
+          openLesson("transformer-forward", { scroll: false });
+        }
+
+        if (mode === "brief") {
+          closeLesson();
+        }
+      }
+
+      function openLesson(lesson, options = {}) {
+        activeLesson = lesson;
+        detailPanel.classList.add("is-open");
+        detailPanel.dataset.activeLesson = lesson;
+        lessonCards.forEach((card) => {
+          card.classList.toggle("is-active", card.id === lesson);
+        });
+        detailArticles.forEach((article) => {
+          article.classList.toggle("is-active", article.dataset.lessonDetail === lesson);
+        });
+        expandButtons.forEach((button) => {
+          const expanded = button.dataset.lesson === lesson;
+          button.setAttribute("aria-expanded", String(expanded));
+          button.textContent = expanded ? "正在精读" : "阅读精读";
+        });
+
+        if (options.scroll !== false) {
+          window.setTimeout(() => {
+            detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 140);
+        }
+      }
+
+      function closeLesson() {
+        activeLesson = null;
+        detailPanel.classList.remove("is-open");
+        lessonCards.forEach((card) => card.classList.remove("is-active"));
+        detailArticles.forEach((article) => article.classList.remove("is-active"));
+        expandButtons.forEach((button) => {
+          button.setAttribute("aria-expanded", "false");
+          button.textContent = "阅读精读";
+        });
+      }
+
+      modeButtons.forEach((button) => {
+        button.addEventListener("click", () => setReadMode(button.dataset.mode));
+      });
+
+      expandButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          if (activeLesson === button.dataset.lesson) {
+            setReadMode("brief");
+            return;
+          }
+          setReadMode("deep");
+          openLesson(button.dataset.lesson);
+        });
+      });
+
+      closeButtons.forEach((button) => {
+        button.addEventListener("click", () => setReadMode("brief"));
+      });
+
+      setReadMode("brief");
+    </script>
+  </body>
+</html>

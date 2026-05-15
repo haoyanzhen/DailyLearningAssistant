@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-05/2026-05-15-learning-report.html">2026-05-15</a>
+      </td>
+      <td>Transformer 前向推理流程</td>
+      <td>计算机科学 / 深度学习 / 大语言模型</td>
+      <td>★★★★</td>
+      <td>把文本依次转换为 token、向量、上下文表示和词表概率，从而预测下一个 token。</td>
+      <td>后续可继续讲“BPE 分词”“RoPE 位置编码”或“采样策略”。</td>
+    </tr>
+    <tr>
+      <td>上下文管理</td>
+      <td>大语言模型 / Agent 工作流工程 / 信息架构</td>
+      <td>★★★★</td>
+      <td>通过选择、排序、裁剪和阶段化输入，让 Agent 在有限上下文里聚焦正确材料。</td>
+      <td>后续可继续讲“RAG 检索策略”“上下文窗口”或“多 Agent 记忆设计”。</td>
+    </tr>
+    <tr>
+      <td>可测试需求</td>
+      <td>软件工程 / 需求分析 / 测试工程</td>
+      <td>★★★★</td>
+      <td>把功能目标写成可观察、可判断、可复现的验收条件和边界场景。</td>
+      <td>后续可继续讲“验收标准设计”“幂等性测试”或“权限边界测试”。</td>
+    </tr>
+    <tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-05/2026-05-14-learning-report.html">2026-05-14</a>
       </td>
       <td>Manifest 驱动的发布契约</td>
