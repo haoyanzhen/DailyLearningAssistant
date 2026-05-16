@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-05-16 学习笔记日报</title>
+    <meta
+      name="description"
+      content="2026-05-16 学习日报：结构化索引、配置驱动与密钥隔离、迁移映射表。"
+    />
+    <link rel="stylesheet" href="../../style/main.css?v=20260516" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-05-16</p>
+        <h1>给增长中的系统，留下稳定入口和安全边界</h1>
+        <p>
+          今天的学习从日报发布、邮件推送和需求重编号出发，聚焦三个朴素但关键的工程动作：
+          建立索引、拆出配置、保留迁移映射。它们共同保护系统在内容增长和结构变化中不失控。
+        </p>
+        <div class="meta-grid">
+          <div class="meta-item">
+            <span class="meta-label">今日主题</span>
+            <span class="meta-value">可维护自动化</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">阅读模式</span>
+            <span class="meta-value">简读 / 精读</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">知识点</span>
+            <span class="meta-value">3 个并列讲解</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">学习路径</span>
+            <span class="meta-value">入口 → 配置 → 迁移</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日知识点概览</h2>
+        <p class="lead">
+          今天的三个概念分别回答系统长期维护里的三个问题：内容怎样被稳定发现，
+          自动化怎样适配不同环境并保护密钥，编号和结构变化后怎样不断开旧引用。
+        </p>
+        <div class="stat-grid">
+          <article class="stat-card">
+            <strong>结构化索引</strong>
+            <span>用 manifest、编号体系和固定字段，为页面、需求和自动化产物建立稳定坐标。</span>
+          </article>
+          <article class="stat-card">
+            <strong>配置驱动与密钥隔离</strong>
+            <span>把运行参数从程序逻辑中拆出，把真实密码和 API Key 留在公开仓库之外。</span>
+          </article>
+          <article class="stat-card">
+            <strong>迁移映射表</strong>
+            <span>在重编号、重命名和重构时，用旧标识到新标识的对照表保护历史连续性。</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日知识主线</h2>
+        <p class="lead">
+          当日报越来越多、自动化步骤越来越长、需求编号越来越复杂时，系统需要的不只是“把任务跑完”，
+          还要让人和程序都能稳定找到入口、调整环境、理解历史变化。结构化索引解决怎么找到，
+          配置驱动与密钥隔离解决怎么适配和保护，迁移映射表解决变化以后怎么不断线。
+        </p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-toolbar panel">
+          <div>
+            <p class="eyebrow">Read Mode</p>
+            <h2 class="section-title">今日三节小课</h2>
+            <p class="lead">
+              简读用于快速建立地图；精读会在三张卡片下方展开完整文章。
+              切到精读后，卡片会变成目录，用来切换不同概念。
+            </p>
+          </div>
+          <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+            <button class="is-active" type="button" data-mode="brief">简读</button>
+            <button type="button" data-mode="deep">精读</button>
+          </div>
+        </div>
+
+        <div class="lesson-grid">
+          <article class="lesson-card" id="structured-index">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">信息架构</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>结构化索引</h3>
+              <p>Structured Index</p>
+            </header>
+
+            <div class="lesson-brief">
+              <p class="lesson-summary">
+                结构化索引像系统的目录和坐标系，让文件、需求和页面不仅存在，而且能被稳定找到。
+              </p>
+              <h4>核心要点</h4>
+              <ul>
+                <li>索引把对象的位置、标题、日期和编号写成可读、可解析的结构。</li>
+                <li>稳定编号和 manifest 能让页面、测试、邮件脚本共享同一份入口。</li>
+                <li>索引变化时要有规则和记录，否则交叉引用会悄悄断裂。</li>
+              </ul>
+              <h4>小例子</h4>
+              <p>
+                日报 HTML 文件写入 <code>manifest.json</code> 后，主页和邮件脚本才能可靠知道最新日报在哪里。
+              </p>
+              <div class="highlight">记忆句：内容只是存在，索引让内容变得可发现。</div>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="structured-index" aria-expanded="false">阅读精读</button>
+          </article>
+
+          <article class="lesson-card" id="configuration-secrets">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">自动化安全</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>配置驱动与密钥隔离</h3>
+              <p>Configuration-Driven Behavior</p>
+            </header>
+
+            <div class="lesson-brief">
+              <p class="lesson-summary">
+                程序逻辑负责怎么做，配置负责在哪做、给谁做、几点做；真实密钥则不进入公开仓库。
+              </p>
+              <h4>核心要点</h4>
+              <ul>
+                <li>SMTP 主机、收件人、发送时间和站点地址适合放进配置。</li>
+                <li>公开仓库放 <code>config.example.json</code>，真实 <code>config.json</code> 应被忽略。</li>
+                <li>脚本报错和日志也要避免泄露 SMTP 密码或 API Key。</li>
+              </ul>
+              <h4>小例子</h4>
+              <p>
+                想把日报邮件从早上 8 点改到晚上 9 点时，只改配置，不改发送脚本本身。
+              </p>
+              <div class="highlight">记忆句：配置改变行为，密钥留在边界内。</div>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="configuration-secrets" aria-expanded="false">阅读精读</button>
+          </article>
+
+          <article class="lesson-card" id="migration-map">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">文档重构</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>迁移映射表</h3>
+              <p>Migration Mapping Table</p>
+            </header>
+
+            <div class="lesson-brief">
+              <p class="lesson-summary">
+                迁移映射表记录旧标识到新标识的对应关系，让重编号和重构后的历史引用仍然能被理解。
+              </p>
+              <h4>核心要点</h4>
+              <ul>
+                <li>它能防止旧需求编号、旧路由和旧字段在迁移后失去指向。</li>
+                <li>映射表支持分阶段迁移，先改核心结构，再逐步修正引用。</li>
+                <li>当旧对象被拆分或合并时，映射需要人工审查，不能只靠搜索替换。</li>
+              </ul>
+              <h4>小例子</h4>
+              <p>
+                <code>FR-WORKSPACE-003</code> 被重编号为 <code>FR-019</code> 后，测试和架构文档都应按映射更新。
+              </p>
+              <div class="highlight">记忆句：映射表是旧世界通向新结构的桥。</div>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="migration-map" aria-expanded="false">阅读精读</button>
+          </article>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="structured-index">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 信息架构</p>
+                <h3>结构化索引</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>
+                可以从一个书柜想起结构化索引：几百本书当然可以都堆在一起，但当你要找《线性代数》时，
+                “书都在这里”并不能真正帮你使用它们。分类标签、层架位置和索书号看起来只是额外信息，
+                实际上是在给书柜建立一套可查找的坐标系。
+              </p>
+              <p>
+                软件系统里的结构化索引也是这个作用。日报 HTML 文件本身只是一个页面，
+                例如 <code>daily_report/2026-05/2026-05-16-learning-report.html</code>。
+                如果没有 manifest，主页、归档页和邮件脚本都不一定知道它存在。
+                当 manifest 写清日期、标题、摘要和路径后，这个页面才进入了系统的稳定入口。
+              </p>
+              <p>
+                需求文档里的 FR 编号也是索引。自然语言标题会改名，模块会拆分，顺序会调整；
+                但稳定编号可以被测试用例、设计文档、状态机说明和审查记录共同引用。
+                这就是索引的工程价值：它不只是帮助阅读，还让多个流程能围绕同一个对象协作。
+              </p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>稳定性：索引不能频繁无规则变化，变化时要有迁移记录。</li>
+                <li>可机器读取：JSON、固定字段、编号规则和表格让程序能稳定解析。</li>
+                <li>可追踪：索引最好能回答对象在哪里、来自哪里、被谁引用。</li>
+                <li>共享入口：主页、邮件、测试和发布脚本应尽量读取同一份结构化入口。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>
+                如果日报目录里有多个 HTML 文件，主页只扫描文件名可能不知道标题、摘要和默认排序。
+                manifest 可以把它们统一记录为结构化数据：
+              </p>
+              <pre><code>{
+  "date": "2026-05-16",
+  "title": "2026-05-16 学习笔记日报",
+  "path": "./daily_report/2026-05/2026-05-16-learning-report.html"
+}</code></pre>
+              <p>
+                这样主页、归档页和邮件脚本都能基于同一份清单工作，不必各自发明一套查找规则。
+              </p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为文件存在就等于系统知道它存在。系统通常还需要 manifest、路由或数据库记录。</li>
+                <li>误以为索引只是给人看的目录。在自动化系统里，索引常常是程序之间的契约。</li>
+                <li>误以为编号越细越好。编号要支撑引用和追踪，也要让维护者能轻松理解。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>Manifest 发布契约</td><td>manifest 是结构化索引在静态站点发布中的具体形式。</td></tr>
+                <tr><td>需求编号体系设计</td><td>FR 编号是需求管理中的稳定坐标。</td></tr>
+                <tr><td>交叉引用一致性</td><td>引用能否保持正确，依赖索引是否稳定且同步完整。</td></tr>
+                <tr><td>自动化发布闭环</td><td>自动化流程需要索引判断产物在哪里、是否已发布。</td></tr>
+                <tr><td>迁移映射表</td><td>当索引变化时，映射表连接旧入口和新入口。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>一个好的 manifest 应该包含哪些字段，哪些字段会造成维护负担？</li>
+                <li>需求编号应该按模块编号，还是全局连续编号？</li>
+                <li>如果索引记录和真实文件不一致，系统应该相信谁，又应该怎样修复？</li>
+              </ol>
+            </article>
+
+            <article class="lesson-detail" data-lesson-detail="configuration-secrets">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 自动化安全</p>
+                <h3>配置驱动与密钥隔离</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>
+                想象一个日报邮件脚本。它需要知道 SMTP 服务器、端口、发件人、收件人、发送时间、
+                站点 base URL，甚至还可能读取 LLM API Key 来生成问候语。最偷懒的写法是把这些值直接写进代码，
+                但这会让脚本变得脆弱：换邮箱要改源码，换时间也要改源码，真实密码还可能被提交到 GitHub。
+              </p>
+              <p>
+                配置驱动的思路是把程序逻辑和运行环境参数分开。代码负责“怎样读取日报、生成邮件、连接 SMTP、
+                处理失败”，配置负责“发给谁、几点发、SMTP 主机是什么、站点地址是什么、是否启用增强能力”。
+                这样同一套脚本可以在不同机器、不同邮箱、不同发送时间下复用。
+              </p>
+              <p>
+                但配置里常常包含敏感信息，这就需要密钥隔离。公开仓库可以放 <code>config.example.json</code>
+                来说明字段结构，真实 <code>config.json</code> 留在本地并加入 <code>.gitignore</code>。
+                SMTP 授权码、API Key 和个人邮箱配置不应该进入版本历史；一旦进入，清理成本会明显上升。
+              </p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>可变参数外置：邮箱、收件人、时间、base URL 由配置控制。</li>
+                <li>公开样例和真实配置分离：样例解释结构，真实文件保存秘密。</li>
+                <li>部署脚本读取配置：launchd 等定时任务按配置生成计划，而不是写死时间。</li>
+                <li>日志和错误信息脱敏：排查问题时不能把密码或 API Key 打印出来。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>
+                如果发送时间写死为 <code>08:00</code>，用户想改到晚上 9 点就要改源码。
+                更好的方式是让安装脚本读取配置：
+              </p>
+              <pre><code>{
+  "schedule": {
+    "hour": 21,
+    "minute": 0
+  },
+  "smtp": {
+    "host": "smtp.example.com",
+    "user": "your-email@example.com",
+    "password": "your-app-password"
+  }
+}</code></pre>
+              <p>
+                公开样例可以保留这些字段名和占位值；真实密码应只存在于本地配置、环境变量或系统钥匙串里。
+              </p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为私有仓库提交密钥没关系。仓库可能转公开、被多人克隆或进入备份。</li>
+                <li>误以为配置文件就是随便放参数。字段名、默认值和缺失配置提示都需要设计。</li>
+                <li>误以为有样例文件就够了。还要确认真实配置被忽略，日志不会泄露秘密。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>本地运维脚本</td><td>安装、卸载和状态查看都可以读取配置，减少硬编码。</td></tr>
+                <tr><td>邮件自动化与 SMTP 推送</td><td>SMTP 主机、端口、账号和收件人都适合配置化。</td></tr>
+                <tr><td>密钥管理</td><td>密钥隔离是密钥管理的基础工程实践。</td></tr>
+                <tr><td>优雅降级</td><td>配置缺失或增强能力失败时，应明确报错或安全回退。</td></tr>
+                <tr><td>自动化发布闭环</td><td>配置让同一套发布与通知流程能在不同环境中运行。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>配置应该放在 JSON、YAML、环境变量，还是系统钥匙串里？</li>
+                <li>程序启动时应该一次性校验全部配置，还是用到某项配置时再校验？</li>
+                <li>日志系统怎样既能帮助排查问题，又不泄露 SMTP 密码或 API Key？</li>
+              </ol>
+            </article>
+
+            <article class="lesson-detail" data-lesson-detail="migration-map">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 文档重构</p>
+                <h3>迁移映射表</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>
+                可以把迁移映射表想成学校搬新校区时贴出的教室对照表：
+                旧教学楼 203 对应新教学楼 B-412，旧实验室 1 对应新实验楼 C-101。
+                如果只宣布“以后都用新编号”，老师、学生、维修人员和快递都会在旧称呼与新位置之间迷路。
+              </p>
+              <p>
+                软件工程里，编号、命名和结构经常变化。今天材料中的需求文档把 Workspace 相关需求从
+                <code>FR-WORKSPACE-*</code> 前缀纳入统一 <code>FR-*</code> 序列。新结构更统一，
+                但旧文档、测试用例、提交记录和审查意见里可能仍然引用旧编号。
+              </p>
+              <p>
+                迁移映射表负责明确写出旧标识和新标识之间的对应关系。它不是一个多余的临时文件，
+                而是在系统结构变化时保护连续性的工具。没有这张表，文档看起来被整理干净了，
+                隐形引用却可能已经断掉。
+              </p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>防止引用断裂：旧编号仍能定位到当前对象。</li>
+                <li>支持渐进迁移：先完成核心重编号，再逐步修正其他文档和测试。</li>
+                <li>保留历史语境：旧 PR、会议记录和 Issue 中的旧编号仍然可解释。</li>
+                <li>标记人工审查点：一对多、多对一或语义变化不能机械替换。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>某项目把 Workspace 模块需求并入全局编号时，可以记录为：</p>
+              <table class="mini-table">
+                <tr><th>旧编号</th><th>新编号</th><th>处理说明</th></tr>
+                <tr><td>FR-WORKSPACE-001</td><td>FR-021</td><td>保持语义不变，只改编号。</td></tr>
+                <tr><td>FR-WORKSPACE-002</td><td>FR-022</td><td>合并部分验收标准，需要同步测试用例。</td></tr>
+                <tr><td>FR-WORKSPACE-003</td><td>FR-023</td><td>拆出权限边界说明，需要更新架构文档引用。</td></tr>
+              </table>
+              <p>
+                有了这张表，维护者可以检查旧引用是否都被处理，判断哪些能简单替换，
+                哪些需要人工审查，并在后续读到旧编号时快速定位到当前需求。
+              </p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为搜索替换就够了。编号可能出现在链接、表格、测试名称和历史记录里。</li>
+                <li>误以为映射表只在迁移当天有用。迁移后仍会有人从旧记录进入系统。</li>
+                <li>误以为重编号是纯格式工作。编号承载引用关系，影响审查、测试覆盖和排期。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>重构风险控制</td><td>映射表降低重编号、重命名和重构的引用风险。</td></tr>
+                <tr><td>交叉引用一致性</td><td>其他文档可以按映射表修正旧引用。</td></tr>
+                <tr><td>需求编号体系设计</td><td>编号体系变化时，映射表维护历史连续性。</td></tr>
+                <tr><td>审查驱动文档演进</td><td>审查可借助映射表逐项确认迁移是否完整。</td></tr>
+                <tr><td>结构化索引</td><td>迁移映射表本质上是在两个索引体系之间建立对应关系。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果一个旧需求被拆成两个新需求，映射表应该怎样表达一对多关系？</li>
+                <li>迁移映射表应该长期保留，还是迁移完成后删除？</li>
+                <li>在代码重构、数据库迁移、API 版本升级中，映射表分别可以长什么样？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">
+          结构化索引负责建立稳定入口，让日报、需求、页面和测试都能被找到和引用；
+          配置驱动与密钥隔离负责让自动化流程适配不同环境，同时保护敏感信息；
+          迁移映射表负责在索引体系变化时连接旧引用和新结构。三者合在一起，
+          就是系统增长之后仍然可维护的基础。
+        </p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <blockquote>
+          自动化不只是把任务跑起来，更要让系统在内容增长和结构变化中仍然可发现、可配置、可迁移。
+        </blockquote>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+          <li>manifest、数据库索引和需求编号分别适合承载哪些类型的系统入口？</li>
+          <li>本地自动化脚本应该如何同时做到配置易用、密钥安全和错误可诊断？</li>
+          <li>当旧编号被拆分、合并或语义调整时，迁移映射表怎样辅助人工审查？</li>
+        </ol>
+      </section>
+
+      <section class="footer-note">
+        <p>
+          数据来源：`prework/2026-05/2026-05-16/knowledge_explaination.md`。
+          本页复用站点公共样式 `../../style/main.css`，并可从
+          <a href="../../index.html?archive=1">学习归档</a> 返回历史日报入口。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll(".read-mode-toggle button");
+      const expandButtons = document.querySelectorAll(".lesson-expand");
+      const lessonCards = document.querySelectorAll(".lesson-card");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const detailArticles = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+      let activeLesson = null;
+
+      function setReadMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => {
+          const active = button.dataset.mode === mode;
+          button.classList.toggle("is-active", active);
+          button.setAttribute("aria-pressed", String(active));
+        });
+
+        if (mode === "deep" && !activeLesson) {
+          openLesson("structured-index", { scroll: false });
+        }
+
+        if (mode === "brief") {
+          closeLesson();
+        }
+      }
+
+      function openLesson(lesson, options = {}) {
+        activeLesson = lesson;
+        detailPanel.classList.add("is-open");
+        detailPanel.dataset.activeLesson = lesson;
+        lessonCards.forEach((card) => {
+          card.classList.toggle("is-active", card.id === lesson);
+        });
+        detailArticles.forEach((article) => {
+          article.classList.toggle("is-active", article.dataset.lessonDetail === lesson);
+        });
+        expandButtons.forEach((button) => {
+          const expanded = button.dataset.lesson === lesson;
+          button.setAttribute("aria-expanded", String(expanded));
+          button.textContent = expanded ? "正在精读" : "阅读精读";
+        });
+
+        if (options.scroll !== false) {
+          window.setTimeout(() => {
+            detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 140);
+        }
+      }
+
+      function closeLesson() {
+        activeLesson = null;
+        detailPanel.classList.remove("is-open");
+        lessonCards.forEach((card) => card.classList.remove("is-active"));
+        detailArticles.forEach((article) => article.classList.remove("is-active"));
+        expandButtons.forEach((button) => {
+          button.setAttribute("aria-expanded", "false");
+          button.textContent = "阅读精读";
+        });
+      }
+
+      modeButtons.forEach((button) => {
+        button.addEventListener("click", () => setReadMode(button.dataset.mode));
+      });
+
+      expandButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          if (activeLesson === button.dataset.lesson) {
+            setReadMode("brief");
+            return;
+          }
+          setReadMode("deep");
+          openLesson(button.dataset.lesson);
+        });
+      });
+
+      closeButtons.forEach((button) => {
+        button.addEventListener("click", () => setReadMode("brief"));
+      });
+
+      setReadMode("brief");
+    </script>
+  </body>
+</html>
