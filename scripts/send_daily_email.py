@@ -47,11 +47,25 @@ def load_manifest():
     return data.get("reports", [])
 
 
-def find_today_report(reports, target_date):
+def find_latest_available_report(reports, target_date):
+    """查找不晚于目标日期的最新可用日报。"""
+    target_dt = datetime.strptime(target_date, "%Y-%m-%d").date()
+    candidates = []
     for report in reports:
-        if report.get("date") == target_date:
-            return report
-    return None
+        report_date = report.get("date")
+        if not report_date:
+            continue
+        try:
+            parsed_date = datetime.strptime(report_date, "%Y-%m-%d").date()
+        except ValueError:
+            continue
+        if parsed_date <= target_dt:
+            candidates.append((parsed_date, report))
+
+    if not candidates:
+        return None
+    candidates.sort(key=lambda item: item[0], reverse=True)
+    return candidates[0][1]
 
 
 def get_target_emails(config):
@@ -76,16 +90,17 @@ def get_target_emails(config):
     return normalized
 
 
-def generate_email_content(report, config, target_date):
+def generate_email_content(report, config, send_date):
     """调用 LLM 生成邮件问候和点评，失败返回 None 以触发回退。"""
     api_url = config["llm"]["api_url"]
     api_key = config["llm"]["api_key"]
     model = config["llm"]["model"]
 
     weekday_names = ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"]
-    target_dt = datetime.strptime(target_date, "%Y-%m-%d")
-    weekday = weekday_names[target_dt.weekday()]
-    title = report.get("title", f"{target_date} 学习笔记日报")
+    send_dt = datetime.strptime(send_date, "%Y-%m-%d")
+    weekday = weekday_names[send_dt.weekday()]
+    report_date = report.get("date", send_date)
+    title = report.get("title", f"{report_date} 学习笔记日报")
     summary = report.get("summary", "今日学习内容已就绪。")
     style_profiles = [
         "清晨便签：像早上顺手留在桌边的一张小纸条，短句多一点，语气轻、干净、温柔。",
@@ -100,7 +115,8 @@ def generate_email_content(report, config, target_date):
 
     prompt = f"""你负责为"每日拾光学习簿"撰写每日学习日报邮件的开头文案。文案应像一条自然、亲切的日常留言：温暖、有陪伴感，但不过度夸张；可以轻轻称呼对方为"绪绪"，也可以直接自然问候。整体效果应让收件人感觉"今天的学习日报已经准备好了，值得点开看看"。
 
-今日是 {target_date} {weekday}。今日学习报告信息：
+邮件发送日期是 {send_date} {weekday}。本次要推荐的是 manifest 中最新可用的学习日报：
+- 日报日期：{report_date}
 - 标题：{title}
 - 摘要：{summary}
 
@@ -154,13 +170,14 @@ def generate_email_content(report, config, target_date):
         return None
 
 
-def build_email_html(report, config, target_date, llm_content=None):
+def build_email_html(report, config, send_date, llm_content=None):
     site_base = config["site"]["base_url"].rstrip("/")
     sender_name = config["email"]["sender_name"]
 
     if report:
         report_url = f"{site_base}/{report['path'].lstrip('./')}"
-        title = report.get("title", f"{target_date} 学习笔记日报")
+        report_date = report.get("date", send_date)
+        title = report.get("title", f"{report_date} 学习笔记日报")
         summary = report.get("summary", "今日学习内容已就绪，点击链接查看详情。")
 
         content_block = f"""
@@ -183,7 +200,7 @@ def build_email_html(report, config, target_date, llm_content=None):
         """
 
     weekday_names = ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"]
-    weekday = weekday_names[datetime.strptime(target_date, "%Y-%m-%d").weekday()]
+    weekday = weekday_names[datetime.strptime(send_date, "%Y-%m-%d").weekday()]
 
     if llm_content:
         greeting_html = f'<p style="color:#374151; font-size:16px; line-height:1.8;">{llm_content["greeting"]}</p>'
@@ -194,8 +211,8 @@ def build_email_html(report, config, target_date, llm_content=None):
     </tr>"""
     else:
         greeting_html = """<p style="color:#374151; font-size:16px; line-height:1.8;">
-                绪绪，早上好！☀️<br>
-                又是新的一天，看到你每天都在学习和成长，真的好为你骄傲。今天的日报已经准备好了，一起看看吧。
+                绪绪，早上好！<br>
+                这份学习日报已经整理好了，可以按自己的节奏慢慢看。
             </p>"""
         commentary_html = ""
 
@@ -207,7 +224,7 @@ def build_email_html(report, config, target_date, llm_content=None):
     <tr>
         <td style="padding:32px 24px 0;">
             <h1 style="color:#1f2937; font-size:22px; margin:0;">{sender_name}</h1>
-            <p style="color:#6b7280; font-size:13px; margin:4px 0 0 0;">{target_date} {weekday}</p>
+            <p style="color:#6b7280; font-size:13px; margin:4px 0 0 0;">{send_date} {weekday}</p>
         </td>
     </tr>
     <tr>
@@ -234,24 +251,25 @@ def build_email_html(report, config, target_date, llm_content=None):
 </html>"""
 
 
-def build_email_plain(report, config, target_date, llm_content=None):
+def build_email_plain(report, config, send_date, llm_content=None):
     site_base = config["site"]["base_url"].rstrip("/")
     sender_name = config["email"]["sender_name"]
 
     if report:
         report_url = f"{site_base}/{report['path'].lstrip('./')}"
-        title = report.get("title", f"{target_date} 学习笔记日报")
+        report_date = report.get("date", send_date)
+        title = report.get("title", f"{report_date} 学习笔记日报")
         summary = report.get("summary", "今日学习内容已就绪。")
-        content_line = f"今日报告：{title}\n摘要：{summary}\n查看完整日报：{report_url}"
+        content_line = f"本次报告：{title}\n摘要：{summary}\n查看完整日报：{report_url}"
     else:
         content_line = "今日学习报告尚未生成，请稍后查看。"
 
-    greeting = (llm_content or {}).get("greeting", "绪绪，早上好！又是新的一天，看到你每天都在学习和成长，真的好为你骄傲。今天的日报已经准备好了，一起看看吧。")
+    greeting = (llm_content or {}).get("greeting", "绪绪，早上好！这份学习日报已经整理好了，可以按自己的节奏慢慢看。")
     commentary = (llm_content or {}).get("commentary", "")
 
     lines = [
         f"{sender_name}",
-        f"{target_date}",
+        f"{send_date}",
         "",
         greeting,
         "",
@@ -266,11 +284,12 @@ def build_email_plain(report, config, target_date, llm_content=None):
     return "\n".join(lines)
 
 
-def send_email(html_content, plain_content, config, target_emails=None):
+def send_email(html_content, plain_content, config, report=None, target_emails=None):
     email_cfg = config["email"]
     target_emails = target_emails or get_target_emails(config)
     msg = MIMEMultipart("alternative")
-    subject = f"每日拾光学习簿 — {date.today().isoformat()} 学习日报"
+    subject_date = (report or {}).get("date", date.today().isoformat())
+    subject = f"每日拾光学习簿 — {subject_date} 学习日报"
     msg["Subject"] = Header(subject, "utf-8")
     msg["From"] = formataddr((email_cfg["sender_name"], email_cfg["sender_email"]))
     msg["To"] = ", ".join(formataddr(("", email)) for email in target_emails)
@@ -305,18 +324,18 @@ def main():
                         help="指定日期 (YYYY-MM-DD)，默认当天")
     args = parser.parse_args()
 
-    target_date = args.date
+    send_date = args.date
     config = load_config()
     target_emails = get_target_emails(config)
     reports = load_manifest()
-    report = find_today_report(reports, target_date)
+    report = find_latest_available_report(reports, send_date)
 
     llm_content = None
     if report and not args.no_llm:
-        llm_content = generate_email_content(report, config, target_date)
+        llm_content = generate_email_content(report, config, send_date)
 
-    html = build_email_html(report, config, target_date, llm_content=llm_content)
-    plain = build_email_plain(report, config, target_date, llm_content=llm_content)
+    html = build_email_html(report, config, send_date, llm_content=llm_content)
+    plain = build_email_plain(report, config, send_date, llm_content=llm_content)
 
     if args.dry_run:
         print("=" * 60)
@@ -332,16 +351,18 @@ def main():
         if report:
             site_base = config["site"]["base_url"].rstrip("/")
             report_url = f"{site_base}/{report['path'].lstrip('./')}"
+            print(f"发送日期: {send_date}")
+            print(f"日报日期: {report.get('date', '(未知)')}")
             print(f"报告链接: {report_url}")
         else:
-            print(f"{target_date} 暂无学习报告。")
+            print(f"{send_date} 及之前暂无可用学习报告。")
         return
 
     if report is None:
-        print(f"[跳过] {target_date} 暂无学习报告，不发送邮件。")
+        print(f"[跳过] {send_date} 及之前暂无可用学习报告，不发送邮件。")
         return
 
-    send_email(html, plain, config, target_emails=target_emails)
+    send_email(html, plain, config, report=report, target_emails=target_emails)
 
 
 if __name__ == "__main__":

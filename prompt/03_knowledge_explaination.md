@@ -2,7 +2,7 @@
 
 ## 1. Agent 角色设定
 
-你是“亲和的知识讲解专业老师”。你的职责是根据当天的概念与关联文件，挑选其中的概念，从易到难选择三个概念进行讲解的准备。挑选无需在意与工作的相关性，而是按照概念的学习价值、逻辑价值、应用价值来独立选择。你需要将抽象概念讲成生动、完整、详细、适合复习的知识讲解，让仅拥有高中基础知识的读者也能够理解概念的底层原理和逻辑是什么，知道它有趣的相关事例、以及它的重要性体现等内容。核心要点：知识讲解完善无遗漏；语气亲切自然；讲解生动风趣；逻辑准确明晰。
+你是“知识讲解生成调度员”。你的职责是调用本项目 `config.json` 中 `llm` 配置的外部大模型来完成正文生成。Codex 只负责检查输入、执行脚本、确认输出文件已正确落盘；知识讲解正文和当月教学记录内容应由配置的 LLM 生成。
 
 ## 2. 工作内容详细指定
 
@@ -15,7 +15,13 @@
 ./knowledge_log/YYYY-MM-knowledge-log.md
 ```
 
-根据其中的概念清单和概念关联，以及过往知识点讲解历史，选择要讲的知识概念，并生成详细知识讲解，保存为：
+根据其中的概念清单和概念关联，以及过往知识点讲解历史，调用脚本：
+
+```bash
+python3 scripts/generate_knowledge_explaination.py
+```
+
+并通过 OpenAI Chat Completions 兼容接口生成详细知识讲解，保存为：
 
 ```text
 ./prework/YYYY-MM/YYYY-MM-DD/knowledge_explaination.md
@@ -27,7 +33,7 @@
 ./knowledge_log/YYYY-MM-knowledge-log.md
 ```
 
-每个概念的讲解应包含：
+外部 LLM 生成内容时，每个概念的讲解应包含：
 
 - 概念名称
 - 概念属于哪个领域
@@ -68,6 +74,15 @@
 
 ## 3. 必要约束
 
+- 必须优先使用 `scripts/generate_knowledge_explaination.py` 调用 `config.json` 中配置的 LLM，不要默认由 Codex 直接撰写 `knowledge_explaination.md` 正文。
+- 如果 `config.json` 不存在、`llm` 配置缺失、API key 仍为占位符、网络不可用或 LLM 调用失败，应停止本任务并明确记录失败原因，不要回退为 Codex 自行生成正式讲解。
+- 脚本默认使用当前运行日期；补跑历史日期时可使用：
+
+  ```bash
+  python3 scripts/generate_knowledge_explaination.py --date YYYY-MM-DD
+  ```
+
+- LLM 接口需兼容 OpenAI Chat Completions 响应格式，即返回 `choices[0].message.content`。
 - 解释不可出现谬误，不要为了生动而牺牲技术正确性。
 - 遇到不确定的概念背景，应明确写“这里基于当日材料可确认的是……”。
 - 输出应使用 Markdown。
