@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-05-19 学习笔记日报</title>
+    <meta
+      name="description"
+      content="2026-05-19 学习日报：数据血缘、防幻觉生成约束、失败状态产品化。"
+    />
+    <link rel="stylesheet" href="../../style/main.css?v=20260519" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-05-19</p>
+        <h1>让自动化系统学会尊重证据</h1>
+        <p>
+          今天的学习围绕可信内容生成展开：系统越会自动写报告，越要知道材料从哪里来，
+          证据不足时怎样停止扩写，以及失败时怎样把状态讲清楚。
+        </p>
+        <div class="meta-grid">
+          <div class="meta-item">
+            <span class="meta-label">今日主题</span>
+            <span class="meta-value">可信自动化生成</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">阅读模式</span>
+            <span class="meta-value">简读 / 精读</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">知识点</span>
+            <span class="meta-value">3 个并列讲解</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">学习路径</span>
+            <span class="meta-value">来源 → 约束 → 状态</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日知识点概览</h2>
+        <p class="lead">
+          今天的三个概念共同回答一个问题：当 LLM 自动化流水线要发布学习内容时，
+          怎样证明内容有来源、怎样避免证据不足时编造、怎样把阻塞变成可理解的发布状态。
+        </p>
+        <div class="stat-grid">
+          <article class="stat-card">
+            <strong>数据血缘</strong>
+            <span>记录结论从哪些输入、处理步骤和发布入口而来，让产物可追溯、可审计。</span>
+          </article>
+          <article class="stat-card">
+            <strong>防幻觉生成约束</strong>
+            <span>要求 LLM 只根据可确认输入生成内容，证据不足时输出空结果或状态说明。</span>
+          </article>
+          <article class="stat-card">
+            <strong>失败状态产品化</strong>
+            <span>把缺失输入、阻塞和空结果设计成用户可理解、可发布、可恢复的状态。</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日知识主线</h2>
+        <p class="lead">
+          自动化系统越会“自己写东西”，就越需要知道材料从哪里来、什么时候该停止扩写、
+          以及失败时怎样把状态讲清楚。数据血缘解决“有没有来源”，防幻觉生成约束解决
+          “来源不足时能不能写”，失败状态产品化解决“不能写时怎样交代”。
+        </p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-toolbar panel">
+          <div>
+            <p class="eyebrow">Read Mode</p>
+            <h2 class="section-title">今日三节小课</h2>
+            <p class="lead">
+              简读用于快速抓住三个概念；精读会在卡片下方展开完整文章。
+              切到精读后，三张卡片会变成目录。
+            </p>
+          </div>
+          <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+            <button class="is-active" type="button" data-mode="brief">简读</button>
+            <button type="button" data-mode="deep">精读</button>
+          </div>
+        </div>
+
+        <div class="lesson-grid">
+          <article class="lesson-card" id="data-lineage">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数据工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>数据血缘</h3>
+              <p>Data Lineage</p>
+            </header>
+
+            <div class="lesson-brief">
+              <p class="lesson-summary">
+                数据血缘让每个结论都能往回追溯到原始输入、处理步骤和最终发布入口。
+              </p>
+              <h4>核心要点</h4>
+              <ul>
+                <li>结果应能回答“我根据哪份输入生成”。</li>
+                <li>血缘包括来源、处理和发布三个层次。</li>
+                <li>血缘清楚，系统才容易审计、重跑和修复。</li>
+              </ul>
+              <h4>小例子</h4>
+              <p>
+                日报链路可以追溯为：提交记录到 <code>work_summary_*.md</code>，
+                再到概念、知识讲解、HTML 页面和 manifest。
+              </p>
+              <div class="highlight">记忆句：没有来源链，结论就只能靠猜。</div>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="data-lineage" aria-expanded="false">阅读精读</button>
+          </article>
+
+          <article class="lesson-card" id="anti-hallucination">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">LLM 工作流</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>防幻觉生成约束</h3>
+              <p>Generation Constraints</p>
+            </header>
+
+            <div class="lesson-brief">
+              <p class="lesson-summary">
+                防幻觉生成约束要求模型只讲能由当日输入确认的内容，证据不足就标明不确定或停止生成。
+              </p>
+              <h4>核心要点</h4>
+              <ul>
+                <li>写得流畅不等于有事实依据。</li>
+                <li>约束要覆盖输入边界、证据要求、输出形态和记录规则。</li>
+                <li>在证据不足时，空结果比漂亮编造更可靠。</li>
+              </ul>
+              <h4>小例子</h4>
+              <p>
+                如果当天材料写着“数学未发现明确线索”，日报就不应硬写一篇线性代数讲解。
+              </p>
+              <div class="highlight">记忆句：能确认的就讲，不能确认的就停。</div>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="anti-hallucination" aria-expanded="false">阅读精读</button>
+          </article>
+
+          <article class="lesson-card" id="failure-states">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>失败状态产品化</h3>
+              <p>Productizing Failure States</p>
+            </header>
+
+            <div class="lesson-brief">
+              <p class="lesson-summary">
+                失败状态产品化把缺失、阻塞和空结果设计成用户看得懂、系统能恢复的状态。
+              </p>
+              <h4>核心要点</h4>
+              <ul>
+                <li>失败不是空白，也不应该沉默。</li>
+                <li>状态页应说明原因、影响、当前产物和恢复路径。</li>
+                <li>可导航的状态比隐藏异常更利于协作和修复。</li>
+              </ul>
+              <h4>小例子</h4>
+              <p>
+                上游总结缺失时，发布一个状态页，说明不生成正式三概念日报，并提示补齐材料后重跑。
+              </p>
+              <div class="highlight">记忆句：失败讲清楚，也是一种可靠产物。</div>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="failure-states" aria-expanded="false">阅读精读</button>
+          </article>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="data-lineage">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数据工程</p>
+                <h3>数据血缘</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>
+                数据血缘关注的是一条数据、一份结论或一个页面从哪里来，经过了哪些处理步骤，
+                最后又被发布到了哪里。它很像资料出处，但比“出处”更适合工程系统，
+                因为它还关心中间加工和最终入口。
+              </p>
+              <p>
+                在每日学习流水线里，血缘链条大致是：
+                <code>各仓库提交记录</code> 到 <code>work_summary_*.md</code>，
+                再到 <code>concept_relevance.md</code>、<code>knowledge_explaination.md</code>、
+                <code>learning-report.html</code> 和 <code>manifest.json</code>。
+                每一站都应该能回答：我现在的输出，是根据哪一份输入生成的？
+              </p>
+              <p>
+                如果某一天没有上游总结，下游就不能假装自己看到了充分材料。
+                正确做法是记录“上游总结缺失”，并把这个状态沿着链路传递下去。
+                数据血缘的价值正在这里：它保护系统不把“没有证据”误包装成“有结论”。
+              </p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>来源血缘：记录结果来自哪些提交、文件或用户输入。</li>
+                <li>处理血缘：记录信息经历了哪些自动化阶段和转换。</li>
+                <li>发布血缘：记录最终产物如何进入 manifest、首页和归档入口。</li>
+                <li>修复能力：当结果异常时，可以沿血缘回查是哪一站出问题。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>
+                如果概念文件写明“防幻觉生成约束，来源：DailyLearningAssistant”，
+                维护者就知道这个概念不是凭空来的，而是来自当天对自动化流程的更新。
+                如果讲解不准确，就可以继续回到概念文件、工作总结和提交记录检查。
+              </p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为最终结果看起来正确，就不需要记录来源。</li>
+                <li>误以为文件路径就是完整血缘。路径说明位置，不说明输入、规则和失败原因。</li>
+                <li>误以为血缘只属于大数据平台。小型静态站点和 LLM Agent 流水线同样需要。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>可追溯生成</td><td>数据血缘是证明生成内容来自真实材料的基础。</td></tr>
+                <tr><td>防幻觉生成约束</td><td>当血缘断裂或来源不足时，模型应降低自由度或停止生成。</td></tr>
+                <tr><td>状态传播</td><td>上游缺失本身也是一种状态，需要传递到下游产物。</td></tr>
+                <tr><td>发布清单契约</td><td>manifest 记录最终产物入口，是发布阶段血缘的一部分。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>一个轻量级日报系统需要记录哪些血缘字段，才能兼顾可信度和维护成本？</li>
+                <li>如果上游材料后来被修改，下游产物应该自动重跑，还是只标记来源已变更？</li>
+                <li>文件路径、提交哈希和摘要证据分别解决什么信任问题？</li>
+              </ol>
+            </article>
+
+            <article class="lesson-detail" data-lesson-detail="anti-hallucination">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · LLM 工作流</p>
+                <h3>防幻觉生成约束</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>
+                这里的“幻觉”不是说模型有意识地骗人，而是指模型生成了看起来流畅、
+                可能很像真的、但缺少可靠依据或事实错误的内容。大语言模型很擅长续写，
+                所以在输入不足时也可能补出一篇结构完整的文章。
+              </p>
+              <p>
+                对每日学习日报来说，这种能力必须被约束。日报的价值不只是文采，
+                而是它真实反映当天仓库和文档材料。防幻觉生成约束的核心逻辑是：
+                能从当日输入确认的，就讲；不能确认的，就标明不确定或不生成。
+              </p>
+              <p>
+                约束不是一句“不要编造”就够了。更稳妥的做法是把输入边界、
+                证据要求、材料不足时的输出形态，以及月度记录更新规则都写清楚。
+                当 <code>work_summary_*.md</code> 不存在或内容不足时，下游 Agent 应输出状态说明，
+                而不是根据长期背景补写一篇像样的日报。
+              </p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>输入约束：明确模型只能使用哪些日期、文件和仓库材料。</li>
+                <li>证据约束：概念必须能对应到当日材料里的来源说明。</li>
+                <li>输出约束：材料不足时输出状态说明，而不是常规长文。</li>
+                <li>记录约束：月度知识记录只写入正式讲解概念，不为凑数硬补。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>
+                如果当天概念文件只有“数学：未发现明确线索”，没有约束的模型可能会硬讲线性代数。
+                有约束的模型应该写：数学方面，当日材料未发现明确线索，因此不生成数学概念讲解。
+                这句话朴素，却比无来源的漂亮讲解更可靠。
+              </p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为模型写得越详细就越可靠。细节丰富不等于证据充分。</li>
+                <li>误以为提示词写“不要编造”就够了，还需要文件检查和来源字段。</li>
+                <li>误以为空结果就是失败。在证据不足时，空结果是在保护系统可信度。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>数据血缘</td><td>模型需要知道哪些内容可确认，哪些内容缺少来源。</td></tr>
+                <tr><td>Prompt 约束工程</td><td>提示词可以明确输入边界、失败处理和不确定性表达。</td></tr>
+                <tr><td>自动化前置检查</td><td>生成前检查文件是否存在和内容是否足够，是第一道门。</td></tr>
+                <tr><td>多 Agent 分阶段生成</td><td>每个 Agent 都应尊重前一阶段的真实产物，避免上下文污染。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>怎样设计一个“证据不足时必须拒绝生成”的提示词模板？</li>
+                <li>哪些字段可以由模型概括，哪些字段必须来自确定文件？</li>
+                <li>如果用户希望系统尽量补全，怎样在补全和不编造之间划清边界？</li>
+              </ol>
+            </article>
+
+            <article class="lesson-detail" data-lesson-detail="failure-states">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>失败状态产品化</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>
+                很多系统失败时只给一句 <code>Error: input file not found</code>。
+                对程序来说这可能够了，但用户还想知道：哪个文件缺了、为什么重要、
+                今天的日报还会不会生成、首页会不会坏、后续怎样恢复。
+              </p>
+              <p>
+                失败状态产品化就是把这些问题认真回答出来。失败不是空白，也不是沉默；
+                失败也是系统状态的一种，应该被清楚表达、稳定记录，并且能被导航发现。
+              </p>
+              <p>
+                在学习日报流程里，如果上游材料缺失，系统可以生成一个状态页，说明当日输入不足、
+                哪些阶段无法产生正式内容、补齐材料后要重跑哪些任务。状态页进入 manifest 后，
+                首页和归档仍然能看到这一天发生了什么，而不是留下一个令人困惑的日期断档。
+              </p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>状态名称：写清楚是上游输入缺失、概念信号不足，还是发布状态说明。</li>
+                <li>触发原因：明确哪些文件不存在、为空或内容不足。</li>
+                <li>影响范围：说明哪些正式产物不会生成或不会更新。</li>
+                <li>当前产物：列出已经可用的状态页、日志或 manifest 条目。</li>
+                <li>恢复路径：告诉后续应补齐什么、重跑哪个阶段。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>
+                当上游工作总结缺失时，产品化状态可以写成：状态为上游工作总结缺失；
+                影响是不生成正式概念提炼和三概念知识讲解；当前产物是状态页已发布；
+                恢复路径是补齐 <code>work_summary_*.md</code> 后重跑任务 2、3、4。
+              </p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为失败页面没有价值。它能帮助用户理解状态，也能给维护者留下线索。</li>
+                <li>误以为把错误堆栈直接给用户就是透明。产品化状态要翻译原因、影响和动作。</li>
+                <li>误以为失败就不应进入导航。可导航的状态页能避免日期断档和误解。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>自动化前置检查</td><td>前置检查发现问题后，需要决定如何呈现失败状态。</td></tr>
+                <tr><td>状态传播</td><td>上游缺失应沿着后续阶段逐步传递。</td></tr>
+                <tr><td>发布清单契约</td><td>状态页进入 manifest 后，用户才能通过常规导航发现它。</td></tr>
+                <tr><td>防幻觉生成约束</td><td>状态页提供了“不编造内容”的替代输出形式。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>自动化系统中的失败状态应该分成阻塞、降级、空结果、部分成功等哪些等级？</li>
+                <li>状态页进入 manifest 后，应该如何区分它和正式学习日报？</li>
+                <li>当跨日补偿发生时，旧状态页应该保留历史，还是被正式日报覆盖？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">
+          数据血缘告诉系统每个结论从哪里来；防幻觉生成约束让系统在来源不足时停止正式扩写；
+          失败状态产品化则把“不能写”的原因、影响和恢复路径交代清楚。三者组合起来，
+          让 LLM 自动化系统不只是能生成内容，也能尊重证据、承认边界、表达状态。
+        </p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <blockquote>
+          可靠的自动化系统不只是能产出漂亮内容，更要在不能产出时把原因讲清楚。
+        </blockquote>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+          <li>日报流水线应记录哪些最小血缘字段，才能让下游产物可追溯？</li>
+          <li>防幻觉约束应该由提示词、文件校验、还是发布阶段共同保证？</li>
+          <li>状态页被正式内容替换时，系统应该如何保留历史和恢复记录？</li>
+        </ol>
+      </section>
+
+      <section class="footer-note">
+        <p>
+          数据来源：`prework/2026-05/2026-05-19/knowledge_explaination.md`。
+          本页复用站点公共样式 `../../style/main.css`，并可从
+          <a href="../../index.html?archive=1">学习归档</a> 返回历史日报入口。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll(".read-mode-toggle button");
+      const expandButtons = document.querySelectorAll(".lesson-expand");
+      const lessonCards = document.querySelectorAll(".lesson-card");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const detailArticles = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+      let activeLesson = null;
+
+      function setReadMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => {
+          const active = button.dataset.mode === mode;
+          button.classList.toggle("is-active", active);
+          button.setAttribute("aria-pressed", String(active));
+        });
+
+        if (mode === "deep" && !activeLesson) {
+          openLesson("data-lineage", { scroll: false });
+        }
+
+        if (mode === "brief") {
+          closeLesson();
+        }
+      }
+
+      function openLesson(lesson, options = {}) {
+        activeLesson = lesson;
+        detailPanel.classList.add("is-open");
+        detailPanel.dataset.activeLesson = lesson;
+        lessonCards.forEach((card) => {
+          card.classList.toggle("is-active", card.id === lesson);
+        });
+        detailArticles.forEach((article) => {
+          article.classList.toggle("is-active", article.dataset.lessonDetail === lesson);
+        });
+        expandButtons.forEach((button) => {
+          const expanded = button.dataset.lesson === lesson;
+          button.setAttribute("aria-expanded", String(expanded));
+          button.textContent = expanded ? "正在精读" : "阅读精读";
+        });
+
+        if (options.scroll !== false) {
+          window.setTimeout(() => {
+            detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 140);
+        }
+      }
+
+      function closeLesson() {
+        activeLesson = null;
+        detailPanel.classList.remove("is-open");
+        lessonCards.forEach((card) => card.classList.remove("is-active"));
+        detailArticles.forEach((article) => article.classList.remove("is-active"));
+        expandButtons.forEach((button) => {
+          button.setAttribute("aria-expanded", "false");
+          button.textContent = "阅读精读";
+        });
+      }
+
+      modeButtons.forEach((button) => {
+        button.addEventListener("click", () => setReadMode(button.dataset.mode));
+      });
+
+      expandButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          if (activeLesson === button.dataset.lesson) {
+            setReadMode("brief");
+            return;
+          }
+          setReadMode("deep");
+          openLesson(button.dataset.lesson);
+        });
+      });
+
+      closeButtons.forEach((button) => {
+        button.addEventListener("click", () => setReadMode("brief"));
+      });
+
+      setReadMode("brief");
+    </script>
+  </body>
+</html>
