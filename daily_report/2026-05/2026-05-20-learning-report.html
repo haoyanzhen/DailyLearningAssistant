@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-05-20 学习笔记日报</title>
+    <meta
+      name="description"
+      content="2026-05-20 学习日报：结构化输出契约、状态校验、防幻觉生成边界。"
+    />
+    <link rel="stylesheet" href="../../style/main.css?v=20260520" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-05-20</p>
+        <h1>把 LLM 自动化变成可信工程</h1>
+        <p>
+          今天的学习围绕可靠 AI 自动化展开：先和模型约好输出形状，
+          再在关键动作前校验系统状态，最后为生成内容划清证据边界。
+        </p>
+        <div class="meta-grid">
+          <div class="meta-item">
+            <span class="meta-label">今日主题</span>
+            <span class="meta-value">可靠 AI 自动化</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">阅读模式</span>
+            <span class="meta-value">简读 / 精读</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">知识点</span>
+            <span class="meta-value">3 个并列讲解</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">学习路径</span>
+            <span class="meta-value">契约 → 校验 → 边界</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日知识点概览</h2>
+        <p class="lead">
+          今天的三个概念共同回答一个问题：如何让 LLM 在自动化流水线里既能生成内容，
+          又能保持可解析、可检查、可追溯，不把创造力变成系统风险。
+        </p>
+        <div class="stat-grid">
+          <article class="stat-card">
+            <strong>结构化输出契约</strong>
+            <span>提前约定字段、格式和校验规则，让 LLM 输出像 API 一样可被程序消费。</span>
+          </article>
+          <article class="stat-card">
+            <strong>状态校验</strong>
+            <span>在关键动作前检查网络、认证、远端和分支关系，确认安全后再执行。</span>
+          </article>
+          <article class="stat-card">
+            <strong>防幻觉生成边界</strong>
+            <span>限制模型只基于真实输入生成内容，证据不足时不猜测、不补写。</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日知识主线</h2>
+        <p class="lead">
+          可靠的 AI 自动化不是把 LLM 放进脚本里就结束了。它需要先规定输出契约，
+          让结果稳定可解析；再通过状态校验确认动作条件成立；最后用防幻觉边界约束内容来源。
+          这条主线把 LLM 从“会写东西的模型”推进到“能被工程系统信任的协作者”。
+        </p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-toolbar panel">
+          <div>
+            <p class="eyebrow">Read Mode</p>
+            <h2 class="section-title">今日三节小课</h2>
+            <p class="lead">
+              简读用于快速抓住三个概念；精读会在卡片下方展开完整文章。
+              切到精读后，三张卡片会变成目录。
+            </p>
+          </div>
+          <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+            <button class="is-active" type="button" data-mode="brief">简读</button>
+            <button type="button" data-mode="deep">精读</button>
+          </div>
+        </div>
+
+        <div class="lesson-grid">
+          <article class="lesson-card" id="structured-contract">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">LLM 工程</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>结构化输出契约</h3>
+              <p>Structured Output Contract</p>
+            </header>
+
+            <div class="lesson-brief">
+              <p class="lesson-summary">
+                结构化输出契约是提前和 LLM 约定字段、类型和校验规则，让生成结果能稳定进入程序流程。
+              </p>
+              <h4>核心要点</h4>
+              <ul>
+                <li>契约规定字段、格式、类型和必要的富文本结构。</li>
+                <li>脚本要解析和校验输出，不合格时拒绝使用。</li>
+                <li>它让 LLM 输出从自由文本变成可消费的数据接口。</li>
+              </ul>
+              <h4>小例子</h4>
+              <p>
+                知识讲解任务要求返回包含 <code>concept_name</code>、<code>difficulty</code>
+                和 <code>explanation</code> 的 JSON；缺字段或 HTML 结构不合格，就不能写入日志。
+              </p>
+              <div class="highlight">记忆句：先约定输出形状，再谈自动处理。</div>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="structured-contract" aria-expanded="false">阅读精读</button>
+          </article>
+
+          <article class="lesson-card" id="state-validation">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">自动化运维</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>状态校验</h3>
+              <p>State Validation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <p class="lesson-summary">
+                状态校验是在执行关键动作前自检网络、认证、分支和远端关系，确认条件安全再继续。
+              </p>
+              <h4>核心要点</h4>
+              <ul>
+                <li>把“应该没问题”的隐式假设变成显式检查。</li>
+                <li>关键发布动作前要检查 DNS、SSH、远端和分支状态。</li>
+                <li>校验失败时应停止并报告原因，而不是硬推下一步。</li>
+              </ul>
+              <h4>小例子</h4>
+              <p>
+                自动 <code>git push</code> 前先解析 GitHub DNS、验证 SSH 认证、
+                读取远端分支，并确认本地没有落后于远端。
+              </p>
+              <div class="highlight">记忆句：关键动作前，先确认自己站在正确状态上。</div>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="state-validation" aria-expanded="false">阅读精读</button>
+          </article>
+
+          <article class="lesson-card" id="generation-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">Agent 工作流</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>防幻觉生成边界</h3>
+              <p>Anti-Hallucination Boundary</p>
+            </header>
+
+            <div class="lesson-brief">
+              <p class="lesson-summary">
+                防幻觉生成边界给 LLM 划定信息来源范围，只允许它根据已提供的真实输入生成内容。
+              </p>
+              <h4>核心要点</h4>
+              <ul>
+                <li>输入证据边界决定哪些材料可以被使用。</li>
+                <li>输出约束边界决定证据不足时要停止或降级。</li>
+                <li>风格可以灵活，但事实不能越过来源边界。</li>
+              </ul>
+              <h4>小例子</h4>
+              <p>
+                没有天气数据时，邮件不能写“今天气温 24°C”；它只能说明天气信息暂缺，
+                或者完全不提天气。
+              </p>
+              <div class="highlight">记忆句：能证实的才生成，不能证实的就留白。</div>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="generation-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="structured-contract">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · LLM 工程</p>
+                <h3>结构化输出契约</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>
+                想象你请一个朋友帮你写摘要，但朋友每次给你的格式都不一样：
+                有时是列表，有时是散文，有时还画了图。你要把这些摘要自动合并到表格里，
+                就会很头疼。结构化输出契约就是提前和 LLM 说好：
+                请按指定格式返回结果，字段名、类型，甚至表格里的行列结构都要遵守约定。
+              </p>
+              <p>
+                这个契约有两层。第一层是格式契约，例如要求模型返回 JSON，
+                包含 <code>title</code>、<code>date</code>、<code>summary</code>
+                等字段，甚至要求某个字段里包含指定 HTML 结构。第二层是校验契约：
+                LLM 返回后，脚本会解析 JSON，检查字段是否存在、类型是否正确、
+                富文本结构是否符合要求。
+              </p>
+              <p>
+                只有当输出符合契约，系统才继续使用它。否则就拒绝写入文件。
+                这样做的重点不是束缚模型，而是让自动化链路能稳定地接住模型输出。
+              </p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>先定义输出 schema，让字段和数据类型稳定下来。</li>
+                <li>再要求模型按 schema 返回，而不是自由发挥整篇文本。</li>
+                <li>随后由脚本解析和校验，不符合约定就阻断下游写入。</li>
+                <li>最后把合格结果交给日志、日报、manifest 等后续阶段消费。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>
+                在知识讲解任务中，脚本向外部 LLM 发送 prompt 时，可以要求返回：
+                <code>concept_name</code>、<code>difficulty</code>、<code>explanation</code>
+                等字段。如果模型没有返回 <code>explanation</code>，或者表格缺少约定的结构，
+                脚本就抛出校验错误，不让不合格内容进入知识日志。
+              </p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为只要提示词写了格式要求，输出就一定可靠；还需要程序校验。</li>
+                <li>误以为 schema 越复杂越好。过度复杂会让模型更容易失败。</li>
+                <li>误以为结构化会降低表达质量。好的契约约束结构，不必牺牲内容深度。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>LLM 输出校验</td><td>契约是约定，校验是把约定变成强制门槛。</td></tr>
+                <tr><td>配置驱动自动化</td><td>schema 可以通过配置传入，让同一脚本适配不同任务。</td></tr>
+                <tr><td>状态校验</td><td>输出契约检查内容状态，状态校验检查运行环境状态。</td></tr>
+                <tr><td>防幻觉生成边界</td><td>契约可以规定证据字段，减少无来源扩写进入系统。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何设计一个既严格又不容易让 LLM 频繁失败的 schema？</li>
+                <li>嵌套 JSON、数组字段和富文本字段应该如何高效校验？</li>
+                <li>当 LLM 输出 HTML 或 Markdown 时，如何安全解析和渲染？</li>
+              </ol>
+            </article>
+
+            <article class="lesson-detail" data-lesson-detail="state-validation">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 自动化运维</p>
+                <h3>状态校验</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>
+                状态校验就是让自动化系统在做关键动作前，先自检一遍，
+                确认自己处在正确状态下再行动。它的核心是把隐式假设变成显式检查。
+                比如自动推送代码前，我们常常默认网络可用、SSH 密钥有效、远端可读、
+                当前分支正确、本地没有落后于远端。
+              </p>
+              <p>
+                如果这些假设没有被检查，一旦某个条件不成立，程序就可能报错、
+                半途停止，甚至在错误状态下继续执行。状态校验让自动化流程先问自己：
+                我现在能不能安全地做这件事？
+              </p>
+              <p>
+                对日报发布来说，这尤其重要。生成 HTML、更新 manifest、提交 git commit
+                都只是本地完成；真正让 GitHub Pages 更新，还需要远端同步成功。
+                因此远端同步前的 DNS、SSH、远端读取和分支 ahead/behind 检查，
+                都是发布动作的一部分。
+              </p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>列出关键动作依赖的前置条件。</li>
+                <li>把每个前置条件写成可执行、可观察的检查。</li>
+                <li>按网络、认证、远端、分支等层次逐步排查。</li>
+                <li>检查失败时停止动作，并输出明确的失败阶段和恢复建议。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>
+                自动 <code>git push</code> 前可以先执行 DNS 解析检查，
+                再执行 <code>ssh -T -p 443 git@ssh.github.com</code> 验证身份，
+                然后用 <code>git ls-remote origin refs/heads/main</code> 确认远端可读。
+                如果本地分支落后于远端，就停止推送并提示先同步。
+              </p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为失败后再看报错就够了。前置检查能更早、更清楚地定位问题。</li>
+                <li>误以为单个检查能代表全部状态。DNS 可用不等于 SSH 认证可用。</li>
+                <li>误以为自动化越“勇敢”越好。可靠自动化应该在状态不安全时刹车。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>防护式自动化</td><td>状态校验为防护式自动化提供继续或停止的依据。</td></tr>
+                <tr><td>发布前置同步</td><td>ahead/behind 检查决定是否能直接推送。</td></tr>
+                <tr><td>结构化输出契约</td><td>两者都把隐含规则显式化，只是作用对象不同。</td></tr>
+                <tr><td>失败状态产品化</td><td>校验失败后，需要把原因和恢复路径讲清楚。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>长时间运行的自动化任务中，状态变化后如何做重校验？</li>
+                <li>哪些状态应该缓存，哪些必须实时检查？</li>
+                <li>如何设计一个可插拔的状态检查框架？</li>
+              </ol>
+            </article>
+
+            <article class="lesson-detail" data-lesson-detail="generation-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · Agent 工作流</p>
+                <h3>防幻觉生成边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>
+                LLM 很擅长续写。它不知道答案时，也可能根据上下文猜出一段看起来很像真的内容。
+                在闲聊里，这种能力常常显得自然；但在自动化流水线里，
+                缺少依据的生成会伤害整个系统的可信度。
+              </p>
+              <p>
+                防幻觉生成边界就是主动给模型画一个圈：只允许使用圈内的信息来源，
+                圈外的不许编。这个圈包含输入证据边界和输出约束边界。
+                输入证据边界规定哪些摘要、事实和数据可以进入输出；
+                输出约束边界规定证据不足时应写“无相关信息”、记录失败状态，或直接停止生成。
+              </p>
+              <p>
+                在学习日报系统里，这个原则意味着：知识讲解任务如果调用 LLM 失败，
+                主控流程不能自己补写一篇看似完整的内容；邮件推送可以有亲切风格，
+                但不能猜测收件人的现实状态，也不能编造未提供的数据。
+              </p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>先明确哪些文件、摘要和数据是允许使用的输入。</li>
+                <li>再规定哪些内容必须有来源支撑，不能自由推断。</li>
+                <li>遇到证据缺失时，使用空结果、失败记录或降级说明。</li>
+                <li>允许风格表达，但不允许风格突破事实边界。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>
+                如果今天没有实时天气数据，LLM 不应该在邮件里写“今天气温 24°C，
+                适合户外运动”。这句话看起来温和，但它没有来源。
+                更可靠的做法是完全不提天气，或者明确写“天气信息暂缺”。
+              </p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为用户看不出来就没关系。事实错误会持续消耗系统信任。</li>
+                <li>误以为防幻觉只是提示词问题。文件检查、来源记录和降级策略同样重要。</li>
+                <li>误以为越详细越像高质量。无证据的细节越多，风险越大。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>数据血缘</td><td>血缘帮助系统判断哪些信息属于可信来源。</td></tr>
+                <tr><td>Prompt 风格档案</td><td>风格可以变化，但事实边界必须固定。</td></tr>
+                <tr><td>结构化输出契约</td><td>契约可以要求模型标明来源或在证据不足时输出固定状态。</td></tr>
+                <tr><td>状态校验</td><td>生成前检查输入状态，是防止无来源扩写的第一道门。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何通过 RAG 让 LLM 只引用指定文档？</li>
+                <li>如何设计证据绑定提示词，让模型强制引用来源？</li>
+                <li>自动化系统输入缺失时，怎样优雅降级而不是编造？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">
+          结构化输出契约解决“模型输出能不能被系统接住”；状态校验解决“系统动作能不能安全执行”；
+          防幻觉生成边界解决“内容能不能被证据支撑”。三者从格式、运行状态和事实来源三个层面，
+          共同构成可靠 AI 自动化流水线的底层保护。
+        </p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <blockquote>
+          可靠的 AI 自动化，既要约束输出形状，也要检查运行状态，更要尊重事实边界。
+        </blockquote>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+          <li>如何设计一个既严格又不易失败的 LLM 结构化输出 schema？</li>
+          <li>自动发布前的状态校验应该覆盖哪些最小必要条件？</li>
+          <li>当输入材料不足时，系统应该用空结果、状态页还是人工介入来降级？</li>
+        </ol>
+      </section>
+
+      <section class="footer-note">
+        <p>
+          数据来源：`prework/2026-05/2026-05-20/knowledge_explaination.md`。
+          本页复用站点公共样式 `../../style/main.css`，并可从
+          <a href="../../index.html?archive=1">学习归档</a> 返回历史日报入口。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll(".read-mode-toggle button");
+      const expandButtons = document.querySelectorAll(".lesson-expand");
+      const lessonCards = document.querySelectorAll(".lesson-card");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const detailArticles = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+      let activeLesson = null;
+
+      function setReadMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => {
+          const active = button.dataset.mode === mode;
+          button.classList.toggle("is-active", active);
+          button.setAttribute("aria-pressed", String(active));
+        });
+
+        if (mode === "deep" && !activeLesson) {
+          openLesson("structured-contract", { scroll: false });
+        }
+
+        if (mode === "brief") {
+          closeLesson();
+        }
+      }
+
+      function openLesson(lesson, options = {}) {
+        activeLesson = lesson;
+        detailPanel.classList.add("is-open");
+        detailPanel.dataset.activeLesson = lesson;
+        lessonCards.forEach((card) => {
+          card.classList.toggle("is-active", card.id === lesson);
+        });
+        detailArticles.forEach((article) => {
+          article.classList.toggle("is-active", article.dataset.lessonDetail === lesson);
+        });
+        expandButtons.forEach((button) => {
+          const expanded = button.dataset.lesson === lesson;
+          button.setAttribute("aria-expanded", String(expanded));
+          button.textContent = expanded ? "正在精读" : "阅读精读";
+        });
+
+        if (options.scroll !== false) {
+          window.setTimeout(() => {
+            detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 140);
+        }
+      }
+
+      function closeLesson() {
+        activeLesson = null;
+        detailPanel.classList.remove("is-open");
+        lessonCards.forEach((card) => card.classList.remove("is-active"));
+        detailArticles.forEach((article) => article.classList.remove("is-active"));
+        expandButtons.forEach((button) => {
+          button.setAttribute("aria-expanded", "false");
+          button.textContent = "阅读精读";
+        });
+      }
+
+      modeButtons.forEach((button) => {
+        button.addEventListener("click", () => setReadMode(button.dataset.mode));
+      });
+
+      expandButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          if (activeLesson === button.dataset.lesson) {
+            setReadMode("brief");
+            return;
+          }
+          setReadMode("deep");
+          openLesson(button.dataset.lesson);
+        });
+      });
+
+      closeButtons.forEach((button) => {
+        button.addEventListener("click", () => setReadMode("brief"));
+      });
+
+      setReadMode("brief");
+    </script>
+  </body>
+</html>
