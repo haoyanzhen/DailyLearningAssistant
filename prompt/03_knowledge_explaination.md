@@ -15,6 +15,14 @@
 ./knowledge_log/YYYY-MM-knowledge-log.md
 ```
 
+开始生成前，必须先验证上游任务 2 的输出已经完成：
+
+```text
+./prework/YYYY-MM/YYYY-MM-DD/concept_relevance.md
+```
+
+如果 `concept_relevance.md` 缺失、为空或不可读取，应停止本任务并明确记录原因；不要调用外部 LLM，不要生成或覆盖 `knowledge_explaination.md`，也不要更新当月教学记录。
+
 根据其中的概念清单和概念关联，以及过往知识点讲解历史，调用脚本：
 
 ```bash
@@ -89,6 +97,7 @@ python3 scripts/generate_knowledge_explaination.py
 - 文件名按当前项目既定拼写保存为 `knowledge_explaination.md`，不要改成其他拼写。
 - 不要覆盖 `concept_relevance.md`。
 - 不要把完整长篇讲解塞入 `knowledge_log`，教学记录只保存可检索、可展示的表格摘要。
+- 只有在当日 `concept_relevance.md` 已存在、非空且可读取后，才允许生成或更新 `knowledge_explaination.md` 和 `knowledge_log/YYYY-MM-knowledge-log.md`。
 
 ## 4. 示例
 

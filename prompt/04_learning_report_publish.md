@@ -14,6 +14,17 @@
 ./prework/YYYY-MM/YYYY-MM-DD/knowledge_explaination.md
 ```
 
+开始发布前，必须先验证上游任务 3 的输出已经完成：
+
+```text
+./prework/YYYY-MM/YYYY-MM-DD/knowledge_explaination.md
+./knowledge_log/YYYY-MM-knowledge-log.md
+```
+
+如果 `knowledge_explaination.md` 缺失、为空或不可读取，应停止本任务并明确记录原因；不要生成状态日报，不要更新 `daily_report/manifest.json`，不要更新 `knowledge_log/manifest.json`，不要提交或推送。
+
+如果当月 `knowledge_log/YYYY-MM-knowledge-log.md` 缺失、为空或不可读取，应停止本任务并明确记录原因；不要继续发布日报或更新 manifest。
+
 生成或更新：
 
 ```text
@@ -70,6 +81,7 @@
 ## 3. 必要约束
 
 - 负责根据知识内容来设计显示样式，而不进行知识内容主体的修改。
+- 只有在当日 `knowledge_explaination.md` 和当月 `knowledge_log/YYYY-MM-knowledge-log.md` 都存在、非空且可读取后，才允许生成日报、更新 manifest、提交和同步。
 - 每个重点概念都必须同时生成 `简读` 和 `精读` 两套文本：
   - 简读保留：一句话解释、核心要点、小例子、记忆句。
   - 精读保留：完整讲解、原理逻辑、具体例子、常见误区、概念关联、继续深入问题。
