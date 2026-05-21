@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-05-21 学习笔记日报</title>
+    <meta
+      name="description"
+      content="2026-05-21 学习日报：上游产物完整性校验、输入缺失时停止生成、概念图谱。"
+    />
+    <link rel="stylesheet" href="../../style/main.css?v=20260521" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-05-21</p>
+        <h1>从安全门槛走向智能学习</h1>
+        <p>
+          今天的学习从自动化流水线的安全门槛出发：先检查上游材料是否合格，
+          再规定材料缺失时必须停止，最后把知识从清单组织成带关系的概念图谱。
+        </p>
+        <div class="meta-grid">
+          <div class="meta-item">
+            <span class="meta-label">今日主题</span>
+            <span class="meta-value">自动化可靠性与知识组织</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">阅读模式</span>
+            <span class="meta-value">简读 / 精读</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">知识点</span>
+            <span class="meta-value">3 个并列讲解</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">学习路径</span>
+            <span class="meta-value">检查 → 停止 → 关联</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日知识点概览</h2>
+        <p class="lead">
+          今天的三个概念共同回答一个问题：自动化系统如何既不基于坏输入继续生成，
+          又能把真实输出整理成更容易学习和推理的知识结构。
+        </p>
+        <div class="stat-grid">
+          <article class="stat-card">
+            <strong>上游产物完整性校验</strong>
+            <span>确认上游输出存在、非空、可读取，把坏材料挡在下游任务之外。</span>
+          </article>
+          <article class="stat-card">
+            <strong>输入缺失时停止生成</strong>
+            <span>材料不全时宁愿停工并记录原因，也不生成占位内容或虚构日报。</span>
+          </article>
+          <article class="stat-card">
+            <strong>概念图谱</strong>
+            <span>用带语义的关系连接概念，让知识从术语清单变成可推理的关系网。</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日知识主线</h2>
+        <p class="lead">
+          自动化流水线不能盲目开工：它先要确认上游产物可用；一旦发现输入缺失，
+          就要受控停止，避免下游把错误当成成果继续传播。等内容真实可靠后，
+          概念图谱再负责把概念之间的依赖、触发和共同目标讲清楚，让学习从记词变成理解结构。
+        </p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-toolbar panel">
+          <div>
+            <p class="eyebrow">Read Mode</p>
+            <h2 class="section-title">今日三节小课</h2>
+            <p class="lead">
+              简读用于快速抓住三个概念；精读会在卡片下方展开完整文章。
+              切到精读后，三张卡片会变成目录。
+            </p>
+          </div>
+          <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+            <button class="is-active" type="button" data-mode="brief">简读</button>
+            <button type="button" data-mode="deep">精读</button>
+          </div>
+        </div>
+
+        <div class="lesson-grid">
+          <article class="lesson-card" id="upstream-integrity">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>上游产物完整性校验</h3>
+              <p>Upstream Artifact Integrity Check</p>
+            </header>
+
+            <div class="lesson-brief">
+              <p class="lesson-summary">
+                上游产物完整性校验是在下游任务开工前，确认输入文件存在、非空且可读取。
+              </p>
+              <h4>核心要点</h4>
+              <ul>
+                <li>存在、非空、可读取是最基础的三项输入门槛。</li>
+                <li>校验应发生在生成、发布、写入等下游动作之前。</li>
+                <li>它把坏原料挡在生产线外，减少编造和误发布。</li>
+              </ul>
+              <h4>小例子</h4>
+              <p>
+                每天需要 5 个 <code>work_summary_*.md</code> 文件；如果其中一个是空文件，
+                下游 AI 就不应该继续据此生成概念总结。
+              </p>
+              <div class="highlight">记忆句：自动化开工前，先验材料是不是合格。</div>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="upstream-integrity" aria-expanded="false">阅读精读</button>
+          </article>
+
+          <article class="lesson-card" id="stop-on-missing-input">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">LLM 工作流</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>输入缺失时停止生成</h3>
+              <p>Stop Generation on Missing Input</p>
+            </header>
+
+            <div class="lesson-brief">
+              <p class="lesson-summary">
+                输入缺失时停止生成，是在材料不全时主动终止正式输出，而不是用占位或猜测填坑。
+              </p>
+              <h4>核心要点</h4>
+              <ul>
+                <li>停止生成是一种受控状态，不等于程序失控崩溃。</li>
+                <li>它保护下游任务，不让错误输出被当成真实成果。</li>
+                <li>停止时应记录清楚原因，让后续恢复有线索。</li>
+              </ul>
+              <h4>小例子</h4>
+              <p>
+                如果只检测到 4 个上游总结文件，任务应返回失败状态并说明缺失项，
+                而不是发布一篇“今日无更新”的正式日报。
+              </p>
+              <div class="highlight">记忆句：材料不全时，停下来比编下去更可靠。</div>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="stop-on-missing-input" aria-expanded="false">阅读精读</button>
+          </article>
+
+          <article class="lesson-card" id="concept-graph">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">知识管理</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>概念图谱</h3>
+              <p>Concept Graph</p>
+            </header>
+
+            <div class="lesson-brief">
+              <p class="lesson-summary">
+                概念图谱用节点表示概念，用带语义的边表示关系，把知识组织成可理解的网络。
+              </p>
+              <h4>核心要点</h4>
+              <ul>
+                <li>节点是概念，边是依赖、类比、共同目标等明确关系。</li>
+                <li>图谱比清单更适合表达学习路径和推理链条。</li>
+                <li>高质量示例能引导 LLM 从列术语升级为画关系网。</li>
+              </ul>
+              <h4>小例子</h4>
+              <p>
+                <code>上游产物完整性校验</code> 失败后触发 <code>输入缺失时停止生成</code>，
+                两者又共同服务于防幻觉生成边界。
+              </p>
+              <div class="highlight">记忆句：真正的学习不是记住点，而是看见点之间的边。</div>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="concept-graph" aria-expanded="false">阅读精读</button>
+          </article>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="upstream-integrity">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>上游产物完整性校验</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>
+                想象你要做一道番茄炒蛋。如果番茄是烂的、鸡蛋是臭的，
+                或者冰箱里根本没有食材，你不会硬做，而是会先检查食材是否存在、是否新鲜。
+                自动化流水线也是一样：下游任务不能盲目开工，必须先确认上游产出的文件
+                <strong>存在、非空、可读取</strong>。
+              </p>
+              <p>
+                “存在”说明文件没有被删除，路径也没有写错；“非空”说明文件不是 0 字节空文件；
+                “可读取”说明当前自动化进程有权限打开它。三项检查合起来，
+                就像工厂门口的质检员，把坏原料挡在生产线之外。
+              </p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>先定位下游任务依赖哪些上游文件。</li>
+                <li>逐个检查文件是否存在，避免路径错误或产物缺失。</li>
+                <li>检查文件大小和内容，避免空文件被误当作有效输入。</li>
+                <li>确认当前用户可读取文件，避免权限问题在后续阶段才爆出来。</li>
+                <li>全部通过后再进入生成、发布或同步等正式动作。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>
+                本地流水线每天会读取多个 <code>work_summary_*.md</code> 文件。
+                如果其中一个因为 Git 冲突或脚本中断变成空文件，没有完整性校验的话，
+                下游 AI 可能会对着空输入“思考”，再编造出看似合理但无法追溯的内容。
+              </p>
+              <pre><code>if not exists("work_summary_AInote.md"):
+    raise Error("上游文件缺失")
+if size("work_summary_AInote.md") == 0:
+    raise Error("上游文件为空")
+if not readable("work_summary_AInote.md"):
+    raise Error("上游文件不可读")</code></pre>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为只要文件存在就够了；空文件和不可读文件同样会污染下游。</li>
+                <li>误以为校验可以放在生成失败后再补；前置校验能更早阻断错误扩散。</li>
+                <li>误以为完整性校验只适合代码文件；日报、日志、manifest 也需要它。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>防护式自动化</td><td>完整性校验让自动化先判断输入是否可信，再决定是否继续。</td></tr>
+                <tr><td>流水线前置条件</td><td>存在、非空、可读取就是执行后续任务前必须满足的条件。</td></tr>
+                <tr><td>输入缺失时停止生成</td><td>校验失败后，下一步就是停止正式生成并记录原因。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>除了存在、非空、可读取，还能检查哪些内容格式和语义约束？</li>
+                <li>大型分布式系统中，如何高效校验成千上万个上游产物？</li>
+                <li>如果文件部分损坏，例如最后几行丢失，完整性校验如何发现？</li>
+              </ol>
+            </article>
+
+            <article class="lesson-detail" data-lesson-detail="stop-on-missing-input">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · LLM 工作流</p>
+                <h3>输入缺失时停止生成</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>
+                校验发现问题之后，自动化系统要做选择：继续生成一个“默认结果”，
+                还是停止正式输出。在日报链路里，更可靠的选择是直接停止生成，
+                而不是写一篇“今日无更新”或“材料暂缺”的正式日报去填坑。
+              </p>
+              <p>
+                原因很简单：下游 Agent 会把任何产物都当成真实成果继续加工。
+                如果上游缺失时生成了占位内容，发布阶段可能会把占位内容发布成正式页面，
+                读者也会以为系统正常运行。停止生成意味着：要么输出高质量的真内容，
+                要么不输出正式产物，让更高层的人或机制介入。
+              </p>
+              <p>
+                这种停止不是程序失控崩溃，而是一种受控状态。它应该记录缺了什么、
+                哪个检查失败、为什么跳过后续任务，并保护已有的历史产物不被错误覆盖。
+              </p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>先用完整性校验判断输入是否满足最低条件。</li>
+                <li>发现缺失或不可用后，立刻阻断正式生成动作。</li>
+                <li>输出标准化失败原因，让后续自动化和人都能读懂。</li>
+                <li>不更新日报、manifest 或远端同步状态，避免制造“发布成功”的假象。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>
+                如果任务需要 5 个 <code>work_summary</code> 文件，但只检测到 4 个，
+                Agent 应直接返回失败状态，并输出“上游产物不完整，跳过今日知识提炼”。
+                它不应该临时写一个简短总结，更不应该覆盖下游的
+                <code>concept_relevance.md</code> 或正式日报。
+              </p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为停止生成就是程序崩溃；受控停止是一种明确的工程状态。</li>
+                <li>误以为占位输出更友好；正式占位很容易掩盖真正的上游故障。</li>
+                <li>误以为部分缺失时总能降级；是否降级必须由任务契约明确允许。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>上游产物完整性校验</td><td>停止生成是校验失败后的后续动作。</td></tr>
+                <tr><td>防幻觉生成边界</td><td>输入不足时停止，是落实“不编造”的具体策略。</td></tr>
+                <tr><td>结构化输出契约</td><td>停止时也应输出标准化错误状态，而不是随意文本。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>停止生成后如何通知开发者，是否需要自动创建工单？</li>
+                <li>部分缺失时，哪些任务可以降级处理，哪些任务必须完全停止？</li>
+                <li>如何确保停止生成不会留下未关闭资源或半写入文件？</li>
+              </ol>
+            </article>
+
+            <article class="lesson-detail" data-lesson-detail="concept-graph">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 知识管理</p>
+                <h3>概念图谱</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>
+                我们经常看到各种知识清单：番茄、鸡蛋、盐、葱花。
+                清单告诉你有哪些东西，却没有告诉你它们之间怎么配合。
+                概念图谱就是把孤立概念变成关系网：节点表示概念，
+                边表示概念之间的依赖、类比、耦合、共同目标或延伸。
+              </p>
+              <p>
+                图谱比清单更适合学习，因为人理解新知识时，往往是在已有概念网络上生长新节点和新边。
+                当你把“上游产物完整性校验”和“输入缺失时停止生成”连成一条
+                “校验失败触发停止”的边，就不只是记住两个术语，而是理解了流水线可靠性的一段关键逻辑。
+              </p>
+              <p>
+                在 LLM 工作流里，概念图谱也能指导下游生成。高质量 few-shot 示例可以要求模型输出
+                <code>[概念A] --关系类型--&gt; [概念B]</code> 这样的结构，
+                让结果从平面术语清单升级为能解释、能追踪、能扩展的知识网络。
+              </p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>先识别文本中的关键概念，把它们作为图谱节点。</li>
+                <li>再判断概念之间的关系类型，例如依赖、触发、共同目标、类比或延伸。</li>
+                <li>为每条边写出明确语义，避免只写“相关”这种模糊关系。</li>
+                <li>最后用图谱帮助人选择学习顺序，也帮助下游 Agent 按关系展开讲解。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>
+                今天的一小段图谱可以写成：
+              </p>
+              <pre><code>[上游产物完整性校验] --失败触发--&gt; [输入缺失时停止生成]
+                                         |
+                                         +--共同服务--&gt; [防幻觉生成边界]</code></pre>
+              <p>
+                这比单独记住三个词更有用，因为它直接说明了校验、停止和防幻觉之间的逻辑链条。
+              </p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为概念图谱就是思维导图；图谱的关键是每条边有明确语义。</li>
+                <li>误以为“有关”就是关系；没有关系类型的边，很难支持推理。</li>
+                <li>误以为图谱越复杂越好；好的图谱应服务于理解，而不是堆满连线。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>few-shot 示例质量控制</td><td>示例能引导 LLM 输出关系图，而不是平面清单。</td></tr>
+                <tr><td>知识日志归档</td><td>日志归档的不只是术语，也可以是长期积累的概念关系。</td></tr>
+                <tr><td>多阶段自动化流水线</td><td>图谱让下游讲解按关系展开，减少随机排列。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何自动从文本中提取概念和关系，构建知识图谱？</li>
+                <li>不同关系类型的权重和优先级应该如何设计？</li>
+                <li>概念图谱如何与推荐系统结合，辅助个性化学习路径？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">
+          上游产物完整性校验负责回答“输入材料能不能用”；输入缺失时停止生成负责回答
+          “材料不能用时该不该继续”；概念图谱则回答“材料可靠以后，知识应该如何组织”。
+          三者形成从检查到阻断再到结构化学习的递进链。
+        </p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <blockquote>
+          可靠的自动化不是永远往前跑，而是知道何时检查、何时停下、何时把知识连成网。
+        </blockquote>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+          <li>完整性校验除了存在、非空、可读取，还应加入哪些格式和语义检查？</li>
+          <li>输入部分缺失时，怎样设计既不编造又不浪费已有材料的降级策略？</li>
+          <li>如何让概念图谱持续积累，逐渐变成个人长期学习路径？</li>
+        </ol>
+      </section>
+
+      <section class="footer-note">
+        <p>
+          数据来源：`prework/2026-05/2026-05-21/knowledge_explaination.md`。
+          本页复用站点公共样式 `../../style/main.css`，并可从
+          <a href="../../index.html?archive=1">学习归档</a> 返回历史日报入口。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll(".read-mode-toggle button");
+      const expandButtons = document.querySelectorAll(".lesson-expand");
+      const lessonCards = document.querySelectorAll(".lesson-card");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const detailArticles = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+      let activeLesson = null;
+
+      function setReadMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => {
+          const active = button.dataset.mode === mode;
+          button.classList.toggle("is-active", active);
+          button.setAttribute("aria-pressed", String(active));
+        });
+
+        if (mode === "deep" && !activeLesson) {
+          openLesson("upstream-integrity", { scroll: false });
+        }
+
+        if (mode === "brief") {
+          closeLesson();
+        }
+      }
+
+      function openLesson(lesson, options = {}) {
+        activeLesson = lesson;
+        detailPanel.classList.add("is-open");
+        detailPanel.dataset.activeLesson = lesson;
+        lessonCards.forEach((card) => {
+          card.classList.toggle("is-active", card.id === lesson);
+        });
+        detailArticles.forEach((article) => {
+          article.classList.toggle("is-active", article.dataset.lessonDetail === lesson);
+        });
+        expandButtons.forEach((button) => {
+          const expanded = button.dataset.lesson === lesson;
+          button.setAttribute("aria-expanded", String(expanded));
+          button.textContent = expanded ? "正在精读" : "阅读精读";
+        });
+
+        if (options.scroll !== false) {
+          window.setTimeout(() => {
+            detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 140);
+        }
+      }
+
+      function closeLesson() {
+        activeLesson = null;
+        detailPanel.classList.remove("is-open");
+        lessonCards.forEach((card) => card.classList.remove("is-active"));
+        detailArticles.forEach((article) => article.classList.remove("is-active"));
+        expandButtons.forEach((button) => {
+          button.setAttribute("aria-expanded", "false");
+          button.textContent = "阅读精读";
+        });
+      }
+
+      modeButtons.forEach((button) => {
+        button.addEventListener("click", () => setReadMode(button.dataset.mode));
+      });
+
+      expandButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          if (activeLesson === button.dataset.lesson) {
+            setReadMode("brief");
+            return;
+          }
+          setReadMode("deep");
+          openLesson(button.dataset.lesson);
+        });
+      });
+
+      lessonCards.forEach((card) => {
+        card.addEventListener("click", (event) => {
+          if (event.target.closest("button")) {
+            return;
+          }
+          if (lessonSection.dataset.readMode === "deep") {
+            openLesson(card.id);
+          }
+        });
+      });
+
+      closeButtons.forEach((button) => {
+        button.addEventListener("click", () => setReadMode("brief"));
+      });
+
+      setReadMode("brief");
+    </script>
+  </body>
+</html>
