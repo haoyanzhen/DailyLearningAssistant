@@ -15,6 +15,7 @@
 - `interview_prepare`
 - `ResearchPaperBase_cc`
 - `ResearchPaperBase_codex`
+- `mcp`
 
 对每个仓库分别执行：
 

@@ -19,6 +19,7 @@ github 个人静态网页托管
 - interview_prepare
 - ResearchPaperBase_cc
 - ResearchPaperBase_codex
+- mcp
 
 ## 每日自动化流程
 

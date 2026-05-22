@@ -105,7 +105,7 @@ add_paragraph(tf2, "全自动学习管理系统。", font_size=16, bold=True, sp
 add_paragraph(tf2, "", font_size=6)
 add_paragraph(tf2, "它通过 4 个独立的 AI Agent 任务，每日自动：", font_size=16)
 add_paragraph(tf2, "", font_size=4)
-add_paragraph(tf2, "●  扫描 5 个 Git 仓库的提交记录", font_size=16)
+add_paragraph(tf2, "●  扫描 6 个 Git 仓库的提交记录", font_size=16)
 add_paragraph(tf2, "●  提炼数学/物理/计算机/AI 相关概念", font_size=16)
 add_paragraph(tf2, "●  生成生动详细的知识讲解", font_size=16)
 add_paragraph(tf2, "●  发布可直接阅读的学习日报网页", font_size=16)
@@ -136,7 +136,7 @@ add_bg(slide, C_DARK)
 add_text_box(slide, 0.8, 0.5, 8, 0.7, "每日监控范围", font_size=36, color=C_WHITE, bold=True)
 add_shape_bg(slide, 0.8, 1.25, 2, 0.06, C_ACCENT)
 
-add_text_box(slide, 0.8, 1.7, 11, 0.6, "每日自动扫描 ~/projects 下的 5 个 Git 仓库，生成对应工作总结", font_size=18, color=C_GRAY)
+add_text_box(slide, 0.8, 1.7, 11, 0.6, "每日自动扫描 ~/projects 下的 6 个 Git 仓库，生成对应工作总结", font_size=18, color=C_GRAY)
 
 repos = [
     ("AInote", "AI 辅助开发笔记", C_ACCENT),
@@ -144,15 +144,19 @@ repos = [
     ("interview_prepare", "面试准备材料", C_GREEN),
     ("ResearchPaperBase_cc", "论文管理 (Codex)", C_PURPLE),
     ("ResearchPaperBase_codex", "论文管理 (Claude Code)", C_YELLOW),
+    ("mcp", "MCP 相关实践", C_ACCENT),
 ]
 
 for i, (name, desc, color) in enumerate(repos):
-    x = 0.8 + (i * 2.45)
-    add_rounded_rect(slide, x, 2.7, 2.2, 3.5, RGBColor(0x25, 0x25, 0x3A))
-    add_circle(slide, x + 0.75, 3.0, 0.7, color)
-    add_text_box(slide, x + 0.25, 3.8, 1.7, 0.3, str(i+1), font_size=12, color=C_GRAY, alignment=PP_ALIGN.CENTER)
-    add_text_box(slide, x + 0.1, 4.1, 2.0, 0.5, name, font_size=18, color=C_WHITE, bold=True, alignment=PP_ALIGN.CENTER)
-    add_text_box(slide, x + 0.1, 4.7, 2.0, 0.6, desc, font_size=12, color=C_GRAY, alignment=PP_ALIGN.CENTER)
+    col = i % 3
+    row = i // 3
+    x = 0.8 + (col * 4.0)
+    y = 2.45 + (row * 1.75)
+    add_rounded_rect(slide, x, y, 3.65, 1.35, RGBColor(0x25, 0x25, 0x3A))
+    add_circle(slide, x + 0.35, y + 0.25, 0.55, color)
+    add_text_box(slide, x + 0.18, y + 0.42, 0.35, 0.24, str(i+1), font_size=10, color=C_DARK, bold=True, alignment=PP_ALIGN.CENTER)
+    add_text_box(slide, x + 0.85, y + 0.25, 2.6, 0.35, name, font_size=15, color=C_WHITE, bold=True)
+    add_text_box(slide, x + 0.85, y + 0.72, 2.6, 0.35, desc, font_size=11, color=C_GRAY)
 
 add_text_box(slide, 0.8, 6.6, 11, 0.5, "每个仓库的前一天提交 → 一份 Markdown 总结报告 → 进入概念提炼阶段", font_size=16, color=C_GRAY, alignment=PP_ALIGN.CENTER)
 
@@ -164,7 +168,7 @@ add_text_box(slide, 0.8, 0.5, 8, 0.7, "四阶段自动化流水线", font_size=3
 add_shape_bg(slide, 0.8, 1.25, 2, 0.06, C_ACCENT)
 
 stages = [
-    ("1", "代码变更观察员", "每日工作\n总结报告", "扫描 5 个仓库的 Git 提交\n生成 work_summary_*.md", C_ACCENT),
+    ("1", "代码变更观察员", "每日工作\n总结报告", "扫描 6 个仓库的 Git 提交\n生成 work_summary_*.md", C_ACCENT),
     ("2", "科普老师", "概念提炼\n与关联", "提炼数学/物理/CS/AI 概念\n生成 concept_relevance.md", C_ACCENT2),
     ("3", "知识讲解老师", "详细知识\n讲解", "选择 3 个概念深入讲解\n生成 knowledge_explaination.md", C_GREEN),
     ("4", "日报编辑与发布员", "学习日报\n与发布", "生成 HTML 学习日报\n更新 manifest 并推送", C_PURPLE),
@@ -202,7 +206,7 @@ add_rounded_rect(slide, 0.8, 1.8, 5.7, 5.0, RGBColor(0x25, 0x25, 0x3A))
 tf = add_text_box(slide, 1.2, 2.0, 5, 0.4, "阶段 1 — 代码变更观察员", font_size=22, color=C_ACCENT, bold=True)
 tf2 = add_text_box(slide, 1.2, 2.6, 5, 4.0, "", font_size=15, color=C_WHITE)
 items_s1 = [
-    "●  读取前一天 ~/projects 下 5 个仓库的 git log",
+    "●  读取前一天 ~/projects 下 6 个仓库的 git log",
     "●  分析每次提交的文件变更和 diff 统计",
     "●  整理提交概览、关键文件变更、工作主题",
     "●  标注可能涉及的知识点线索",
@@ -294,6 +298,7 @@ tree_lines = [
     "│   ├── work_summary_interview_prepare.md",
     "│   ├── work_summary_ResearchPaperBase_cc.md",
     "│   ├── work_summary_ResearchPaperBase_codex.md",
+    "│   ├── work_summary_mcp.md",
     "│   ├── concept_relevance.md",
     "│   └── knowledge_explaination.md",
     "├── daily_report/YYYY-MM/",
@@ -315,7 +320,7 @@ tf = add_text_box(slide, 7.4, 2.0, 5, 0.4, "数据流向", font_size=22, color=C
 tf2 = add_text_box(slide, 7.4, 2.6, 5, 4.0, "", font_size=14, color=C_WHITE)
 
 flow_items = [
-    ("Git Repos", C_ACCENT, "5 个仓库的提交记录"),
+    ("Git Repos", C_ACCENT, "6 个仓库的提交记录"),
     ("work_summary_*.md", C_ACCENT2, "每日仓库变更总结"),
     ("concept_relevance.md", C_GREEN, "概念清单 + 关联图谱"),
     ("knowledge_explaination.md", C_PURPLE, "3 个概念的完整讲解"),
@@ -575,7 +580,7 @@ for item in future_items:
 add_text_box(slide, 0.8, 7.0, 12, 0.4, '"把今天学到的东西，留成明天能继续走的路"', font_size=18, color=C_ACCENT, bold=False, alignment=PP_ALIGN.CENTER)
 
 # Save
-output_path = "/Users/qingyue/projects/DailyLearningAssistant/每日拾光学习簿-项目介绍.pptx"
+output_path = "/Users/qingyue/projects/DailyLearningAssistant/presentation/每日拾光学习簿-项目介绍.pptx"
 prs.save(output_path)
 print(f"PPT saved to: {output_path}")
 print(f"Total slides: {len(prs.slides)}")
