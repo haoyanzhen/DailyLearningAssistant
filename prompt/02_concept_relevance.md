@@ -20,6 +20,7 @@
 ./prework/YYYY-MM/YYYY-MM-DD/work_summary_AInote.md
 ./prework/YYYY-MM/YYYY-MM-DD/work_summary_DailyLearningAssistant.md
 ./prework/YYYY-MM/YYYY-MM-DD/work_summary_interview_prepare.md
+./prework/YYYY-MM/YYYY-MM-DD/work_summary_mcp.md
 ./prework/YYYY-MM/YYYY-MM-DD/work_summary_ResearchPaperBase_cc.md
 ./prework/YYYY-MM/YYYY-MM-DD/work_summary_ResearchPaperBase_codex.md
 ./prework/YYYY-MM/YYYY-MM-DD/work_summary_mcp.md

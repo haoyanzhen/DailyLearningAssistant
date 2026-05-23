@@ -13,6 +13,7 @@
 - `AInote`
 - `DailyLearningAssistant`
 - `interview_prepare`
+- `mcp`
 - `ResearchPaperBase_cc`
 - `ResearchPaperBase_codex`
 - `mcp`
