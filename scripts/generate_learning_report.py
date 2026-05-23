@@ -484,14 +484,14 @@ def render_report_html(data: dict, target_date: str) -> str:
         lessonSection.dataset.readMode = mode;
         modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
         if (mode === "brief") {{
-          detailPanel.classList.remove("is-visible");
+          detailPanel.classList.remove("is-open");
           expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
         }}
       }}
 
       function openLesson(id) {{
         setMode("deep");
-        detailPanel.classList.add("is-visible");
+        detailPanel.classList.add("is-open");
         details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
         expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
         detailPanel.scrollIntoView({{ behavior: "smooth", block: "start" }});
