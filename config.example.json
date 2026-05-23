@@ -8,16 +8,47 @@
     "target_emails": [
       "recipient@example.com",
       "another-recipient@example.com"
-    ]
+    ],
+    "disabled_target_emails": [],
+    "imap_server": "imap.gmail.com",
+    "imap_port": 993,
+    "imap_user": "your-email@gmail.com",
+    "imap_password": "YOUR_APP_PASSWORD_OR_IMAP_TOKEN"
   },
   "schedule": {
     "daily_run_time": "09:00",
     "timezone": "Asia/Shanghai"
   },
+  "repositories": [
+    {
+      "name": "AInote",
+      "path": "~/projects/AInote"
+    },
+    {
+      "name": "DailyLearningAssistant",
+      "path": "~/projects/DailyLearningAssistant"
+    },
+    {
+      "name": "interview_prepare",
+      "path": "~/projects/interview_prepare"
+    },
+    {
+      "name": "mcp",
+      "path": "~/projects/mcp"
+    },
+    {
+      "name": "ResearchPaperBase_cc",
+      "path": "~/projects/ResearchPaperBase_cc"
+    },
+    {
+      "name": "ResearchPaperBase_codex",
+      "path": "~/projects/ResearchPaperBase_codex"
+    }
+  ],
   "llm": {
     "api_url": "https://api.deepseek.com/v1/chat/completions",
     "api_key": "YOUR_DEEPSEEK_API_KEY",
-    "model": "deepseek-chat"
+    "model": "deepseek-v4-pro"
   },
   "site": {
     "base_url": "https://haoyanzhen.github.io/DailyLearningAssistant"

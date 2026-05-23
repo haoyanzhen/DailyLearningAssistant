@@ -1,0 +1,825 @@
+#!/usr/bin/env python3
+"""Generate daily Git work summaries for local repositories.
+
+This is the first independent local agent. It reads Git evidence from the
+repositories under ~/projects by default and writes one Markdown summary per
+repository into prework/YYYY-MM/YYYY-MM-DD/.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import subprocess
+import sys
+from dataclasses import dataclass
+from datetime import datetime, time, timedelta
+from pathlib import Path
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
+
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
+from orchestrator.llm import LLMRetryPolicy, call_chat_completion
+DEFAULT_REPOSITORIES = [
+    "AInote",
+    "DailyLearningAssistant",
+    "interview_prepare",
+    "mcp",
+    "ResearchPaperBase_cc",
+    "ResearchPaperBase_codex",
+]
+
+
+@dataclass
+class RepositoryConfig:
+    name: str
+    path: Path
+
+
+@dataclass
+class CommitInfo:
+    full_hash: str
+    short_hash: str
+    date: str
+    author: str
+    refs: str
+    subject: str
+    files: list[str]
+    stat: str
+
+
+@dataclass
+class WorktreeInfo:
+    path: Path
+    branch: str
+    head: str
+    status: list[str]
+
+
+@dataclass
+class SummaryEvidence:
+    markdown: str
+    has_confirmed_commits: bool
+    has_primary_uncommitted_changes: bool
+    has_branch_tip_changes: bool
+    has_worktree_candidate_changes: bool
+    evidence_type: str
+
+    @property
+    def should_call_llm(self) -> bool:
+        return any(
+            (
+                self.has_confirmed_commits,
+                self.has_primary_uncommitted_changes,
+                self.has_branch_tip_changes,
+                self.has_worktree_candidate_changes,
+            )
+        )
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Generate work_summary_[repo].md files from local Git evidence.")
+    parser.add_argument("--date", help="Target output date in YYYY-MM-DD format. Defaults to today in configured timezone.")
+    parser.add_argument("--config", default=str(PROJECT_ROOT / "config.json"), help="Optional config JSON path.")
+    parser.add_argument("--projects-root", default="~/projects", help="Directory containing default repositories.")
+    parser.add_argument("--output-root", default=str(PROJECT_ROOT), help="Root where prework/ will be written.")
+    parser.add_argument("--timezone", help="Timezone override, e.g. Asia/Shanghai.")
+    parser.add_argument("--no-llm", action="store_true", help="Write the deterministic Git evidence summary directly.")
+    parser.add_argument("--timeout", type=int, default=120, help="LLM request timeout in seconds.")
+    parser.add_argument("--llm-retries", type=int, default=3, help="Maximum LLM attempts per repository.")
+    parser.add_argument("--llm-retry-delay", type=float, default=3.0, help="Initial LLM retry delay in seconds.")
+    return parser.parse_args()
+
+
+def run_git(repo_path: Path, args: list[str], check: bool = False) -> subprocess.CompletedProcess[str]:
+    result = subprocess.run(
+        ["git", "-C", str(repo_path), *args],
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    if check and result.returncode != 0:
+        raise RuntimeError(result.stderr.strip() or result.stdout.strip() or f"git {' '.join(args)} failed")
+    return result
+
+
+def load_config(path: Path) -> dict:
+    if not path.exists():
+        return {}
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise SystemExit(f"[错误] 配置文件不是合法 JSON: {path} ({exc})")
+
+
+def require_llm_config(config: dict) -> dict | None:
+    llm = config.get("llm") or {}
+    required = ("api_url", "api_key", "model")
+    if not all(llm.get(key) for key in required):
+        return None
+    if str(llm["api_key"]).startswith("YOUR_"):
+        return None
+    return llm
+
+
+def resolve_timezone(args: argparse.Namespace, config: dict) -> ZoneInfo:
+    timezone_name = args.timezone or (config.get("schedule") or {}).get("timezone") or "Asia/Shanghai"
+    try:
+        return ZoneInfo(timezone_name)
+    except ZoneInfoNotFoundError:
+        raise SystemExit(f"[错误] 未识别的时区: {timezone_name}")
+
+
+def resolve_target_date(args: argparse.Namespace, timezone: ZoneInfo) -> str:
+    if args.date:
+        try:
+            datetime.strptime(args.date, "%Y-%m-%d")
+        except ValueError:
+            raise SystemExit("[错误] --date 必须使用 YYYY-MM-DD 格式。")
+        return args.date
+    return datetime.now(timezone).date().isoformat()
+
+
+def resolve_repositories(args: argparse.Namespace, config: dict) -> list[RepositoryConfig]:
+    configured = config.get("repositories")
+    repos: list[RepositoryConfig] = []
+
+    if isinstance(configured, list) and configured:
+        for item in configured:
+            if isinstance(item, str):
+                path = Path(os.path.expanduser(item)).resolve()
+                repos.append(RepositoryConfig(path.name, path))
+            elif isinstance(item, dict):
+                name = item.get("name")
+                raw_path = item.get("path")
+                if not name or not raw_path:
+                    raise SystemExit("[错误] repositories 中的对象必须包含 name 和 path。")
+                repos.append(RepositoryConfig(str(name), Path(os.path.expanduser(str(raw_path))).resolve()))
+        return repos
+
+    projects_root = Path(os.path.expanduser(args.projects_root)).resolve()
+    return [RepositoryConfig(name, projects_root / name) for name in DEFAULT_REPOSITORIES]
+
+
+def day_window(target_date: str, timezone: ZoneInfo) -> tuple[datetime, datetime]:
+    target = datetime.strptime(target_date, "%Y-%m-%d").date()
+    previous_day = target - timedelta(days=1)
+    start = datetime.combine(previous_day, time.min, timezone)
+    end = datetime.combine(target, time.min, timezone)
+    return start, end
+
+
+def is_git_repository(path: Path) -> bool:
+    if not path.exists():
+        return False
+    result = run_git(path, ["rev-parse", "--is-inside-work-tree"])
+    return result.returncode == 0 and result.stdout.strip() == "true"
+
+
+def current_branch(path: Path) -> str:
+    result = run_git(path, ["branch", "--show-current"])
+    branch = result.stdout.strip()
+    if branch:
+        return branch
+    result = run_git(path, ["rev-parse", "--short", "HEAD"])
+    return f"detached@{result.stdout.strip()}" if result.returncode == 0 else "未知"
+
+
+def git_status(path: Path) -> list[str]:
+    result = run_git(path, ["status", "--short"])
+    if result.returncode != 0:
+        return [f"[读取失败] {result.stderr.strip()}"]
+    return [line for line in result.stdout.splitlines() if line.strip()]
+
+
+def diff_name_status(path: Path, cached: bool) -> list[str]:
+    args = ["diff", "--name-status"]
+    if cached:
+        args.insert(1, "--cached")
+    result = run_git(path, args)
+    if result.returncode != 0:
+        return [f"[读取失败] {result.stderr.strip()}"]
+    return [line for line in result.stdout.splitlines() if line.strip()]
+
+
+def diff_stat(path: Path, cached: bool) -> str:
+    args = ["diff", "--stat"]
+    if cached:
+        args.insert(1, "--cached")
+    result = run_git(path, args)
+    return result.stdout.strip() if result.returncode == 0 else result.stderr.strip()
+
+
+def parse_commits(raw: str) -> list[tuple[str, str, str, str, str, str]]:
+    commits = []
+    for record in raw.split("\x1e"):
+        record = record.strip("\n")
+        if not record:
+            continue
+        parts = record.split("\x1f")
+        if len(parts) >= 6:
+            commits.append(tuple(parts[:6]))
+    return commits
+
+
+def collect_commits(path: Path, start: datetime, end: datetime) -> list[CommitInfo]:
+    pretty = "%H%x1f%h%x1f%ad%x1f%an%x1f%D%x1f%s%x1e"
+    result = run_git(
+        path,
+        [
+            "log",
+            "--all",
+            f"--since={start.isoformat()}",
+            f"--until={end.isoformat()}",
+            "--date=iso-strict",
+            f"--pretty=format:{pretty}",
+        ],
+    )
+    if result.returncode != 0:
+        raise RuntimeError(result.stderr.strip())
+
+    commits: list[CommitInfo] = []
+    for full_hash, short_hash, date, author, refs, subject in parse_commits(result.stdout):
+        files_result = run_git(path, ["show", "--format=", "--name-status", "--find-renames", full_hash])
+        stat_result = run_git(path, ["show", "--format=", "--stat", "--find-renames", full_hash])
+        files = [line for line in files_result.stdout.splitlines() if line.strip()] if files_result.returncode == 0 else []
+        stat = stat_result.stdout.strip() if stat_result.returncode == 0 else stat_result.stderr.strip()
+        commits.append(CommitInfo(full_hash, short_hash, date, author, refs, subject, files, stat))
+    return commits
+
+
+def collect_recent_branch_tips(path: Path, start: datetime, end: datetime) -> list[str]:
+    result = run_git(path, ["for-each-ref", "refs/heads", "--format=%(refname:short)%09%(objectname:short)%09%(committerdate:iso-strict)%09%(subject)"])
+    if result.returncode != 0:
+        return [f"[读取失败] {result.stderr.strip()}"]
+
+    branch_lines: list[str] = []
+    for line in result.stdout.splitlines():
+        parts = line.split("\t", 3)
+        if len(parts) != 4:
+            continue
+        name, head, date_text, subject = parts
+        try:
+            tip_date = datetime.fromisoformat(date_text)
+        except ValueError:
+            continue
+        if start <= tip_date < end:
+            branch_lines.append(f"- `{name}` @ `{head}` ({date_text})：{subject}")
+    return branch_lines
+
+
+def parse_worktree_blocks(raw: str) -> list[dict[str, str]]:
+    blocks: list[dict[str, str]] = []
+    current: dict[str, str] = {}
+    for line in raw.splitlines():
+        if not line.strip():
+            if current:
+                blocks.append(current)
+                current = {}
+            continue
+        key, _, value = line.partition(" ")
+        if key == "worktree" and current:
+            blocks.append(current)
+            current = {}
+        current[key] = value
+    if current:
+        blocks.append(current)
+    return blocks
+
+
+def collect_worktrees(path: Path) -> list[WorktreeInfo]:
+    result = run_git(path, ["worktree", "list", "--porcelain"])
+    if result.returncode != 0:
+        return [WorktreeInfo(path, "读取失败", "", [result.stderr.strip()])]
+
+    worktrees: list[WorktreeInfo] = []
+    for block in parse_worktree_blocks(result.stdout):
+        wt_path = Path(block.get("worktree", "")).expanduser()
+        if not wt_path.exists():
+            continue
+        branch_ref = block.get("branch", "")
+        branch = branch_ref.removeprefix("refs/heads/") if branch_ref else "detached"
+        head = block.get("HEAD", "")
+        status = git_status(wt_path)
+        worktrees.append(WorktreeInfo(wt_path, branch, head[:12], status))
+    return worktrees
+
+
+def render_list(items: list[str], empty_text: str) -> str:
+    if not items:
+        return empty_text
+    return "\n".join(f"- `{item}`" for item in items)
+
+
+def render_commit(commit: CommitInfo) -> str:
+    refs = f"；引用：{commit.refs}" if commit.refs else ""
+    files = "\n".join(f"  - `{line}`" for line in commit.files[:80]) or "  - 未记录文件列表"
+    if len(commit.files) > 80:
+        files += f"\n  - ... 另有 {len(commit.files) - 80} 条文件记录"
+    stat = commit.stat or "无统计信息"
+    return f"""### `{commit.short_hash}`：{commit.subject}
+
+- 时间：{commit.date}
+- 作者：{commit.author}{refs}
+- 完整提交：`{commit.full_hash}`
+
+变更文件：
+
+{files}
+
+统计信息：
+
+```text
+{stat}
+```
+"""
+
+
+def build_summary_evidence(repo: RepositoryConfig, target_date: str, start: datetime, end: datetime) -> SummaryEvidence:
+    path = repo.path
+    checked_window = f"{start.isoformat()} 至 {end.isoformat()}"
+
+    if not path.exists():
+        markdown = f"""# {target_date} {repo.name} 更改总结
+
+## 仓库状态
+
+- 仓库路径：`{path}`
+- 检查窗口：{checked_window}
+- 状态：仓库目录不存在。
+
+## 结论
+
+未能读取该仓库的 Git 记录。后续概念提炼时应忽略该仓库的技术主题，或在仓库恢复后补跑第 1 步 Agent。
+"""
+        return SummaryEvidence(markdown, False, False, False, False, "unavailable")
+
+    if not is_git_repository(path):
+        markdown = f"""# {target_date} {repo.name} 更改总结
+
+## 仓库状态
+
+- 仓库路径：`{path}`
+- 检查窗口：{checked_window}
+- 状态：目录存在，但不是 Git 工作区。
+
+## 结论
+
+未能读取该仓库的 Git 记录。后续概念提炼时应忽略该仓库的技术主题，或在仓库恢复为 Git 仓库后补跑第 1 步 Agent。
+"""
+        return SummaryEvidence(markdown, False, False, False, False, "unavailable")
+
+    try:
+        commits = collect_commits(path, start, end)
+        branch_tips = collect_recent_branch_tips(path, start, end)
+        worktrees = collect_worktrees(path)
+        status = git_status(path)
+        unstaged = diff_name_status(path, cached=False)
+        staged = diff_name_status(path, cached=True)
+        unstaged_stat = diff_stat(path, cached=False)
+        staged_stat = diff_stat(path, cached=True)
+    except RuntimeError as exc:
+        markdown = f"""# {target_date} {repo.name} 更改总结
+
+## 仓库状态
+
+- 仓库路径：`{path}`
+- 检查窗口：{checked_window}
+- 当前分支：`{current_branch(path)}`
+- 状态：Git 读取失败。
+
+## 错误信息
+
+```text
+{exc}
+```
+"""
+        return SummaryEvidence(markdown, False, False, False, False, "unavailable")
+
+    changed_worktrees = [wt for wt in worktrees if wt.status]
+    primary_clean = not status
+    has_branch_or_worktree_change = bool(branch_tips or changed_worktrees)
+
+    if not commits and not status and not has_branch_or_worktree_change:
+        markdown = f"""# {target_date} {repo.name} 更改总结
+
+## 结论
+
+当日无变更。
+
+## 基本信息
+
+| 项目 | 内容 |
+| --- | --- |
+| 仓库 | `{repo.name}` |
+| 路径 | `{path}` |
+| 当前分支 | `{current_branch(path)}` |
+| 检查窗口 | {checked_window} |
+| 窗口内提交数 | 0 |
+| 主工作区状态 | 干净 |
+| 存在待确认变化线索的 worktree 数 | 0 |
+
+## 对后续概念提炼任务的备注
+
+- 该仓库在检查窗口内无 Git 提交。
+- 主工作区无未提交变更。
+- 未发现窗口内更新的本地分支或包含待确认变化线索的 worktree。
+- 后续概念提炼可将该仓库视为“当日无新增技术线索”。
+"""
+        return SummaryEvidence(markdown, False, False, False, False, "no_change")
+
+    if commits:
+        headline = f"检查窗口内发现 {len(commits)} 个提交。"
+    elif status:
+        headline = "检查窗口内未发现提交，但主工作区存在未提交变更。"
+    elif has_branch_or_worktree_change:
+        headline = "主路径无未提交变更，但其他 branch 或 worktree 存在待确认变化线索。"
+    else:
+        headline = "检查窗口内未发现提交，主路径、分支提示和 worktree 均未发现明确变化。"
+
+    commit_section = "\n".join(render_commit(commit) for commit in commits) if commits else "检查窗口内未发现任何本地分支可达的提交。"
+    branch_section = "\n".join(branch_tips) if branch_tips else "未发现 tip 时间落在检查窗口内的本地分支。"
+
+    worktree_lines = []
+    for wt in worktrees:
+        state = "存在当前待确认变化线索" if wt.status else "干净"
+        worktree_lines.append(f"### `{wt.branch}` @ `{wt.head}`")
+        worktree_lines.append(f"- 路径：`{wt.path}`")
+        worktree_lines.append(f"- 状态：{state}")
+        if wt.status:
+            worktree_lines.append("")
+            worktree_lines.append(render_list(wt.status, "无未提交变更。"))
+        worktree_lines.append("")
+    worktree_section = "\n".join(worktree_lines).strip() or "未读取到 worktree 信息。"
+
+    themes = infer_theme_lines(commits, status, branch_tips, changed_worktrees)
+
+    markdown = f"""# {target_date} {repo.name} 更改总结
+
+本总结由本地第 1 步 Agent 基于 Git 证据生成。目标日期为 `{target_date}`，实际检查的是目标日期前一天的提交窗口。
+
+## 提交概览
+
+| 项目 | 内容 |
+| --- | --- |
+| 仓库 | `{repo.name}` |
+| 路径 | `{path}` |
+| 当前分支 | `{current_branch(path)}` |
+| 检查窗口 | {checked_window} |
+| 窗口内提交数 | {len(commits)} |
+| 主工作区状态 | {"干净" if primary_clean else "存在未提交变更"} |
+| 存在待确认变化线索的 worktree 数 | {len(changed_worktrees)} |
+
+{headline}
+
+## 一、窗口内提交记录
+
+{commit_section}
+
+## 二、主工作区未提交变更
+
+### 状态摘要
+
+{render_list(status, "主工作区当前无未提交变更。")}
+
+### 已暂存文件
+
+{render_list(staged, "无已暂存变更。")}
+
+### 未暂存文件
+
+{render_list(unstaged, "无未暂存变更。")}
+
+### 已暂存统计
+
+```text
+{staged_stat or "无"}
+```
+
+### 未暂存统计
+
+```text
+{unstaged_stat or "无"}
+```
+
+## 三、分支与 worktree 线索
+
+### 检查窗口内更新的本地分支
+
+{branch_section}
+
+### Worktree 状态（当前待确认变化线索）
+
+{worktree_section}
+
+## 四、主要工作主题
+
+{themes}
+
+## 五、可能涉及的知识点线索
+
+{infer_concept_lines(commits, status, branch_tips, changed_worktrees)}
+
+## 六、对后续概念提炼任务的备注
+
+- 本文件只基于 Git 提交、工作区状态、分支和 worktree 元数据生成。
+- Git 无法可靠证明未提交变更发生的具体日期，因此 worktree 未提交变更只作为“当前待确认变化线索”，不要等同于目标窗口内已经完成的提交事实。
+- 如果主路径无变化但 branch 或 worktree 有待确认变化线索，后续任务应优先关注对应分支/worktree 的提交主题和文件路径，并在必要时人工确认时间归属。
+"""
+    if commits:
+        evidence_type = "confirmed_change"
+    else:
+        evidence_type = "candidate_change"
+
+    return SummaryEvidence(
+        markdown=markdown,
+        has_confirmed_commits=bool(commits),
+        has_primary_uncommitted_changes=bool(status),
+        has_branch_tip_changes=bool(branch_tips),
+        has_worktree_candidate_changes=bool(changed_worktrees),
+        evidence_type=evidence_type,
+    )
+
+
+def infer_theme_lines(
+    commits: list[CommitInfo],
+    status: list[str],
+    branch_tips: list[str],
+    changed_worktrees: list[WorktreeInfo],
+) -> str:
+    lines: list[str] = []
+    if commits:
+        subjects = "; ".join(commit.subject for commit in commits[:8])
+        lines.append(f"- 提交主题：{subjects}")
+    if status:
+        lines.append("- 主工作区存在未提交变更，需要后续确认这些变更是否属于当天正式工作。")
+    if branch_tips:
+        lines.append("- 有本地分支 tip 落在检查窗口内，说明工作可能发生在非当前分支。")
+    if changed_worktrees:
+        names = ", ".join(wt.branch for wt in changed_worktrees)
+        lines.append(f"- 有 worktree 存在当前待确认变化线索：{names}。")
+    if not lines:
+        lines.append("- 未发现明确工作主题。")
+    return "\n".join(lines)
+
+
+def infer_concept_lines(
+    commits: list[CommitInfo],
+    status: list[str],
+    branch_tips: list[str],
+    changed_worktrees: list[WorktreeInfo],
+) -> str:
+    paths = []
+    for commit in commits:
+        paths.extend(commit.files)
+    paths.extend(status)
+
+    lower_blob = "\n".join(paths + [commit.subject for commit in commits]).lower()
+    concepts: list[str] = []
+
+    keyword_map = [
+        ("prompt", "提示词工程、任务约束设计"),
+        ("agent", "Agent 工作流、任务编排"),
+        ("workflow", "自动化工作流、流水线设计"),
+        ("manifest", "静态站点索引、发布契约"),
+        ("html", "静态页面生成、前端呈现"),
+        ("css", "视觉系统、响应式布局"),
+        ("python", "脚本化自动化、文件处理"),
+        ("test", "测试与回归验证"),
+        ("llm", "大语言模型调用与输出约束"),
+        ("git", "版本控制、变更追踪"),
+    ]
+    for keyword, concept in keyword_map:
+        if keyword in lower_blob and concept not in concepts:
+            concepts.append(concept)
+
+    if branch_tips:
+        concepts.append("分支隔离、并行开发")
+    if changed_worktrees:
+        concepts.append("Git worktree、多工作区协作")
+    if status and not commits:
+        concepts.append("未提交变更管理、工作区状态审计")
+
+    if not concepts:
+        return "- 未发现明确知识点线索。"
+    return "\n".join(f"- {concept}" for concept in concepts)
+
+
+def strip_markdown_fence(text: str) -> str:
+    text = text.strip()
+    if text.startswith("```"):
+        lines = text.splitlines()
+        if lines:
+            lines = lines[1:]
+        if lines and lines[-1].strip() == "```":
+            lines = lines[:-1]
+        text = "\n".join(lines).strip()
+    return text
+
+
+def call_llm(llm: dict, prompt: str, timeout: int, retries: int, retry_delay: float) -> str:
+    return call_chat_completion(
+        llm,
+        [{"role": "user", "content": prompt}],
+        timeout=timeout,
+        retry_policy=LLMRetryPolicy(attempts=retries, initial_delay=retry_delay),
+        temperature=llm.get("temperature", 0.4),
+    )
+
+
+def build_llm_prompt(repo: RepositoryConfig, target_date: str, evidence_markdown: str) -> str:
+    return f"""你是“每日代码变更观察员”。请基于下面的 Git 证据草稿，生成一份适合后续概念提炼任务使用的正式 Markdown 工作总结。
+
+仓库：{repo.name}
+目标日期：{target_date}
+
+重要边界：
+- 只能基于证据草稿中可确认的信息总结，不要编造提交内容、文件变化或技术意图。
+- “窗口内提交记录”是目标日期前一天的已确认提交事实。
+- “主工作区未提交变更”和“worktree 状态”只能作为当前待确认变化线索；Git 不能证明它们一定发生在目标日期前一天，因此不要写成已经完成的昨日事实。
+- 如果没有提交，也要保留“无提交记录”的结论；如果只有待确认变化线索，要明确标注“待确认”。
+- 输出必须是完整 Markdown 文件内容，不要输出 JSON，不要包裹 markdown 代码块。
+- 文件应包含：仓库名称、日期、当日提交概览、关键文件变更、主要工作主题、可能涉及的知识点线索、对后续概念提炼任务有帮助的备注。
+- 语气清晰、可复盘，不要只写流水账；但所有推断都必须能从证据草稿找到依据。
+
+Git 证据草稿：
+
+```markdown
+{evidence_markdown}
+```
+"""
+
+
+def generate_llm_summary(
+    repo: RepositoryConfig,
+    target_date: str,
+    evidence: str,
+    llm: dict,
+    timeout: int,
+    retries: int,
+    retry_delay: float,
+) -> str:
+    prompt = build_llm_prompt(repo, target_date, evidence)
+    content = strip_markdown_fence(call_llm(llm, prompt, timeout, retries, retry_delay))
+    if not content.strip():
+        raise RuntimeError("LLM 返回空内容。")
+    if "待确认" not in content and "worktree" in evidence.lower():
+        content += "\n\n## 自动校验备注\n\n- 证据草稿包含 worktree 信息；其中未提交变更只能视为当前待确认变化线索，不应等同于目标窗口内的提交事实。\n"
+    return content.rstrip() + "\n"
+
+
+def relative_to_root(path: Path) -> str:
+    try:
+        return str(path.resolve().relative_to(PROJECT_ROOT))
+    except ValueError:
+        return str(path)
+
+
+def load_status_file(path: Path, target_date: str) -> dict:
+    if not path.exists():
+        return {"date": target_date, "agents": {}}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {"date": target_date, "agents": {}}
+    if not isinstance(data, dict):
+        return {"date": target_date, "agents": {}}
+    data.setdefault("date", target_date)
+    data.setdefault("agents", {})
+    if not isinstance(data["agents"], dict):
+        data["agents"] = {}
+    return data
+
+
+def write_agent_status(
+    status_path: Path,
+    target_date: str,
+    agent_status: dict,
+    now_iso: str,
+) -> None:
+    status_data = load_status_file(status_path, target_date)
+    status_data["date"] = target_date
+    status_data["updated_at"] = now_iso
+    status_data.setdefault("agents", {})
+    status_data["agents"]["daily_work_summary"] = agent_status
+
+    status_path.parent.mkdir(parents=True, exist_ok=True)
+    temp_path = status_path.with_suffix(".json.tmp")
+    temp_path.write_text(json.dumps(status_data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    temp_path.replace(status_path)
+
+
+def summarize_agent_status(repositories: list[dict]) -> str:
+    if any(repo["status"] == "failed" for repo in repositories):
+        return "failed"
+    if any(repo["status"] == "degraded" for repo in repositories):
+        return "partial_success"
+    return "success"
+
+
+def main() -> int:
+    args = parse_args()
+    config = load_config(Path(args.config))
+    timezone = resolve_timezone(args, config)
+    target_date = resolve_target_date(args, timezone)
+    start, end = day_window(target_date, timezone)
+    started_at = datetime.now(timezone).isoformat()
+
+    output_root = Path(os.path.expanduser(args.output_root)).resolve()
+    output_dir = output_root / "prework" / target_date[:7] / target_date
+    output_dir.mkdir(parents=True, exist_ok=True)
+    status_path = output_dir / "run_status.json"
+
+    repos = resolve_repositories(args, config)
+    llm = None if args.no_llm else require_llm_config(config)
+    if args.no_llm:
+        print("[信息] 已启用 --no-llm，将直接写入 Git 证据总结。")
+    elif not llm:
+        print("[警告] config.json 中未找到可用 llm 配置，将直接写入 Git 证据总结。")
+
+    repository_statuses: list[dict] = []
+
+    for repo in repos:
+        evidence = build_summary_evidence(repo, target_date, start, end)
+        evidence_markdown = evidence.markdown.rstrip() + "\n"
+        content = evidence_markdown
+        repo_status = "success"
+        llm_status = "skipped_disabled" if args.no_llm else "skipped_unconfigured"
+        llm_error = None
+
+        if llm and evidence.should_call_llm:
+            try:
+                content = generate_llm_summary(
+                    repo,
+                    target_date,
+                    evidence_markdown,
+                    llm,
+                    args.timeout,
+                    args.llm_retries,
+                    args.llm_retry_delay,
+                )
+                print(f"[LLM] {repo.name}: 已生成正式总结。")
+                llm_status = "success"
+            except RuntimeError as exc:
+                llm_error = str(exc)
+                llm_status = "failed"
+                repo_status = "degraded"
+                print(f"[警告] {repo.name}: LLM 总结失败，改写入 Git 证据总结。原因：{exc}")
+        elif llm:
+            llm_status = "skipped_no_change"
+            print(f"[跳过] {repo.name}: 未发现提交或待确认变化线索，不调用 LLM。")
+
+        output_path = output_dir / f"work_summary_{repo.name}.md"
+        output_path.write_text(content, encoding="utf-8")
+        print(f"[完成] {repo.name}: {output_path}")
+
+        repository_statuses.append(
+            {
+                "name": repo.name,
+                "path": str(repo.path),
+                "status": repo_status,
+                "evidence_type": evidence.evidence_type,
+                "output_path": relative_to_root(output_path),
+                "llm": {
+                    "status": llm_status,
+                    "error": llm_error,
+                },
+                "signals": {
+                    "has_confirmed_commits": evidence.has_confirmed_commits,
+                    "has_primary_uncommitted_changes": evidence.has_primary_uncommitted_changes,
+                    "has_branch_tip_changes": evidence.has_branch_tip_changes,
+                    "has_worktree_candidate_changes": evidence.has_worktree_candidate_changes,
+                },
+            }
+        )
+
+    finished_at = datetime.now(timezone).isoformat()
+    agent_status = {
+        "status": summarize_agent_status(repository_statuses),
+        "started_at": started_at,
+        "finished_at": finished_at,
+        "timezone": str(timezone),
+        "window": {
+            "start": start.isoformat(),
+            "end": end.isoformat(),
+        },
+        "output_dir": relative_to_root(output_dir),
+        "llm": {
+            "enabled": not args.no_llm,
+            "configured": bool(llm),
+            "model": llm.get("model") if llm else None,
+            "retries": args.llm_retries,
+            "retry_delay_seconds": args.llm_retry_delay,
+        },
+        "repositories": repository_statuses,
+    }
+    write_agent_status(status_path, target_date, agent_status, finished_at)
+    print(f"[状态] 已更新: {status_path}")
+
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

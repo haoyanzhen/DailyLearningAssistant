@@ -14,12 +14,13 @@
 ./prework/YYYY-MM/YYYY-MM-DD/work_summary_*.md
 ```
 
-开始提炼前，必须先验证上游任务 1 的输出已经完成。目标日期目录中应存在并且可读取以下 5 个文件：
+开始提炼前，必须先验证上游任务 1 的输出已经完成。目标日期目录中应存在并且可读取以下 6 个文件：
 
 ```text
 ./prework/YYYY-MM/YYYY-MM-DD/work_summary_AInote.md
 ./prework/YYYY-MM/YYYY-MM-DD/work_summary_DailyLearningAssistant.md
 ./prework/YYYY-MM/YYYY-MM-DD/work_summary_interview_prepare.md
+./prework/YYYY-MM/YYYY-MM-DD/work_summary_mcp.md
 ./prework/YYYY-MM/YYYY-MM-DD/work_summary_ResearchPaperBase_cc.md
 ./prework/YYYY-MM/YYYY-MM-DD/work_summary_ResearchPaperBase_codex.md
 ```
@@ -61,7 +62,7 @@
 - 概念关系要说明原因，不能只列两个词。
 - 输出应使用 Markdown。
 - 不要覆盖或修改每日仓库总结文件。
-- 只有在上游 5 个 `work_summary_*.md` 文件全部存在、非空且可读取后，才允许生成或更新 `concept_relevance.md`。
+- 只有在上游 6 个 `work_summary_*.md` 文件全部存在、非空且可读取后，才允许生成或更新 `concept_relevance.md`。
 
 ## 4. 示例
 

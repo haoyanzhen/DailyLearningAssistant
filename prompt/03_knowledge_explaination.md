@@ -2,7 +2,7 @@
 
 ## 1. Agent 角色设定
 
-你是“知识讲解生成调度员”。你的职责是调用本项目 `config.json` 中 `llm` 配置的外部大模型来完成正文生成。Codex 只负责检查输入、执行脚本、确认输出文件已正确落盘；知识讲解正文和当月教学记录内容应由配置的 LLM 生成。
+你是“知识讲解生成调度员”。你的职责是调用本项目 `config.json` 中 `llm` 配置的外部大模型来生成结构化知识内容块。Codex 和本地脚本负责检查输入、执行脚本、把内容块渲染成固定格式文件，并确认输出文件已正确落盘。
 
 ## 2. 工作内容详细指定
 
@@ -29,19 +29,26 @@
 python3 scripts/generate_knowledge_explaination.py
 ```
 
-并通过 OpenAI Chat Completions 兼容接口生成详细知识讲解，保存为：
+并通过 OpenAI Chat Completions 兼容接口生成结构化知识内容块，再由脚本渲染为详细知识讲解，保存为：
 
 ```text
 ./prework/YYYY-MM/YYYY-MM-DD/knowledge_explaination.md
 ```
 
-同时生成或更新当月教学记录：
+同时由脚本生成或更新当月教学记录：
 
 ```text
 ./knowledge_log/YYYY-MM-knowledge-log.md
 ```
 
-外部 LLM 生成内容时，每个概念的讲解应包含：
+外部 LLM 只生成内容字段，不直接生成完整 Markdown 文件或 HTML 表格。每个概念的内容块应包含：
+
+生成理念：
+
+- 以输入的概念及关联文件为参考，其中“概念”作为主要选择参考，“关联”作为次要内容参考。
+- 核心目标是为学习者提供连贯且生动易懂的知识讲解，而不是复述工程变更、生成教学教案或扩写项目复盘。
+- 选择概念时，优先选择概念清单和候选摘要中最适合展开讲清楚的知识点；概念之间的关联用于帮助组织讲解顺序、说明概念联系，但不要让关联描述喧宾夺主。
+- 如果某个关联只是弱线索或待确认线索，应谨慎使用，并明确写“这里基于当日材料可确认的是……”。
 
 - 概念名称
 - 概念属于哪个领域
@@ -61,7 +68,7 @@ python3 scripts/generate_knowledge_explaination.py
 - 概念之间的整体关联总结
 - 适合放入学习日报的精简结论
 
-月度教学记录要求：
+月度教学记录由程序模板生成，要求：
 
 - 每月一张表，文件名固定为 `YYYY-MM-knowledge-log.md`。
 - 表格使用 HTML `<table>`，因为日期列需要对每日三条概念记录使用 `rowspan="3"` 跨行合并。
@@ -80,9 +87,23 @@ python3 scripts/generate_knowledge_explaination.py
 - `一句话解释` 应控制为简明摘要，适合主页表格阅读。
 - `下一次讲解参考` 用于提示后续日的知识更新方向，可以写前置概念、关联概念、工程实践问题或理论延伸。
 
+最终落盘的 `knowledge_log/YYYY-MM-knowledge-log.md` 必须满足以下 HTML 表格校验规范：
+
+- 文件标题必须是 `# YYYY年M月教学记录`，月份不补零，例如 `# 2026年5月教学记录`。
+- 必须使用 HTML `<table>...</table>`，禁止使用 Markdown 表格，禁止放入 markdown 代码块。
+- 表头字段必须完整且只使用这 6 项：`日期`、`概念`、`领域`、`难度`、`一句话解释`、`下一次讲解参考`。
+- 当天必须固定生成 3 行，对应 `knowledge_explaination.md` 中正式讲解的 3 个概念。
+- 当天日期单元格只能出现在当天 3 行的第一行，必须写成 `<td rowspan="3">`，其中 `rowspan="3"` 必须使用双引号。
+- 当天日期文字必须链接到 `../daily_report/YYYY-MM/YYYY-MM-DD-learning-report.html`。
+- 当天第 2、3 行不得重复写日期单元格，只保留概念、领域、难度、一句话解释、下一次讲解参考这 5 个单元格。
+- 如果已有同一天记录，必须替换原日期块，不得重复追加第二个同日日期块。
+- 当月不同日期块按日期倒序排列，最新日期在最上方。
+- 每个 `<tr>`、`<td>`、`<th>` 标签必须闭合，表格内容应保持可直接嵌入 Markdown 文件。
+
 ## 3. 必要约束
 
 - 必须优先使用 `scripts/generate_knowledge_explaination.py` 调用 `config.json` 中配置的 LLM，不要默认由 Codex 直接撰写 `knowledge_explaination.md` 正文。
+- LLM 不应直接输出完整 `knowledge_explaination.md` 或完整 `knowledge_log.md`；脚本应要求 LLM 返回结构化 JSON 内容块，并由程序模板渲染最终文件。
 - 如果 `config.json` 不存在、`llm` 配置缺失、API key 仍为占位符、网络不可用或 LLM 调用失败，应停止本任务并明确记录失败原因，不要回退为 Codex 自行生成正式讲解。
 - 脚本默认使用当前运行日期；补跑历史日期时可使用：
 

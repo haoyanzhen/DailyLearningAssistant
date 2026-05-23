@@ -15,8 +15,6 @@ import json
 import random
 import smtplib
 import sys
-import urllib.error
-import urllib.request
 from datetime import datetime, date
 from email.header import Header
 from email.mime.multipart import MIMEMultipart
@@ -25,6 +23,9 @@ from email.utils import formataddr
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
+from orchestrator.llm import LLMRetryPolicy, call_chat_completion
+from orchestrator.manifest import load_daily_manifest, select_report
 
 
 def load_config():
@@ -42,30 +43,13 @@ def load_manifest():
     if not manifest_path.exists():
         print(f"[跳过] manifest.json 不存在: {manifest_path}")
         return []
-    with open(manifest_path, "r", encoding="utf-8") as f:
-        data = json.load(f)
-    return data.get("reports", [])
+    return load_daily_manifest(manifest_path, root=PROJECT_ROOT, allow_empty=True)["reports"]
 
 
 def find_latest_available_report(reports, target_date):
     """查找不晚于目标日期的最新可用日报。"""
-    target_dt = datetime.strptime(target_date, "%Y-%m-%d").date()
-    candidates = []
-    for report in reports:
-        report_date = report.get("date")
-        if not report_date:
-            continue
-        try:
-            parsed_date = datetime.strptime(report_date, "%Y-%m-%d").date()
-        except ValueError:
-            continue
-        if parsed_date <= target_dt:
-            candidates.append((parsed_date, report))
-
-    if not candidates:
-        return None
-    candidates.sort(key=lambda item: item[0], reverse=True)
-    return candidates[0][1]
+    report, _ = select_report(reports, target_date, allow_latest_fallback=True)
+    return report
 
 
 def get_target_emails(config):
@@ -92,10 +76,6 @@ def get_target_emails(config):
 
 def generate_email_content(report, config, send_date):
     """调用 LLM 生成邮件问候和点评，失败返回 None 以触发回退。"""
-    api_url = config["llm"]["api_url"]
-    api_key = config["llm"]["api_key"]
-    model = config["llm"]["model"]
-
     weekday_names = ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"]
     send_dt = datetime.strptime(send_date, "%Y-%m-%d")
     weekday = weekday_names[send_dt.weekday()]
@@ -133,28 +113,20 @@ def generate_email_content(report, config, send_date):
   "commentary": "对今日学习内容的轻量点评，3-5句话。要求：结合标题或摘要中的1-2个具体知识点，但不要讲得太学术；用容易亲近的语言点出今天内容值得看的地方；可以用一个日常类比或小问题增加变化，但不要添加摘要中没有的事实；最后自然连接到今日学习日报已经整理好、适合继续阅读。"
 }}"""
 
-    body = json.dumps({
-        "model": model,
-        "max_tokens": 650,
-        "temperature": 0.9,
-        "messages": [
-            {"role": "user", "content": prompt}
-        ]
-    }).encode("utf-8")
-
-    req = urllib.request.Request(api_url, data=body, method="POST")
-    req.add_header("Authorization", f"Bearer {api_key}")
-    req.add_header("content-type", "application/json")
-
     try:
-        with urllib.request.urlopen(req, timeout=15) as resp:
-            result = json.loads(resp.read())
-    except (urllib.error.URLError, urllib.error.HTTPError, json.JSONDecodeError, OSError) as e:
+        llm = {**config["llm"], "max_tokens": 650}
+        text = call_chat_completion(
+            llm,
+            [{"role": "user", "content": prompt}],
+            timeout=30,
+            retry_policy=LLMRetryPolicy(attempts=1, initial_delay=0),
+            temperature=0.9,
+        )
+    except Exception as e:
         print(f"[警告] LLM 调用失败: {e}")
         return None
 
     try:
-        text = result["choices"][0]["message"]["content"]
         # 清理可能的 markdown 代码块标记
         text = text.strip()
         if text.startswith("```"):
