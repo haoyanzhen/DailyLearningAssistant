@@ -1,85 +1,197 @@
-# 2026-05-23 DailyLearningAssistant 工作总结
+# 2026-05-23 DailyLearningAssistant 更改总结
 
-本总结基于 `DailyLearningAssistant` 仓库在目标日期前一天的 Git 提交记录生成。统计窗口为 `2026-05-22 00:00:00 +0800` 至 `2026-05-23 00:00:00 +0800`。
+本总结由本地第 1 步 Agent 基于 Git 证据生成。目标日期为 `2026-05-23`，实际检查的是目标日期前一天的提交窗口。
 
 ## 提交概览
 
 | 项目 | 内容 |
 | --- | --- |
 | 仓库 | `DailyLearningAssistant` |
-| 日期 | 2026-05-23 |
-| 统计窗口 | 2026-05-22 00:00 至 2026-05-22 23:59（Asia/Shanghai） |
-| 提交数量 | 1 |
-| 涉及范围 | 11 个文件，386 行新增、14 行删除，包含 prompt、项目说明、PPT 生成脚本和 2026-05-22 prework 产物 |
-| 核心主题 | 将每日学习自动化的仓库监控范围扩展到 `mcp`，并同步更新概念提炼前置校验和项目介绍 PPT |
+| 路径 | `/Users/qingyue/projects/DailyLearningAssistant` |
+| 当前分支 | `main` |
+| 检查窗口 | 2026-05-22T00:00:00+08:00 至 2026-05-23T00:00:00+08:00 |
+| 窗口内提交数 | 1 |
+| 主工作区状态 | 存在未提交变更 |
+| 存在待确认变化线索的 worktree 数 | 1 |
 
-- `cad34e8`（23:13）：`Update new tracing to mcp project`，把 `mcp` 仓库加入每日检查范围，补齐下游概念提炼对第 6 份 `work_summary_mcp.md` 的校验要求，并更新项目介绍 PPT 脚本与 PPT 文件。
+检查窗口内发现 1 个提交。
 
-## 一、前一天新变化与收益
+## 一、窗口内提交记录
 
-5 月 22 日的变更围绕“自动化输入范围扩展”展开。此前每日工作总结和后续概念提炼默认只面对 5 个仓库，本次把 `mcp` 纳入 `AGENTS.md`、阶段 1 prompt、阶段 2 prompt 和介绍材料，使整个流水线从源头到校验规则都承认第 6 个仓库。
+### `cad34e8`：Update new tracing to mcp project
 
-### 监控范围扩展到 MCP 实践
+- 时间：2026-05-22T23:13:29+08:00
+- 作者：haoyanzhen
+- 完整提交：`cad34e867d55bff9a1968e371680841b10e28259`
 
-`AGENTS.md` 和 `prompt/01_daily_work_summary.md` 新增 `mcp`，意味着后续每日总结必须生成 `work_summary_mcp.md`。这让本地 MCP server 的设计、工具注册、资源暴露和提示词模板等实践也会进入学习日报素材。
+变更文件：
 
-### 下游输入完整性同步升级
+  - `M	AGENTS.md`
+  - `M	presentation/generate_ppt.py`
+  - `M	"presentation/\346\257\217\346\227\245\346\213\276\345\205\211\345\255\246\344\271\240\347\260\277-\351\241\271\347\233\256\344\273\213\347\273\215.pptx"`
+  - `A	prework/2026-05/2026-05-22/concept_relevance.md`
+  - `A	prework/2026-05/2026-05-22/work_summary_AInote.md`
+  - `A	prework/2026-05/2026-05-22/work_summary_DailyLearningAssistant.md`
+  - `A	prework/2026-05/2026-05-22/work_summary_ResearchPaperBase_cc.md`
+  - `A	prework/2026-05/2026-05-22/work_summary_ResearchPaperBase_codex.md`
+  - `A	prework/2026-05/2026-05-22/work_summary_interview_prepare.md`
+  - `M	prompt/01_daily_work_summary.md`
+  - `M	prompt/02_concept_relevance.md`
 
-`prompt/02_concept_relevance.md` 将上游文件数量从 5 个改为 6 个，并明确要求 `work_summary_mcp.md` 存在、非空且可读取后才允许生成 `concept_relevance.md`。这避免了阶段 1 已扩仓、阶段 2 仍按旧输入运行的口径不一致。
+统计信息：
 
-### 项目介绍材料同步更新
+```text
+AGENTS.md                                          |   1 +
+ presentation/generate_ppt.py                       |  29 ++---
+ ...1\271\347\233\256\344\273\213\347\273\215.pptx" | Bin 56355 -> 56492 bytes
+ prework/2026-05/2026-05-22/concept_relevance.md    | 117 +++++++++++++++++++++
+ prework/2026-05/2026-05-22/work_summary_AInote.md  |  34 ++++++
+ .../work_summary_DailyLearningAssistant.md         | 111 +++++++++++++++++++
+ .../work_summary_ResearchPaperBase_cc.md           |  34 ++++++
+ .../work_summary_ResearchPaperBase_codex.md        |  34 ++++++
+ .../2026-05-22/work_summary_interview_prepare.md   |  34 ++++++
+ prompt/01_daily_work_summary.md                    |   1 +
+ prompt/02_concept_relevance.md                     |   5 +-
+ 11 files changed, 386 insertions(+), 14 deletions(-)
+```
 
-`presentation/generate_ppt.py` 将“扫描 5 个仓库”统一改为“扫描 6 个仓库”，新增 `mcp` 仓库卡片，并把仓库展示布局从单行 5 卡调整为 3 列 2 行。输出路径也从项目根目录改到 `presentation/每日拾光学习簿-项目介绍.pptx`，让生成物位置更贴近脚本所在目录。
 
-## 二、提交详情
+## 二、主工作区未提交变更
 
-### `cad34e8`：把 MCP 纳入每日学习流水线
+### 状态摘要
 
-本提交修改 `AGENTS.md` 和 `prompt/01_daily_work_summary.md`，把每日检查范围扩展为 `AInote`、`DailyLearningAssistant`、`interview_prepare`、`ResearchPaperBase_cc`、`ResearchPaperBase_codex`、`mcp` 六个仓库。阶段 1 从此必须为 `mcp` 生成独立工作总结；若仓库不存在或不可读，也要产生问题说明文件。
+- ` M agents/concept_relevance.py`
+- ` M config.example.json`
+- ` M daily_report/2026-05/2026-05-23-learning-report.html`
+- ` M daily_report/manifest.json`
+- ` M docs/configuration.md`
+- ` M knowledge_log/2026-05-knowledge-log.md`
+- ` M orchestrator/run_daily.py`
+- ` M prework/2026-05/2026-05-23/concept_relevance.md`
+- ` M prework/2026-05/2026-05-23/knowledge_explaination.md`
+- ` M prework/2026-05/2026-05-23/work_summary_AInote.md`
+- ` M prework/2026-05/2026-05-23/work_summary_DailyLearningAssistant.md`
+- ` M prework/2026-05/2026-05-23/work_summary_ResearchPaperBase_cc.md`
+- ` M prework/2026-05/2026-05-23/work_summary_ResearchPaperBase_codex.md`
+- ` M prework/2026-05/2026-05-23/work_summary_interview_prepare.md`
+- ` M prework/2026-05/2026-05-23/work_summary_mcp.md`
+- ` M scripts/check_config.py`
+- ` M scripts/run_daily_pipeline.sh`
+- ` M tasks.md`
+- `?? README.md`
+- `?? prework/2026-05/2026-05-23/email_preview.html`
+- `?? prework/2026-05/2026-05-23/email_preview.txt`
+- `?? prework/2026-05/2026-05-23/llm_trace.jsonl`
+- `?? prework/2026-05/2026-05-23/run_status.json`
 
-同一提交还调整 `prompt/02_concept_relevance.md`，要求概念提炼阶段先验证 6 个工作总结文件。这个变更很关键：自动化流水线不只是多读一个仓库，还把“完整输入”的定义一起升级，减少后续阶段静默漏读 `mcp` 的风险。
+### 已暂存文件
 
-PPT 侧的改动包括：
+无已暂存变更。
 
-- 把所有“5 个仓库”文案改为“6 个仓库”。
-- 在仓库列表中新增 `mcp`，说明为“MCP 相关实践”。
-- 将监控范围页的仓库卡片布局改成两行三列，避免 6 个仓库横向拥挤。
-- 在目录结构示意中新增 `work_summary_mcp.md`。
-- 将 PPT 输出路径调整到 `presentation/` 目录下。
+### 未暂存文件
 
-此外，提交包含 2026-05-22 的上游工作总结与概念提炼文件。这些文件是前一轮自动化产物，记录了 2026-05-21 的学习日报材料。
+- `M	agents/concept_relevance.py`
+- `M	config.example.json`
+- `M	daily_report/2026-05/2026-05-23-learning-report.html`
+- `M	daily_report/manifest.json`
+- `M	docs/configuration.md`
+- `M	knowledge_log/2026-05-knowledge-log.md`
+- `M	orchestrator/run_daily.py`
+- `M	prework/2026-05/2026-05-23/concept_relevance.md`
+- `M	prework/2026-05/2026-05-23/knowledge_explaination.md`
+- `M	prework/2026-05/2026-05-23/work_summary_AInote.md`
+- `M	prework/2026-05/2026-05-23/work_summary_DailyLearningAssistant.md`
+- `M	prework/2026-05/2026-05-23/work_summary_ResearchPaperBase_cc.md`
+- `M	prework/2026-05/2026-05-23/work_summary_ResearchPaperBase_codex.md`
+- `M	prework/2026-05/2026-05-23/work_summary_interview_prepare.md`
+- `M	prework/2026-05/2026-05-23/work_summary_mcp.md`
+- `M	scripts/check_config.py`
+- `M	scripts/run_daily_pipeline.sh`
+- `M	tasks.md`
 
-## 三、关键文件变更
+### 已暂存统计
 
-| 文件 | 变更 |
-| --- | --- |
-| `AGENTS.md` | 每日更改范围新增 `mcp` 仓库。 |
-| `prompt/01_daily_work_summary.md` | 阶段 1 的目标仓库列表新增 `mcp`。 |
-| `prompt/02_concept_relevance.md` | 阶段 2 上游校验从 5 个总结文件改为 6 个，并新增 `work_summary_mcp.md`。 |
-| `presentation/generate_ppt.py` | 更新仓库数量、展示布局、目录树示意和 PPT 输出路径。 |
-| `presentation/每日拾光学习簿-项目介绍.pptx` | 根据脚本更新后的项目介绍 PPT。 |
-| `prework/2026-05/2026-05-22/*.md` | 新增上一目标日的工作总结与概念提炼材料。 |
+```text
+无
+```
 
-## 四、相关知识点线索
+### 未暂存统计
 
-### 1. 自动化流水线的输入契约
+```text
+agents/concept_relevance.py                        |  33 +-
+ config.example.json                                |  22 +-
+ .../2026-05/2026-05-23-learning-report.html        | 446 ++++++---------------
+ daily_report/manifest.json                         |   2 +-
+ docs/configuration.md                              |  11 +
+ knowledge_log/2026-05-knowledge-log.md             |  28 +-
+ orchestrator/run_daily.py                          | 130 ++++++
+ prework/2026-05/2026-05-23/concept_relevance.md    | 290 ++++++--------
+ .../2026-05/2026-05-23/knowledge_explaination.md   | 152 +++----
+ prework/2026-05/2026-05-23/work_summary_AInote.md  |  47 +--
+ .../work_summary_DailyLearningAssistant.md         | 171 ++++----
+ .../work_summary_ResearchPaperBase_cc.md           |  47 +--
+ .../work_summary_ResearchPaperBase_codex.md        | 152 +++----
+ .../2026-05-23/work_summary_interview_prepare.md   |  47 +--
+ prework/2026-05/2026-05-23/work_summary_mcp.md     | 115 +++---
+ scripts/check_config.py                            |  23 ++
+ scripts/run_daily_pipeline.sh                      |   1 +
+ tasks.md                                           |   2 +-
+ 18 files changed, 775 insertions(+), 944 deletions(-)
+```
 
-当上游输入集合变化时，下游任务必须同步更新前置校验。否则系统可能表面运行成功，实则漏掉新增数据源。这里的 `work_summary_mcp.md` 就是一个典型的输入契约扩展点。
+## 三、分支与 worktree 线索
 
-### 2. 多阶段 Agent 的一致性维护
+### 检查窗口内更新的本地分支
 
-阶段 1 负责生产，阶段 2 负责消费。如果阶段间文件数量、命名或路径约定不一致，后续知识提炼会产生偏差。本次修改把仓库列表、校验条件、介绍材料和目录示意一起更新，体现了多 Agent 流水线需要集中维护共享约定。
+未发现 tip 时间落在检查窗口内的本地分支。
 
-### 3. 可视化介绍材料与实际系统同步
+### Worktree 状态（当前待确认变化线索）
 
-PPT 不是代码执行路径，但它承载项目认知。如果介绍材料还写“5 个仓库”，而实际 prompt 已经检查 6 个仓库，会造成沟通成本和维护误差。因此文档、演示材料和自动化规则需要一起演进。
+### `main` @ `4f4efe059ca8`
+- 路径：`/Users/qingyue/projects/DailyLearningAssistant`
+- 状态：存在当前待确认变化线索
 
-### 4. MCP 实践进入知识沉淀范围
+- ` M agents/concept_relevance.py`
+- ` M config.example.json`
+- ` M daily_report/2026-05/2026-05-23-learning-report.html`
+- ` M daily_report/manifest.json`
+- ` M docs/configuration.md`
+- ` M knowledge_log/2026-05-knowledge-log.md`
+- ` M orchestrator/run_daily.py`
+- ` M prework/2026-05/2026-05-23/concept_relevance.md`
+- ` M prework/2026-05/2026-05-23/knowledge_explaination.md`
+- ` M prework/2026-05/2026-05-23/work_summary_AInote.md`
+- ` M prework/2026-05/2026-05-23/work_summary_DailyLearningAssistant.md`
+- ` M prework/2026-05/2026-05-23/work_summary_ResearchPaperBase_cc.md`
+- ` M prework/2026-05/2026-05-23/work_summary_ResearchPaperBase_codex.md`
+- ` M prework/2026-05/2026-05-23/work_summary_interview_prepare.md`
+- ` M prework/2026-05/2026-05-23/work_summary_mcp.md`
+- ` M scripts/check_config.py`
+- ` M scripts/run_daily_pipeline.sh`
+- ` M tasks.md`
+- `?? README.md`
+- `?? prework/2026-05/2026-05-23/email_preview.html`
+- `?? prework/2026-05/2026-05-23/email_preview.txt`
+- `?? prework/2026-05/2026-05-23/llm_trace.jsonl`
+- `?? prework/2026-05/2026-05-23/run_status.json`
 
-把 `mcp` 加入日报范围后，后续关于 Model Context Protocol server、工具注册、资源、提示词模板、stdio transport、TypeScript SDK 等内容都会自然进入学习日报的知识提炼链路。
+## 四、主要工作主题
 
-## 五、对后续概念提炼任务有帮助的备注
+- 提交主题：Update new tracing to mcp project
+- 主工作区存在未提交变更，需要后续确认这些变更是否属于当天正式工作。
+- 有 worktree 存在当前待确认变化线索：main。
 
-后续概念提炼应重点关注“自动化输入契约”“阶段间完整性校验”“MCP 作为本地工具扩展协议”“项目介绍材料与执行逻辑同步”这些主题。本提交本身不改变日报发布页面逻辑，但改变了每日上游材料的必备集合。
+## 五、可能涉及的知识点线索
 
-数据来源：`git show --stat --name-status cad34e8`、`git diff cad34e8^ cad34e8 -- prompt/02_concept_relevance.md presentation/generate_ppt.py AGENTS.md`。
+- 提示词工程、任务约束设计
+- Agent 工作流、任务编排
+- 静态站点索引、发布契约
+- 静态页面生成、前端呈现
+- 大语言模型调用与输出约束
+- Git worktree、多工作区协作
+
+## 六、对后续概念提炼任务的备注
+
+- 本文件只基于 Git 提交、工作区状态、分支和 worktree 元数据生成。
+- Git 无法可靠证明未提交变更发生的具体日期，因此 worktree 未提交变更只作为“当前待确认变化线索”，不要等同于目标窗口内已经完成的提交事实。
+- 如果主路径无变化但 branch 或 worktree 有待确认变化线索，后续任务应优先关注对应分支/worktree 的提交主题和文件路径，并在必要时人工确认时间归属。
