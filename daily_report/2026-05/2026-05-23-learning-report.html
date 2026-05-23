@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-05-23 学习笔记日报</title>
+    <meta
+      name="description"
+      content="2026-05-23 学习日报：输入契约、分层架构、领域不变量。"
+    />
+    <link rel="stylesheet" href="../../style/main.css?v=20260523" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-05-23</p>
+        <h1>在系统边界上放稳协议</h1>
+        <p>
+          今天的学习从文件交接的输入契约开始，走到系统职责的分层边界，
+          最后落到业务世界不可突破的领域不变量。三个概念共同说明：
+          可靠系统不是靠大家“差不多记得”，而是把规则变成可检查、可执行的协议。
+        </p>
+        <div class="meta-grid">
+          <div class="meta-item">
+            <span class="meta-label">今日主题</span>
+            <span class="meta-value">契约、分层与业务底线</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">阅读模式</span>
+            <span class="meta-value">简读 / 精读</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">知识点</span>
+            <span class="meta-value">3 个并列讲解</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">学习路径</span>
+            <span class="meta-value">文件契约 → 架构边界 → 领域规则</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日知识点概览</h2>
+        <p class="lead">
+          今天的三个知识点都在处理复杂协作中的“边界问题”：输入契约守住流水线入口，
+          分层架构守住系统职责边界，领域不变量守住业务规则的底线。
+        </p>
+        <div class="stat-grid">
+          <article class="stat-card">
+            <strong>输入契约</strong>
+            <span>约定下游开工前必须拿到什么输入，以及输入必须满足哪些硬条件。</span>
+          </article>
+          <article class="stat-card">
+            <strong>分层架构</strong>
+            <span>按职责拆分系统层次，让每层只做自己的事，并通过稳定接口协作。</span>
+          </article>
+          <article class="stat-card">
+            <strong>领域不变量</strong>
+            <span>把业务中永远必须成立的规则放进核心模型，防止系统演化时越过底线。</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日知识主线</h2>
+        <p class="lead">
+          多仓库、多 Agent、多阶段流水线协作时，最危险的不是某一步出错，
+          而是错误悄悄流到下一步。输入契约先确认文件交接可靠；分层架构再把展示、
+          编排、领域、智能服务和基础设施放在合适位置；领域不变量则固定业务世界里不能被破坏的规则。
+          三者连起来，就是在不同边界上设置检查点。
+        </p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-toolbar panel">
+          <div>
+            <p class="eyebrow">Read Mode</p>
+            <h2 class="section-title">今日三节小课</h2>
+            <p class="lead">
+              简读用于 3-5 分钟抓住主线；精读会在三张卡片下方展开完整文章。
+              切到精读后，卡片会变成目录入口。
+            </p>
+          </div>
+          <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+            <button class="is-active" type="button" data-mode="brief">简读</button>
+            <button type="button" data-mode="deep">精读</button>
+          </div>
+        </div>
+
+        <div class="lesson-grid">
+          <article class="lesson-card" id="input-contract">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>输入契约</h3>
+              <p>Input Contract</p>
+            </header>
+
+            <div class="lesson-brief">
+              <p class="lesson-summary">
+                输入契约是下游任务对上游产物的硬性约定：文件要存在、非空、可读取，并且范围要完整。
+              </p>
+              <h4>核心要点</h4>
+              <ul>
+                <li>它规定“下游开始前必须拿到什么”。</li>
+                <li>契约要能被代码自动检查，而不只是写在文档里。</li>
+                <li>入口处拦住坏材料，能防止错误沿流水线扩散。</li>
+              </ul>
+              <h4>小例子</h4>
+              <p>
+                当每日输入范围从 5 个仓库扩展到 6 个仓库时，阶段 2 就必须确认 6 个
+                <code>work_summary_*.md</code> 都存在且可读。
+              </p>
+              <div class="highlight">记忆句：契约不是提醒别人小心，而是让系统自己知道何时不能开工。</div>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="input-contract" aria-expanded="false">阅读精读</button>
+          </article>
+
+          <article class="lesson-card" id="layered-architecture">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>分层架构</h3>
+              <p>Layered Architecture</p>
+            </header>
+
+            <div class="lesson-brief">
+              <p class="lesson-summary">
+                分层架构按职责拆分系统，每层只做自己该做的事，并通过稳定接口与相邻层协作。
+              </p>
+              <h4>核心要点</h4>
+              <ul>
+                <li>真正的分层重点是依赖方向，而不只是目录结构。</li>
+                <li>UI、API、用例、领域、智能服务和基础设施各有职责。</li>
+                <li>隔离变化后，替换数据库或登录方式时不会牵动所有层。</li>
+              </ul>
+              <h4>小例子</h4>
+              <p>
+                UI 不直接操作数据库，而是通过 API、应用用例和领域核心完成业务动作，
+                基础设施变化也不应反向污染领域规则。
+              </p>
+              <div class="highlight">记忆句：分层的价值不是把文件夹排整齐，而是让变化停在该停的地方。</div>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="layered-architecture" aria-expanded="false">阅读精读</button>
+          </article>
+
+          <article class="lesson-card" id="domain-invariant">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>领域不变量</h3>
+              <p>Domain Invariant</p>
+            </header>
+
+            <div class="lesson-brief">
+              <p class="lesson-summary">
+                领域不变量是业务世界中无论流程怎么变都必须永远成立的规则。
+              </p>
+              <h4>核心要点</h4>
+              <ul>
+                <li>它表达业务底线，而不是某个接口的一次性校验。</li>
+                <li>应放在 Domain Core 中，让所有入口都绕不过核心规则。</li>
+                <li>典型例子是 Owner 必须始终拥有自己 Project 的全部权限。</li>
+              </ul>
+              <h4>小例子</h4>
+              <p>
+                如果 Owner 可以失去删除权限，Project 可能变成无法清理的孤儿资源；
+                因此权限模型要用代码阻止这种状态出现。
+              </p>
+              <div class="highlight">记忆句：领域不变量就是业务世界的承重墙，不能随手打洞。</div>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="domain-invariant" aria-expanded="false">阅读精读</button>
+          </article>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="input-contract">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>输入契约</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>
+                想象你和朋友接力做一道菜：你负责洗菜切菜，朋友负责下锅翻炒。
+                如果你没有约定菜放在哪里、是否已经洗好、是否已经切好，朋友就可能找不到材料，
+                或者误以为你还没有完成。这个约定就是协作中的契约。
+              </p>
+              <p>
+                在软件系统里，输入契约就是下游任务对上游产物必须满足的硬性约定。
+                它不只说“需要一些输入”，而是清楚规定输入的范围、位置、格式和最低状态。
+                对每日学习自动化来说，当输入范围扩展到 6 个仓库后，阶段 2 必须拿到 6 个
+                <code>work_summary_*.md</code> 文件，而且每个文件都要存在、非空、可读取。
+              </p>
+              <p>
+                这个约束看起来严格，其实是在保护后续链路。下游一旦基于坏材料继续生成，
+                错误会变成概念文件、知识讲解、学习日报，最后被发布成正式页面。
+                输入契约的价值，就是在入口处把问题拦住。
+              </p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>先定义下游任务依赖的完整输入集合。</li>
+                <li>再为每个输入定义最低可用条件，例如存在、非空、可读取。</li>
+                <li>在正式处理前自动执行检查，所有输入通过后才继续。</li>
+                <li>一旦检查失败，停止下游生成，并记录清楚失败原因。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>
+                在多阶段学习流水线中，阶段 2 可以先读取配置文件，得到需要检查的仓库列表。
+                然后遍历列表，对每个预期文件执行三项判断：
+              </p>
+              <pre><code>for repo in required_repositories:
+    path = f"work_summary_{repo}.md"
+    assert exists(path)
+    assert readable(path)
+    assert non_empty(path)</code></pre>
+              <p>
+                只有全部通过，才进入概念提炼。少一个仓库的总结，系统就不应该假装材料齐全。
+              </p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为文件存在就够了；空文件和不可读文件同样会制造坏输入。</li>
+                <li>误以为契约写在文档里就行；契约必须能被程序执行，否则只是提醒。</li>
+                <li>误以为漏一个输入影响不大；下游内容会把缺口包装成看似完整的结论。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>前置完整性校验</td><td>输入契约规定要检查什么，完整性校验负责执行这些检查。</td></tr>
+                <tr><td>数据谱系</td><td>输入契约保证来源材料完整，后续日报的来源追踪才可信。</td></tr>
+                <tr><td>领域不变量</td><td>二者都是契约思想的体现，只是一个守文件边界，一个守业务边界。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果输入契约检查失败，什么时候可以降级，什么时候必须停止？</li>
+                <li>文件格式、标题结构、日期一致性要不要也纳入输入契约？</li>
+                <li>跨流水线共享产物时，输入契约应该放在生产方、消费方，还是双方共同维护？</li>
+              </ol>
+            </article>
+
+            <article class="lesson-detail" data-lesson-detail="layered-architecture">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>分层架构</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>
+                如果把图书馆的借书台、书架、管理员休息区和电脑系统全堆在一个房间里，
+                读者找不到书，管理员也很难维护。更合理的做法是按职责划分区域：
+                借还区负责服务读者，阅览区负责阅读，书库负责保存藏书，设备间负责基础设施。
+              </p>
+              <p>
+                分层架构也是这个思路：按职责把系统划分成若干层，每层只做自己该做的事，
+                并通过稳定接口与上下层协作。今天的论文系统设计把整体分成 UI、API Boundary、
+                Application Use Cases、Domain Core、Agent &amp; Knowledge Services、Infrastructure 六层。
+              </p>
+              <p>
+                关键不在于文件夹名字，而在于依赖方向。UI 负责展示和输入收集，不直接操作数据库；
+                API 边界负责把外部请求变成命令和查询；应用用例编排业务流程；领域核心表达业务对象和规则；
+                智能与知识服务承载 Graph-RAG 等能力；基础设施处理数据库、消息队列和外部系统。
+              </p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>先识别系统中变化频率和职责不同的部分。</li>
+                <li>把展示、边界、流程编排、业务核心、智能服务和基础设施拆开。</li>
+                <li>规定依赖方向，让上层通过接口调用下层，下层不反向依赖上层。</li>
+                <li>把稳定业务规则放在核心层，把易变技术细节放在外侧或底层。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>
+                <code>ProjectPermission</code> 权限模型适合放在 Domain Core 层。
+                如果未来要新增 OAuth 登录方式，UI 和 API Boundary 可能要改，
+                但“Owner 不能失去自己 Project 的全部权限”这样的权限规则不应该跟着登录方式变化。
+              </p>
+              <pre><code>UI
+  -> API Boundary
+      -> Application Use Cases
+          -> Domain Core
+              -> Infrastructure</code></pre>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为分层就是文件夹分层；真正重要的是依赖方向和职责边界。</li>
+                <li>误以为层越多越专业；每一层都会增加理解成本，分层要服务于隔离变化。</li>
+                <li>误让 UI 或脚本直接绕过领域层修改数据；这样会破坏核心规则的一致性。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>API Boundary / Contracts</td><td>层与层之间需要清晰接口契约，才能稳定协作。</td></tr>
+                <tr><td>Domain Core</td><td>领域核心是分层架构中承载业务规则和不变量的层。</td></tr>
+                <tr><td>领域不变量</td><td>分层架构给不变量提供了合适的驻留位置。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何判断一个功能应该属于 Domain Core 还是 Application Use Cases？</li>
+                <li>当两个层看似需要双向通信时，应该用事件、接口还是回调来解耦？</li>
+                <li>怎样用测试验证依赖方向没有被悄悄打破？</li>
+              </ol>
+            </article>
+
+            <article class="lesson-detail" data-lesson-detail="domain-invariant">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>领域不变量</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>
+                不变量就是无论系统怎么运行、什么时候执行，都必须一直成立的规则。
+                在图书馆系统里，“每个读者最多借 10 本书”就是不变量；
+                在权限系统里，“项目 Owner 必须拥有自己 Project 的全部权限”也可以是不变量。
+              </p>
+              <p>
+                领域不变量特指业务世界本身固有的规则。今天的权限模型强调 Owner 默认全权限：
+                Project 创建者必须拥有 <code>access</code>、<code>use</code>、<code>delete</code> 等完整权限，
+                不能被其他用户撤销，也不能被自己放弃。否则 Project 可能变成没人能管理或删除的孤儿资源。
+              </p>
+              <p>
+                领域不变量应放在 Domain Core 中，而不是只放在数据库约束或 API 校验里。
+                因为系统入口可能很多：Web API、命令行、后台脚本、迁移任务。只有核心领域模型统一执行规则，
+                才能让所有入口都绕不过同一条底线。
+              </p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>先识别业务中绝不能被破坏的状态或关系。</li>
+                <li>把这些规则表达在领域对象、聚合或领域服务中。</li>
+                <li>让所有修改入口都必须经过领域核心，而不是直接改数据库。</li>
+                <li>用测试覆盖不变量，确保重构和新功能不会偷偷破坏它。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>
+                权限更新方法可以在每次变更前后检查 Owner 权限。如果操作会让 Owner 失去全部权限，
+                方法就直接拒绝这次变更：
+              </p>
+              <pre><code>function updatePermission(project, actor, change) {
+  applyChange(project, actor, change);
+
+  if (!project.owner.hasAllPermissions(project)) {
+    throw new Error("Owner must keep full project permissions");
+  }
+}</code></pre>
+              <p>
+                这样无论请求来自 API、后台脚本还是迁移工具，只要走到领域核心，就会被同一条规则保护。
+              </p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为数据库约束足够；数据库很难表达状态机、权限和业务语义的全部规则。</li>
+                <li>误以为不变量永远不会调整；它可以随业务版本演进，但修改必须谨慎且成体系。</li>
+                <li>误把一次接口参数校验当成领域不变量；不变量要覆盖所有入口和所有状态变化。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>Domain Core</td><td>领域不变量应放在核心层，成为业务模型的一部分。</td></tr>
+                <tr><td>ProjectPermission 权限模型</td><td>Owner 全权限不变量是权限模型的安全底线。</td></tr>
+                <tr><td>输入契约</td><td>输入契约守阶段入口，领域不变量守业务状态，都是可执行规则。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何系统性发现一个业务领域里的不变量？</li>
+                <li>不变量与数据库约束、API 验证、状态机之间如何分工？</li>
+                <li>重构领域模型时，怎样证明不变量仍然被所有入口保护？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">
+          输入契约、分层架构和领域不变量像一组逐渐深入的边界控制：输入契约在流水线入口确认材料合格；
+          分层架构在系统内部划清职责和依赖方向；领域不变量在核心层固定业务底线。
+          它们共同把不确定的协作变成可检查、可审计、可执行的规则。
+        </p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <blockquote>
+          在系统边界上放稳协议，复杂协作才不会靠默契勉强维持。
+        </blockquote>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+          <li>输入契约失败时，怎样设计既清晰又可恢复的停止状态？</li>
+          <li>分层架构中，哪些业务规则必须进入 Domain Core，哪些只属于应用用例？</li>
+          <li>如何用自动化测试持续证明领域不变量没有被新入口绕过？</li>
+        </ol>
+      </section>
+
+      <section class="footer-note">
+        <p>
+          数据来源：`prework/2026-05/2026-05-23/knowledge_explaination.md`。
+          本页复用站点公共样式 `../../style/main.css`，并可从
+          <a href="../../index.html?archive=1">学习归档</a> 返回历史日报入口。
+        </p>
+      </section>
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll(".read-mode-toggle button");
+      const expandButtons = document.querySelectorAll(".lesson-expand");
+      const lessonCards = document.querySelectorAll(".lesson-card");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const detailArticles = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+      let activeLesson = null;
+
+      function setReadMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => {
+          const active = button.dataset.mode === mode;
+          button.classList.toggle("is-active", active);
+          button.setAttribute("aria-pressed", String(active));
+        });
+
+        if (mode === "deep" && !activeLesson) {
+          openLesson("input-contract", { scroll: false });
+        }
+
+        if (mode === "brief") {
+          closeLesson();
+        }
+      }
+
+      function openLesson(lesson, options = {}) {
+        activeLesson = lesson;
+        detailPanel.classList.add("is-open");
+        detailPanel.dataset.activeLesson = lesson;
+        lessonCards.forEach((card) => {
+          card.classList.toggle("is-active", card.id === lesson);
+        });
+        detailArticles.forEach((article) => {
+          article.classList.toggle("is-active", article.dataset.lessonDetail === lesson);
+        });
+        expandButtons.forEach((button) => {
+          const expanded = button.dataset.lesson === lesson;
+          button.setAttribute("aria-expanded", String(expanded));
+          button.textContent = expanded ? "正在精读" : "阅读精读";
+        });
+
+        if (options.scroll !== false) {
+          window.setTimeout(() => {
+            detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 140);
+        }
+      }
+
+      function closeLesson() {
+        activeLesson = null;
+        detailPanel.classList.remove("is-open");
+        lessonCards.forEach((card) => card.classList.remove("is-active"));
+        detailArticles.forEach((article) => article.classList.remove("is-active"));
+        expandButtons.forEach((button) => {
+          button.setAttribute("aria-expanded", "false");
+          button.textContent = "阅读精读";
+        });
+      }
+
+      modeButtons.forEach((button) => {
+        button.addEventListener("click", () => setReadMode(button.dataset.mode));
+      });
+
+      expandButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          if (activeLesson === button.dataset.lesson) {
+            setReadMode("brief");
+            return;
+          }
+          setReadMode("deep");
+          openLesson(button.dataset.lesson);
+        });
+      });
+
+      lessonCards.forEach((card) => {
+        card.addEventListener("click", (event) => {
+          if (event.target.closest("button")) {
+            return;
+          }
+          if (lessonSection.dataset.readMode === "deep") {
+            openLesson(card.id);
+          }
+        });
+      });
+
+      closeButtons.forEach((button) => {
+        button.addEventListener("click", () => setReadMode("brief"));
+      });
+
+      setReadMode("brief");
+    </script>
+  </body>
+</html>
