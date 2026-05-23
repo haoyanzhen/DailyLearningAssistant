@@ -12,6 +12,7 @@ import argparse
 import json
 import os
 import sys
+import time
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -158,12 +159,12 @@ def strip_markdown_fence(text: str) -> str:
     return text
 
 
-def call_llm(llm: dict, prompt: str, timeout: int, retries: int, retry_delay: float) -> str:
+def call_llm(llm: dict, prompt: str, timeout: int) -> str:
     return call_chat_completion(
         llm,
         [{"role": "user", "content": prompt}],
         timeout=timeout,
-        retry_policy=LLMRetryPolicy(attempts=retries, initial_delay=retry_delay),
+        retry_policy=LLMRetryPolicy(attempts=1, initial_delay=0),
         temperature=llm.get("temperature", 0.45),
     )
 
@@ -228,6 +229,29 @@ def validate_output(content: str) -> list[str]:
     return problems
 
 
+def generate_valid_content(llm: dict, prompt: str, timeout: int, retries: int, retry_delay: float) -> str:
+    attempts = max(1, retries)
+    delay = max(0.0, retry_delay)
+    errors: list[str] = []
+    for attempt in range(1, attempts + 1):
+        try:
+            content = strip_markdown_fence(call_llm(llm, prompt, timeout))
+            output_problems = validate_output(content)
+            if output_problems:
+                raise RuntimeError(f"LLM 输出缺少必要章节: {', '.join(output_problems)}")
+            return content
+        except RuntimeError as exc:
+            errors.append(str(exc))
+            if attempt >= attempts:
+                break
+            wait_seconds = delay * (2 ** (attempt - 1))
+            print(f"[重试] 概念提炼生成失败，第 {attempt}/{attempts} 次：{exc}")
+            print(f"[重试] 等待 {wait_seconds:.1f} 秒后再次尝试。")
+            if wait_seconds:
+                time.sleep(wait_seconds)
+    raise RuntimeError("; ".join(errors[-3:]))
+
+
 def main() -> int:
     args = parse_args()
     config = load_config(Path(args.config))
@@ -289,10 +313,7 @@ def main() -> int:
     output_problems: list[str] = []
 
     try:
-        content = strip_markdown_fence(call_llm(llm, prompt, args.timeout, args.llm_retries, args.llm_retry_delay))
-        output_problems = validate_output(content)
-        if output_problems:
-            raise RuntimeError(f"LLM 输出缺少必要章节: {', '.join(output_problems)}")
+        content = generate_valid_content(llm, prompt, args.timeout, args.llm_retries, args.llm_retry_delay)
     except RuntimeError as exc:
         llm_status = "failed"
         llm_error = str(exc)

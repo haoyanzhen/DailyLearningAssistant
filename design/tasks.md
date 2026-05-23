@@ -17,7 +17,7 @@
 - [x] 本地总入口：新增 `orchestrator/run_daily.py`，支持 `--today`、`--date YYYY-MM-DD`、`--from-step N`、`--to-step N`、`--only-step N`、`--dry-run`。
 - [x] 本地运行状态：生成 `prework/YYYY-MM/YYYY-MM-DD/run_status.json`，记录每一步输入、输出、状态和错误，并补充顶层 `orchestrator` 汇总状态。
 - [x] 本地调度：新增完整流水线的 launchd 准备脚本，调度 `run_daily.py`，而不是只调度邮件或 git push；当前只新增脚本，不修改或加载现有每日自动运行项。
-- [ ] 发布集成：在完整流水线成功后执行 git commit / push，并在成功发布后调用第 5 步邮件 Agent。
+- [x] 发布集成：在完整流水线成功后执行 git commit / push，并在成功发布后调用第 5 步邮件 Agent。
 - [x] 配置整理：补充 `config.example.json` 中的本地仓库路径、调度时间、时区、LLM、邮件和站点配置说明，并新增配置检查脚本与文档。
 
 ## 设计约束

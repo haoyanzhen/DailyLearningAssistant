@@ -44,7 +44,14 @@ python3 orchestrator/check_status.py --date 2026-05-21
 prework/YYYY-MM/YYYY-MM-DD/run_status.json
 ```
 
-单步 Agent 写入 `agents.<agent_name>`；总调度写入顶层 `orchestrator`，记录选中的步骤、命令、失败步骤和汇总状态。
+单步 Agent 写入 `agents.<agent_name>`；总调度写入顶层 `orchestrator`，记录最近一次运行的步骤、命令、失败步骤和汇总状态。
+
+拆分调度时，状态文件还会保留 `orchestrator_runs`：
+
+- `orchestrator_runs.html_publish`：第 1-4 步 HTML 生成与发布状态。
+- `orchestrator_runs.email_send`：第 5 步邮件发送状态。
+
+第 5 步单独运行时会读取 `html_publish` 的状态；如果生成发布未成功，会自动转为失败提醒邮件，并回退附上上一份可用日报。
 
 ## LLM 重连与结果校验
 

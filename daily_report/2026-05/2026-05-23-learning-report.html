@@ -4,8 +4,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>2026-05-23 学习笔记日报</title>
-    <meta name="description" content="今日主线贯穿三层：提示词工程教模型“怎么说”，Agent 工作流教多任务“怎么协作”，MCP 协议为一切外部能力提供标准化“插座”，从语言到流程再到协议，形成 LLM 工程化的完整图谱。" />
+    <meta name="description" content="今日围绕提示词工程、Agent 工作流编排与 MCP 协议，展开从语言到流程再到基础设施的完整学习路径。" />
     <link rel="stylesheet" href="../../style/main.css?v=20260523" />
+    <script type="module">
+      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+      mermaid.initialize({ startOnLoad: true, theme: "base", securityLevel: "strict" });
+    </script>
   </head>
   <body>
     <main class="page">
@@ -26,129 +30,112 @@
 
       <section class="hero">
         <p class="eyebrow">Learning Report · 2026-05-23</p>
-        <h1>从会说话到会协作：LLM 工程化的三层进阶</h1>
-        <p>今天沿着一条自然递进的路径，理解如何让大语言模型从“听懂指令”到“组队干活”再到“即插即用外部能力”——提示词工程、Agent 工作流与 MCP 协议，恰好构成从微观到宏观的完整工程图景。</p>
-        <div class="meta-grid">
-          <div class="meta-item"><span class="meta-label">今日主题</span><span class="meta-value">LLM 工程化的三层栈：语言层 · 流程层 · 协议层</span></div>
-          <div class="meta-item"><span class="meta-label">阅读模式</span><span class="meta-value">简读 / 精读</span></div>
-          <div class="meta-item"><span class="meta-label">知识点</span><span class="meta-value">3 个并列讲解</span></div>
-          <div class="meta-item"><span class="meta-label">学习路径</span><span class="meta-value">提示词工程 → Agent 工作流与任务编排 → MCP（模型上下文协议）</span></div>
-        </div>
-      </section>
-
-      <section class="section panel">
-        <h2 class="section-title">今日知识点概览</h2>
-        <p class="lead">今天的三个概念分别位于 LLM 应用开发的不同抽象层次：提示词工程聚焦于“如何精心设计语言模板来约束模型行为”，Agent 工作流与任务编排解决“如何把多个配备专用提示词的 Agent 串联成可靠的自动化流水线”，MCP 协议则在更底层定义了工具、资源和提示的标准化接口，让模型的外部能力供给从手工接线走向即插即用。三者层层递进，共同描绘了一条从“人指导模型”到“系统自我组织”的工程化路径。</p>
-        <div class="stat-grid">
-          <article class="stat-card">
-            <strong>提示词工程</strong>
-            <span>提示词工程是面向大语言模型的程序设计，通过精心编写角色、任务、格式和边界约束，让模型产生稳定、可预期的输出。</span>
-          </article>
-          <article class="stat-card">
-            <strong>Agent 工作流与任务编排</strong>
-            <span>Agent 工作流与任务编排是把多个配备专用提示词的 Agent 按预定顺序和条件组织成自动化流水线，让复杂任务可以通过解耦、检查点、容错机制被可靠地重复执行。</span>
-          </article>
-          <article class="stat-card">
-            <strong>MCP（模型上下文协议）</strong>
-            <span>MCP（模型上下文协议）是连接大语言模型和外部世界的一套标准化通信协议，把工具、资源和提示这三种模型需要的外部能力抽象为统一的接口，让 LLM 应用的开发从手工接线走向即插即用。</span>
-          </article>
-        </div>
-      </section>
-
-      <section class="section panel">
-        <h2 class="section-title">今日知识主线</h2>
-        <p class="lead">今日知识主线围绕“如何让大语言模型更可靠、更结构化地工作”展开。提示词工程在最微观的语言层面，通过角色设定、任务描述、输出格式和边界约束，把模糊的期待变成模型可准确执行的文字指令。Agent 工作流上升到组织层面，将复杂自动化任务拆解为一系列职责清晰的子任务，每个子任务由专用 Agent 按编排顺序执行，中间每一步都可检查、可回溯。MCP 协议抵达基础设施层，把工具、提示、资源这三种模型需要的外界能力抽象成标准化的“插座”和“插头”，让 LLM 应用的开发从定制接线变成统一对接。这三层恰好构成从“说什么”到“怎么做”再到“用什么接口做”的完整图谱。</p>
+        <h1>从“说什么”到“用什么接口做”</h1>
+        <p>今天的课程串联了提示词工程、Agent 工作流与 MCP 协议三层架构，展示让大语言模型更可靠、更结构化工作的工程化路径。</p>
       </section>
 
       <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
-        <div class="lesson-toolbar panel">
-          <div>
-            <p class="eyebrow">Read Mode</p>
-            <h2 class="section-title">今日三节小课</h2>
-            <p class="lead">简读用于快速抓住三个概念；精读会在卡片下方展开完整文章。</p>
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
           </div>
-          <div class="read-mode-toggle" role="group" aria-label="阅读模式">
-            <button class="is-active" type="button" data-mode="brief">简读</button>
-            <button type="button" data-mode="deep">精读</button>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <pre class="mermaid">
+flowchart LR
+  hub([LLM 工程化能力])
+  prompt["提示词工程"]
+  agent["Agent 工作流与任务编排"]
+  mcp["MCP（模型上下文协议）"]
+  prompts["MCP prompts 原语"]
+  tools["MCP tools / resources 原语"]
+  hub --> prompt
+  hub --> agent
+  hub --> mcp
+  prompt --> agent
+  agent --> prompt
+  prompt --> prompts
+  mcp --> prompts
+  agent --> tools
+  mcp --> tools
+  mcp --> agent
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class prompt,agent,mcp primary
+  class prompts,tools related
+              </pre>
+            </div>
+            <div class="relationship-map-notes">
+              <p class="eyebrow">Concept Links</p>
+              <ul>
+                <li><strong>提示词工程 → Agent 工作流与任务编排</strong><span>每个 Agent 都依赖稳定的提示模板，提示词工程是任务节点的基础。</span></li>
+                <li><strong>提示词工程 → MCP prompts 原语</strong><span>提示模板被协议化封装后，可以成为可注册、可发现、可复用的服务端资源。</span></li>
+                <li><strong>Agent 工作流与任务编排 → MCP tools / resources 原语</strong><span>工具和资源为 Agent 提供标准化外部能力，减少硬编码调用。</span></li>
+                <li><strong>MCP（模型上下文协议） → Agent 工作流与任务编排</strong><span>MCP 让 Agent 在运行时发现并绑定工具、资源和提示，支撑更松耦合的编排。</span></li>
+              </ul>
+            </div>
           </div>
-        </div>
 
-        <div class="lesson-grid">
-          <article class="lesson-card" id="prompt-engineering">
-            <header class="lesson-card-header">
-              <div class="tag-row">
-                <span class="tag">大语言模型 / 软件工程</span>
-                <span class="tag warm">★★★</span>
+          <div class="lesson-grid">
+            <article class="lesson-card" id="prompt-engineering">
+              <header class="lesson-card-header">
+                <div class="tag-row">
+                  <span class="tag">大语言模型 / 软件工程</span>
+                  <span class="tag warm">★★★</span>
+                </div>
+                <h3>提示词工程</h3>
+                <p>Prompt Engineering</p>
+              </header>
+
+              <div class="lesson-brief">
+                <div class="highlight lesson-memory">记忆句：提示词不是“一个问题”，而是“一套规范”——为 AI 出考卷的学问。</div>
               </div>
-              <h3>提示词工程</h3>
-              <p>Prompt Engineering</p>
-            </header>
 
-            <div class="lesson-brief">
-              <p class="lesson-summary">提示词工程是面向大语言模型的程序设计，通过精心编写角色、任务、格式和边界约束，让模型产生稳定、可预期的输出。</p>
-              <h4>核心要点</h4>
-              <ul>
-                <li>提示词不是“一个问题”，而是“一套规范”——包含角色设定、任务描述、输出格式、边界约束和示例引导五个关键要素</li>
-                <li>精心编排的提示模板让模型行为变得可预测、可复用，本质是一种面向语言模型的程序设计方法</li>
-                <li>提示词工程与上下文管理配合使用：上下文管理决定“放什么”，提示词工程决定“怎么说”</li>
-              </ul>
-              <h4>小例子</h4>
-              <p>想让 AI 写一份工作周报，粗糙的提示是“帮我写一份周报”，模型可能虚构内容。经过提示词工程精心设计后，你会写：“你是一个严谨的项目助理。请根据以下提供的工作记录生成一份周报，要求：(1) 只使用记录中出现的事实；(2) 按‘本周完成、下周计划、遇到的问题’三部分组织；(3) 每条不超过30字；(4) 如果某部分没有可提取内容，写‘无明确记录’，不要编造。”</p>
-              <div class="highlight">记忆句：跟 AI 说话不是聊天，是编程——精心编写提示模板，就是为 AI 出一张标准化的考卷。</div>
-            </div>
+              <button class="lesson-expand" type="button" data-lesson="prompt-engineering" aria-expanded="false">阅读精读</button>
+            </article>
+            <article class="lesson-card" id="agent-workflow-orchestration">
+              <header class="lesson-card-header">
+                <div class="tag-row">
+                  <span class="tag">软件工程 / 大语言模型</span>
+                  <span class="tag warm">★★★★</span>
+                </div>
+                <h3>Agent 工作流与任务编排</h3>
+                <p>Agent Workflow &amp; Task Orchestration</p>
+              </header>
 
-            <button class="lesson-expand" type="button" data-lesson="prompt-engineering" aria-expanded="false">阅读精读</button>
-          </article>
-          <article class="lesson-card" id="agent-workflow">
-            <header class="lesson-card-header">
-              <div class="tag-row">
-                <span class="tag">软件工程 / 大语言模型</span>
-                <span class="tag warm">★★★★</span>
+              <div class="lesson-brief">
+                <div class="highlight lesson-memory">记忆句：Agent 编排就像现代数字版的抄经室分工——每人只做一小段工序，出错率下降，产出速度成倍提升。</div>
               </div>
-              <h3>Agent 工作流与任务编排</h3>
-              <p>Agent Workflow and Task Orchestration</p>
-            </header>
 
-            <div class="lesson-brief">
-              <p class="lesson-summary">Agent 工作流与任务编排是把多个配备专用提示词的 Agent 按预定顺序和条件组织成自动化流水线，让复杂任务可以通过解耦、检查点、容错机制被可靠地重复执行。</p>
-              <h4>核心要点</h4>
-              <ul>
-                <li>将复杂自动化任务拆解为一系列子任务，每个子任务分配给一个专门的 Agent，按照编排好的顺序执行</li>
-                <li>每个 Agent 之间的交接都是潜在出错点，编排艺术在于“切分合理”——每个子任务有清晰的输入输出边界，出错时能独立重试而不污染下游</li>
-                <li>中间每一步的输出都可以保存下来，出问题时能回溯到具体哪一步出了问题，而不是面对一团黑箱</li>
-              </ul>
-              <h4>小例子</h4>
-              <p>以学习助手系统为例，每天早晨自动运行的工作流可能是：(1) 数据采集 Agent 从 Git 提交记录中拉取当日变更文件，提示词是“只提取文件路径和变更摘要，不添加解释”；(2) 概念提炼 Agent 读取原始材料，输出概念和关联描述；(3) 工作摘要 Agent 综合多个仓库的工作总结，按固定模板生成日报草稿；(4) 输出生成 Agent 接收草稿内容，生成最终的 HTML 日报和 PPT 文件。编排脚本负责按顺序调用这些 Agent，监控每一步的返回值，如果第(2)步返回空数据，可能直接跳到预设的降级输出，而不是让后续 Agent 基于空材料去编造内容。</p>
-              <div class="highlight">记忆句：Agent 工作流就像现代版的修道院抄经室分工——每人只做一件事，做好后把半成品传给下一个人，出错率大幅下降，产出速度却成倍提升。</div>
-            </div>
+              <button class="lesson-expand" type="button" data-lesson="agent-workflow-orchestration" aria-expanded="false">阅读精读</button>
+            </article>
+            <article class="lesson-card" id="mcp-model-context-protocol">
+              <header class="lesson-card-header">
+                <div class="tag-row">
+                  <span class="tag">计算机科学 / 大语言模型</span>
+                  <span class="tag warm">★★★★★</span>
+                </div>
+                <h3>MCP（模型上下文协议）</h3>
+                <p>Model Context Protocol (MCP)</p>
+              </header>
 
-            <button class="lesson-expand" type="button" data-lesson="agent-workflow" aria-expanded="false">阅读精读</button>
-          </article>
-          <article class="lesson-card" id="mcp-protocol">
-            <header class="lesson-card-header">
-              <div class="tag-row">
-                <span class="tag">计算机科学 / 大语言模型</span>
-                <span class="tag warm">★★★★★</span>
+              <div class="lesson-brief">
+                <div class="highlight lesson-memory">记忆句：MCP 如同国家统一插座标准——从此电器按标准生产插头，买回任何电器直接插上就能用。</div>
               </div>
-              <h3>MCP（模型上下文协议）</h3>
-              <p>Model Context Protocol</p>
-            </header>
 
-            <div class="lesson-brief">
-              <p class="lesson-summary">MCP（模型上下文协议）是连接大语言模型和外部世界的一套标准化通信协议，把工具、资源和提示这三种模型需要的外部能力抽象为统一的接口，让 LLM 应用的开发从手工接线走向即插即用。</p>
-              <h4>核心要点</h4>
-              <ul>
-                <li>MCP 不改变模型本身任何参数，不提升语言理解能力，它只是一套“通信协议”——就像 USB 协议不会让你的电脑变快，但标准化了外设的接入方式</li>
-                <li>MCP 定义了三种标准化的“插孔”：工具（tools）封装可调用的操作、资源（resources）提供可读取的数据源、提示（prompts）注册预置的对话模板</li>
-                <li>MCP 的价值在于工程效率和解耦——想换模型直接换，想给工具加参数只改 tools 的 schema 定义，不影响其他端点</li>
-              </ul>
-              <h4>小例子</h4>
-              <p>假设你想做一个“AI 学习助手”，它每天需要读取 Git 仓库的提交记录（资源），调用 Python 脚本分析单词频率（工具），并使用一套预设的“专业老师”语气来回答提问（提示）。在没有 MCP 的情况下，你需要写三份定制代码，三份代码互不知晓，改一个可能影响另外两个。使用 MCP 之后，你只需要注册三个端点：resources/git-log（返回当日提交摘要）、tools/vocab-analyzer（接收文本返回词频统计）、prompts/professional-teacher（返回经过调优的角色提示模板）。然后所有支持 MCP 的 LLM 客户端都能通过统一协议去使用它们。想换模型？直接换，因为接口不变。</p>
-              <div class="highlight">记忆句：MCP 就像国家统一的插座标准——家电厂按标准生产插头，建筑商按标准安装插座，你买回任何电器直接插上就能用，再也不需要为每个新电器重新装修布线。</div>
-            </div>
-
-            <button class="lesson-expand" type="button" data-lesson="mcp-protocol" aria-expanded="false">阅读精读</button>
-          </article>
+              <button class="lesson-expand" type="button" data-lesson="mcp-model-context-protocol" aria-expanded="false">阅读精读</button>
+            </article>
+          </div>
         </div>
 
         <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
@@ -161,30 +148,36 @@
               </header>
 
               <h4>完整讲解</h4>
-              <p>提示词工程，简单来说就是“怎么跟 AI 说话才能得到你想要的结果”。如果把大语言模型想象成一个超级博学但有点死板的图书管理员，你跟他说“帮我找本书”和“请帮我找一本 2023 年之后出版的、关于 Python 数据分析的、评价在 4 星以上的中文书”，产生的效果完全不同。前者你会得到一堆反问，后者你能直接拿到精准结果。提示词工程就是把这种“怎么说清楚”的技巧系统化，它包含几个关键要素：角色设定（“你现在是一个资深程序员”）、任务描述（“请帮我解释这段代码”）、输出格式（“请用要点列表回答”）、边界约束（“不要编造你不确定的函数用法”），以及示例引导（“像这个例子一样处理”）。当这些要素被精心编排成一个提示模板时，模型的行为就会变得可预测、可复用。这里有一个重要的思维转变：提示词不是“一个问题”，而是“一套规范”。就像老师出考试卷子，不仅要有题目，还要写清楚答题要求、字数限制、评分标准。提示词工程就是为 AI 出考卷的学问。</p>
+              <p>提示词工程，简单来说就是“怎么跟 AI 说话才能得到你想要的结果”。如果把大语言模型想象成一个超级博学但有点死板的图书管理员，你跟他说“帮我找本书”和“请帮我找一本 2023 年之后出版的、关于 Python 数据分析的、评价在 4 星以上的中文书”，产生的效果完全不同。前者你会得到一堆反问，后者你能直接拿到精准结果。提示词工程就是把这种“怎么说清楚”的技巧系统化，包含角色设定（“你现在是一个资深程序员”）、任务描述（“请帮我解释这段代码”）、输出格式（“请用要点列表回答”）、边界约束（“不要编造你不确定的函数用法”）以及示例引导（“像这个例子一样处理”）。当这些要素被精心编排成一个提示模板时，模型的行为就会变得可预测、可复用。这里有一个重要的思维转变：提示词不是“一个问题”，而是“一套规范”。就像老师出考试卷子，不仅要有题目，还要写清楚答题要求、字数限制、评分标准。提示词工程就是为 AI 出考卷的学问。</p>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>提示词工程包含角色设定、任务描述、输出格式、边界约束和示例引导等关键要素，当这些要素被精心编排成提示模板时，模型行为就会变得可预测、可复用</li>
+                <li>提示词不是“一个问题”，而是“一套规范”——就像老师出考卷，不仅要出题还要写清答题要求和评分标准</li>
+                <li>提示词工程是系统性地管理模型输入空间的方法，它不是语感，而是一种面向语言模型的程序设计</li>
+              </ul>
 
               <h4>原理逻辑</h4>
               <ol>
-                <li>通过角色设定为模型建立行为框架，限定其身份、语气和专业边界，使输出风格与任务场景匹配</li>
-                <li>通过任务描述和输出格式约束，将模糊的用户意图转化为模型可准确执行的图文指令，降低输出随机性</li>
-                <li>通过边界约束和示例引导建立“护栏”，明确什么不能做、什么做法是期望的，让模型在安全边界内运行</li>
+                <li>通过角色设定让模型进入特定专业模式，限定回答的知识边界和语气风格，从而缩小输出的不确定性空间</li>
+                <li>通过任务描述和输出格式约束，将模糊期待转化为模型能准确执行的文字指令，使输出从“碰运气”变为“可预期”</li>
+                <li>通过边界约束和示例引导建立可预测的输出空间，让提示词成为可版本化、可 A/B 测试的程序设计单元</li>
               </ol>
 
               <h4>具体例子</h4>
-              <p>想让 AI 写一份工作周报，粗糙的提示是“帮我写一份周报”，模型可能虚构内容。经过提示词工程精心设计后，你会写：“你是一个严谨的项目助理。请根据以下提供的工作记录生成一份周报，要求：(1) 只使用记录中出现的事实；(2) 按‘本周完成、下周计划、遇到的问题’三部分组织；(3) 每条不超过30字；(4) 如果某部分没有可提取内容，写‘无明确记录’，不要编造。”</p>
+              <p>想象你开了一家餐厅，雇了一位刚从烹饪学校毕业的厨师。第一天你跟他说“做个菜”，他端上来一盘水煮西兰花。你很失望，但问题出在指令上。第二天你给他详细的菜谱：“做一道宫保鸡丁，用鸡胸肉切丁，花生米先炸过，酱汁比例是生抽两勺、醋一勺、糖半勺，出锅前撒葱花，摆盘时用白盘子，拍照发给我审核。”这次他做出来的菜跟你想象的一模一样。提示词工程就是那张菜谱——你要把脑子里模糊的期待，变成模型能准确执行的文字指令。而且一旦菜谱写成，下次还可以直接用，甚至分享给别的厨师。</p>
 
               <h4>常见误区</h4>
               <ul>
-                <li>很多人以为提示词工程就是“说话好听一点”或者“加几个魔法词汇如 'think step by step'”。实际上，真正的提示词工程是系统性地管理模型的输入空间——它在设计模板时要考虑角色一致性、输出边界、错误处理，甚至要考虑提示词本身的版本控制和 A/B 测试。它不是语感，而是一种面向语言模型的程序设计方法。</li>
-                <li>另一个误区是以为提示词越长越好。实际上，过长的提示词会侵占模型宝贵的上下文窗口，反而降低对核心指令的注意力。真正的技巧在于在详细度和窗口利用率之间找到平衡，通过“渐进披露”逐步给出约束，而不是一次性把所有规则堆在模型面前。</li>
+                <li>很多人以为提示词工程就是“说话好听一点”或者“加几个魔法词汇如 think step by step”，但实际上它是系统性管理输入空间的工程方法</li>
+                <li>提示词工程不是凭语感随意调整措辞，而是需要设计模板时考虑角色一致性、输出边界、错误处理，甚至要进行版本控制和效果对比</li>
               </ul>
 
               <h4>概念关联</h4>
               <table class="mini-table">
                 <tr><th>关联概念</th><th>关系说明</th></tr>
-                <tr><td>关联说明</td><td>提示词工程直接服务于 Agent 工作流中的每个任务节点，每个 Agent 都依赖一套精心设计的提示模板来获得稳定的输出，因此它是 Agent 编排的“细胞级”基础</td></tr>
-                <tr><td>关联说明</td><td>提示词工程中的输出格式要求，正是 LLM 输出约束与多媒体生成的前置条件——只有先让模型知道“我要你输出一个 JSON”，后续的程序才能把它转成 PPT 或其他格式</td></tr>
-                <tr><td>关联说明</td><td>MCP 协议中的 prompts 原语，本质上就是把提示词工程产出的模板进行协议化封装，让提示词变成一种可注册、可发现、可复用的服务端资源，而不仅仅是本地文件</td></tr>
+                <tr><td>Agent 工作流与任务编排</td><td>提示词工程直接服务于 Agent 工作流中的每个任务节点——每个 Agent 都依赖一套精心设计的提示模板来获得稳定的输出，是 Agent 编排的“细胞级”基础</td></tr>
+                <tr><td>MCP prompts 原语</td><td>MCP 协议中的 prompts 原语，本质上就是把提示词工程产出的模板进行协议化封装，让提示词变成一种可注册、可发现、可复用的服务端资源</td></tr>
               </table>
 
               <h4>继续深入问题</h4>
@@ -194,7 +187,7 @@
                 <li>提示词工程中如何实现“渐进披露”——先给出核心约束，再根据需要补充细节，而不是一次性把所有规则堆在模型面前？</li>
               </ol>
             </article>
-            <article class="lesson-detail" data-lesson-detail="agent-workflow">
+            <article class="lesson-detail" data-lesson-detail="agent-workflow-orchestration">
               <header class="lesson-detail-header">
                 <p class="eyebrow">精读文章 · 软件工程 / 大语言模型</p>
                 <h3>Agent 工作流与任务编排</h3>
@@ -202,30 +195,36 @@
               </header>
 
               <h4>完整讲解</h4>
-              <p>如果你已经理解了提示词工程中“给一个模型配一套精细指令”的思路，那 Agent 工作流就是把多个这样的“模型+指令”组合串联起来，像一个自动化团队一样协同工作。想象你开了一家小型报社。一个人既要去采访、又要写稿、还要排版校对，效率低且容易出错。现实中的报社是分工的：记者负责采集信息，编辑负责整理成文，校对负责检查错误，美编负责排版输出。每个人在自己的岗位上，拿着不同的“任务说明书”（也就是不同的提示词），完成专属的工作，并且把结果交给下一个人。Agent 工作流就是把一个复杂的自动化任务拆解成这样一系列子任务，每个子任务分配给一个专门的 Agent，按照编排好的顺序（有时是并行，有时是串行，有时还有条件分支）执行。Agent 编排的工程价值在于“解耦”和“可检查”。你不需要一个全知全能的超级 Agent，而是可以像搭积木一样，把经过验证的小 Agent 组合成一整条流水线。中间每一步的输出都可以保存下来，出问题时你能回溯到具体哪一步出了问题，而不是面对一团黑箱。</p>
+              <p>如果你已经理解了提示词工程中“给一个模型配一套精细指令”的思路，那 Agent 工作流就是把多个这样的“模型+指令”组合串联起来，像一个自动化团队一样协同工作。想象你开了一家小型报社。一个人既要去采访、又要写稿、还要排版校对，效率低且容易出错。现实中的报社是分工的：记者负责采集信息，编辑负责整理成文，校对负责检查错误，美编负责排版输出。每个人在自己的岗位上，拿着不同的“任务说明书”（也就是不同的提示词），完成专属的工作，并且把结果交给下一个人。Agent 工作流就是把一个复杂的自动化任务拆解成一系列子任务，每个子任务分配给一个专门的 Agent，按照编排好的顺序执行。Agent 编排的工程价值在于“解耦”和“可检查”。你不需要一个全知全能的超级 Agent，而是可以像搭积木一样，把经过验证的小 Agent 组合成一整条流水线。中间每一步的输出都可以保存下来，出问题时你能回溯到具体哪一步出了问题，而不是面对一团黑箱。</p>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>Agent 工作流把复杂自动化任务拆解为多个子任务，每个子任务分配给专门的 Agent，按编排好的顺序（串行、并行、条件分支）执行</li>
+                <li>编排的工程价值在于“解耦”和“可检查”——中间每一步的输出都可以保存，出问题时能回溯到具体哪一步，而不是面对一团黑箱</li>
+                <li>Agent 编排的艺术不在于数量多，而在于切分合理——每个子任务要有清晰的输入输出边界，出错时能独立重试，不污染下游</li>
+              </ul>
 
               <h4>原理逻辑</h4>
               <ol>
-                <li>解耦原则：将复杂任务拆分为职责清晰的子任务，每个子任务有明确定义的输入输出契约，降低系统整体复杂度</li>
-                <li>检查点机制：每一步的输出都被保存为中间产物，出问题时可以精确回溯到故障环节，支持独立重试而不需要重新执行整个流水线</li>
-                <li>容错与降级策略：编排脚本监控每个 Agent 的返回值，当某一步失败或返回空数据时，根据预设规则决定是重试、跳过还是切换到降级输出路径</li>
+                <li>将复杂任务按职责拆分为独立的子任务，每个子任务配置专门的提示词和边界约束，让每个 Agent 只负责自己擅长的领域</li>
+                <li>通过编排脚本按预定顺序、条件分支或并行方式调用 Agent，形成自动化流水线，每步输出作为下一步的输入，构成可追溯的中间产物链条</li>
+                <li>利用解耦和可检查的特性，当某个环节出错时能够独立重试或回滚，而不需要重新执行整个流程</li>
               </ol>
 
               <h4>具体例子</h4>
-              <p>以学习助手系统为例，每天早晨自动运行的工作流可能是：(1) 数据采集 Agent 从 Git 提交记录中拉取当日变更文件，提示词是“只提取文件路径和变更摘要，不添加解释”；(2) 概念提炼 Agent 读取原始材料，输出概念和关联描述；(3) 工作摘要 Agent 综合多个仓库的工作总结，按固定模板生成日报草稿；(4) 输出生成 Agent 接收草稿内容，生成最终的 HTML 日报和 PPT 文件。编排脚本负责按顺序调用这些 Agent，监控每一步的返回值，如果第(2)步返回空数据，可能直接跳到预设的降级输出，而不是让后续 Agent 基于空材料去编造内容。</p>
+              <p>有趣的历史类比是印刷术之前的修道院抄经室。如果一位修士要从头到尾独自抄完一本书，速度慢且任何走神都可能导致整页报废。后来的分工方式是：一位修士负责朗读原文，另一位负责抄写，第三位负责校对标点，第四位负责绘制装饰图案。每人只负责自己擅长的一小段工序，出错率大幅下降，产出速度却成倍提升。Agent 工作流就是现代数字版的抄经室分工——每个 Agent 只做一件事，做好后把半成品传给下一个人。当一个环节需要更换人员时（比如换一个更好的校对），你只需要替换那一环，不用重新组织整个流程。</p>
 
               <h4>常见误区</h4>
               <ul>
-                <li>很多人认为 Agent 越多越好，用十个 Agent 一定比用一个强。但实际上，每个 Agent 之间的交接都是潜在的出错点和延迟点。Agent 编排的真正艺术不在于数量多，而在于“切分合理”——每个子任务要有清晰的输入输出边界，出错时能独立重试，不污染下游。盲目增加 Agent 而不设计好它们之间的契约，就像在报社里每个记者写完一句话就传给编辑改一个字，效率反而崩溃。</li>
-                <li>另一个误区是认为 Agent 之间传递信息用自然语言最灵活。实际上，自然语言灵活但容易产生歧义，当上游 Agent 产出的自然语言被下游 Agent 误解时，错误会沿着流水线逐级放大。在关键节点使用结构化 JSON 作为 Agent 间的交接格式，往往比纯自然语言更可靠。</li>
+                <li>很多人认为 Agent 越多越好，用十个 Agent 一定比用一个强。但实际上，每个 Agent 之间的交接都是潜在的出错点和延迟点，盲目增加 Agent 而不设计好契约，效率反而崩溃</li>
+                <li>Agent 编排不是简单地把任务随机拆分，而是需要精心设计每个子任务的输入输出边界，确保交接清晰、可独立验证</li>
               </ul>
 
               <h4>概念关联</h4>
               <table class="mini-table">
                 <tr><th>关联概念</th><th>关系说明</th></tr>
-                <tr><td>关联说明</td><td>提示词工程是 Agent 工作流中每个 Agent 的“灵魂”——每个 Agent 的能力边界和输出质量，直接由它配置的提示模板决定，因此工作流编排的质量上限受限于每个节点提示词的设计水平</td></tr>
-                <tr><td>关联说明</td><td>MCP 协议中的 tools 和 resources 原语，恰好解决了 Agent 编排中“Agent 需要访问外部工具和数据”的问题——编排脚本不再需要为每个 Agent 硬编码文件路径和 API 调用，而是让 Agent 通过 MCP 协议动态获取所需资源</td></tr>
-                <tr><td>关联说明</td><td>LLM 输出约束与多媒体生成通常是 Agent 工作流的末端环节，负责把前面多个 Agent 产出的结构化数据转化为用户可消费的最终格式，工作流的上游专注于逻辑和内容，下游专注于呈现和格式</td></tr>
+                <tr><td>提示词工程</td><td>提示词工程是 Agent 工作流中每个 Agent 的“灵魂”——每个 Agent 的能力边界和输出质量，直接由它配置的提示模板决定，因此工作流编排的质量上限受限于每个节点提示词的设计水平</td></tr>
+                <tr><td>MCP tools / resources 原语</td><td>MCP 协议中的 tools 和 resources 原语，恰好解决了 Agent 编排中“Agent 需要访问外部工具和数据”的问题——编排脚本不再需要为每个 Agent 硬编码文件路径和 API 调用，而是通过协议动态获取所需资源</td></tr>
               </table>
 
               <h4>继续深入问题</h4>
@@ -235,7 +234,7 @@
                 <li>如何调试一个正在运行的 Agent 工作流？是否有办法在不停机的情况下“拦截”某一个 Agent 的输入输出，观察它的中间状态而不影响后续节点？</li>
               </ol>
             </article>
-            <article class="lesson-detail" data-lesson-detail="mcp-protocol">
+            <article class="lesson-detail" data-lesson-detail="mcp-model-context-protocol">
               <header class="lesson-detail-header">
                 <p class="eyebrow">精读文章 · 计算机科学 / 大语言模型</p>
                 <h3>MCP（模型上下文协议）</h3>
@@ -243,30 +242,36 @@
               </header>
 
               <h4>完整讲解</h4>
-              <p>MCP 的全称是 Model Context Protocol，即“模型上下文协议”。要理解它，我们先讲一个物理世界的比喻。你家里的电器——台灯、电视机、电脑——都需要用电，但它们不是从电厂直接拉一条专用电线到家里，而是通过墙上统一的插座来获取电力。国家标准插座规定了两孔还是三孔、零线火线的顺序、最大电流承载。只要电器的插头符合这个标准，插上去就能工作。这极大地简化了电器和电网之间的连接。在大语言模型的世界里，MCP 就是那个“插座标准”。一个 LLM 在工作时经常需要外部帮助：它可能需要查数据库（资源 resources），可能需要调用计算器或搜索引擎（工具 tools），也可能需要使用预置的对话模板来调整角色（提示 prompts）。在没有 MCP 之前，每次开发者想给模型加一种新能力，都要自己写专门的对接代码——相当于每买个新电器就自己拉一根电线。而 MCP 定义了三种标准化的“插孔”，让模型从“什么都得自己记住”变成“按需调用外部服务”。</p>
+              <p>MCP 的全称是 Model Context Protocol，即“模型上下文协议”。要理解它，可以先讲一个物理世界的比喻：你家里的电器——台灯、电视机、电脑——都需要用电，但它们不是从电厂直接拉一条专用电线到家里，而是通过墙上统一的插座来获取电力。国家标准插座规定了两孔还是三孔、零线火线的顺序、最大电流承载。只要电器的插头符合这个标准，插上去就能工作。这极大地简化了电器和电网之间的连接。在大语言模型的世界里，MCP 就是那个“插座标准”。一个 LLM 在工作时经常需要外部帮助：查数据库（资源 resources）、调用计算器或搜索引擎（工具 tools）、使用预置对话模板来调整角色（提示 prompts）。在没有 MCP 之前，每次开发者想给模型加一种新能力，都要自己写专门的对接代码——相当于每买个新电器就自己拉一根电线。而 MCP 定义了三种标准化的接口，不管 LLM 本身怎么换、怎么升级，只要它支持 MCP，就能无缝接入预配好的工具和资源——让 LLM 应用开发从手工接线走向即插即用。</p>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>MCP 定义了三种标准化的“插孔”：工具（tools）封装特定操作接口、资源（resources）提供可读数据源、提示（prompts）注册预配置的提示模板</li>
+                <li>MCP 不改变模型本身任何参数，只是一套通信协议——就像 USB 协议不会让电脑变快，但标准化了设备接入方式</li>
+                <li>通过 MCP，LLM 应用开发从“每买一个电器就自己拉一根电线”变成“统一插座即插即用”，极大地提升了工程效率和解耦程度</li>
+              </ul>
 
               <h4>原理逻辑</h4>
               <ol>
-                <li>关注点分离：MCP 将外部能力拆分为 tools（可执行操作）、resources（可读取数据）和 prompts（预置模板）三种独立端点，每种端点有各自的 schema 定义和生命周期，互不干扰</li>
-                <li>协议标准化：所有支持 MCP 的客户端都通过统一的请求格式与这三种端点交互，协议层屏蔽了底层实现的差异，实现真正的“即插即用”</li>
-                <li>服务端注册与发现：tools、resources、prompts 在服务端注册后，客户端可以动态发现可用端点并绑定，不需要在编排脚本中硬编码外部调用路径</li>
+                <li>MCP 将模型外部能力抽象为三种标准化原语：tools 封装操作接口让模型可以调用外部功能、resources 提供模型可读取但不可随意修改的数据源、prompts 注册预配置的提示模板供客户端按需选取</li>
+                <li>所有支持 MCP 的 LLM 客户端通过统一协议访问这些能力，实现模型与外部资源的彻底解耦——想换模型直接换，因为接口不变；想给工具加参数只改工具定义的 schema，不影响其他模块</li>
+                <li>协议化的接口契约让工具、提示、资源可以独立迭代、独立测试、独立部署，体现了服务端模块化与关注点分离的软件工程原则</li>
               </ol>
 
               <h4>具体例子</h4>
-              <p>假设你想做一个“AI 学习助手”，它每天需要读取 Git 仓库的提交记录（资源），调用 Python 脚本分析单词频率（工具），并使用一套预设的“专业老师”语气来回答提问（提示）。在没有 MCP 的情况下，你需要写三份定制代码，三份代码互不知晓，改一个可能影响另外两个。使用 MCP 之后，你只需要注册三个端点：resources/git-log（返回当日提交摘要）、tools/vocab-analyzer（接收文本返回词频统计）、prompts/professional-teacher（返回经过调优的角色提示模板）。然后所有支持 MCP 的 LLM 客户端都能通过统一协议去使用它们。想换模型？直接换，因为接口不变。</p>
+              <p>想象你在 20 世纪初买了一台新发明的电风扇，但发现它的插头是三角形的，而你家里的插座都是圆形的。你只有两个选择：要么重新装修布插座，要么找人把电风扇的插头剪掉换一个圆形的。如果买回来的每一件电器插头形状都不同，那家里就是个插座万花筒，维修和使用都是噩梦。这就是大语言模型应用开发在 MCP 出现之前的状态：每个工具、每个数据源、每个提示模板的接入方式都是定制的。MCP 就如同国家出台了统一的插座标准，从此家电厂按标准生产插头，建筑商按标准安装插座，你买回任何电器直接插上就能用。</p>
 
               <h4>常见误区</h4>
               <ul>
-                <li>很多人以为 MCP 是一种“能让 LLM 变聪明的新技术”或者“AI 的新模型”。实际上，MCP 不改变模型本身任何参数，不提升模型的语言理解能力，它只是一套“通信协议”。就像 USB 协议不会让你的电脑变快，但标准化了键盘、鼠标、U 盘的接入方式。MCP 的价值在于工程效率和解耦，而不在于模型能力的魔法飞跃。</li>
-                <li>另一个常见误解是把 MCP 与 Function Calling 划等号。虽然二者都涉及模型调用外部功能，但 MCP 是协议层的标准化框架，而 Function Calling 是特定厂商的实现机制。MCP 试图解决的恰恰是不同厂商 Function Calling 定义互不兼容的问题，用统一协议消除厂商锁定。</li>
+                <li>很多人以为 MCP 是一种“能让 LLM 变聪明的新技术”或“AI 的新模型”。实际上，MCP 不改变模型本身任何参数，不提升模型的语言理解能力，它只是一套通信协议</li>
+                <li>MCP 的价值在于工程效率和解耦，而不在于模型能力的魔法飞跃——就像 USB 协议不会让你的电脑变快，但标准化了键盘、鼠标、U 盘的接入方式</li>
               </ul>
 
               <h4>概念关联</h4>
               <table class="mini-table">
                 <tr><th>关联概念</th><th>关系说明</th></tr>
-                <tr><td>关联说明</td><td>MCP 中的 prompts 原语与提示词工程直接对应——提示词工程产出的模板，通过 MCP 注册为服务端资源后，可以被任何支持该协议的客户端重用，实现了提示资产的跨项目共享和版本管理</td></tr>
-                <tr><td>关联说明</td><td>MCP 中的 tools 和 resources 为 Agent 工作流与任务编排提供了标准化的能力底座——编排脚本不再需要为每个 Agent 写死外部调用的代码，而是通过 MCP 协议让 Agent 在运行时动态发现和绑定需要的工具与资源</td></tr>
-                <tr><td>关联说明</td><td>MCP 协议本身的设计思想（工具、提示、资源的模块划分）体现了服务端模块化与关注点分离的软件工程原则，说明即便是在 AI 原生领域，经典的架构分治思想仍然是解决复杂性的关键手段</td></tr>
+                <tr><td>提示词工程 / MCP prompts</td><td>MCP 中的 prompts 原语与提示词工程直接对应——提示词工程产出的模板，通过 MCP 注册为服务端资源后，可以被任何支持该协议的客户端重用，实现了提示资产的跨项目共享和版本管理</td></tr>
+                <tr><td>Agent 工作流与任务编排</td><td>MCP 中的 tools 和 resources 为 Agent 工作流与任务编排提供了标准化的能力底座——编排脚本不再需要为每个 Agent 写死外部调用的代码，而是通过 MCP 协议让 Agent 在运行时动态发现和绑定需要的工具与资源</td></tr>
               </table>
 
               <h4>继续深入问题</h4>
@@ -282,20 +287,20 @@
 
       <section class="section panel">
         <h2 class="section-title">概念之间的关联</h2>
-        <p class="lead">提示词工程是 Agent 工作流中每个 Agent 的“灵魂”——每个节点的输出质量直接由它配置的提示模板决定；Agent 工作流则为提示词工程提供了规模化应用的框架，让多个经过验证的小 Agent 像流水线一样协同产出。MCP 协议中的 prompts 原语把提示词工程的产出进行协议化封装，tools 和 resources 则为 Agent 工作流中的每个节点提供了标准化的外部能力底座，编排脚本不再需要为每个 Agent 硬编码外部调用，而是通过统一协议动态获取所需工具和资源。</p>
+        <p class="lead">这三个概念共同描绘了一条从“人指导模型”到“系统自我组织”的工程化路径。提示词工程就像给模型写一份详细的工作说明书，Agent 工作流像是把不同工种的工人按照流水线组织起来，而 MCP 则像是为这条流水线配置了标准化的工具箱和原料仓库。它们不是孤立的知识点，而是一条从微观到宏观、从手工到自动化的工程升级链。理解它们之间的递进关系，就能理解为什么让模型可靠工作需要在语言、流程和协议三个层面同时发力。</p>
       </section>
 
       <section class="section panel">
         <h2 class="section-title">今日最值得记住的一句话</h2>
-        <p class="lead">提示词工程是面向大语言模型的程序设计，Agent 工作流是组织多个程序协同运行的框架，MCP 是让这些程序接入外部世界的标准接口——三者合在一起，就是把 LLM 从聊天玩具变成基础设施的三件关键工具。</p>
+        <p class="lead">提示词工程是 LLM 时代的“程序设计”：通过精心编写提示模板，我们可以稳定地控制模型的输出风格、格式和逻辑边界，而不仅仅是靠运气获得好结果。</p>
       </section>
 
       <section class="section panel">
         <h2 class="section-title">可继续探索的问题</h2>
         <ol>
-            <li>如果用一个 LLM 去评估另一个 LLM 输出的提示模板质量，这种“元评估”是否可靠？评估标准本身是否也需要提示词工程来保证？</li>
-            <li>多 Agent 之间传递信息时，用自然语言和用结构化 JSON 各自的适用场景是什么？是否存在一种混合协议，既能保留语义细节又有字段约束？</li>
-            <li>MCP 协议与各厂商现有的 Function Calling 机制之间，是实现层级的替代关系还是协议层级的互补关系？标准化能否真正解决不同厂商函数调用定义互不兼容的问题？</li>
+            <li>如何评估一个提示模板的好坏？是用人工打分，还是用另一个 LLM 来判断，或者通过下游任务的完成率来衡量？</li>
+            <li>当 Agent 工作流中的一个中间步骤失败时，系统应该重试该步骤、回滚到上一个检查点、还是直接输出带错误标记的中间结果？</li>
+            <li>MCP 协议与现有 Function Calling 机制之间是什么关系？是互补还是替代？它的标准化程度能否解决不同厂商 Function Calling 定义互不兼容的问题？</li>
         </ol>
       </section>
 

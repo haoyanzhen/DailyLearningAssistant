@@ -79,6 +79,7 @@ def main() -> int:
         "complete": is_success(status_data, REQUIRED_AGENTS),
         "agents": summarize_agents(status_data),
         "orchestrator": status_data.get("orchestrator"),
+        "orchestrator_runs": status_data.get("orchestrator_runs") or {},
         "llm_trace": summarize_llm_trace(status_path.parent / "llm_trace.jsonl"),
     }
     if args.json:
@@ -92,6 +93,11 @@ def main() -> int:
             for problem in item.get("problems") or []:
                 print(f"  - {problem}")
         trace = payload["llm_trace"]
+        runs = payload["orchestrator_runs"]
+        if runs:
+            print("Orchestrator runs:")
+            for key, item in runs.items():
+                print(f"- {key}: {item.get('status')} steps={item.get('selected_steps')}")
         if trace.get("exists"):
             print(
                 f"LLM trace: attempts={trace['attempt_count']} calls={trace['call_count']} "

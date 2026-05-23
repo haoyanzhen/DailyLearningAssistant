@@ -17,6 +17,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 from orchestrator.llm import LLMRetryPolicy, RetryPolicy, call_chat_completion, retry_call
 from orchestrator.manifest import update_daily_manifest, update_knowledge_manifest
+from orchestrator.validators import validate_learning_report_html
 
 
 def parse_args() -> argparse.Namespace:
@@ -162,8 +163,9 @@ def build_prompt(target_date: str, knowledge_explaination: str, knowledge_log: s
 - 只根据 `knowledge_explaination.md` 的知识内容组织页面，不修改知识主体含义，不编造第四个概念。
 - 不要输出完整 HTML，不要输出 CSS，不要输出 `<style>`，不要输出内联 style。
 - 必须提供 3 个知识点，顺序与 `knowledge_explaination.md` 保持一致。
-- 简读内容包含：一句话解释、核心要点、小例子、记忆句。
-- 精读内容包含：完整讲解、原理逻辑、具体例子、常见误区、概念关联、继续深入问题。
+- 简读卡片只承载概览入口：概念标签、标题、英文名或辅助名、一句话记忆、精读入口。
+- 核心要点和小例子不要放在简读卡片中，必须转移到精读内容。
+- 精读内容包含：完整讲解、核心要点、原理逻辑、具体例子、常见误区、概念关联、继续深入问题。
 - 精读内容不要出现“与当天工作内容的关系”或“与前一天工作内容的关系”章节。
 
 manifest 要求：
@@ -179,7 +181,6 @@ manifest 要求：
   "hero_intro": "页面导语，1-2 句",
   "theme": "今日主题",
   "learning_path": "学习路径，例如 检查 → 停止 → 关联",
-  "overview": "今日知识点概览段落",
   "main_thread": "今日知识主线段落",
   "association": "概念之间的关联段落",
   "best_sentence": "今日最值得记住的一句话",
@@ -198,7 +199,12 @@ manifest 要求：
       "full_explanation": "完整讲解",
       "principle_logic": ["原理逻辑 1", "原理逻辑 2", "原理逻辑 3"],
       "common_misunderstandings": ["常见误区 1", "常见误区 2"],
-      "connections": ["概念关联 1", "概念关联 2"],
+      "connections": [
+        {{
+          "concept": "关联概念名称",
+          "description": "关系说明"
+        }}
+      ],
       "deep_questions": ["继续深入问题 1", "继续深入问题 2", "继续深入问题 3"]
     }}
   ]
@@ -233,17 +239,93 @@ def render_items(items: list, tag: str = "li") -> str:
     return "\n".join(f"                <{tag}>{escape_text(item)}</{tag}>" for item in items)
 
 
-def render_table_rows(items: list[str]) -> str:
+def split_connection_text(value: object) -> tuple[str, str]:
+    text = normalize_text(value)
+    if "：" in text:
+        return text.split("：", 1)
+    if ":" in text:
+        return text.split(":", 1)
+    return "关联概念", text
+
+
+def render_table_rows(items: list) -> str:
     rows = []
     for item in items:
-        if "：" in normalize_text(item):
-            left, right = normalize_text(item).split("：", 1)
-        elif ":" in normalize_text(item):
-            left, right = normalize_text(item).split(":", 1)
+        if isinstance(item, dict):
+            left = normalize_text(item.get("concept"), "关联概念")
+            right = normalize_text(item.get("description") or item.get("relation") or item.get("summary"))
         else:
-            left, right = "关联说明", normalize_text(item)
+            left, right = split_connection_text(item)
         rows.append(f"                <tr><td>{escape_text(left)}</td><td>{escape_text(right)}</td></tr>")
     return "\n".join(rows)
+
+
+def mermaid_label(value: object) -> str:
+    return normalize_text(value).replace('"', "'")
+
+
+def render_relationship_graph(concepts: list[dict]) -> str:
+    concept_names = [normalize_text(concept["name"]) for concept in concepts]
+    concept_node_ids = {concept["name"]: f"concept{index}" for index, concept in enumerate(concepts, start=1)}
+    related_node_ids: dict[str, str] = {}
+    mermaid_lines = [
+        "flowchart LR",
+        "  hub([LLM 工程化能力])",
+    ]
+    legend_items = []
+
+    for concept in concepts:
+        node_id = concept_node_ids[concept["name"]]
+        mermaid_lines.append(f'  {node_id}["{mermaid_label(concept["name"])}"]')
+        mermaid_lines.append(f"  hub --> {node_id}")
+
+    for concept in concepts:
+        source_id = concept_node_ids[concept["name"]]
+        for connection in concept["connections"]:
+            related = normalize_text(connection.get("concept"))
+            description = normalize_text(connection.get("description"))
+            target_id = ""
+            for concept_name in concept_names:
+                if related == concept_name or concept_name in related or related in concept_name:
+                    target_id = concept_node_ids[concept_name]
+                    break
+            if not target_id:
+                if related not in related_node_ids:
+                    related_node_ids[related] = f"related{len(related_node_ids) + 1}"
+                    target_id = related_node_ids[related]
+                    mermaid_lines.append(f'  {target_id}["{mermaid_label(related)}"]')
+                else:
+                    target_id = related_node_ids[related]
+            mermaid_lines.append(f"  {source_id} --> {target_id}")
+            legend_items.append(
+                f"""              <li><strong>{escape_text(concept["name"])} → {escape_text(related)}</strong><span>{escape_text(description)}</span></li>"""
+            )
+
+    mermaid_lines.extend(
+        [
+            "  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px",
+            "  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px",
+            "  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px",
+            "  class hub hub",
+            f"  class {','.join(concept_node_ids.values())} primary",
+        ]
+    )
+    if related_node_ids:
+        mermaid_lines.append(f"  class {','.join(related_node_ids.values())} related")
+
+    return f"""          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <pre class="mermaid">
+{html.escape(chr(10).join(mermaid_lines), quote=False)}
+              </pre>
+            </div>
+            <div class="relationship-map-notes">
+              <p class="eyebrow">Concept Links</p>
+              <ul>
+{chr(10).join(legend_items)}
+              </ul>
+            </div>
+          </div>"""
 
 
 def validate_structured_payload(data: dict, target_date: str) -> dict:
@@ -258,7 +340,6 @@ def validate_structured_payload(data: dict, target_date: str) -> dict:
             ("hero_intro", data.get("hero_intro")),
             ("theme", data.get("theme")),
             ("learning_path", data.get("learning_path")),
-            ("overview", data.get("overview")),
             ("main_thread", data.get("main_thread")),
             ("association", data.get("association")),
             ("best_sentence", data.get("best_sentence")),
@@ -294,6 +375,20 @@ def validate_structured_payload(data: dict, target_date: str) -> dict:
         for array_key in ("key_points", "principle_logic", "common_misunderstandings", "connections", "deep_questions"):
             if not isinstance(concept.get(array_key), list) or not concept[array_key]:
                 raise ValueError(f"concepts[{index}].{array_key} 必须是非空数组。")
+        normalized_connections = []
+        for connection_index, connection in enumerate(concept["connections"], start=1):
+            if isinstance(connection, dict):
+                related_concept = normalize_text(connection.get("concept"))
+                description = normalize_text(connection.get("description") or connection.get("relation") or connection.get("summary"))
+                if not related_concept or not description:
+                    raise ValueError(f"concepts[{index}].connections[{connection_index}] 必须包含 concept 和 description。")
+                normalized_connections.append({"concept": related_concept, "description": description})
+            else:
+                related_concept, description = split_connection_text(connection)
+                if related_concept == "关联概念":
+                    raise ValueError(f"concepts[{index}].connections[{connection_index}] 必须使用结构化对象，或写成“关联概念：关系说明”。")
+                normalized_connections.append({"concept": related_concept.strip(), "description": description.strip()})
+        concept["connections"] = normalized_connections
         concept["id"] = slugify(str(concept.get("id") or concept["name"]), index)
     return data
 
@@ -301,13 +396,6 @@ def validate_structured_payload(data: dict, target_date: str) -> dict:
 def render_report_html(data: dict, target_date: str) -> str:
     year_month = target_date[:7]
     concepts = data["concepts"]
-    stat_cards = "\n".join(
-        f"""          <article class="stat-card">
-            <strong>{escape_text(concept["name"])}</strong>
-            <span>{escape_text(concept["one_sentence"])}</span>
-          </article>"""
-        for concept in concepts
-    )
     lesson_cards = []
     lesson_details = []
     for concept in concepts:
@@ -323,14 +411,7 @@ def render_report_html(data: dict, target_date: str) -> str:
             </header>
 
             <div class="lesson-brief">
-              <p class="lesson-summary">{escape_text(concept["one_sentence"])}</p>
-              <h4>核心要点</h4>
-              <ul>
-{render_items(concept["key_points"])}
-              </ul>
-              <h4>小例子</h4>
-              <p>{escape_text(concept["example"])}</p>
-              <div class="highlight">记忆句：{escape_text(concept["memory_sentence"])}</div>
+              <div class="highlight lesson-memory">{escape_text(concept["memory_sentence"])}</div>
             </div>
 
             <button class="lesson-expand" type="button" data-lesson="{escape_text(concept["id"])}" aria-expanded="false">阅读精读</button>
@@ -346,6 +427,11 @@ def render_report_html(data: dict, target_date: str) -> str:
 
               <h4>完整讲解</h4>
               <p>{escape_text(concept["full_explanation"])}</p>
+
+              <h4>核心要点</h4>
+              <ul>
+{render_items(concept["key_points"])}
+              </ul>
 
               <h4>原理逻辑</h4>
               <ol>
@@ -375,6 +461,7 @@ def render_report_html(data: dict, target_date: str) -> str:
     questions = "\n".join(f"            <li>{escape_text(item)}</li>" for item in data["exploration_questions"])
     lesson_cards_html = "\n".join(lesson_cards)
     lesson_details_html = "\n".join(lesson_details)
+    relationship_graph_html = render_relationship_graph(concepts)
     return f"""<!doctype html>
 <html lang="zh-CN">
   <head>
@@ -383,6 +470,10 @@ def render_report_html(data: dict, target_date: str) -> str:
     <title>{escape_text(data["title"])}</title>
     <meta name="description" content="{escape_text(data["summary"])}" />
     <link rel="stylesheet" href="../../style/main.css?v={target_date.replace("-", "")}" />
+    <script type="module">
+      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+      mermaid.initialize({{ startOnLoad: true, theme: "base", securityLevel: "strict" }});
+    </script>
   </head>
   <body>
     <main class="page">
@@ -405,42 +496,26 @@ def render_report_html(data: dict, target_date: str) -> str:
         <p class="eyebrow">Learning Report · {target_date}</p>
         <h1>{escape_text(data["hero_title"])}</h1>
         <p>{escape_text(data["hero_intro"])}</p>
-        <div class="meta-grid">
-          <div class="meta-item"><span class="meta-label">今日主题</span><span class="meta-value">{escape_text(data["theme"])}</span></div>
-          <div class="meta-item"><span class="meta-label">阅读模式</span><span class="meta-value">简读 / 精读</span></div>
-          <div class="meta-item"><span class="meta-label">知识点</span><span class="meta-value">3 个并列讲解</span></div>
-          <div class="meta-item"><span class="meta-label">学习路径</span><span class="meta-value">{escape_text(data["learning_path"])}</span></div>
-        </div>
-      </section>
-
-      <section class="section panel">
-        <h2 class="section-title">今日知识点概览</h2>
-        <p class="lead">{escape_text(data["overview"])}</p>
-        <div class="stat-grid">
-{stat_cards}
-        </div>
-      </section>
-
-      <section class="section panel">
-        <h2 class="section-title">今日知识主线</h2>
-        <p class="lead">{escape_text(data["main_thread"])}</p>
       </section>
 
       <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
-        <div class="lesson-toolbar panel">
-          <div>
-            <p class="eyebrow">Read Mode</p>
-            <h2 class="section-title">今日三节小课</h2>
-            <p class="lead">简读用于快速抓住三个概念；精读会在卡片下方展开完整文章。</p>
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
           </div>
-          <div class="read-mode-toggle" role="group" aria-label="阅读模式">
-            <button class="is-active" type="button" data-mode="brief">简读</button>
-            <button type="button" data-mode="deep">精读</button>
-          </div>
-        </div>
 
-        <div class="lesson-grid">
+{relationship_graph_html}
+
+          <div class="lesson-grid">
 {lesson_cards_html}
+          </div>
         </div>
 
         <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
@@ -467,9 +542,6 @@ def render_report_html(data: dict, target_date: str) -> str:
         </ol>
       </section>
 
-      <footer class="footer-note">
-        数据来源：prework/{year_month}/{target_date}/knowledge_explaination.md
-      </footer>
     </main>
 
     <script>
@@ -511,20 +583,8 @@ def validate_report_payload(data: dict, target_date: str) -> tuple[str, str, str
     summary = normalize_text(data["summary"])
     html = render_report_html(data, target_date)
 
-    required_html = [
-        "<!doctype html>",
-        '<html lang="zh-CN"',
-        "../../style/main.css",
-        "../../index.html?archive=1",
-        "../../index.html?knowledge=1",
-        "简读",
-        "精读",
-        "lesson-section",
-        "lesson-detail-panel",
-        target_date,
-    ]
     lower_html = html.lower()
-    missing_html = [item for item in required_html if item.lower() not in lower_html]
+    missing_html = validate_learning_report_html(html, target_date)
     if missing_html:
         raise ValueError(f"HTML 日报缺少必要片段: {', '.join(missing_html)}")
 

@@ -17,32 +17,14 @@
   },
   "schedule": {
     "daily_run_time": "09:00",
+    "html_run_time": "09:00",
+    "email_send_time": "09:30",
     "timezone": "Asia/Shanghai"
   },
   "repositories": [
     {
-      "name": "AInote",
-      "path": "~/projects/AInote"
-    },
-    {
       "name": "DailyLearningAssistant",
       "path": "~/projects/DailyLearningAssistant"
-    },
-    {
-      "name": "interview_prepare",
-      "path": "~/projects/interview_prepare"
-    },
-    {
-      "name": "mcp",
-      "path": "~/projects/mcp"
-    },
-    {
-      "name": "ResearchPaperBase_cc",
-      "path": "~/projects/ResearchPaperBase_cc"
-    },
-    {
-      "name": "ResearchPaperBase_codex",
-      "path": "~/projects/ResearchPaperBase_codex"
     }
   ],
   "llm": {
@@ -51,6 +33,26 @@
     "model": "deepseek-v4-pro"
   },
   "site": {
-    "base_url": "https://haoyanzhen.github.io/DailyLearningAssistant"
+    "base_url": "https://yourgithubusername.github.io/DailyLearningAssistant"
+  },
+  "publish": {
+    "remote": "origin",
+    "branch": "main",
+    "commit_message": "Publish daily learning report {date}",
+    "paths": [
+      "prework/{year_month}/{date}/work_summary_AInote.md",
+      "prework/{year_month}/{date}/work_summary_DailyLearningAssistant.md",
+      "prework/{year_month}/{date}/work_summary_interview_prepare.md",
+      "prework/{year_month}/{date}/work_summary_mcp.md",
+      "prework/{year_month}/{date}/work_summary_ResearchPaperBase_cc.md",
+      "prework/{year_month}/{date}/work_summary_ResearchPaperBase_codex.md",
+      "prework/{year_month}/{date}/concept_relevance.md",
+      "prework/{year_month}/{date}/knowledge_explaination.md",
+      "daily_report/{year_month}/{date}-learning-report.html",
+      "daily_report/manifest.json",
+      "knowledge_log/{year_month}-knowledge-log.md",
+      "knowledge_log/manifest.json",
+      "index.html"
+    ]
   }
 }

@@ -1,15 +1,12 @@
 #!/bin/bash
-# Run the full local DailyLearningAssistant agent pipeline.
-#
-# This wrapper is intended for local schedulers such as launchd. It does not
-# install or modify any scheduled job by itself.
+# Send the daily learning report email through the local Agent entrypoint.
 
 set -euo pipefail
 
 PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 CONFIG_FILE="${DLA_CONFIG_FILE:-$PROJECT_ROOT/config.json}"
 PYTHON_BIN="${DLA_PYTHON_BIN:-$(command -v python3)}"
-LOG_PREFIX="[daily-learning-agent]"
+LOG_PREFIX="[daily-learning-email-agent]"
 
 log() {
     printf '%s %s %s\n' "$(date '+%Y-%m-%d %H:%M:%S %Z')" "$LOG_PREFIX" "$*"
@@ -25,11 +22,11 @@ cd "$PROJECT_ROOT"
 log "checking config"
 "$PYTHON_BIN" "$PROJECT_ROOT/scripts/check_config.py" --config "$CONFIG_FILE" --strict
 
-log "running HTML generation and publish pipeline"
+log "sending daily email"
 "$PYTHON_BIN" "$PROJECT_ROOT/orchestrator/run_daily.py" \
     --config "$CONFIG_FILE" \
     --output-root "$PROJECT_ROOT" \
-    --to-step 4 \
-    --publish
+    --only-step 5 \
+    --send-email
 
-log "HTML generation and publish pipeline finished"
+log "daily email finished"

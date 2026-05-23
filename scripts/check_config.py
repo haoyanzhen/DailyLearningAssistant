@@ -40,13 +40,16 @@ def check_schedule(config: dict) -> list[str]:
     schedule = config.get("schedule")
     if not isinstance(schedule, dict):
         return ["schedule 必须是 object"]
-    run_time = schedule.get("daily_run_time")
-    if not isinstance(run_time, str) or not TIME_RE.fullmatch(run_time):
-        problems.append("schedule.daily_run_time 必须是 HH:MM")
-    else:
-        hour, minute = map(int, run_time.split(":"))
-        if not (0 <= hour <= 23 and 0 <= minute <= 59):
-            problems.append("schedule.daily_run_time 小时必须为 00-23，分钟必须为 00-59")
+    for key in ("daily_run_time", "html_run_time", "email_send_time"):
+        run_time = schedule.get(key)
+        if run_time is None and key != "daily_run_time":
+            continue
+        if not isinstance(run_time, str) or not TIME_RE.fullmatch(run_time):
+            problems.append(f"schedule.{key} 必须是 HH:MM")
+        else:
+            hour, minute = map(int, run_time.split(":"))
+            if not (0 <= hour <= 23 and 0 <= minute <= 59):
+                problems.append(f"schedule.{key} 小时必须为 00-23，分钟必须为 00-59")
     timezone_name = schedule.get("timezone")
     if not isinstance(timezone_name, str) or not timezone_name.strip():
         problems.append("schedule.timezone 不能为空")
@@ -154,6 +157,28 @@ def check_site(config: dict) -> list[str]:
     return []
 
 
+def check_publish(config: dict) -> list[str]:
+    publish = config.get("publish")
+    if publish is None:
+        return []
+    problems: list[str] = []
+    if not isinstance(publish, dict):
+        return ["publish 必须是 object"]
+    for key in ("remote", "branch", "commit_message"):
+        value = publish.get(key)
+        if value is not None and (not isinstance(value, str) or not value.strip()):
+            problems.append(f"publish.{key} 必须是非空字符串")
+    paths = publish.get("paths")
+    if paths is not None:
+        if not isinstance(paths, list):
+            problems.append("publish.paths 必须是字符串列表")
+        else:
+            for index, item in enumerate(paths):
+                if not isinstance(item, str) or not item.strip():
+                    problems.append(f"publish.paths[{index}] 必须是非空字符串")
+    return problems
+
+
 def main() -> int:
     args = parse_args()
     config_path = Path(args.config).expanduser().resolve()
@@ -169,6 +194,7 @@ def main() -> int:
     problems.extend(check_llm(config, args.strict))
     problems.extend(check_email(config, args.strict))
     problems.extend(check_site(config))
+    problems.extend(check_publish(config))
 
     if problems:
         print(f"[失败] 配置检查未通过: {config_path}")

@@ -38,11 +38,22 @@ def now_iso(timezone: ZoneInfo) -> str:
     return datetime.now(timezone).isoformat()
 
 
-def update_orchestrator(status_path: Path, target_date: str, payload: dict, timezone: ZoneInfo) -> None:
+def update_orchestrator(
+    status_path: Path,
+    target_date: str,
+    payload: dict,
+    timezone: ZoneInfo,
+    run_key: str | None = None,
+) -> None:
     status_data = load_status(status_path, target_date)
     status_data["date"] = target_date
     status_data["updated_at"] = now_iso(timezone)
     status_data[ORCHESTRATOR_STATUS_KEY] = payload
+    if run_key:
+        status_data.setdefault("orchestrator_runs", {})
+        if not isinstance(status_data["orchestrator_runs"], dict):
+            status_data["orchestrator_runs"] = {}
+        status_data["orchestrator_runs"][run_key] = payload
     write_status(status_path, status_data)
 
 
@@ -64,17 +75,27 @@ def summarize_agents(status_data: dict) -> dict:
 def is_success(status_data: dict, required_agents: list[str]) -> bool:
     agents = status_data.get("agents") or {}
     orchestrator = status_data.get(ORCHESTRATOR_STATUS_KEY) or {}
-    skipped_steps = set(orchestrator.get("skipped_steps") or [])
-    fallback_events = orchestrator.get("fallback_events") or []
+    orchestrator_runs = status_data.get("orchestrator_runs") or {}
+    generation_orchestrator = (
+        orchestrator_runs.get("html_publish")
+        or orchestrator_runs.get("full")
+        or orchestrator
+    )
+    success_statuses_by_agent = {
+        "daily_work_summary": {"success", "partial_success"},
+    }
+    skipped_steps = set(generation_orchestrator.get("skipped_steps") or [])
+    fallback_events = generation_orchestrator.get("fallback_events") or []
     skippable_agents = {
         "concept_relevance": 2,
         "knowledge_explaination": 3,
     }
     for name in required_agents:
-        if (agents.get(name) or {}).get("status") == "success":
+        accepted_statuses = success_statuses_by_agent.get(name, {"success"})
+        if (agents.get(name) or {}).get("status") in accepted_statuses:
             continue
         if (
-            orchestrator.get("status") == "success"
+            generation_orchestrator.get("status") == "success"
             and fallback_events
             and skippable_agents.get(name) in skipped_steps
         ):
