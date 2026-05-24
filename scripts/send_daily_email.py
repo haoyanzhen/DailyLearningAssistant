@@ -52,30 +52,80 @@ def find_latest_available_report(reports, target_date):
     return report
 
 
-def get_target_emails(config):
-    """读取目标邮箱列表，兼容旧版 target_email 单收件人配置。"""
+def get_configured_recipients(config):
+    """读取收件人 ID 配置。"""
     email_cfg = config.get("email", {})
-    target_emails = email_cfg.get("target_emails")
-
-    if target_emails is None and email_cfg.get("target_email"):
-        target_emails = [email_cfg["target_email"]]
-    elif isinstance(target_emails, str):
-        target_emails = [target_emails]
-
-    if not isinstance(target_emails, list):
-        print("[错误] 邮件收件人配置无效，请设置 email.target_emails 为邮箱列表。")
+    recipients = email_cfg.get("recipients")
+    if not isinstance(recipients, dict):
+        print("[错误] 邮件收件人配置无效，请设置 email.recipients 为收件人 ID 到邮箱和昵称的映射。")
         sys.exit(1)
-
-    normalized = [email.strip() for email in target_emails if isinstance(email, str) and email.strip()]
+    normalized = {}
+    for recipient_id, item in recipients.items():
+        if not isinstance(recipient_id, str) or not recipient_id.strip() or not isinstance(item, dict):
+            continue
+        email = item.get("email")
+        target_name = item.get("target_name")
+        if isinstance(email, str) and email.strip() and isinstance(target_name, str) and target_name.strip():
+            normalized[recipient_id.strip()] = {
+                "id": recipient_id.strip(),
+                "email": email.strip(),
+                "target_name": target_name.strip(),
+            }
     if not normalized:
-        print("[错误] 邮件收件人为空，请在 config.json 中设置 email.target_emails。")
+        print("[错误] 邮件收件人为空，请在 config.json 中设置 email.recipients。")
         sys.exit(1)
-
     return normalized
 
 
-def generate_email_content(report, config, send_date):
+def get_target_recipient_ids(config):
+    email_cfg = config.get("email", {})
+    ids = email_cfg.get("target_recipient_ids")
+    if not isinstance(ids, list) or not ids:
+        print("[错误] 请设置 email.target_recipient_ids 为收件人 ID 列表。")
+        sys.exit(1)
+    return [item.strip() for item in ids if isinstance(item, str) and item.strip()]
+
+
+def get_target_recipients(config):
+    recipients = get_configured_recipients(config)
+    target_ids = get_target_recipient_ids(config)
+    missing = [recipient_id for recipient_id in target_ids if recipient_id not in recipients]
+    if missing:
+        print(f"[错误] email.target_recipient_ids 包含未定义 ID: {', '.join(missing)}")
+        sys.exit(1)
+    return [recipients[recipient_id] for recipient_id in target_ids]
+
+
+def get_target_emails(config):
+    """读取目标邮箱列表。"""
+    return [recipient["email"] for recipient in get_target_recipients(config)]
+
+
+def get_recipient_name(config, email):
+    """Return the configured display nickname for an email address."""
+    for recipient in get_configured_recipients(config).values():
+        if recipient["email"] == email:
+            return recipient["target_name"]
+    return email.split("@", 1)[0]
+
+
+def get_failure_recipient(config):
+    email_cfg = config.get("email", {})
+    recipient_id = email_cfg.get("failure_recipient_id")
+    recipients = get_configured_recipients(config)
+    if not isinstance(recipient_id, str) or recipient_id not in recipients:
+        print("[错误] 请设置 email.failure_recipient_id，并确保它存在于 email.recipients。")
+        sys.exit(1)
+    return recipients[recipient_id]
+
+
+def get_failure_email(config):
+    return get_failure_recipient(config)["email"]
+
+
+def generate_email_content(report, config, send_date, recipient_name=None):
     """调用 LLM 生成邮件问候和点评，失败返回 None 以触发回退。"""
+    recipient_name = recipient_name or "你"
     weekday_names = ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"]
     send_dt = datetime.strptime(send_date, "%Y-%m-%d")
     weekday = weekday_names[send_dt.weekday()]
@@ -93,7 +143,7 @@ def generate_email_content(report, config, send_date):
     ]
     style_profile = random.choice(style_profiles)
 
-    prompt = f"""你负责为"每日拾光学习簿"撰写每日学习日报邮件的开头文案。文案应像一条自然、亲切的日常留言：温暖、有陪伴感，但不过度夸张；可以轻轻称呼对方为"绪绪"，也可以直接自然问候。整体效果应让收件人感觉"今天的学习日报已经准备好了，值得点开看看"。
+    prompt = f"""你负责为"每日拾光学习簿"撰写每日学习日报邮件的开头文案。文案应像一条自然、亲切的日常留言：温暖、有陪伴感，但不过度夸张。收件人的称呼是"{recipient_name}"，开头问候必须自然使用这个称呼，不要改写成其他昵称。整体效果应让收件人感觉"今天的学习日报已经准备好了，值得点开看看"。
 
 邮件发送日期是 {send_date} {weekday}。本次要推荐的是 manifest 中最新可用的学习日报：
 - 日报日期：{report_date}
@@ -109,7 +159,7 @@ def generate_email_content(report, config, send_date):
 请为今日邮件生成以下两部分内容，严格按 JSON 格式输出（不要包含 markdown 代码块标记）：
 
 {{
-  "greeting": "邮件开头的问候语，3-5句话。要求：语气亲切、自然、日常，像熟悉的人在一天开始时轻声提醒；必须贴合今日写作风格；可以提到学习节奏、状态、习惯或一点轻松的小情绪；不要提天气、地点、现实事件、对方最近状态等未提供的信息；结尾要自然邀请对方查看今日学习日报，但不要总是写成'点开看看吧'。",
+  "greeting": "邮件开头的问候语，3-5句话。要求：第一句自然称呼收件人为'{recipient_name}'；语气亲切、自然、日常，像熟悉的人在一天开始时轻声提醒；必须贴合今日写作风格；可以提到学习节奏、状态、习惯或一点轻松的小情绪；不要提天气、地点、现实事件、对方最近状态等未提供的信息；结尾要自然邀请对方查看今日学习日报，但不要总是写成'点开看看吧'。",
   "commentary": "对今日学习内容的轻量点评，3-5句话。要求：结合标题或摘要中的1-2个具体知识点，但不要讲得太学术；用容易亲近的语言点出今天内容值得看的地方；可以用一个日常类比或小问题增加变化，但不要添加摘要中没有的事实；最后自然连接到今日学习日报已经整理好、适合继续阅读。"
 }}"""
 
@@ -142,9 +192,10 @@ def generate_email_content(report, config, send_date):
         return None
 
 
-def build_email_html(report, config, send_date, llm_content=None):
+def build_email_html(report, config, send_date, llm_content=None, recipient_name=None):
     site_base = config["site"]["base_url"].rstrip("/")
     sender_name = config["email"]["sender_name"]
+    recipient_name = recipient_name or "你"
 
     if report:
         report_url = f"{site_base}/{report['path'].lstrip('./')}"
@@ -182,8 +233,8 @@ def build_email_html(report, config, send_date, llm_content=None):
         </td>
     </tr>"""
     else:
-        greeting_html = """<p style="color:#374151; font-size:16px; line-height:1.8;">
-                绪绪，早上好！<br>
+        greeting_html = f"""<p style="color:#374151; font-size:16px; line-height:1.8;">
+                {recipient_name}，早上好！<br>
                 这份学习日报已经整理好了，可以按自己的节奏慢慢看。
             </p>"""
         commentary_html = ""
@@ -223,9 +274,10 @@ def build_email_html(report, config, send_date, llm_content=None):
 </html>"""
 
 
-def build_email_plain(report, config, send_date, llm_content=None):
+def build_email_plain(report, config, send_date, llm_content=None, recipient_name=None):
     site_base = config["site"]["base_url"].rstrip("/")
     sender_name = config["email"]["sender_name"]
+    recipient_name = recipient_name or "你"
 
     if report:
         report_url = f"{site_base}/{report['path'].lstrip('./')}"
@@ -236,7 +288,7 @@ def build_email_plain(report, config, send_date, llm_content=None):
     else:
         content_line = "今日学习报告尚未生成，请稍后查看。"
 
-    greeting = (llm_content or {}).get("greeting", "绪绪，早上好！这份学习日报已经整理好了，可以按自己的节奏慢慢看。")
+    greeting = (llm_content or {}).get("greeting", f"{recipient_name}，早上好！这份学习日报已经整理好了，可以按自己的节奏慢慢看。")
     commentary = (llm_content or {}).get("commentary", "")
 
     lines = [
@@ -303,11 +355,13 @@ def main():
     report = find_latest_available_report(reports, send_date)
 
     llm_content = None
+    preview_recipient = target_emails[0]
+    preview_recipient_name = get_recipient_name(config, preview_recipient)
     if report and not args.no_llm:
-        llm_content = generate_email_content(report, config, send_date)
+        llm_content = generate_email_content(report, config, send_date, preview_recipient_name)
 
-    html = build_email_html(report, config, send_date, llm_content=llm_content)
-    plain = build_email_plain(report, config, send_date, llm_content=llm_content)
+    html = build_email_html(report, config, send_date, llm_content=llm_content, recipient_name=preview_recipient_name)
+    plain = build_email_plain(report, config, send_date, llm_content=llm_content, recipient_name=preview_recipient_name)
 
     if args.dry_run:
         print("=" * 60)
@@ -334,7 +388,14 @@ def main():
         print(f"[跳过] {send_date} 及之前暂无可用学习报告，不发送邮件。")
         return
 
-    send_email(html, plain, config, report=report, target_emails=target_emails)
+    for target_email in target_emails:
+        recipient_name = get_recipient_name(config, target_email)
+        llm_content = None
+        if report and not args.no_llm:
+            llm_content = generate_email_content(report, config, send_date, recipient_name)
+        html = build_email_html(report, config, send_date, llm_content=llm_content, recipient_name=recipient_name)
+        plain = build_email_plain(report, config, send_date, llm_content=llm_content, recipient_name=recipient_name)
+        send_email(html, plain, config, report=report, target_emails=[target_email])
 
 
 if __name__ == "__main__":

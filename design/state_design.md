@@ -52,7 +52,10 @@ agents.<agent_name>
 `orchestrator` 记录最近一次 Orchestrator 运行，字段包括：
 
 - `status`
+- `requested_steps`
 - `selected_steps`
+- `manual_stage_override`
+- `resume_skipped_steps`
 - `dry_run`
 - `publish`
 - `send_email`
@@ -75,7 +78,7 @@ agents.<agent_name>
 
 - `orchestrator_runs.html_publish`
   - 第 1-4 步 HTML 生成与发布。
-  - 对应 `run_daily.py --to-step 4 --publish`。
+  - 对应 `run_daily.py --generation-only --publish`。
 
 - `orchestrator_runs.email_send`
   - 第 5 步邮件发送。
@@ -88,6 +91,36 @@ agents.<agent_name>
   - 其他手动补跑范围。
 
 `orchestrator/state.py` 中的 `update_orchestrator(..., run_key=...)` 同时更新 `orchestrator` 和 `orchestrator_runs[run_key]`。
+
+## 断点续连状态
+
+断点续连会在 Orchestrator 状态中记录请求范围、实际执行范围和跳过原因。
+
+- `requested_steps`：本次请求覆盖的步骤范围。例如 `--generation-only` 为 `[1, 2, 3, 4]`。
+- `selected_steps`：断点续连后实际执行的步骤范围。如果第 1 步已完成、第 2 步失败，则为 `[2, 3, 4]`。
+- `manual_stage_override`：是否显式传入 `--from-step`、`--to-step` 或 `--only-step`。
+- `resume_skipped_steps`：因历史成功而跳过的 Agent 列表。
+
+手动阶段覆盖时，`manual_stage_override = true`，Orchestrator 不会根据历史状态跳过 Agent。
+
+第 1 步 `daily_work_summary` 的 `partial_success` 不作为断点续连完成态。若 LLM 失败后回退写入 Git 证据总结，下一次默认运行仍会从第 1 步重跑。
+
+示例：
+
+```json
+{
+  "requested_steps": [1, 2, 3, 4],
+  "selected_steps": [2, 3, 4],
+  "manual_stage_override": false,
+  "resume_skipped_steps": [
+    {
+      "step": 1,
+      "agent": "daily_work_summary",
+      "reason": "previous_success"
+    }
+  ]
+}
+```
 
 ## 完整成功判断
 

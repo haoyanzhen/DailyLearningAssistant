@@ -44,6 +44,7 @@ python3 scripts/check_config.py --config config.json --strict
 - `repositories`：第 1 步扫描的本地仓库路径。
 - `llm`：OpenAI Chat Completions 兼容接口、API key 和模型名。
 - `email`：SMTP/IMAP 和收件人配置。
+- `email.recipients`：收件人 ID 到邮箱和昵称的映射，用于给不同收件人生成对应开头称呼。
 - `site`：GitHub Pages 根地址。
 - `schedule`：本地调度时间与时区。
 - `publish`：自动提交和推送的远端、分支、提交信息和生成文件路径。
@@ -74,7 +75,7 @@ python3 orchestrator/run_daily.py --today --dry-run
 正式生成发布与发送邮件可以拆开执行：
 
 ```bash
-python3 orchestrator/run_daily.py --today --to-step 4 --publish
+python3 orchestrator/run_daily.py --today --generation-only --publish
 python3 orchestrator/run_daily.py --today --only-step 5 --send-email
 ```
 
@@ -95,13 +96,15 @@ prework/YYYY-MM/YYYY-MM-DD/llm_trace.jsonl
 python3 orchestrator/check_status.py --date 2026-05-23
 ```
 
-拆分调度后，同一个状态文件会保留 `orchestrator_runs.html_publish` 和 `orchestrator_runs.email_send` 两块，分别记录第 1-4 步生成发布和第 5 步邮件发送。邮件任务会读取生成发布状态；如果当天 HTML 生成或发布失败，会发送失败提醒并回退附上上一份可用日报。
+拆分调度后，同一个状态文件会保留 `orchestrator_runs.html_publish` 和 `orchestrator_runs.email_send` 两块，分别记录第 1-4 步生成发布和第 5 步邮件发送。邮件任务会读取生成发布状态；如果当天 HTML 生成或发布失败，会向发件邮箱发送故障提醒，并回退附上上一份可用日报。
 
 回退规则：
 
+- 默认运行会读取当天已有 `run_status.json` 并按 Agent 粒度断点续跑；显式传入 `--from-step`、`--to-step` 或 `--only-step` 时，以手动阶段为准并重跑指定范围。
+- 第 1 步如果因为 LLM 失败回退为 Git 证据总结，会被视为部分完成，下一次自动断点续跑仍会重跑第 1 步；只有 LLM 正式总结成功，或仓库无变更而跳过 LLM，才视为已完成。
 - 前四步任一步失败时，后续生成默认停止并写入诊断。
 - 第 1 步确认所有仓库无变化时，会跳过第 2/3 步，复用上一份有效知识讲解进入第 4 步。
-- 前四步失败且运行范围包含第 5 步时，会生成失败提醒邮件内容；拆分调度时，第 5 步也会读取早先的生成发布状态并发送失败提醒。未传 `--send-email` 时仍只生成预览。
+- 前四步失败且运行范围包含第 5 步时，会生成失败提醒邮件内容；拆分调度时，第 5 步也会读取早先的生成发布状态并向发件邮箱发送失败提醒，目标邮箱保持静默。未传 `--send-email` 时仍只生成预览。
 - 同一天重复运行保持幂等，manifest 和知识日志不会重复追加相同日期条目。
 
 ## 发布策略
@@ -116,7 +119,7 @@ python3 orchestrator/check_status.py --date 2026-05-23
 6. 有变更时提交，无变更时跳过提交。
 7. 本地领先远端时推送到 `publish.remote`。
 
-默认发布路径覆盖当日 prework、日报 HTML、manifest、知识日志和 `index.html`，不会提交 `config.json`、邮件预览或其他临时文件。
+默认发布路径覆盖日报 HTML、manifest、知识日志和 `index.html`，不会提交 `prework` 中间数据、`config.json`、邮件预览或其他临时文件。
 
 ## 本地调度
 

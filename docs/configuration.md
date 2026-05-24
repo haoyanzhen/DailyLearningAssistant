@@ -40,9 +40,11 @@ python3 scripts/check_config.py --config config.json --strict
 ## email
 
 - `smtp_server` / `smtp_port`：SMTP 服务器与端口。
-- `sender_email` / `sender_password`：发件邮箱与授权码。
+- `sender_email` / `sender_password`：发件邮箱与授权码。当天日报未生成或未发布时，故障提醒只发送到 `sender_email`，不发送到目标邮箱。
 - `sender_name`：邮件展示名称。
-- `target_emails`：正式收件人列表。
+- `recipients`：收件人 ID 到邮箱和昵称的映射。每个条目包含 `email` 和 `target_name`。
+- `target_recipient_ids`：正式学习日报收件人 ID 列表。只接收成功生成的学习日报。
+- `failure_recipient_id`：故障提醒收件人 ID。通常指向服务端/维护者邮箱。
 - `imap_server` / `imap_port` / `imap_user` / `imap_password`：可选，但如果要做发送给自己的邮件验收，应完整填写。
 
 测试邮件约定：发送测试时标题会以 `test: ` 开头；如果收件人只有发件邮箱本身，也会自动进入测试标题模式。
@@ -58,7 +60,7 @@ python3 scripts/check_config.py --config config.json --strict
 - `remote`：Git 远端名，默认 `origin`。
 - `branch`：允许自动发布的分支，默认 `main`。如果当前分支不是该分支，流水线会停止发布。
 - `commit_message`：提交信息模板，支持 `{date}` 和 `{year_month}`。
-- `paths`：要纳入自动提交的生成文件路径模板。建议只包含当日 prework、日报 HTML、manifest、知识日志和 `index.html`，不要包含配置密钥或临时预览文件。
+- `paths`：要纳入自动提交的生成文件路径模板。建议只包含日报 HTML、manifest、知识日志和 `index.html`，不要包含配置密钥、中间 `prework` 数据或临时预览文件。
 
 发布阶段会先检查本地分支是否落后远端；如果落后，会停止自动发布，避免覆盖远端进度。
 
@@ -69,7 +71,9 @@ python3 scripts/check_config.py --config config.json --strict
 - `com.daily-learning.agent-pipeline`：运行 `scripts/run_daily_pipeline.sh`，执行第 1-4 步并发布 HTML。
 - `com.daily-learning.agent-email`：运行 `scripts/run_daily_email.sh`，只执行第 5 步并发送邮件。
 
-两个任务会写入同一个 `prework/YYYY-MM/YYYY-MM-DD/run_status.json`。状态文件中的 `orchestrator_runs.html_publish` 保存第 1-4 步生成发布结果，`orchestrator_runs.email_send` 保存第 5 步邮件结果；如果邮件任务发现当天 HTML 生成发布未成功，会自动发送失败提醒并回退附上上一份可用日报。
+两个任务会写入同一个 `prework/YYYY-MM/YYYY-MM-DD/run_status.json`。状态文件中的 `orchestrator_runs.html_publish` 保存第 1-4 步生成发布结果，`orchestrator_runs.email_send` 保存第 5 步邮件结果；如果邮件任务发现当天 HTML 生成发布未成功，会自动向发件邮箱发送失败提醒并回退附上上一份可用日报，目标邮箱不会收到故障提示。
+
+生成发布任务默认启用 Agent 粒度断点续跑：若当天前序 Agent 已成功，下一次运行会从第一个未完成 Agent 开始。第 1 步如果因 LLM 失败回退到 Git 证据总结，会被视为部分完成并在下次自动重跑。手动使用 `--from-step`、`--to-step` 或 `--only-step` 时不启用跳过，指定范围内 Agent 会全部重跑。
 
 安装脚本不会在预览时修改当前每日任务。可先预览：
 

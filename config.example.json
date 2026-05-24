@@ -5,11 +5,25 @@
     "sender_email": "your-email@gmail.com",
     "sender_name": "每日拾光学习簿",
     "sender_password": "YOUR_APP_PASSWORD_OR_SMTP_TOKEN",
-    "target_emails": [
-      "recipient@example.com",
-      "another-recipient@example.com"
+    "recipients": {
+      "server": {
+        "email": "your-email@gmail.com",
+        "target_name": "开发者Sammy"
+      },
+      "student_a": {
+        "email": "recipient@example.com",
+        "target_name": "学员A"
+      },
+      "student_b": {
+        "email": "another-recipient@example.com",
+        "target_name": "学员B"
+      }
+    },
+    "target_recipient_ids": [
+      "student_a",
+      "student_b"
     ],
-    "disabled_target_emails": [],
+    "failure_recipient_id": "server",
     "imap_server": "imap.gmail.com",
     "imap_port": 993,
     "imap_user": "your-email@gmail.com",
@@ -40,14 +54,6 @@
     "branch": "main",
     "commit_message": "Publish daily learning report {date}",
     "paths": [
-      "prework/{year_month}/{date}/work_summary_AInote.md",
-      "prework/{year_month}/{date}/work_summary_DailyLearningAssistant.md",
-      "prework/{year_month}/{date}/work_summary_interview_prepare.md",
-      "prework/{year_month}/{date}/work_summary_mcp.md",
-      "prework/{year_month}/{date}/work_summary_ResearchPaperBase_cc.md",
-      "prework/{year_month}/{date}/work_summary_ResearchPaperBase_codex.md",
-      "prework/{year_month}/{date}/concept_relevance.md",
-      "prework/{year_month}/{date}/knowledge_explaination.md",
       "daily_report/{year_month}/{date}-learning-report.html",
       "daily_report/manifest.json",
       "knowledge_log/{year_month}-knowledge-log.md",

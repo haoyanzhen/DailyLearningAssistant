@@ -29,7 +29,7 @@ log "running HTML generation and publish pipeline"
 "$PYTHON_BIN" "$PROJECT_ROOT/orchestrator/run_daily.py" \
     --config "$CONFIG_FILE" \
     --output-root "$PROJECT_ROOT" \
-    --to-step 4 \
+    --generation-only \
     --publish
 
 log "HTML generation and publish pipeline finished"

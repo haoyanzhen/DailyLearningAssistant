@@ -4,7 +4,7 @@
 
 ## 目录职责
 
-- `run_daily.py`：总入口，按步骤运行 Agent，支持 `--date`、`--from-step`、`--to-step`、`--only-step`、`--dry-run`。
+- `run_daily.py`：总入口，按步骤运行 Agent，支持默认断点续跑、`--date`、`--from-step`、`--to-step`、`--only-step`、`--dry-run`。
 - `check_status.py`：读取当天 `run_status.json`，检查各 Agent 状态和失败原因。
 - `lifecycle.py`：定义 Agent 生命周期和命令构造，不直接耦合 Agent 内部实现。
 - `state.py`：统一读写 `prework/YYYY-MM/YYYY-MM-DD/run_status.json`。
@@ -29,6 +29,7 @@ Orchestrator 只通过每个 Agent 的命令行参数调度，不直接调用 Ag
 python3 orchestrator/run_daily.py --date 2026-05-21 --dry-run
 python3 orchestrator/run_daily.py --date 2026-05-21 --from-step 2 --to-step 4
 python3 orchestrator/run_daily.py --date 2026-05-21 --output-root /tmp/pipeline-test
+python3 orchestrator/run_daily.py --date 2026-05-21 --generation-only --publish
 python3 orchestrator/check_status.py --date 2026-05-21
 ```
 
@@ -52,6 +53,10 @@ prework/YYYY-MM/YYYY-MM-DD/run_status.json
 - `orchestrator_runs.email_send`：第 5 步邮件发送状态。
 
 第 5 步单独运行时会读取 `html_publish` 的状态；如果生成发布未成功，会自动转为失败提醒邮件，并回退附上上一份可用日报。
+
+默认运行时，orchestrator 会读取当天已有状态并按 Agent 粒度断点续跑：从选定范围内第一个未完成 Agent 开始执行，之前已经成功的 Agent 会跳过。第 1 步较特殊：如果 LLM 总结失败后回退为 Git 证据总结，状态会是 `partial_success`，断点续跑时会视为未完成并重跑；只有实际变更仓库均完成 LLM 总结，或仓库无变更而跳过 LLM，才视为已完成。
+
+如果显式传入 `--from-step`、`--to-step` 或 `--only-step`，则以手动指定阶段为准，指定范围内的 Agent 会全部重跑，不做断点跳过。`--generation-only` 用于定时生成发布任务选择第 1-4 步，但不视为手动阶段覆盖，因此仍会启用断点续跑。
 
 ## LLM 重连与结果校验
 

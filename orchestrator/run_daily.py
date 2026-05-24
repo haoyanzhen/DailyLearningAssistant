@@ -32,9 +32,14 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run the local daily learning agent pipeline.")
     parser.add_argument("--date", help="Target date in YYYY-MM-DD format. Defaults to today in configured timezone.")
     parser.add_argument("--today", action="store_true", help="Use today's date in configured timezone.")
-    parser.add_argument("--from-step", type=int, default=1, choices=range(1, 6), help="First step to run.")
-    parser.add_argument("--to-step", type=int, default=5, choices=range(1, 6), help="Last step to run.")
+    parser.add_argument("--from-step", type=int, choices=range(1, 6), help="First step to run.")
+    parser.add_argument("--to-step", type=int, choices=range(1, 6), help="Last step to run.")
     parser.add_argument("--only-step", type=int, choices=range(1, 6), help="Run only one step.")
+    parser.add_argument(
+        "--generation-only",
+        action="store_true",
+        help="Run the HTML generation/publish pipeline, steps 1-4, without treating it as a manual stage override.",
+    )
     parser.add_argument("--config", default=str(PROJECT_ROOT / "config.json"), help="Config JSON path.")
     parser.add_argument(
         "--input-root",
@@ -53,10 +58,67 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def has_manual_stage_override(args: argparse.Namespace) -> bool:
+    return args.only_step is not None or args.from_step is not None or args.to_step is not None
+
+
 def selected_agents(args: argparse.Namespace) -> list[AgentSpec]:
     if args.only_step:
         return [agent for agent in AGENTS if agent.step == args.only_step]
-    return [agent for agent in AGENTS if args.from_step <= agent.step <= args.to_step]
+    default_from = 1
+    default_to = 4 if args.generation_only else 5
+    from_step = args.from_step or default_from
+    to_step = args.to_step or default_to
+    return [agent for agent in AGENTS if from_step <= agent.step <= to_step]
+
+
+def daily_work_summary_complete(agent_status: dict) -> bool:
+    if agent_status.get("status") != "success":
+        return False
+    repositories = agent_status.get("repositories") or []
+    for repo in repositories:
+        if not isinstance(repo, dict):
+            return False
+        if repo.get("status") != "success":
+            return False
+        llm_status = (repo.get("llm") or {}).get("status")
+        evidence_type = repo.get("evidence_type")
+        if evidence_type != "no_change" and llm_status != "success":
+            return False
+    return True
+
+
+def agent_step_complete(status_data: dict, spec: AgentSpec) -> bool:
+    agent_status = (status_data.get("agents") or {}).get(spec.name) or {}
+    if not isinstance(agent_status, dict):
+        return False
+    if spec.name == "daily_work_summary":
+        return daily_work_summary_complete(agent_status)
+    return agent_status.get("status") == "success"
+
+
+def apply_resume_filter(steps: list[AgentSpec], status_data: dict) -> tuple[list[AgentSpec], list[dict]]:
+    skipped = []
+    remaining = list(steps)
+    while remaining and agent_step_complete(status_data, remaining[0]):
+        spec = remaining.pop(0)
+        skipped.append(
+            {
+                "step": spec.step,
+                "agent": spec.name,
+                "reason": "previous_success",
+            }
+        )
+    return remaining, skipped
+
+
+def previous_publish_success(status_data: dict, run_key: str) -> bool:
+    run = (status_data.get("orchestrator_runs") or {}).get(run_key) or {}
+    publish_events = run.get("publish_events") or []
+    return any(
+        isinstance(event, dict) and event.get("status") in {"success", "skipped_previous_success"}
+        for event in publish_events
+    )
 
 
 def orchestrator_run_key(args: argparse.Namespace, steps: list[AgentSpec]) -> str:
@@ -290,6 +352,12 @@ def publish_generated_artifacts(output_root: Path, target_date: str, config: dic
 
 def main() -> int:
     args = parse_args()
+    if args.generation_only and args.only_step:
+        print("[错误] --generation-only 不能和 --only-step 同时使用。", file=sys.stderr)
+        return 2
+    if args.from_step and args.to_step and args.from_step > args.to_step:
+        print("[错误] --from-step 不能大于 --to-step。", file=sys.stderr)
+        return 2
     config_path = Path(args.config).expanduser().resolve()
     output_root = Path(args.output_root).expanduser().resolve()
     input_root = Path(args.input_root).expanduser().resolve() if args.input_root else output_root
@@ -298,8 +366,18 @@ def main() -> int:
     target_date = resolve_target_date(args.date, timezone)
     status_path = day_dir(output_root, target_date) / "run_status.json"
     llm_trace_path = status_path.parent / "llm_trace.jsonl"
-    steps = selected_agents(args)
-    run_key = orchestrator_run_key(args, steps)
+    requested_steps = selected_agents(args)
+    manual_stage_override = has_manual_stage_override(args)
+    resume_skipped_steps: list[dict] = []
+    steps = requested_steps
+    previous_status = load_status(status_path, target_date)
+    if not manual_stage_override:
+        steps, resume_skipped_steps = apply_resume_filter(requested_steps, previous_status)
+        for event in resume_skipped_steps:
+            print(f"[续跑] 第 {event['step']} 步 {event['agent']} 上次已成功，跳过。")
+        if not steps:
+            print("[续跑] 选定范围内的 Agent 均已完成，无需重跑。")
+    run_key = orchestrator_run_key(args, requested_steps)
 
     update_orchestrator(
         status_path,
@@ -307,6 +385,9 @@ def main() -> int:
         {
             "status": "running" if not args.dry_run else "dry_run",
             "selected_steps": [agent.step for agent in steps],
+            "requested_steps": [agent.step for agent in requested_steps],
+            "manual_stage_override": manual_stage_override,
+            "resume_skipped_steps": resume_skipped_steps,
             "dry_run": args.dry_run,
             "publish": args.publish,
             "send_email": args.send_email,
@@ -398,6 +479,47 @@ def main() -> int:
                 if not args.continue_on_failure:
                     break
 
+    step4_requested = any(agent.step == 4 for agent in requested_steps)
+    step4_skipped_by_resume = any(event.get("step") == 4 for event in resume_skipped_steps)
+    if (
+        args.publish
+        and step4_requested
+        and step4_skipped_by_resume
+        and not publish_events
+        and not failures
+        and not previous_publish_success(previous_status, run_key)
+    ):
+        print("[发布] 第 4 步此前已完成但尚无成功发布记录，开始提交并推送生成文件。")
+        try:
+            publish_event = publish_generated_artifacts(output_root, target_date, config, dry_run=args.dry_run)
+            publish_events.append(publish_event)
+            print(f"[发布] 状态: {publish_event['status']}")
+        except Exception as exc:
+            publish_event = {
+                "enabled": True,
+                "status": "failed",
+                "error": str(exc),
+                "dry_run": args.dry_run,
+            }
+            publish_events.append(publish_event)
+            failures.append({"step": "publish", "agent": "git_publish", "returncode": 1, "diagnostic": str(exc)})
+            failure_reason = f"发布失败: {exc}"
+    elif (
+        args.publish
+        and step4_requested
+        and step4_skipped_by_resume
+        and not publish_events
+        and previous_publish_success(previous_status, run_key)
+    ):
+        publish_events.append(
+            {
+                "enabled": True,
+                "status": "skipped_previous_success",
+                "reason": "previous_publish_success",
+                "dry_run": args.dry_run,
+            }
+        )
+
     status_data = load_status(status_path, target_date)
     final_status = "success" if not failures else "failed"
     if args.dry_run:
@@ -408,6 +530,9 @@ def main() -> int:
         {
             "status": final_status,
             "selected_steps": [agent.step for agent in steps],
+            "requested_steps": [agent.step for agent in requested_steps],
+            "manual_stage_override": manual_stage_override,
+            "resume_skipped_steps": resume_skipped_steps,
             "dry_run": args.dry_run,
             "publish": args.publish,
             "send_email": args.send_email,

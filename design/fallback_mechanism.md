@@ -90,6 +90,8 @@ orchestrator_runs.html_publish.failures
 - 写明失败原因。
 - 查找上一份不晚于前一天的可用日报。
 - 附上上一份可用日报链接。
+- 只发送给 `email.failure_recipient_id` 指向的收件人，不发送给 `email.target_recipient_ids`。在该项目中目标邮箱视为客户端，客户端可接受单天静默；故障收件人视为服务端，负责故障排查。
+- 邮件开头称呼来自 `email.recipients.<id>.target_name`。故障提醒使用故障收件人昵称，正常日报使用目标收件人昵称。
 
 ## 邮件内容回退
 

@@ -120,7 +120,16 @@ def check_email(config: dict, strict: bool) -> list[str]:
     email = config.get("email")
     if not isinstance(email, dict):
         return ["email 必须是 object"]
-    for key in ("smtp_server", "smtp_port", "sender_email", "sender_name", "sender_password", "target_emails"):
+    for key in (
+        "smtp_server",
+        "smtp_port",
+        "sender_email",
+        "sender_name",
+        "sender_password",
+        "recipients",
+        "target_recipient_ids",
+        "failure_recipient_id",
+    ):
         if key not in email:
             problems.append(f"email.{key} 缺失")
     if not isinstance(email.get("smtp_port"), int):
@@ -131,13 +140,37 @@ def check_email(config: dict, strict: bool) -> list[str]:
     password = str(email.get("sender_password") or "")
     if strict and (not password or password.startswith("YOUR_")):
         problems.append("email.sender_password 不能是示例占位符")
-    targets = email.get("target_emails")
-    if not isinstance(targets, list) or not targets:
-        problems.append("email.target_emails 必须是非空列表")
+    recipients = email.get("recipients")
+    if not isinstance(recipients, dict) or not recipients:
+        problems.append("email.recipients 必须是非空 object")
     else:
-        for index, target in enumerate(targets):
-            if not isinstance(target, str) or not EMAIL_RE.fullmatch(target):
-                problems.append(f"email.target_emails[{index}] 不是合法邮箱")
+        for recipient_id, recipient in recipients.items():
+            if not isinstance(recipient_id, str) or not recipient_id.strip():
+                problems.append("email.recipients 包含空收件人 ID")
+                continue
+            if not isinstance(recipient, dict):
+                problems.append(f"email.recipients.{recipient_id} 必须是 object")
+                continue
+            address = recipient.get("email")
+            target_name = recipient.get("target_name")
+            if not isinstance(address, str) or not EMAIL_RE.fullmatch(address):
+                problems.append(f"email.recipients.{recipient_id}.email 必须是合法邮箱")
+            if not isinstance(target_name, str) or not target_name.strip():
+                problems.append(f"email.recipients.{recipient_id}.target_name 不能为空")
+    target_ids = email.get("target_recipient_ids")
+    if not isinstance(target_ids, list) or not target_ids:
+        problems.append("email.target_recipient_ids 必须是非空列表")
+    else:
+        for index, recipient_id in enumerate(target_ids):
+            if not isinstance(recipient_id, str) or not recipient_id.strip():
+                problems.append(f"email.target_recipient_ids[{index}] 必须是非空字符串")
+            elif isinstance(recipients, dict) and recipient_id not in recipients:
+                problems.append(f"email.target_recipient_ids[{index}] 未定义: {recipient_id}")
+    failure_recipient_id = email.get("failure_recipient_id")
+    if not isinstance(failure_recipient_id, str) or not failure_recipient_id.strip():
+        problems.append("email.failure_recipient_id 必须是非空字符串")
+    elif isinstance(recipients, dict) and failure_recipient_id not in recipients:
+        problems.append(f"email.failure_recipient_id 未定义: {failure_recipient_id}")
     if "imap_server" in email or "imap_port" in email or "imap_user" in email or "imap_password" in email:
         for key in ("imap_server", "imap_port", "imap_user", "imap_password"):
             if key not in email:

@@ -9,6 +9,7 @@
 Orchestrator 位于 `orchestrator/run_daily.py`，负责：
 
 - 根据命令行参数选择要运行的步骤。
+- 默认运行时根据当天状态执行 Agent 粒度断点续连。
 - 为每个 Agent 构造稳定 CLI 命令。
 - 控制输入根目录、输出根目录、日期、时区、LLM 重试参数。
 - 在第 4 步成功后按需执行 Git 发布。
@@ -49,7 +50,7 @@ Agent 位于 `agents/`，每个 Agent 都是可单独运行的脚本。Orchestra
 
 - `com.daily-learning.agent-pipeline`
   - 运行 `scripts/run_daily_pipeline.sh`。
-  - 执行 `orchestrator/run_daily.py --to-step 4 --publish`。
+  - 执行 `orchestrator/run_daily.py --generation-only --publish`。
   - 负责第 1-4 步和 Git 发布。
 
 - `com.daily-learning.agent-email`
@@ -87,6 +88,16 @@ Orchestrator 通过 `orchestrator/lifecycle.py` 中的 `AgentSpec` 描述每个 
 
 - `--llm-retries`
 - `--llm-retry-delay`
+
+## 断点续连
+
+默认运行时，Orchestrator 会读取当天 `run_status.json`，从选定范围内第一个未完成 Agent 开始执行。已经成功的前序 Agent 会记录到 `resume_skipped_steps` 并跳过。
+
+如果显式传入 `--from-step`、`--to-step` 或 `--only-step`，则视为手动阶段覆盖，指定范围内的 Agent 全部重跑。
+
+第 1 步 `daily_work_summary` 的完成条件更严格：LLM 失败后回退到 Git 证据总结时状态为 `partial_success`，断点续连会重跑第 1 步；只有有变更仓库完成 LLM 总结，或仓库无变更而跳过 LLM，才视为完成。
+
+详细规则见 `design/breakpoint_resume.md`。
 
 ## 发布边界
 
