@@ -143,10 +143,12 @@ def validate_relationship_map_html(html: str) -> list[str]:
         "mermaid.initialize",
         "relationship-map",
         "relationship-map-visual",
+        "relationship-html-graph",
         "relationship-map-notes",
-        'class="mermaid"',
     ]
     problems.extend([f"关系图缺少必要片段: {item}" for item in required_fragments if item not in lower_html])
+    if not re.search(r'<pre\b[^>]*class="[^"]*\bmermaid\b[^"]*"', html, flags=re.I):
+        problems.append('关系图缺少必要片段: class 包含 "mermaid" 的源码块')
 
     toolbar_index = lower_html.find("lesson-toolbar")
     map_index = lower_html.find("relationship-map")

@@ -264,6 +264,30 @@ def mermaid_label(value: object) -> str:
     return normalize_text(value).replace('"', "'")
 
 
+def render_html_relationship_graph(concepts: list[dict]) -> str:
+    groups = []
+    for concept in concepts:
+        connection_chips = []
+        for connection in concept["connections"][:3]:
+            related = normalize_text(connection.get("concept"))
+            connection_chips.append(f'                  <span>{escape_text(related)}</span>')
+        groups.append(
+            f"""                <article class="relationship-node">
+                  <strong>{escape_text(concept["name"])}</strong>
+                  <div class="relationship-node-links">
+{chr(10).join(connection_chips)}
+                  </div>
+                </article>"""
+        )
+
+    return f"""              <div class="relationship-html-graph" aria-hidden="true">
+                <div class="relationship-hub">LLM 工程化能力</div>
+                <div class="relationship-node-grid">
+{chr(10).join(groups)}
+                </div>
+              </div>"""
+
+
 def render_relationship_graph(concepts: list[dict]) -> str:
     concept_names = [normalize_text(concept["name"]) for concept in concepts]
     concept_node_ids = {concept["name"]: f"concept{index}" for index, concept in enumerate(concepts, start=1)}
@@ -315,7 +339,8 @@ def render_relationship_graph(concepts: list[dict]) -> str:
 
     return f"""          <div class="relationship-map" aria-label="三节小课关系图">
             <div class="relationship-map-visual">
-              <pre class="mermaid">
+{render_html_relationship_graph(concepts)}
+              <pre class="mermaid mermaid-source" aria-hidden="true">
 {html.escape(chr(10).join(mermaid_lines), quote=False)}
               </pre>
             </div>
@@ -469,10 +494,14 @@ def render_report_html(data: dict, target_date: str) -> str:
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{escape_text(data["title"])}</title>
     <meta name="description" content="{escape_text(data["summary"])}" />
-    <link rel="stylesheet" href="../../style/main.css?v={target_date.replace("-", "")}" />
+    <link rel="stylesheet" href="../../style/main.css?v={target_date.replace("-", "")}-map2" />
     <script type="module">
-      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
-      mermaid.initialize({{ startOnLoad: true, theme: "base", securityLevel: "strict" }});
+      try {{
+        const {{ default: mermaid }} = await import("https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({{ startOnLoad: false, theme: "base", securityLevel: "strict" }});
+      }} catch (error) {{
+        console.info("Mermaid is optional; using the built-in relationship map.", error);
+      }}
     </script>
   </head>
   <body>

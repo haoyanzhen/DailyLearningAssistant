@@ -55,7 +55,9 @@ cp config.example.json config.json
 - `schedule.email_send_time`：邮件发送任务时间。
 - `publish`：自动提交和推送的远端、分支、提交信息和文件范围。
 
-4. 检查配置：
+> 注：`email.recipients` 包含所有收件人的信息，每一个 recipient 的名字可以自取，其内容包含邮箱和昵称，昵称将决定发送邮件到对应邮箱时的称呼。在下面的 `target_recipient_ids` 中可以配置普通的发送对象邮箱，内容为 recipient 中的名字。`failure_recipient_id` 则为服务端邮箱信息，若自动运行产生错误将会向该邮箱发送，默认为 `server`。
+
+1. 检查配置：
 
 ```bash
 python3 scripts/check_config.py --config config.json --strict

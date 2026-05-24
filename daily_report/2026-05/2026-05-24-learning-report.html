@@ -5,10 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>2026-05-24 学习笔记日报</title>
     <meta name="description" content="从版本控制边界的确立，到流水线状态机的引入，再到LLM输出的硬校验，揭示智能体流水线可维护与可信任的工程骨架。" />
-    <link rel="stylesheet" href="../../style/main.css?v=20260524" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260524-map2" />
     <script type="module">
-      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
-      mermaid.initialize({ startOnLoad: true, theme: "base", securityLevel: "strict" });
+      try {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({ startOnLoad: false, theme: "base", securityLevel: "strict" });
+      } catch (error) {
+        console.info("Mermaid is optional; using the built-in relationship map.", error);
+      }
     </script>
   </head>
   <body>
@@ -49,7 +53,36 @@
 
           <div class="relationship-map" aria-label="三节小课关系图">
             <div class="relationship-map-visual">
-              <pre class="mermaid">
+              <div class="relationship-html-graph" aria-hidden="true">
+                <div class="relationship-hub">LLM 工程化能力</div>
+                <div class="relationship-node-grid">
+                <article class="relationship-node">
+                  <strong>版本控制边界与中间产物管理</strong>
+                  <div class="relationship-node-links">
+                  <span>静态知识产物生成与发布</span>
+                  <span>设计意图显式化</span>
+                  <span>流水线状态管理与生命周期</span>
+                  </div>
+                </article>
+                <article class="relationship-node">
+                  <strong>流水线状态管理与生命周期</strong>
+                  <div class="relationship-node-links">
+                  <span>Agent 工作流与任务编排</span>
+                  <span>设计意图显式化</span>
+                  <span>断点续传机制</span>
+                  </div>
+                </article>
+                <article class="relationship-node">
+                  <strong>大语言模型调用与输出约束</strong>
+                  <div class="relationship-node-links">
+                  <span>提示词工程</span>
+                  <span>静态知识产物生成与发布</span>
+                  <span>Agent 职责拆分与契约边界</span>
+                  </div>
+                </article>
+                </div>
+              </div>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
 flowchart LR
   hub([LLM 工程化能力])
   concept1["版本控制边界与中间产物管理"]

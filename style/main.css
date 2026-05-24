@@ -724,7 +724,7 @@ h1 {
 }
 
 .lead {
-  max-width: 82ch;
+  max-width: none;
   margin: 0 0 22px;
   color: #3f493d;
   font-size: 16px;
@@ -757,6 +757,11 @@ h1 {
   text-wrap: pretty;
 }
 
+.panel > .lead {
+  max-width: none;
+  margin-bottom: 0;
+}
+
 .commit-grid,
 .knowledge-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -787,7 +792,7 @@ h1 {
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
   gap: 16px;
-  align-items: stretch;
+  align-items: start;
 }
 
 .relationship-map-visual,
@@ -805,7 +810,84 @@ h1 {
   min-height: 300px;
   place-items: center;
   overflow-x: auto;
-  padding: 10px;
+  padding: 18px;
+}
+
+.relationship-map-visual .mermaid-source {
+  display: none;
+}
+
+.relationship-html-graph {
+  display: grid;
+  width: min(100%, 640px);
+  gap: 18px;
+}
+
+.relationship-hub {
+  justify-self: center;
+  max-width: 260px;
+  padding: 12px 18px;
+  border: 1px solid rgba(200, 155, 60, 0.42);
+  border-radius: 999px;
+  color: #5e4a22;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(251, 239, 203, 0.94)),
+    var(--gold-soft);
+  box-shadow: 0 12px 24px rgba(65, 53, 34, 0.09);
+  font-weight: 850;
+  text-align: center;
+}
+
+.relationship-hub::after {
+  display: block;
+  width: 1px;
+  height: 22px;
+  margin: 10px auto -22px;
+  background: rgba(73, 106, 123, 0.42);
+  content: "";
+}
+
+.relationship-node-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  align-items: stretch;
+}
+
+.relationship-node {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid rgba(63, 127, 88, 0.22);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(230, 240, 228, 0.72)),
+    var(--green-soft);
+}
+
+.relationship-node strong {
+  color: #335b40;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.relationship-node-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.relationship-node-links span {
+  max-width: 100%;
+  padding: 5px 8px;
+  border: 1px solid rgba(73, 106, 123, 0.18);
+  border-radius: 999px;
+  color: #3f493d;
+  background: rgba(228, 237, 240, 0.7);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.45;
 }
 
 .relationship-map-visual .mermaid {
@@ -1263,8 +1345,8 @@ h1 {
     grid-template-columns: 1fr;
   }
 
-  .relationship-map-visual .mermaid {
-    min-width: 460px;
+  .relationship-node-grid {
+    grid-template-columns: 1fr;
   }
 
   .lesson-toolbar {

@@ -102,6 +102,6 @@ prework/YYYY-MM/YYYY-MM-DD/run_status.json
 - `daily_report/`：HTML 学习日报与日报 manifest。
 - `knowledge_log/`：月度知识日志与 manifest。
 - `scripts/`：生成、发送、调度和检查脚本。
-- `design/`：架构、状态、断点续连和回退机制设计文档。
+- `docs/`：架构、状态、断点续连和回退机制设计文档。
 - `config.example.json`：本地仓库、调度、LLM、邮件和发布配置示例。
 - `index.html`：GitHub Pages 首页。
