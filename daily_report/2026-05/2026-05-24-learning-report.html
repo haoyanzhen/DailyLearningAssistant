@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-05-24 学习笔记日报</title>
+    <meta name="description" content="从版本控制边界的确立，到流水线状态机的引入，再到LLM输出的硬校验，揭示智能体流水线可维护与可信任的工程骨架。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260524" />
+    <script type="module">
+      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+      mermaid.initialize({ startOnLoad: true, theme: "base", securityLevel: "strict" });
+    </script>
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-05-24</p>
+        <h1>可复现的流水线：从仓库治理到输出约束</h1>
+        <p>当自动化流水线每天生成大量报告时，哪些值得永久保存？编排器如何记住进度？大模型输出的不确定性又该如何驯服？今天的讲解从这三个问题出发，构建一条可长期演化的智能体工程链路。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <pre class="mermaid">
+flowchart LR
+  hub([LLM 工程化能力])
+  concept1["版本控制边界与中间产物管理"]
+  hub --&gt; concept1
+  concept2["流水线状态管理与生命周期"]
+  hub --&gt; concept2
+  concept3["大语言模型调用与输出约束"]
+  hub --&gt; concept3
+  related1["静态知识产物生成与发布"]
+  concept1 --&gt; related1
+  related2["设计意图显式化"]
+  concept1 --&gt; related2
+  concept1 --&gt; concept2
+  related3["Agent 工作流与任务编排"]
+  concept2 --&gt; related3
+  concept2 --&gt; related2
+  related4["断点续传机制"]
+  concept2 --&gt; related4
+  related5["提示词工程"]
+  concept3 --&gt; related5
+  concept3 --&gt; related1
+  related6["Agent 职责拆分与契约边界"]
+  concept3 --&gt; related6
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4,related5,related6 related
+              </pre>
+            </div>
+            <div class="relationship-map-notes">
+              <p class="eyebrow">Concept Links</p>
+              <ul>
+              <li><strong>版本控制边界与中间产物管理 → 静态知识产物生成与发布</strong><span>学习报告的HTML页面如果是流水线产物，同样面临是否纳入版本控制的问题。当天设计选择将中间产物排除，保证了仓库轻量。</span></li>
+              <li><strong>版本控制边界与中间产物管理 → 设计意图显式化</strong><span>版本控制边界区分了“设计知识”与“运行产物”的不同命运，设计文档作为源知识长久留存。</span></li>
+              <li><strong>版本控制边界与中间产物管理 → 流水线状态管理与生命周期</strong><span>只有当流水线具备可重复构建能力时，取消跟踪中间产物才是安全的，否则一旦丢失就真找不回来。</span></li>
+              <li><strong>流水线状态管理与生命周期 → Agent 工作流与任务编排</strong><span>编排器调度节点时，每一步都会读写状态对象，依赖状态机的转移规则决定下一个动作。</span></li>
+              <li><strong>流水线状态管理与生命周期 → 设计意图显式化</strong><span>design/state_design.md 文档正是把状态机的设计决策从代码中提炼为可讨论、可演进的知识制品。</span></li>
+              <li><strong>流水线状态管理与生命周期 → 断点续传机制</strong><span>只有当状态被持久化存储时，才能在失败后从成功的检查点恢复，而不是从头再来。</span></li>
+              <li><strong>大语言模型调用与输出约束 → 提示词工程</strong><span>提示词是软约束，定义输出规格；输出约束是硬校验，保证规格被遵守。两者是一体两面，构成同一个流水线节点的“期望”与“验证”两面。</span></li>
+              <li><strong>大语言模型调用与输出约束 → 静态知识产物生成与发布</strong><span>只有校验通过的LLM输出，才能被安全地转化为HTML报告等结构化知识产物，避免垃圾数据进入用户可见页面。</span></li>
+              <li><strong>大语言模型调用与输出约束 → Agent 职责拆分与契约边界</strong><span>每个Agent对下游的输出是一种契约，校验层确保该契约被LLM遵守，从而保障流水线节点之间的信任关系。</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="version-control-boundary-artifact-management">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>版本控制边界与中间产物管理</h3>
+              <p>Version Control Boundary &amp; Artifact Management</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">版本控制边界区分了“设计知识”与“运行产物”的不同命运：设计文档作为源知识长久留存，中间工作总结则被取消跟踪。</div>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="version-control-boundary-artifact-management" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="pipeline-state-management-lifecycle">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>流水线状态管理与生命周期</h3>
+              <p>Pipeline State Management &amp; Lifecycle</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">如果说编排器是流水线的“调度官”，状态管理与生命周期就是调度官手中的“行程日志和时刻表”。</div>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="pipeline-state-management-lifecycle" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="llm-invocation-output-constraint">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">大语言模型 / 软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>大语言模型调用与输出约束</h3>
+              <p>LLM Invocation &amp; Output Constraint</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">在LLM输出的不确定性与工程系统需要的确定性之间，必须加入一层校验屏障：把提示词的“软约束”与代码的“硬校验”结合。</div>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="llm-invocation-output-constraint" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="version-control-boundary-artifact-management">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>版本控制边界与中间产物管理</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>版本控制工具（比如 Git）就像一个项目的记忆相册，记录着每一次有意义的变化。当我们开始用自动化流水线每天生成一堆报告、总结、中间分析文件时，就面临一个选择：这些自动生成的文件，要不要也存进相册？如果不加区分全部存进去，仓库就会快速臃肿，而且每天的微小变化会产生大量无意义的提交记录，把真正重要的代码改动淹没掉。版本控制边界的思考，就是帮我们划一条线：哪些文件是“源知识”——比如源代码、提示词、架构设计文档——它们是你思想的原始表达，值得永久珍藏；哪些文件是“运行产物”——比如每天的自动总结——它们只是流水线在特定输入下的一次输出，只要源代码和输入还在，随时可以重新生成。这个边界一旦确立，我们就可以把运行产物排除出版本跟踪，甚至删除历史痕迹，让仓库轻装上阵，只保留真正体现设计演进的内容。这在软件工程里，是保证项目长期可维护的重要治理手段。</p>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>区分“源知识”（源代码、提示词、设计文档）与“运行产物”（每日自动生成的中间报告）</li>
+                <li>将可自动重建的运行产物排除出版本跟踪，让仓库轻装上阵，只保留体现设计演进的内容</li>
+                <li>只有流水线具备可重复构建能力时，取消跟踪中间产物才是安全的</li>
+              </ul>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>版本控制就像项目的记忆相册，应只记录有意义的变化——源代码、设计文档等“源知识”的演变</li>
+                <li>自动化流水线每天生成的中间文件属于“运行产物”，是特定输入下的输出，可随时从源重建，不应污染仓库历史</li>
+                <li>确立版本控制边界后，通过 .gitignore 将运行产物排除跟踪，仓库只保留设计知识，实现轻量化和长期可维护</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在当天提交中，开发者批量删除了 prework 目录下大量历史总结文件，并修改 .gitignore 将它们排除在外。但 design 目录下的架构文档、状态设计文档却继续留在仓库里。因为前者是每一次运行产出的临时报告，后者是记录“为什么这样设计”的源知识。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为“只要生成过一次，就该永久保存以便回溯”。但回溯的真正对象应是“生成逻辑”而非“生成结果”。如果流水线不可重复，留着结果就是一堆死数据；如果可重复，强留中间产物只会加重仓库负担、混淆版本历史。</li>
+                <li>当流水线还在手工作坊阶段，每个中间文件都需要人工检查修改，纳入Git是合理的。但当流水线成熟到可以稳定复现时，这些中间产物就退化为“缓存”，取消跟踪是工程演进的标志。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>静态知识产物生成与发布</td><td>学习报告的HTML页面如果是流水线产物，同样面临是否纳入版本控制的问题。当天设计选择将中间产物排除，保证了仓库轻量。</td></tr>
+                <tr><td>设计意图显式化</td><td>版本控制边界区分了“设计知识”与“运行产物”的不同命运，设计文档作为源知识长久留存。</td></tr>
+                <tr><td>流水线状态管理与生命周期</td><td>只有当流水线具备可重复构建能力时，取消跟踪中间产物才是安全的，否则一旦丢失就真找不回来。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果流水线代码本身发生了变化，如何确保旧的运行产物仍然能被重建？是否需要将流水线版本与数据一起存档？</li>
+                <li>在多分支协作中，不同人产生不同的中间产物，如何避免在共享仓库中产生冲突？除了 .gitignore 还有哪些治理手段？</li>
+                <li>有没有哪些中间产物反而是应当永久保存的，比如用于审计的日志？如何平衡仓库轻量与可追溯性？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="pipeline-state-management-lifecycle">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>流水线状态管理与生命周期</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象你在一个复杂的组装车间，经过多个工位才能完成一件产品。如果没有一个记录卡片跟随产品走，没人知道它现在到了哪个工位、该做什么、上一个工位有没有做好。自动化流水线也一样：当多个智能体按顺序执行时，系统必须有记忆——记住当前跑到哪一步了，这一步的输入是什么，输出是什么，下一步该做什么，如果某一步出错该怎么处理。这就是“流水线状态管理”：用一个结构化的状态对象，记录一次运行过程的“生命状态”。而“生命周期”则把这个过程划分成明确的阶段，比如初始化、正在执行某个步骤、全部完成、或失败终止，并规定阶段之间允许怎样跳转。这背后的计算模型是有限状态机，一种经典的计算抽象。这样一来，流水线不再是一团难以追踪的函数调用，而是一个状态清晰可见、行为可预测的系统。就算你在半夜收到告警，一看状态记录就知道卡在哪一步。</p>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>用一个结构化的状态对象记录一次运行过程的“生命状态”——当前阶段、输入输出和历史</li>
+                <li>生命周期把流水线划分成明确的阶段（初始化、执行中、完成、失败），并规定阶段之间的转移规则</li>
+                <li>状态持久化让故障排查和恢复变得可能，即使半夜收到告警，一看状态记录就知道卡在哪一步</li>
+              </ul>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>状态对象记录当前阶段、输入输出和历史，相当于给流水线装上了“运行时记忆”</li>
+                <li>生命周期将执行过程划分为明确的阶段（初始化、执行中、完成、失败），并用有限状态机规定阶段间的合法跳转</li>
+                <li>状态持久化存储后，流水线不再是黑盒的函数调用链，而是可追踪、可恢复的透明系统</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>当天仓库新增的 orchestrator/state.py 和 lifecycle.py 就是这一概念的落地。假设流水线有四个步骤：汇总工作、分析概念、撰写解释、发布报告。状态对象记录结构如：{ 'current_stage': 'concept_analysis', 'stage_history': [{ 'stage': 'work_summary', 'status': 'success', 'output': 'summary.json' }], 'error': null }。生命周期定义则确保在“撰写解释”之前必须已完成“概念分析”，否则状态机拒绝跳转。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>很多人以为只要把函数按顺序写在一个脚本里，执行过程就是天然的“状态管理”。但脚本顺序只规定了静态的调用关系，一旦执行中途出现异常、被手动重启、或者需要跳过某一步，没有显式状态记录的脚本就会让人抓瞎：你不知道之前到底执行到了哪里，也不知道重启后该从哪里继续。</li>
+                <li>显式状态管理的价值恰恰在于把“运行时记忆”持久化，让故障排查和恢复变得可能，而不是依赖脚本的自然执行顺序。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>Agent 工作流与任务编排</td><td>编排器调度节点时，每一步都会读写状态对象，依赖状态机的转移规则决定下一个动作。</td></tr>
+                <tr><td>设计意图显式化</td><td>design/state_design.md 文档正是把状态机的设计决策从代码中提炼为可讨论、可演进的知识制品。</td></tr>
+                <tr><td>断点续传机制</td><td>只有当状态被持久化存储时，才能在失败后从成功的检查点恢复，而不是从头再来。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>有限状态机在处理并发任务时有什么局限性？如果流水线中需要并行执行两个独立步骤，状态模型应该怎么扩展？</li>
+                <li>状态对象如何被持久化保存？如果在执行过程中机器断电，恢复后如何确保状态不丢失？</li>
+                <li>随着流水线步骤增多，状态转移规则可能会急剧复杂化，如何设计状态机才能避免“状态爆炸”？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="llm-invocation-output-constraint">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 大语言模型 / 软件工程</p>
+                <h3>大语言模型调用与输出约束</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>大语言模型就像一个知识渊博但偶尔随性的朋友：你请他帮忙写一封邮件，他可能写得文采飞扬，也可能临时发挥起来，加些你不需要的内容，甚至把格式弄乱。在一条自动化流水线里，你不能容忍这种随意——因为下一个步骤的代码期望接收到的，是一个结构精准、字段完好、没有多余信息的 JSON 对象，而不是一段自由散漫的散文。因此，在把 LLM 接入工程系统时，必须在它的输出后面加上一道“安检”：先用统一的接口去调用模型（处理通信、超时、重试），然后对模型的回答进行结构化校验——比如检查它是不是合法的 JSON，有没有缺少“概念名称”这个必填字段，有没有多出不该有的内容。如果校验不通过，就触发重试或降级逻辑。这就是“LLM 调用与输出约束”的核心：用一层代码护盾，把模型概率性的自然语言输出，转化为下游代码能够安全消费的确定性数据。提示词负责“软约束”，告诉模型应该输出什么；校验层负责“硬约束”，检查模型是不是真的照做了。</p>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>用统一调用接口处理与大语言模型的通信、超时和重试，避免各Agent各自实现的不一致</li>
+                <li>对LLM回答进行结构化校验：检查是否为合法JSON、是否包含必填字段、是否有多余内容</li>
+                <li>提示词负责“软约束”（告诉模型应输出什么），校验层负责“硬约束”（检查模型是否照做），两者结合才是工程上可靠的设计</li>
+              </ul>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>大语言模型的本质是基于概率的文本续写，即使提示词写得再好，也可能因上下文噪声或随机采样而产生格式偏差</li>
+                <li>软件工程中不能依赖“一般会好”，必须用统一调用接口管理通信和超时，再用校验层对输出进行结构化检查</li>
+                <li>提示词是“软约束”（定义输出规格），校验层是“硬约束”（保证规格被遵守），两者构成分层防御体系</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设流水线中有一个 Agent 负责从当日工作总结中提取概念。它的提示词要求模型输出一个 JSON 数组，每个元素包含 concept、domain、explanation 字段。模型返回结果后，validators.py 会检查：这是不是合法的 JSON？是不是数组？每个元素有没有包含这三个字段？如果某个对象缺少 explanation，校验失败，系统会记录错误并决定是重试还是进入降级处理。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>很多人误以为只要提示词写得足够好，模型就会百分百按照格式输出。但模型的本质是基于概率的文本续写，它可能因为上下文噪声、罕见输入或随机采样而产生格式偏差。提示词只是提高了合规的概率，校验层才是确保合规的底线。</li>
+                <li>软件工程中不能依赖“一般会好”，而必须用代码强制校验。提示词规定了模型“应该”输出什么，校验层则确认它“确实”输出了这些，两者缺一不可。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>提示词工程</td><td>提示词是软约束，定义输出规格；输出约束是硬校验，保证规格被遵守。两者是一体两面，构成同一个流水线节点的“期望”与“验证”两面。</td></tr>
+                <tr><td>静态知识产物生成与发布</td><td>只有校验通过的LLM输出，才能被安全地转化为HTML报告等结构化知识产物，避免垃圾数据进入用户可见页面。</td></tr>
+                <tr><td>Agent 职责拆分与契约边界</td><td>每个Agent对下游的输出是一种契约，校验层确保该契约被LLM遵守，从而保障流水线节点之间的信任关系。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当模型输出格式正确但内容可能错误（例如提取的概念不准确）时，校验层无法发现，如何结合语义校验来提升可靠性？</li>
+                <li>如果模型始终无法输出符合schema的结果，系统应该如何降级？是跳过该步骤还是使用默认值？</li>
+                <li>在多模型混合流水线中，不同模型有不同的输出风格和错误模式，如何设计通用的校验框架？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">这三个概念共用同一条逻辑纽带：从“运行一次”到“运行一百次”的可靠性升级。版本控制边界的确立，正是因为流水线已进入“可重复构建”阶段——中间产物可通过源代码和提示词自动重建，不必再占用Git历史。而实现这种自信，必须依赖流水线状态管理：每次运行被记录在状态对象中，阶段转移有明确规则。与此同时，大语言模型的输出充满不确定性，系统引入统一的调用入口与输出校验层，把概率性文本约束成确定的JSON结构。状态机的确定性与输出校验的确定性，共同支撑起流水线的可复现性；可复现性又反过来让版本控制边界的收缩变得安全且合理。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">真正需要存档的是能让结果被重新构建的一切——输入数据、代码、配置，而不是结果自身。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如果流水线代码本身发生了变化，如何确保旧的运行产物仍然能被重建？是否需要将流水线版本与数据一起存档？</li>
+            <li>有限状态机在处理并发任务时有什么局限性？如果流水线中需要并行执行两个独立步骤，状态模型应该怎么扩展？</li>
+            <li>当模型输出格式正确但内容可能错误（例如提取的概念不准确）时，校验层无法发现，如何结合语义校验来提升可靠性？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
