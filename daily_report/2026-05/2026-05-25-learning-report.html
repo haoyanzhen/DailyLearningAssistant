@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-05-25 学习笔记日报</title>
+    <meta name="description" content="今日围绕前端呈现精细化与自动化工作流可靠性展开：介绍SVG可缩放矢量图形、CSS盒模型与ch单位智能排版，以及断点续传的存档恢复机制，共同提升知识输出系统品质。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260525-map2" />
+    <script type="module">
+      try {
+        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs");
+        mermaid.initialize({ startOnLoad: false, theme: "base", securityLevel: "strict" });
+      } catch (error) {
+        console.info("Mermaid is optional; using the built-in relationship map.", error);
+      }
+    </script>
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-05-25</p>
+        <h1>前端呈现精细化与工作流可靠性增强</h1>
+        <p>今日知识点涵盖SVG矢量图形、CSS字体宽度控制与断点续传模式，从前端视觉优化到后台流程鲁棒性，全面提升自动化学习报告的质量。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-html-graph" aria-hidden="true">
+                <div class="relationship-hub">LLM 工程化能力</div>
+                <div class="relationship-node-grid">
+                <article class="relationship-node">
+                  <strong>SVG（可缩放矢量图形）与 Web 前端图形呈现</strong>
+                  <div class="relationship-node-links">
+                  <span>CSS 盒模型与字体宽度控制</span>
+                  <span>Manifest 驱动的发布契约</span>
+                  </div>
+                </article>
+                <article class="relationship-node">
+                  <strong>CSS 盒模型与字体宽度控制</strong>
+                  <div class="relationship-node-links">
+                  <span>SVG（可缩放矢量图形）与 Web 前端图形呈现</span>
+                  </div>
+                </article>
+                <article class="relationship-node">
+                  <strong>断点续传（Checkpoint/Resume）模式</strong>
+                  <div class="relationship-node-links">
+                  <span>流水线状态管理与生命周期</span>
+                  <span>Agent 工作流与任务编排</span>
+                  </div>
+                </article>
+                </div>
+              </div>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub([LLM 工程化能力])
+  concept1["SVG（可缩放矢量图形）与 Web 前端图形呈现"]
+  hub --&gt; concept1
+  concept2["CSS 盒模型与字体宽度控制"]
+  hub --&gt; concept2
+  concept3["断点续传（Checkpoint/Resume）模式"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  related1["Manifest 驱动的发布契约"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  related2["流水线状态管理与生命周期"]
+  concept3 --&gt; related2
+  related3["Agent 工作流与任务编排"]
+  concept3 --&gt; related3
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3 related
+              </pre>
+            </div>
+            <div class="relationship-map-notes">
+              <p class="eyebrow">Concept Links</p>
+              <ul>
+              <li><strong>SVG（可缩放矢量图形）与 Web 前端图形呈现 → CSS 盒模型与字体宽度控制</strong><span>SVG负责图形清晰度，CSS盒模型负责文字排版精度，两者共同优化报告页面的视觉呈现。</span></li>
+              <li><strong>SVG（可缩放矢量图形）与 Web 前端图形呈现 → Manifest 驱动的发布契约</strong><span>SVG图形需嵌入到由 manifest 索引的静态报告中，实现可寻址、可发布的内容组织。</span></li>
+              <li><strong>CSS 盒模型与字体宽度控制 → SVG（可缩放矢量图形）与 Web 前端图形呈现</strong><span>SVG 基于坐标系统绘制图形，CSS 字体宽度控制依赖 advance width 等度量概念，两者都建立在几何计算模型之上，共同支撑报告页面的视觉表现。</span></li>
+              <li><strong>断点续传（Checkpoint/Resume）模式 → 流水线状态管理与生命周期</strong><span>断点续传依赖于状态机模型记录任务进展，是实现流水线容错与恢复的关键机制。</span></li>
+              <li><strong>断点续传（Checkpoint/Resume）模式 → Agent 工作流与任务编排</strong><span>在由多个 Agent 步骤组成的自动化流程中，断点续传确保长任务可从中断点恢复，是可靠执行的基础设施。</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="svg-web-graphics">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>SVG（可缩放矢量图形）与 Web 前端图形呈现</h3>
+              <p>SVG (Scalable Vector Graphics) and Web Frontend Graphics</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">SVG 用数学公式描述图形，放大缩小永远清晰，就像用乐高积木搭图而不是用马赛克贴图。</div>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="svg-web-graphics" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="css-box-model-font-width">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>CSS 盒模型与字体宽度控制</h3>
+              <p>CSS Box Model and Font Width Control</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">CSS 盒模型里的 ch 单位约等于一个“0”字的宽度，用它限制文本框宽度，可以让阅读行长度自然舒适。</div>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="css-box-model-font-width" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="checkpoint-resume-pattern">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>断点续传（Checkpoint/Resume）模式</h3>
+              <p>Checkpoint/Resume Pattern</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">断点续传就像游戏里的存档点：任务跑到一半断电也不怕，重新启动时从上一个存档继续，而不是从头再来。</div>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="checkpoint-resume-pattern" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="svg-web-graphics">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学</p>
+                <h3>SVG（可缩放矢量图形）与 Web 前端图形呈现</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>你在网页上看到的很多图标、插图，如果放大好几倍还不会变模糊，那它们很可能就是 SVG 图形。SVG 的全称是“可缩放矢量图形”，它的核心秘密是“矢量”。普通的照片和截图是位图，用很多彩色小方格（像素）拼成画面，一放大就露出马赛克。而 SVG 是用数学公式来记录图形的：比如“以这个点为圆心，画一个半径 50 的圆，填上蓝色”。因为存的是几何指令而不是像素点，浏览器可以根据屏幕大小随时重新计算，把图形画得刚刚好，永远清晰。在我们的学习报告里，用 SVG 可以画出流程图、图标，甚至数据示意图，让自动生成的页面也有专业图表的样子。</p>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>矢量图形基于数学公式，可无损缩放，不会因放大而出现马赛克。</li>
+                <li>SVG使用XML文本格式描述图形，可被程序生成、编辑和版本控制。</li>
+                <li>浏览器根据SVG指令实时渲染，实现响应式设计，无需准备多张不同尺寸的图片。</li>
+                <li>与固定像素的位图（PNG/JPEG）不同，SVG始终保持清晰，适合图表、图标等场景。</li>
+              </ul>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>矢量与位图区别：位图由像素网格构成，放大会失真；矢量图通过几何指令描述形状，渲染时重新计算，保留清晰度。</li>
+                <li>XML文本特性：SVG文件本质是结构化文本，可以用代码读取、修改和生成，非常适合自动化流水线。</li>
+                <li>浏览器实时渲染：SVG图形在每次页面布局时根据视口和坐标系统绘制，天然支持不同分辨率和缩放级别。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在学习报告中展示一个“学习流程”的圆形步骤图，只需写一段 &lt;circle cx='50' cy='50' r='40' fill='#4A90D9'/&gt; 的标签，浏览器就会自动在不同设备上画出一个完美清晰的圆，省去了为不同屏幕准备多张图片的麻烦。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为SVG就是和PNG、JPEG一样的图片格式。实际上，SVG是用XML文本描述的图形文件，可被文本编辑器打开、修改和程序控制，而PNG/JPEG是固定的像素数据，无法直接编辑图形结构。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>CSS 盒模型与字体宽度控制</td><td>SVG负责图形清晰度，CSS盒模型负责文字排版精度，两者共同优化报告页面的视觉呈现。</td></tr>
+                <tr><td>Manifest 驱动的发布契约</td><td>SVG图形需嵌入到由 manifest 索引的静态报告中，实现可寻址、可发布的内容组织。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>SVG的坐标系统和视口（viewBox）是如何决定图形缩放行为的？</li>
+                <li>如何用 CSS 动画或 JavaScript 让 SVG 图形动起来，做出交互式图表？</li>
+                <li>与 Canvas 相比，SVG 在什么场景下更有优势、什么场景下更适合用 Canvas？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="css-box-model-font-width">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学</p>
+                <h3>CSS 盒模型与字体宽度控制</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>网页上的每个元素，在浏览器眼里都是一个“盒子”。这个盒子的最终占位宽度由内容宽度、内边距（padding）、边框（border）和外边距（margin）合起来决定，这就是 CSS 盒模型。今天提到的“font width in box”，很可能是指用 ch 这个相对单位来控制文字内容的宽度。ch 不是一个固定的厘米或像素值，而是当前字体中“0”这个字符的宽度。因为我们平时阅读的正文通常用等宽或近乎等宽的字体，ch 单位就可以方便地设定“这一行大概显示多少个字”。比如设置 width: 60ch;，就能让文本一行大约显示 60 个字符，符合人类舒适阅读的建议行长，而不需要在不同屏幕尺寸下反复调整像素值。这种控制让自动化生成的报告在手机上不会因行太长而读着累，在宽屏上也不会散成一条长线。</p>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>CSS盒模型由内容、内边距（padding）、边框（border）和外边距（margin）层层包裹，决定元素最终占据的空间。</li>
+                <li>ch 是一个相对单位，等于当前字体中“0”字符的步进宽度，用于横向控制每行容纳的字符数量。</li>
+                <li>通过设置 max-width: 65ch 等规则，可以让文本行长度保持适合阅读的范围，无需依赖像素值。</li>
+                <li>与 em 不同，em 通常基于字体高度或大写 M 的宽度，而 ch 专门针对字符宽度，更适合控制栏宽。</li>
+              </ul>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>盒模型计算：元素总宽度 = 内容宽度 + 左右padding + 左右border + 左右margin，理解这层关系是精准布局的基础。</li>
+                <li>ch 单位原理：浏览器根据当前字体的度量信息，取字符‘0’的 advance width 作为单位长度，使文本宽度与字符数直接挂钩。</li>
+                <li>响应式排版：利用 ch 设定 max-width，可以使行宽随字体大小自动缩放，在不同屏幕和字体设置下维持相对固定的字符数，提升阅读舒适度。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在做学习总结页面时，如果直接把大段文字丢进一个没有宽度限制的 div 里，用户在宽屏幕上会看到一行拉满整个屏幕的文字，读起来非常费力。只要在 CSS 里加一行 max-width: 65ch;，文本框就会自动调整宽度，让每行大约 65 个字符，阅读体验立刻提升。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为设置了 font-size 就控制了文本的宽度。实际上 font-size 主要影响文字纵向尺寸，横向每行能放多少字符需要靠 ch 这类单位或宽度属性来控制。</li>
+                <li>将 ch 与 em 混淆。em 通常基于当前字体的总体高度（或大写 M 的宽度），而 ch 专门对应字符“0”的步进宽度，在控制阅读栏宽时更直观准确。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>SVG（可缩放矢量图形）与 Web 前端图形呈现</td><td>SVG 基于坐标系统绘制图形，CSS 字体宽度控制依赖 advance width 等度量概念，两者都建立在几何计算模型之上，共同支撑报告页面的视觉表现。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>ch 单位在等宽字体和比例字体中表现有何不同？如何保证跨字体的宽度一致性？</li>
+                <li>CSS 盒模型中的 box-sizing 属性（content-box 与 border-box）如何改变元素尺寸的计算方式？</li>
+                <li>除了 ch，还有哪些适合排版的相对单位（如 ex、rem），它们分别基于什么度量？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="checkpoint-resume-pattern">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>断点续传（Checkpoint/Resume）模式</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>如果你用电脑渲染一个很大视频或者跑一个需要几小时的自动化流程，突然断电或者某个步骤报错，最怕的就是一切要从头开始。断点续传就是解决这个问题的设计模式。它的思路是：把一个长任务拆成多个小步骤，每完成一个步骤，就把“我已经做完了哪些事、中间结果存在哪里”这些信息保存下来，形成一个“检查点”。如果后续步骤失败，重新启动时程序会先读取最近的检查点，直接从断掉的地方继续，而不是把已经成功跑完的步骤再做一遍。这套机制背后的核心是“有状态计算”——你要清楚地知道任务运行到哪个状态、每个状态对应什么数据，才能准确地保存和恢复。在我们的学习报告生成流水线中，断点续传是专门用来保护长流程的：万一调用大语言模型时网络抖动失败了，系统可以从上一个检查点恢复，不会丢失已经生成好的内容。</p>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>将长任务拆解为原子步骤，每完成一步便持久化当前状态和中间结果，形成检查点。</li>
+                <li>遇到失败后，系统从最近检查点恢复，跳过已成功步骤，只重试失败部分。</li>
+                <li>核心要求是有状态计算：明确任务运行到哪个状态，并保证步骤幂等性，防止重复执行带来副作用。</li>
+                <li>大幅提升自动化流水线在长耗时、易出错场景下的可靠性与资源利用效率。</li>
+              </ul>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>任务分解：将长流程划分为依赖明确、输入输出清晰的步骤，使每个步骤成为可检查、可重试的单元。</li>
+                <li>状态持久化：每步完成后将完成列表、中间产物路径等状态信息写入可靠存储（文件或数据库），形成检查点。</li>
+                <li>恢复机制：启动时读取最新检查点，跳过已完成步骤，从失败步骤重试；依赖幂等性保证重复执行不影响最终结果。</li>
+                <li>状态机驱动：整个流程由有限状态机模型控制，根据检查点决定下一个要执行的状态，确保流程可追踪、可恢复。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>学习报告生成流水线可能分为三步：第一步从 Git 提取当天变更，第二步调用 LLM 生成报告摘要，第三步把结果发布到静态站点。如果第二步因为 LLM 服务超时失败了，没有断点续传的系统就得从第一步重新提取数据。而有了断点续传，它会检查到第一步已经完成且结果有效，直接跳去重试第二步，省下时间和计算资源。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为断点续传就是“出错就重试”。实际上重试只能重新执行失败步骤，而断点续传还需要确保之前成功的步骤不被重复执行，这就要求每个步骤具有幂等性——多次执行与一次执行的结果相同，不会因恢复运行而产生重复数据或额外副作用。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>流水线状态管理与生命周期</td><td>断点续传依赖于状态机模型记录任务进展，是实现流水线容错与恢复的关键机制。</td></tr>
+                <tr><td>Agent 工作流与任务编排</td><td>在由多个 Agent 步骤组成的自动化流程中，断点续传确保长任务可从中断点恢复，是可靠执行的基础设施。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何为不同性质的步骤（API 调用、文件生成、邮件发送等）设计统一的检查点数据结构？</li>
+                <li>在处理并发流水线时，如何区分不同运行实例的检查点，避免恢复错乱？</li>
+                <li>幂等性在断点续传中起什么作用？如何通过设计使操作天然幂等，或通过去重逻辑保证幂等？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">SVG和CSS盒模型共同作用于最终呈现在浏览器里的报告页面，SVG负责图形清晰度，盒模型和字体宽度控制负责文字排版的精致感。而这份报告的生成过程，正是由支持断点续传的自动化流水线完成的——即使某个步骤失败，也能从最近的检查点恢复，不会浪费已经完成的工作。三个概念从视觉体验和流程鲁棒性两个侧面，联手打造了一个更稳定、更好看的知识输出系统。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">从“能用”到“好用、可靠”的工程进阶。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>SVG的坐标系统和视口（viewBox）是如何决定图形缩放行为的？</li>
+            <li>如何为不同性质的步骤（API调用、文件生成、邮件发送等）设计统一的检查点数据结构？</li>
+            <li>CSS盒模型中的box-sizing属性（content-box与border-box）如何改变元素尺寸的计算方式？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>

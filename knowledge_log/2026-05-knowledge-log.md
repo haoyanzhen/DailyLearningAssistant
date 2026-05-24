@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-05/2026-05-25-learning-report.html">2026-05-25</a>
+      </td>
+      <td>SVG（可缩放矢量图形）与 Web 前端图形呈现</td>
+      <td>计算机科学</td>
+      <td>★★★</td>
+      <td>SVG 是用数学公式描述图形的文本文件，放再大也不模糊，非常适合在自动化报告中嵌入清晰图表。</td>
+      <td>后续可以深入讲解 SVG 的 viewBox 缩放原理、路径（path）命令语法，以及如何用程序自动生成复杂的 SVG 数据图表。</td>
+    </tr>
+    <tr>
+      <td>CSS 盒模型与字体宽度控制</td>
+      <td>计算机科学</td>
+      <td>★★★</td>
+      <td>CSS 盒模型把页面元素看作多层嵌套的盒子，而 `ch` 单位用‘0’字的宽度为尺子，让文本行智能适应不同屏幕，实现自动化舒适排版。</td>
+      <td>后续可以详细讲解字体的 em-square、ascender、descender 等度量概念，以及它们如何影响 `line-height` 和 `vertical-align` 的计算。</td>
+    </tr>
+    <tr>
+      <td>断点续传（Checkpoint/Resume）模式</td>
+      <td>软件工程</td>
+      <td>★★★★</td>
+      <td>断点续传模式为长流程作业设置存档点，让任务在失败后能从最近完成处恢复，避免重复劳动。</td>
+      <td>后续可以深入讲解检查点的持久化策略（文件、数据库、内存）、幂等步骤的设计范式，以及如何在分布式任务队列中集成断点续传。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-05/2026-05-24-learning-report.html">2026-05-24</a>
       </td>
       <td>版本控制边界与中间产物管理</td>
