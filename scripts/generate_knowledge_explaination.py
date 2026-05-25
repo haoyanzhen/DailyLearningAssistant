@@ -18,6 +18,7 @@ from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 from orchestrator.llm import LLMRetryPolicy, RetryPolicy, call_chat_completion, retry_call
+from orchestrator.question_threads import upsert_questions_from_concepts
 KNOWLEDGE_LOG_HEADERS = ("日期", "概念", "领域", "难度", "一句话解释", "下一次讲解参考")
 
 
@@ -454,6 +455,7 @@ def validate_rendered_output(data, target_date, existing_log):
     return {
         "knowledge_explaination_md": knowledge_md,
         "knowledge_log_md": knowledge_log_md,
+        "structured_data": data,
     }
 
 
@@ -517,9 +519,21 @@ def main():
     log_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(data["knowledge_explaination_md"].rstrip() + "\n", encoding="utf-8")
     log_path.write_text(data["knowledge_log_md"].rstrip() + "\n", encoding="utf-8")
+    thread_result = upsert_questions_from_concepts(
+        output_root,
+        target_date,
+        data["structured_data"]["concepts"],
+        datetime.now().astimezone().isoformat(),
+    )
 
     print(f"[完成] 已生成: {output_path}")
     print(f"[完成] 已更新: {log_path}")
+    print(
+        "[完成] 已更新问题线程: "
+        f"{thread_result['path']} "
+        f"(upserted={thread_result['upserted']}, today_questions={thread_result['today_questions']})"
+    )
+    print("[question_threads] " + json.dumps(thread_result, ensure_ascii=False, sort_keys=True))
 
 
 if __name__ == "__main__":

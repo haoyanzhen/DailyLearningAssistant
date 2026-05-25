@@ -20,6 +20,8 @@ from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 GENERATOR_SCRIPT = PROJECT_ROOT / "scripts" / "generate_knowledge_explaination.py"
+sys.path.insert(0, str(PROJECT_ROOT))
+from orchestrator.question_threads import load_question_threads, question_thread_path
 
 
 def parse_args() -> argparse.Namespace:
@@ -107,6 +109,17 @@ def validate_concept_input(path: Path) -> str:
     return content
 
 
+def parse_question_thread_result(stdout: str) -> dict | None:
+    for line in stdout.splitlines():
+        if not line.startswith("[question_threads] "):
+            continue
+        try:
+            return json.loads(line.removeprefix("[question_threads] "))
+        except json.JSONDecodeError:
+            return None
+    return None
+
+
 def main() -> int:
     args = parse_args()
     config_path = Path(args.config)
@@ -125,6 +138,7 @@ def main() -> int:
     concept_path = input_dir / "concept_relevance.md"
     knowledge_path = output_dir / "knowledge_explaination.md"
     knowledge_log_path = output_root / "knowledge_log" / f"{year_month}-knowledge-log.md"
+    question_threads_path = question_thread_path(output_root, year_month)
     status_path = output_dir / "run_status.json"
 
     try:
@@ -142,6 +156,12 @@ def main() -> int:
                 "input_path": relative_to_root(concept_path, input_root),
                 "output_path": relative_to_root(knowledge_path, output_root),
                 "knowledge_log_path": relative_to_root(knowledge_log_path, output_root),
+                "question_threads": {
+                    "path": relative_to_root(question_threads_path, output_root),
+                    "status": "skipped_input_invalid",
+                    "upserted": 0,
+                    "today_questions": 0,
+                },
                 "generator": relative_to_root(GENERATOR_SCRIPT),
                 "llm": {
                     "enabled": True,
@@ -190,8 +210,40 @@ def main() -> int:
         if not knowledge_log_path.exists() or not knowledge_log_path.read_text(encoding="utf-8").strip():
             status = "failed"
             problems.append(f"{knowledge_log_path} 未生成或为空")
+        question_threads_status = {
+            "path": relative_to_root(question_threads_path, output_root),
+            "status": "success",
+            "upserted": 0,
+            "today_questions": 0,
+            "total_threads": 0,
+        }
+        try:
+            thread_data = load_question_threads(question_threads_path, allow_missing=False)
+            today_questions = [
+                thread for thread in thread_data.get("threads", []) if thread.get("source_date") == target_date
+            ]
+            generator_thread_result = parse_question_thread_result(result.stdout or "") or {}
+            question_threads_status.update(
+                {
+                    "upserted": generator_thread_result.get("upserted", len(today_questions)),
+                    "today_questions": len(today_questions),
+                    "total_threads": len(thread_data.get("threads", [])),
+                }
+            )
+        except (FileNotFoundError, ValueError, OSError) as exc:
+            status = "failed"
+            question_threads_status.update({"status": "failed", "error": str(exc)})
+            problems.append(f"问题线程文件未生成或无效: {exc}")
         if problems:
             llm_status = "output_invalid"
+    if result.returncode != 0:
+        question_threads_status = {
+            "path": relative_to_root(question_threads_path, output_root),
+            "status": "failed",
+            "upserted": 0,
+            "today_questions": 0,
+            "error": "\n".join(problems) if problems else None,
+        }
 
     write_agent_status(
         status_path,
@@ -205,6 +257,7 @@ def main() -> int:
             "input_chars": len(concept_content),
             "output_path": relative_to_root(knowledge_path, output_root),
             "knowledge_log_path": relative_to_root(knowledge_log_path, output_root),
+            "question_threads": question_threads_status,
             "generator": relative_to_root(GENERATOR_SCRIPT),
             "llm": {
                 "enabled": True,

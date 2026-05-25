@@ -57,6 +57,7 @@
       "daily_report/{year_month}/{date}-learning-report.html",
       "daily_report/manifest.json",
       "knowledge_log/{year_month}-knowledge-log.md",
+      "knowledge_log/{year_month}-question-threads.json",
       "knowledge_log/manifest.json",
       "index.html"
     ]

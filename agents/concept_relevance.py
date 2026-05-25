@@ -22,6 +22,7 @@ from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 from orchestrator.llm import LLMRetryPolicy, call_chat_completion
+from orchestrator.question_threads import QuestionThreadSelection, collect_recent_open_questions, render_questions_for_prompt
 REQUIRED_REPOSITORIES = [
     "AInote",
     "DailyLearningAssistant",
@@ -169,7 +170,17 @@ def call_llm(llm: dict, prompt: str, timeout: int) -> str:
     )
 
 
-def build_prompt(target_date: str, summaries: list[InputSummary], input_root: Path) -> str:
+def question_thread_status(selection: QuestionThreadSelection, root: Path) -> dict:
+    return {
+        "status": selection.status,
+        "files": [relative_to_root(Path(path), root) for path in selection.files],
+        "open_count": selection.open_count,
+        "selected_count": selection.selected_count,
+        "selected_ids": [item.get("id") for item in selection.questions],
+    }
+
+
+def build_prompt(target_date: str, summaries: list[InputSummary], input_root: Path, question_selection: QuestionThreadSelection) -> str:
     files_block = "\n".join(
         f"- `{relative_to_root(summary.path, input_root)}`（仓库：{summary.repo}）" for summary in summaries
     )
@@ -177,6 +188,7 @@ def build_prompt(target_date: str, summaries: list[InputSummary], input_root: Pa
         f"## 输入：{summary.repo}\n\n来源文件：`{relative_to_root(summary.path, input_root)}`\n\n```markdown\n{summary.content}\n```"
         for summary in summaries
     )
+    question_threads_block = render_questions_for_prompt(question_selection)
 
     return f"""你是“有过工程经验的专职科普老师”，但本任务的边界非常明确：只做概念与知识点提炼，不生成教学教案、讲解顺序、学习路径、练习题或教学建议。请阅读当天全部仓库的前一日更改总结，从中提炼数学、物理、计算机科学、软件工程以及大语言模型相关的概念，并梳理概念之间自然、连贯的知识关系。
 
@@ -187,6 +199,7 @@ def build_prompt(target_date: str, summaries: list[InputSummary], input_root: Pa
 
 硬性边界：
 - 只能基于下面提供的当日 `work_summary_*.md` 内容提炼，不要读取或引用其他日期内容。
+- “最近 7 天 open 问题”只作为历史学习线索，用来判断当天概念是否能自然回应或延伸旧问题；不得把旧问题伪装成当天新增工作、当天新概念或当天已确认事实。
 - 不要编造与当日工作无关的概念。
 - 如果某个领域在更改总结中没有明确线索，应写“未发现明确线索”，不要强行凑概念。
 - 概念名称要准确、可解释，避免只写“代码”“学习”“工具”等宽泛词。
@@ -207,8 +220,13 @@ def build_prompt(target_date: str, summaries: list[InputSummary], input_root: Pa
 - 分领域线索（数学、物理、计算机科学、软件工程、大语言模型）
 - 跨领域关联图（放在“分领域线索”之后，用文本图或 Mermaid 展示领域与概念之间的整体关联）
 - 概念关联图谱或关联表
+- 最近 open 问题与当天概念的关联：如果没有稳定关联，写“最近 7 天 open 问题未发现与当天材料的稳定关联”；如果有关联，必须写清历史问题、来源日期、当天相关概念、关联原因、是否适合进入后续知识讲解。
 - 详细关联描述
 - 可供后续知识讲解使用的概念候选摘要（只列候选概念和依据，不写教学建议）
+
+最近 7 天 open 问题如下：
+
+{question_threads_block}
 
 当天 work summary 输入如下：
 
@@ -221,6 +239,7 @@ def validate_output(content: str) -> list[str]:
         "概念清单",
         "当日核心主题",
         "跨领域关联",
+        "最近 open 问题",
         "详细关联",
     ]
     problems = [pattern for pattern in required_patterns if pattern not in content]
@@ -268,6 +287,47 @@ def main() -> int:
     output_path = output_dir / "concept_relevance.md"
     status_path = output_dir / "run_status.json"
 
+    try:
+        question_selection = collect_recent_open_questions(input_root, target_date, days=7)
+        question_status = question_thread_status(question_selection, input_root)
+    except (ValueError, OSError) as exc:
+        finished_at = datetime.now(timezone).isoformat()
+        question_status = {
+            "status": "invalid",
+            "files": [],
+            "open_count": 0,
+            "selected_count": 0,
+            "selected_ids": [],
+            "error": str(exc),
+        }
+        write_agent_status(
+            status_path,
+            target_date,
+            {
+                "status": "failed",
+                "started_at": started_at,
+                "finished_at": finished_at,
+                "timezone": str(timezone),
+                "input_dir": relative_to_root(input_dir, input_root),
+                "output_path": relative_to_root(output_path, output_root),
+                "question_threads": question_status,
+                "llm": {
+                    "enabled": True,
+                    "configured": True,
+                    "model": llm.get("model"),
+                    "retries": args.llm_retries,
+                    "retry_delay_seconds": args.llm_retry_delay,
+                    "status": "skipped_question_threads_invalid",
+                    "error": None,
+                },
+                "inputs": [],
+                "problems": [str(exc)],
+            },
+            finished_at,
+        )
+        print(f"[错误] 历史问题线程不可用，停止生成 concept_relevance.md。原因：{exc}")
+        return 1
+
     summaries, input_problems = validate_inputs(input_dir)
     if input_problems:
         finished_at = datetime.now(timezone).isoformat()
@@ -281,6 +341,7 @@ def main() -> int:
                 "timezone": str(timezone),
                 "input_dir": relative_to_root(input_dir, input_root),
                 "output_path": relative_to_root(output_path, output_root),
+                "question_threads": question_status,
                 "llm": {
                     "enabled": True,
                     "configured": True,
@@ -307,7 +368,7 @@ def main() -> int:
             print(f"- {problem}")
         return 1
 
-    prompt = build_prompt(target_date, summaries, input_root)
+    prompt = build_prompt(target_date, summaries, input_root, question_selection)
     llm_status = "success"
     llm_error = None
     output_problems: list[str] = []
@@ -328,6 +389,7 @@ def main() -> int:
                 "timezone": str(timezone),
                 "input_dir": relative_to_root(input_dir, input_root),
                 "output_path": relative_to_root(output_path, output_root),
+                "question_threads": question_status,
                 "llm": {
                     "enabled": True,
                     "configured": True,
@@ -364,6 +426,7 @@ def main() -> int:
             "timezone": str(timezone),
             "input_dir": relative_to_root(input_dir, input_root),
             "output_path": relative_to_root(output_path, output_root),
+            "question_threads": question_status,
             "llm": {
                 "enabled": True,
                 "configured": True,
