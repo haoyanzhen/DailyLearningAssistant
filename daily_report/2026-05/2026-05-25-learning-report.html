@@ -6,14 +6,6 @@
     <title>2026-05-25 学习笔记日报</title>
     <meta name="description" content="今日围绕前端呈现精细化与自动化工作流可靠性展开：介绍SVG可缩放矢量图形、CSS盒模型与ch单位智能排版，以及断点续传的存档恢复机制，共同提升知识输出系统品质。" />
     <link rel="stylesheet" href="../../style/main.css?v=20260525-map2" />
-    <script type="module">
-      try {
-        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs");
-        mermaid.initialize({ startOnLoad: false, theme: "base", securityLevel: "strict" });
-      } catch (error) {
-        console.info("Mermaid is optional; using the built-in relationship map.", error);
-      }
-    </script>
   </head>
   <body>
     <main class="page">
@@ -53,31 +45,41 @@
 
           <div class="relationship-map" aria-label="三节小课关系图">
             <div class="relationship-map-visual">
-              <div class="relationship-html-graph" aria-hidden="true">
-                <div class="relationship-hub">LLM 工程化能力</div>
-                <div class="relationship-node-grid">
-                <article class="relationship-node">
-                  <strong>SVG（可缩放矢量图形）与 Web 前端图形呈现</strong>
-                  <div class="relationship-node-links">
-                  <span>CSS 盒模型与字体宽度控制</span>
-                  <span>Manifest 驱动的发布契约</span>
-                  </div>
-                </article>
-                <article class="relationship-node">
-                  <strong>CSS 盒模型与字体宽度控制</strong>
-                  <div class="relationship-node-links">
-                  <span>SVG（可缩放矢量图形）与 Web 前端图形呈现</span>
-                  </div>
-                </article>
-                <article class="relationship-node">
-                  <strong>断点续传（Checkpoint/Resume）模式</strong>
-                  <div class="relationship-node-links">
-                  <span>流水线状态管理与生命周期</span>
-                  <span>Agent 工作流与任务编排</span>
-                  </div>
-                </article>
-                </div>
-              </div>
+              <svg class="relationship-svg" viewBox="0 0 700 300" role="img" aria-labelledby="relationship-map-title relationship-map-desc">
+                <title id="relationship-map-title">三节小课关系图</title>
+                <desc id="relationship-map-desc">中心主题连接三节小课，每节小课继续连接当天相关概念。</desc>
+                <defs>
+                  <marker id="relationship-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z"></path>
+                  </marker>
+                </defs>
+                <path class="relationship-line" d="M350 58 C350 78 152 80 152 102"></path>
+                <path class="relationship-line" d="M350 58 C350 82 350 82 350 102"></path>
+                <path class="relationship-line" d="M350 58 C350 78 548 80 548 102"></path>
+                <rect class="relationship-svg-hub" x="246" y="18" width="208" height="40" rx="20"></rect>
+                <text class="relationship-svg-hub-text" x="350" y="44"><tspan x="350" dy="0">LLM 工程化能力</tspan></text>
+                <rect class="relationship-svg-concept" x="74" y="102" width="156" height="68" rx="10"></rect>
+                <text class="relationship-svg-concept-text" x="152" y="126"><tspan x="152" dy="0">SVG（可缩放矢量图</tspan><tspan x="152" dy="17">形）与 Web 前端...</tspan></text>
+                <path class="relationship-line muted" d="M152 170 C152 192 152 198 152 213"></path>
+                <rect class="relationship-svg-related" x="80" y="198" width="144" height="28" rx="9"></rect>
+                <text class="relationship-svg-related-text" x="152" y="216"><tspan x="152" dy="0">CSS 盒模型与字体宽...</tspan></text>
+                <path class="relationship-line muted" d="M152 170 C152 192 152 230 152 245"></path>
+                <rect class="relationship-svg-related" x="80" y="230" width="144" height="28" rx="9"></rect>
+                <text class="relationship-svg-related-text" x="152" y="248"><tspan x="152" dy="0">Manifest 驱动...</tspan></text>
+                <rect class="relationship-svg-concept" x="272" y="102" width="156" height="68" rx="10"></rect>
+                <text class="relationship-svg-concept-text" x="350" y="126"><tspan x="350" dy="0">CSS 盒模型与字体</tspan><tspan x="350" dy="17">宽度控制</tspan></text>
+                <path class="relationship-line muted" d="M350 170 C350 192 350 198 350 213"></path>
+                <rect class="relationship-svg-related" x="278" y="198" width="144" height="28" rx="9"></rect>
+                <text class="relationship-svg-related-text" x="350" y="216"><tspan x="350" dy="0">SVG（可缩放矢量图形...</tspan></text>
+                <rect class="relationship-svg-concept" x="470" y="102" width="156" height="68" rx="10"></rect>
+                <text class="relationship-svg-concept-text" x="548" y="126"><tspan x="548" dy="0">断点续传（Check</tspan><tspan x="548" dy="17">point/Resu...</tspan></text>
+                <path class="relationship-line muted" d="M548 170 C548 192 548 198 548 213"></path>
+                <rect class="relationship-svg-related" x="476" y="198" width="144" height="28" rx="9"></rect>
+                <text class="relationship-svg-related-text" x="548" y="216"><tspan x="548" dy="0">流水线状态管理与生命周...</tspan></text>
+                <path class="relationship-line muted" d="M548 170 C548 192 548 230 548 245"></path>
+                <rect class="relationship-svg-related" x="476" y="230" width="144" height="28" rx="9"></rect>
+                <text class="relationship-svg-related-text" x="548" y="248"><tspan x="548" dy="0">Agent 工作流与任...</tspan></text>
+              </svg>
               <pre class="mermaid mermaid-source" aria-hidden="true">
 flowchart LR
   hub([LLM 工程化能力])

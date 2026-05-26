@@ -817,86 +817,69 @@ h1 {
   display: none;
 }
 
-.relationship-html-graph {
-  display: grid;
-  width: min(100%, 640px);
-  gap: 18px;
-}
-
-.relationship-hub {
-  justify-self: center;
-  max-width: 260px;
-  padding: 12px 18px;
-  border: 1px solid rgba(200, 155, 60, 0.42);
-  border-radius: 999px;
-  color: #5e4a22;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(251, 239, 203, 0.94)),
-    var(--gold-soft);
-  box-shadow: 0 12px 24px rgba(65, 53, 34, 0.09);
-  font-weight: 850;
-  text-align: center;
-}
-
-.relationship-hub::after {
-  display: block;
-  width: 1px;
-  height: 22px;
-  margin: 10px auto -22px;
-  background: rgba(73, 106, 123, 0.42);
-  content: "";
-}
-
-.relationship-node-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  align-items: stretch;
-}
-
-.relationship-node {
-  display: grid;
-  gap: 12px;
-  min-width: 0;
-  padding: 14px;
-  border: 1px solid rgba(63, 127, 88, 0.22);
-  border-radius: var(--radius);
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(230, 240, 228, 0.72)),
-    var(--green-soft);
-}
-
-.relationship-node strong {
-  color: #335b40;
-  font-size: 14px;
-  line-height: 1.45;
-}
-
-.relationship-node-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
-}
-
-.relationship-node-links span {
-  max-width: 100%;
-  padding: 5px 8px;
-  border: 1px solid rgba(73, 106, 123, 0.18);
-  border-radius: 999px;
-  color: #3f493d;
-  background: rgba(228, 237, 240, 0.7);
-  font-size: 12px;
-  font-weight: 700;
-  line-height: 1.45;
-}
-
-.relationship-map-visual .mermaid {
+.relationship-svg {
   width: 100%;
-  min-width: 520px;
-  margin: 0;
-  color: #263b28;
-  background: transparent;
-  text-align: center;
+  max-width: 700px;
+  height: auto;
+  overflow: visible;
+}
+
+.relationship-svg text {
+  dominant-baseline: middle;
+  text-anchor: middle;
+}
+
+.relationship-svg marker path {
+  fill: rgba(73, 106, 123, 0.72);
+}
+
+.relationship-line {
+  fill: none;
+  stroke: rgba(73, 106, 123, 0.58);
+  stroke-linecap: round;
+  stroke-width: 1.7;
+  marker-end: url("#relationship-arrow");
+}
+
+.relationship-line.muted {
+  stroke: rgba(63, 127, 88, 0.42);
+  stroke-width: 1.4;
+}
+
+.relationship-svg-hub {
+  fill: #fbefcb;
+  stroke: rgba(200, 155, 60, 0.56);
+  stroke-width: 1.2;
+}
+
+.relationship-svg-hub-text {
+  fill: #5e4a22;
+  font-size: 15px;
+  font-weight: 850;
+}
+
+.relationship-svg-concept {
+  fill: #e6f0e4;
+  stroke: rgba(63, 127, 88, 0.48);
+  stroke-width: 1.4;
+}
+
+.relationship-svg-concept-text {
+  fill: #335b40;
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.relationship-svg-related {
+  fill: #e4edf0;
+  stroke: rgba(73, 106, 123, 0.24);
+  stroke-width: 1;
+}
+
+.relationship-svg-related-text {
+  fill: #3f493d;
+  font-size: 11px;
+  font-weight: 750;
 }
 
 .relationship-map-notes {
@@ -1342,10 +1325,6 @@ h1 {
   .knowledge-grid,
   .relationship-map,
   .lesson-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .relationship-node-grid {
     grid-template-columns: 1fr;
   }
 

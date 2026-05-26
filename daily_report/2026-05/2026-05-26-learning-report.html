@@ -6,14 +6,6 @@
     <title>2026-05-26 学习笔记日报</title>
     <meta name="description" content="从静态报告生成到配置管理控制面，再到知识关联与召回策略，今天逐层深入自动化学习报告系统的三大核心机制，理解从信息筛选到内容交付的完整链路。" />
     <link rel="stylesheet" href="../../style/main.css?v=20260526-map2" />
-    <script type="module">
-      try {
-        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs");
-        mermaid.initialize({ startOnLoad: false, theme: "base", securityLevel: "strict" });
-      } catch (error) {
-        console.info("Mermaid is optional; using the built-in relationship map.", error);
-      }
-    </script>
   </head>
   <body>
     <main class="page">
@@ -53,32 +45,44 @@
 
           <div class="relationship-map" aria-label="三节小课关系图">
             <div class="relationship-map-visual">
-              <div class="relationship-html-graph" aria-hidden="true">
-                <div class="relationship-hub">LLM 工程化能力</div>
-                <div class="relationship-node-grid">
-                <article class="relationship-node">
-                  <strong>静态报告生成与前端呈现</strong>
-                  <div class="relationship-node-links">
-                  <span>配置管理作为系统行为的控制面</span>
-                  <span>基于LLM的知识解释生成</span>
-                  </div>
-                </article>
-                <article class="relationship-node">
-                  <strong>配置管理作为系统行为的控制面</strong>
-                  <div class="relationship-node-links">
-                  <span>多Agent协作与任务编排</span>
-                  <span>静态报告生成与前端呈现</span>
-                  </div>
-                </article>
-                <article class="relationship-node">
-                  <strong>知识关联与召回策略</strong>
-                  <div class="relationship-node-links">
-                  <span>概念相关性在LLM输出中的应用</span>
-                  <span>领域核心模型的审计与演进</span>
-                  </div>
-                </article>
-                </div>
-              </div>
+              <svg class="relationship-svg" viewBox="0 0 700 300" role="img" aria-labelledby="relationship-map-title relationship-map-desc">
+                <title id="relationship-map-title">三节小课关系图</title>
+                <desc id="relationship-map-desc">中心主题连接三节小课，每节小课继续连接当天相关概念。</desc>
+                <defs>
+                  <marker id="relationship-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z"></path>
+                  </marker>
+                </defs>
+                <path class="relationship-line" d="M350 58 C350 78 152 80 152 102"></path>
+                <path class="relationship-line" d="M350 58 C350 82 350 82 350 102"></path>
+                <path class="relationship-line" d="M350 58 C350 78 548 80 548 102"></path>
+                <rect class="relationship-svg-hub" x="246" y="18" width="208" height="40" rx="20"></rect>
+                <text class="relationship-svg-hub-text" x="350" y="44"><tspan x="350" dy="0">LLM 工程化能力</tspan></text>
+                <rect class="relationship-svg-concept" x="74" y="102" width="156" height="68" rx="10"></rect>
+                <text class="relationship-svg-concept-text" x="152" y="126"><tspan x="152" dy="0">静态报告生成与前端呈</tspan><tspan x="152" dy="17">现</tspan></text>
+                <path class="relationship-line muted" d="M152 170 C152 192 152 198 152 213"></path>
+                <rect class="relationship-svg-related" x="80" y="198" width="144" height="28" rx="9"></rect>
+                <text class="relationship-svg-related-text" x="152" y="216"><tspan x="152" dy="0">配置管理作为系统行为的...</tspan></text>
+                <path class="relationship-line muted" d="M152 170 C152 192 152 230 152 245"></path>
+                <rect class="relationship-svg-related" x="80" y="230" width="144" height="28" rx="9"></rect>
+                <text class="relationship-svg-related-text" x="152" y="248"><tspan x="152" dy="0">基于LLM的知识解释生...</tspan></text>
+                <rect class="relationship-svg-concept" x="272" y="102" width="156" height="68" rx="10"></rect>
+                <text class="relationship-svg-concept-text" x="350" y="126"><tspan x="350" dy="0">配置管理作为系统行为</tspan><tspan x="350" dy="17">的控制面</tspan></text>
+                <path class="relationship-line muted" d="M350 170 C350 192 350 198 350 213"></path>
+                <rect class="relationship-svg-related" x="278" y="198" width="144" height="28" rx="9"></rect>
+                <text class="relationship-svg-related-text" x="350" y="216"><tspan x="350" dy="0">多Agent协作与任务...</tspan></text>
+                <path class="relationship-line muted" d="M350 170 C350 192 350 230 350 245"></path>
+                <rect class="relationship-svg-related" x="278" y="230" width="144" height="28" rx="9"></rect>
+                <text class="relationship-svg-related-text" x="350" y="248"><tspan x="350" dy="0">静态报告生成与前端呈现</tspan></text>
+                <rect class="relationship-svg-concept" x="470" y="102" width="156" height="68" rx="10"></rect>
+                <text class="relationship-svg-concept-text" x="548" y="126"><tspan x="548" dy="0">知识关联与召回策略</tspan></text>
+                <path class="relationship-line muted" d="M548 170 C548 192 548 198 548 213"></path>
+                <rect class="relationship-svg-related" x="476" y="198" width="144" height="28" rx="9"></rect>
+                <text class="relationship-svg-related-text" x="548" y="216"><tspan x="548" dy="0">概念相关性在LLM输出...</tspan></text>
+                <path class="relationship-line muted" d="M548 170 C548 192 548 230 548 245"></path>
+                <rect class="relationship-svg-related" x="476" y="230" width="144" height="28" rx="9"></rect>
+                <text class="relationship-svg-related-text" x="548" y="248"><tspan x="548" dy="0">领域核心模型的审计与演...</tspan></text>
+              </svg>
               <pre class="mermaid mermaid-source" aria-hidden="true">
 flowchart LR
   hub([LLM 工程化能力])
@@ -132,6 +136,13 @@ flowchart LR
 
             <div class="lesson-brief">
               <div class="highlight lesson-memory">模板是食谱，脚本是厨师，每天自动烘焙出完整的学习报告网页。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>前后分离：LLM解释生成Agent负责内容生产，模板负责视觉呈现，职责解耦</li>
+                <li>静态生成：所有内容预先计算并打包，不依赖服务器端动态程序，浏览器直接打开</li>
+                <li>自动化拼装：脚本按模板将知识解释、SVG图表、日期等数据自动组合成完整网页</li>
+              </ul>
             </div>
 
             <button class="lesson-expand" type="button" data-lesson="static-report-generation" aria-expanded="false">阅读精读</button>
@@ -148,6 +159,13 @@ flowchart LR
 
             <div class="lesson-brief">
               <div class="highlight lesson-memory">配置文件是系统音响的旋钮，不改电路就能调节行为。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>配置外置：将可变参数从代码中分离到配置文件，保护核心代码稳定性</li>
+                <li>行为控制面：配置决定"做什么、用什么、怎么连接"，是系统行为的抽象表达</li>
+                <li>灵活开关：通过布尔值等配置优雅地激活或静默功能，无需修改代码</li>
+              </ul>
             </div>
 
             <button class="lesson-expand" type="button" data-lesson="configuration-as-control-plane" aria-expanded="false">阅读精读</button>
@@ -164,6 +182,13 @@ flowchart LR
 
             <div class="lesson-brief">
               <div class="highlight lesson-memory">知识关联像图书馆员按图索骥，为你捞出最该重温的知识。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>知识网络：预先构建概念关系网，标记包含、类比、前置深化等语义关系</li>
+                <li>智能召回：沿知识图谱游走扩散，快速捞出与焦点最相关的概念和历史问题</li>
+                <li>证据约束：召回的知识作为LLM的"佐料"，让生成解释更饱满、贴合学习者背景</li>
+              </ul>
             </div>
 
             <button class="lesson-expand" type="button" data-lesson="knowledge-association-recall" aria-expanded="false">阅读精读</button>
@@ -182,13 +207,6 @@ flowchart LR
 
               <h4>完整讲解</h4>
               <p>把一份学习报告想象成一道手工菜，我们并不用手工敲每一个HTML标签，而是让程序扮演厨师，按照固定的食谱（模板）将各种食材（知识解释文字、SVG图表、日期等数据）自动混合，最后生成一道可以直接端上桌的网页。这个过程中，负责准备食材的"后厨"（LLM解释生成Agent）只管提供高质量原料，而"前厅"（报告模板）只管摆盘呈现。这种前后分离的做法，让我们将来想改变报告的外观时，不用去动后厨的逻辑，反之亦然，维护起来非常清晰。这就是所谓的"静态报告生成"——"静态"不是指内容不变或无人互动，而是指网页在服务器没有动态程序，所有内容都已经预先算好、打包好，作为一个独立文件存在，用浏览器就能直接打开。</p>
-
-              <h4>核心要点</h4>
-              <ul>
-                <li>前后分离：LLM解释生成Agent负责内容生产，模板负责视觉呈现，职责解耦</li>
-                <li>静态生成：所有内容预先计算并打包，不依赖服务器端动态程序，浏览器直接打开</li>
-                <li>自动化拼装：脚本按模板将知识解释、SVG图表、日期等数据自动组合成完整网页</li>
-              </ul>
 
               <h4>原理逻辑</h4>
               <ol>
@@ -230,13 +248,6 @@ flowchart LR
               <h4>完整讲解</h4>
               <p>如果把一套软件比作一台高级音响，代码就是音响内部的电路和元件，配置文件则相当于机箱外的旋钮和拨杆。我们不需要改焊电路，只要转动旋钮就能调节音量、切换音源。软件中的配置管理也是这个道理：把所有可能变化的、需要灵活调整的"开关"和"参数"从代码中提出来，放进一个专门的配置文件。这样一来，同一个程序在不同人手里、不同场景下，可以表现出不同的行为。例如，新开发的功能在实验阶段时，只需把配置文件中的enable_feature设为false，整个系统就优雅地屏蔽了这个功能，完全不用删除代码。这样不仅让系统更灵活，也保护了核心代码的稳定性。当配置被有意识地设计为决定"做什么、用什么、怎么连接"的控制面时，它就成为了系统行为的抽象表达，而不仅仅是零散的参数记录。</p>
 
-              <h4>核心要点</h4>
-              <ul>
-                <li>配置外置：将可变参数从代码中分离到配置文件，保护核心代码稳定性</li>
-                <li>行为控制面：配置决定"做什么、用什么、怎么连接"，是系统行为的抽象表达</li>
-                <li>灵活开关：通过布尔值等配置优雅地激活或静默功能，无需修改代码</li>
-              </ul>
-
               <h4>原理逻辑</h4>
               <ol>
                 <li>将可调节的开关和参数从代码中提取到配置文件</li>
@@ -276,13 +287,6 @@ flowchart LR
 
               <h4>完整讲解</h4>
               <p>想象你走进一座巨大的知识图书馆，想复习"注意力机制"。理想的图书管理员不会只指着标有"注意力"的书架，而会主动把旁边的"Transformer基础""查询-键-值""多头注意力"等书籍一并放到你桌上，甚至提醒你："你一个月前借过的那本《Agent工作流》里也有相关的一章"。这就是知识关联与召回策略做的事。系统事先在内部建立了一个概念关系网——就像一张看不见的知识地图，上面标记着"注意力机制"和"Transformer"是包含关系，和"MoE"是兄弟概念。当你需要生成一份学习提醒或解释时，系统启动"召回"过程，沿着这张网迅速捞出与当前焦点最相关的其他概念和历史问题。这就好比图书馆员按图索骥帮你找来最值得阅读的补充材料。召回可以借助多种手段：可能是计算概念之间的语义向量相似度，也可能是直接在图谱里沿着关联边游走扩散。最终，这些被召回的知识会成为给大语言模型的"佐料"——告诉它"请解释注意力机制时，一定要联系到Transformer和查询-键-值这个概念"，从而让生成的解释更饱满、更符合学习者的知识背景。</p>
-
-              <h4>核心要点</h4>
-              <ul>
-                <li>知识网络：预先构建概念关系网，标记包含、类比、前置深化等语义关系</li>
-                <li>智能召回：沿知识图谱游走扩散，快速捞出与焦点最相关的概念和历史问题</li>
-                <li>证据约束：召回的知识作为LLM的"佐料"，让生成解释更饱满、贴合学习者背景</li>
-              </ul>
 
               <h4>原理逻辑</h4>
               <ol>

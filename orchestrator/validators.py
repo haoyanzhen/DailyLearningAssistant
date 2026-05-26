@@ -134,16 +134,15 @@ def _validate_mermaid_source(source: str, lesson_titles: list[str]) -> list[str]
 
 
 def validate_relationship_map_html(html: str) -> list[str]:
-    """Validate the Mermaid + HTML relationship map in a learning report."""
+    """Validate the inline SVG relationship map in a learning report."""
 
     problems: list[str] = []
     lower_html = html.lower()
 
     required_fragments = [
-        "mermaid.initialize",
         "relationship-map",
         "relationship-map-visual",
-        "relationship-html-graph",
+        "relationship-svg",
         "relationship-map-notes",
     ]
     problems.extend([f"关系图缺少必要片段: {item}" for item in required_fragments if item not in lower_html])

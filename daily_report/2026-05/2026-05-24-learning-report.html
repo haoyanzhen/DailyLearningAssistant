@@ -6,14 +6,6 @@
     <title>2026-05-24 学习笔记日报</title>
     <meta name="description" content="从版本控制边界的确立，到流水线状态机的引入，再到LLM输出的硬校验，揭示智能体流水线可维护与可信任的工程骨架。" />
     <link rel="stylesheet" href="../../style/main.css?v=20260524-map2" />
-    <script type="module">
-      try {
-        const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs");
-        mermaid.initialize({ startOnLoad: false, theme: "base", securityLevel: "strict" });
-      } catch (error) {
-        console.info("Mermaid is optional; using the built-in relationship map.", error);
-      }
-    </script>
   </head>
   <body>
     <main class="page">
@@ -53,35 +45,44 @@
 
           <div class="relationship-map" aria-label="三节小课关系图">
             <div class="relationship-map-visual">
-              <div class="relationship-html-graph" aria-hidden="true">
-                <div class="relationship-hub">LLM 工程化能力</div>
-                <div class="relationship-node-grid">
-                <article class="relationship-node">
-                  <strong>版本控制边界与中间产物管理</strong>
-                  <div class="relationship-node-links">
-                  <span>静态知识产物生成与发布</span>
-                  <span>设计意图显式化</span>
-                  <span>流水线状态管理与生命周期</span>
-                  </div>
-                </article>
-                <article class="relationship-node">
-                  <strong>流水线状态管理与生命周期</strong>
-                  <div class="relationship-node-links">
-                  <span>Agent 工作流与任务编排</span>
-                  <span>设计意图显式化</span>
-                  <span>断点续传机制</span>
-                  </div>
-                </article>
-                <article class="relationship-node">
-                  <strong>大语言模型调用与输出约束</strong>
-                  <div class="relationship-node-links">
-                  <span>提示词工程</span>
-                  <span>静态知识产物生成与发布</span>
-                  <span>Agent 职责拆分与契约边界</span>
-                  </div>
-                </article>
-                </div>
-              </div>
+              <svg class="relationship-svg" viewBox="0 0 700 300" role="img" aria-labelledby="relationship-map-title relationship-map-desc">
+                <title id="relationship-map-title">三节小课关系图</title>
+                <desc id="relationship-map-desc">中心主题连接三节小课，每节小课继续连接当天相关概念。</desc>
+                <defs>
+                  <marker id="relationship-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z"></path>
+                  </marker>
+                </defs>
+                <path class="relationship-line" d="M350 58 C350 78 152 80 152 102"></path>
+                <path class="relationship-line" d="M350 58 C350 82 350 82 350 102"></path>
+                <path class="relationship-line" d="M350 58 C350 78 548 80 548 102"></path>
+                <rect class="relationship-svg-hub" x="246" y="18" width="208" height="40" rx="20"></rect>
+                <text class="relationship-svg-hub-text" x="350" y="44"><tspan x="350" dy="0">LLM 工程化能力</tspan></text>
+                <rect class="relationship-svg-concept" x="74" y="102" width="156" height="68" rx="10"></rect>
+                <text class="relationship-svg-concept-text" x="152" y="126"><tspan x="152" dy="0">版本控制边界与中间产</tspan><tspan x="152" dy="17">物管理</tspan></text>
+                <path class="relationship-line muted" d="M152 170 C152 192 152 198 152 213"></path>
+                <rect class="relationship-svg-related" x="80" y="198" width="144" height="28" rx="9"></rect>
+                <text class="relationship-svg-related-text" x="152" y="216"><tspan x="152" dy="0">静态知识产物生成与发布</tspan></text>
+                <path class="relationship-line muted" d="M152 170 C152 192 152 230 152 245"></path>
+                <rect class="relationship-svg-related" x="80" y="230" width="144" height="28" rx="9"></rect>
+                <text class="relationship-svg-related-text" x="152" y="248"><tspan x="152" dy="0">设计意图显式化</tspan></text>
+                <rect class="relationship-svg-concept" x="272" y="102" width="156" height="68" rx="10"></rect>
+                <text class="relationship-svg-concept-text" x="350" y="126"><tspan x="350" dy="0">流水线状态管理与生命</tspan><tspan x="350" dy="17">周期</tspan></text>
+                <path class="relationship-line muted" d="M350 170 C350 192 350 198 350 213"></path>
+                <rect class="relationship-svg-related" x="278" y="198" width="144" height="28" rx="9"></rect>
+                <text class="relationship-svg-related-text" x="350" y="216"><tspan x="350" dy="0">Agent 工作流与任...</tspan></text>
+                <path class="relationship-line muted" d="M350 170 C350 192 350 230 350 245"></path>
+                <rect class="relationship-svg-related" x="278" y="230" width="144" height="28" rx="9"></rect>
+                <text class="relationship-svg-related-text" x="350" y="248"><tspan x="350" dy="0">设计意图显式化</tspan></text>
+                <rect class="relationship-svg-concept" x="470" y="102" width="156" height="68" rx="10"></rect>
+                <text class="relationship-svg-concept-text" x="548" y="126"><tspan x="548" dy="0">大语言模型调用与输出</tspan><tspan x="548" dy="17">约束</tspan></text>
+                <path class="relationship-line muted" d="M548 170 C548 192 548 198 548 213"></path>
+                <rect class="relationship-svg-related" x="476" y="198" width="144" height="28" rx="9"></rect>
+                <text class="relationship-svg-related-text" x="548" y="216"><tspan x="548" dy="0">提示词工程</tspan></text>
+                <path class="relationship-line muted" d="M548 170 C548 192 548 230 548 245"></path>
+                <rect class="relationship-svg-related" x="476" y="230" width="144" height="28" rx="9"></rect>
+                <text class="relationship-svg-related-text" x="548" y="248"><tspan x="548" dy="0">静态知识产物生成与发布</tspan></text>
+              </svg>
               <pre class="mermaid mermaid-source" aria-hidden="true">
 flowchart LR
   hub([LLM 工程化能力])
