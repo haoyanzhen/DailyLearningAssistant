@@ -51,6 +51,14 @@ class CommitInfo:
 
 
 @dataclass
+class ChangeIgnoreRules:
+    enabled: bool
+    commit_subject_prefixes: tuple[str, ...]
+    path_prefixes: tuple[str, ...]
+    exact_paths: tuple[str, ...]
+
+
+@dataclass
 class WorktreeInfo:
     path: Path
     branch: str
@@ -204,12 +212,123 @@ def diff_name_status(path: Path, cached: bool) -> list[str]:
     return [line for line in result.stdout.splitlines() if line.strip()]
 
 
-def diff_stat(path: Path, cached: bool) -> str:
+def diff_stat(path: Path, cached: bool, paths: list[str] | None = None) -> str:
     args = ["diff", "--stat"]
     if cached:
         args.insert(1, "--cached")
+    if paths is not None:
+        if not paths:
+            return ""
+        args.extend(["--", *paths])
     result = run_git(path, args)
     return result.stdout.strip() if result.returncode == 0 else result.stderr.strip()
+
+
+def publish_commit_prefixes(config: dict) -> tuple[str, ...]:
+    configured = ((config.get("publish") or {}).get("commit_message") or "").strip()
+    prefixes = ["Publish daily learning report"]
+    if configured:
+        prefix = configured.split("{", 1)[0].strip()
+        if prefix:
+            prefixes.append(prefix)
+    return tuple(dict.fromkeys(prefixes))
+
+
+def publish_artifact_matchers(config: dict) -> tuple[tuple[str, ...], tuple[str, ...]]:
+    configured_paths = ((config.get("publish") or {}).get("paths") or []) if isinstance(config, dict) else []
+    raw_paths = configured_paths or [
+        "daily_report/{year_month}/{date}-learning-report.html",
+        "daily_report/manifest.json",
+        "knowledge_log/{year_month}-knowledge-log.md",
+        "knowledge_log/{year_month}-question-threads.json",
+        "knowledge_log/manifest.json",
+        "index.html",
+    ]
+
+    prefixes: list[str] = []
+    exact_paths: list[str] = []
+    for raw_path in raw_paths:
+        path_text = str(raw_path).strip().lstrip("./")
+        if not path_text:
+            continue
+        if "{" in path_text:
+            prefix = path_text.split("{", 1)[0]
+            if prefix:
+                prefixes.append(prefix)
+        else:
+            exact_paths.append(path_text)
+    return tuple(dict.fromkeys(prefixes)), tuple(dict.fromkeys(exact_paths))
+
+
+def build_ignore_rules(repo: RepositoryConfig, config: dict) -> ChangeIgnoreRules:
+    try:
+        is_self_repo = repo.path.resolve() == PROJECT_ROOT.resolve()
+    except OSError:
+        is_self_repo = repo.name == PROJECT_ROOT.name
+    if repo.name == PROJECT_ROOT.name:
+        is_self_repo = True
+
+    prefixes, exact_paths = publish_artifact_matchers(config)
+    return ChangeIgnoreRules(
+        enabled=is_self_repo,
+        commit_subject_prefixes=publish_commit_prefixes(config),
+        path_prefixes=prefixes,
+        exact_paths=exact_paths,
+    )
+
+
+def normalize_git_path(path_text: str) -> str:
+    return path_text.strip().strip('"').lstrip("./")
+
+
+def change_paths_from_name_status(line: str) -> list[str]:
+    parts = line.split("\t")
+    if len(parts) >= 3 and parts[0].startswith(("R", "C")):
+        return [normalize_git_path(parts[1]), normalize_git_path(parts[2])]
+    if len(parts) >= 2:
+        return [normalize_git_path(parts[-1])]
+    return [normalize_git_path(line)]
+
+
+def change_paths_from_status(line: str) -> list[str]:
+    path_text = line[3:] if len(line) > 3 else line
+    if " -> " in path_text:
+        return [normalize_git_path(part) for part in path_text.split(" -> ", 1)]
+    return [normalize_git_path(path_text)]
+
+
+def path_matches_publish_artifact(path_text: str, rules: ChangeIgnoreRules) -> bool:
+    normalized = normalize_git_path(path_text)
+    return normalized in rules.exact_paths or any(normalized.startswith(prefix) for prefix in rules.path_prefixes)
+
+
+def all_paths_match_publish_artifacts(paths: list[str], rules: ChangeIgnoreRules) -> bool:
+    return bool(paths) and all(path_matches_publish_artifact(path, rules) for path in paths)
+
+
+def should_ignore_publish_commit(commit: CommitInfo, rules: ChangeIgnoreRules) -> bool:
+    if not rules.enabled:
+        return False
+    if not any(commit.subject.startswith(prefix) for prefix in rules.commit_subject_prefixes):
+        return False
+    changed_paths: list[str] = []
+    for line in commit.files:
+        changed_paths.extend(change_paths_from_name_status(line))
+    return all_paths_match_publish_artifacts(changed_paths, rules)
+
+
+def filter_publish_artifact_lines(lines: list[str], rules: ChangeIgnoreRules, path_parser) -> tuple[list[str], list[str]]:
+    if not rules.enabled:
+        return lines, []
+    kept: list[str] = []
+    ignored: list[str] = []
+    for line in lines:
+        paths = path_parser(line)
+        if all_paths_match_publish_artifacts(paths, rules):
+            ignored.append(line)
+        else:
+            kept.append(line)
+    return kept, ignored
 
 
 def parse_commits(raw: str) -> list[tuple[str, str, str, str, str, str]]:
@@ -250,7 +369,7 @@ def collect_commits(path: Path, start: datetime, end: datetime) -> list[CommitIn
     return commits
 
 
-def collect_recent_branch_tips(path: Path, start: datetime, end: datetime) -> list[str]:
+def collect_recent_branch_tips(path: Path, start: datetime, end: datetime, rules: ChangeIgnoreRules) -> list[str]:
     result = run_git(path, ["for-each-ref", "refs/heads", "--format=%(refname:short)%09%(objectname:short)%09%(committerdate:iso-strict)%09%(subject)"])
     if result.returncode != 0:
         return [f"[读取失败] {result.stderr.strip()}"]
@@ -264,6 +383,8 @@ def collect_recent_branch_tips(path: Path, start: datetime, end: datetime) -> li
         try:
             tip_date = datetime.fromisoformat(date_text)
         except ValueError:
+            continue
+        if rules.enabled and any(subject.startswith(prefix) for prefix in rules.commit_subject_prefixes):
             continue
         if start <= tip_date < end:
             branch_lines.append(f"- `{name}` @ `{head}` ({date_text})：{subject}")
@@ -289,7 +410,7 @@ def parse_worktree_blocks(raw: str) -> list[dict[str, str]]:
     return blocks
 
 
-def collect_worktrees(path: Path) -> list[WorktreeInfo]:
+def collect_worktrees(path: Path, rules: ChangeIgnoreRules) -> list[WorktreeInfo]:
     result = run_git(path, ["worktree", "list", "--porcelain"])
     if result.returncode != 0:
         return [WorktreeInfo(path, "读取失败", "", [result.stderr.strip()])]
@@ -302,7 +423,7 @@ def collect_worktrees(path: Path) -> list[WorktreeInfo]:
         branch_ref = block.get("branch", "")
         branch = branch_ref.removeprefix("refs/heads/") if branch_ref else "detached"
         head = block.get("HEAD", "")
-        status = git_status(wt_path)
+        status, _ = filter_publish_artifact_lines(git_status(wt_path), rules, change_paths_from_status)
         worktrees.append(WorktreeInfo(wt_path, branch, head[:12], status))
     return worktrees
 
@@ -337,9 +458,10 @@ def render_commit(commit: CommitInfo) -> str:
 """
 
 
-def build_summary_evidence(repo: RepositoryConfig, target_date: str, start: datetime, end: datetime) -> SummaryEvidence:
+def build_summary_evidence(repo: RepositoryConfig, target_date: str, start: datetime, end: datetime, config: dict) -> SummaryEvidence:
     path = repo.path
     checked_window = f"{start.isoformat()} 至 {end.isoformat()}"
+    ignore_rules = build_ignore_rules(repo, config)
 
     if not path.exists():
         markdown = f"""# {target_date} {repo.name} 更改总结
@@ -373,13 +495,15 @@ def build_summary_evidence(repo: RepositoryConfig, target_date: str, start: date
 
     try:
         commits = collect_commits(path, start, end)
-        branch_tips = collect_recent_branch_tips(path, start, end)
-        worktrees = collect_worktrees(path)
-        status = git_status(path)
-        unstaged = diff_name_status(path, cached=False)
-        staged = diff_name_status(path, cached=True)
-        unstaged_stat = diff_stat(path, cached=False)
-        staged_stat = diff_stat(path, cached=True)
+        ignored_commits = [commit for commit in commits if should_ignore_publish_commit(commit, ignore_rules)]
+        commits = [commit for commit in commits if not should_ignore_publish_commit(commit, ignore_rules)]
+        branch_tips = collect_recent_branch_tips(path, start, end, ignore_rules)
+        worktrees = collect_worktrees(path, ignore_rules)
+        status, ignored_status = filter_publish_artifact_lines(git_status(path), ignore_rules, change_paths_from_status)
+        unstaged, ignored_unstaged = filter_publish_artifact_lines(diff_name_status(path, cached=False), ignore_rules, change_paths_from_name_status)
+        staged, ignored_staged = filter_publish_artifact_lines(diff_name_status(path, cached=True), ignore_rules, change_paths_from_name_status)
+        unstaged_stat = diff_stat(path, cached=False, paths=[path for line in unstaged for path in change_paths_from_name_status(line)])
+        staged_stat = diff_stat(path, cached=True, paths=[path for line in staged for path in change_paths_from_name_status(line)])
     except RuntimeError as exc:
         markdown = f"""# {target_date} {repo.name} 更改总结
 
@@ -397,6 +521,16 @@ def build_summary_evidence(repo: RepositoryConfig, target_date: str, start: date
 ```
 """
         return SummaryEvidence(markdown, False, False, False, False, "unavailable")
+
+    ignored_note_lines = []
+    if ignore_rules.enabled:
+        ignored_count = len(ignored_commits) + len(ignored_status) + len(ignored_unstaged) + len(ignored_staged)
+        if ignored_count:
+            ignored_note_lines.append(
+                f"- 已忽略自身自动发布日报产生的 Git 变更：{len(ignored_commits)} 个自动发布提交，"
+                f"{len(ignored_status)} 条工作区状态，{len(ignored_staged)} 条已暂存记录，{len(ignored_unstaged)} 条未暂存记录。"
+            )
+    ignored_note = "\n".join(ignored_note_lines)
 
     changed_worktrees = [wt for wt in worktrees if wt.status]
     primary_clean = not status
@@ -427,6 +561,7 @@ def build_summary_evidence(repo: RepositoryConfig, target_date: str, start: date
 - 主工作区无未提交变更。
 - 未发现窗口内更新的本地分支或包含待确认变化线索的 worktree。
 - 后续概念提炼可将该仓库视为“当日无新增技术线索”。
+{ignored_note}
 """
         return SummaryEvidence(markdown, False, False, False, False, "no_change")
 
@@ -527,6 +662,7 @@ def build_summary_evidence(repo: RepositoryConfig, target_date: str, start: date
 - 本文件只基于 Git 提交、工作区状态、分支和 worktree 元数据生成。
 - Git 无法可靠证明未提交变更发生的具体日期，因此 worktree 未提交变更只作为“当前待确认变化线索”，不要等同于目标窗口内已经完成的提交事实。
 - 如果主路径无变化但 branch 或 worktree 有待确认变化线索，后续任务应优先关注对应分支/worktree 的提交主题和文件路径，并在必要时人工确认时间归属。
+{ignored_note}
 """
     if commits:
         evidence_type = "confirmed_change"
@@ -742,7 +878,7 @@ def main() -> int:
     repository_statuses: list[dict] = []
 
     for repo in repos:
-        evidence = build_summary_evidence(repo, target_date, start, end)
+        evidence = build_summary_evidence(repo, target_date, start, end, config)
         evidence_markdown = evidence.markdown.rstrip() + "\n"
         content = evidence_markdown
         repo_status = "success"
