@@ -47,6 +47,67 @@ agents.<agent_name>
 
 各 Agent 只更新自己的 `agents.<agent_name>`，不会覆盖其他 Agent 的状态。
 
+待实现的远端仓库变化监控作为第 1 步输入扩展，仍写入：
+
+```text
+agents.daily_work_summary.repositories[]
+```
+
+本地仓库和远端仓库在后续内容输入上都生成 `work_summary_*.md`；只在状态中通过 `source` 区分来源，并记录 SSH Git / HTTP(S) Git 连接尝试：
+
+```json
+{
+  "status": "success",
+  "repositories": [
+    {
+      "name": "private-notes",
+      "source": "remote",
+      "status": "success",
+      "evidence_type": "remote_ref_change",
+      "output_path": "prework/2026-05/2026-05-26/work_summary_private-notes.md",
+      "remote": {
+        "urls": [
+          "git@github.com:your-name/private-notes.git",
+          "https://github.com/your-name/private-notes.git"
+        ],
+        "refs": [
+          {
+            "ref": "refs/heads/main",
+            "status": "changed",
+            "previous_sha": "aaa111",
+            "current_sha": "bbb222",
+            "changed": true,
+            "selected_access": "ssh_git",
+            "attempts": [
+              {
+                "access": "ssh_git",
+                "status": "success",
+                "url": "git@github.com:your-name/private-notes.git"
+              },
+              {
+                "access": "http_git",
+                "status": "skipped_after_success",
+                "url": "https://github.com/your-name/private-notes.git"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "repository_summary": {
+    "remote_repositories": 1,
+    "local_repositories": 0,
+    "ssh_git_success": 1,
+    "http_git_success": 0,
+    "failed_refs": 0,
+    "changed_refs": 1
+  }
+}
+```
+
+不新增 `agents.remote_repository_watch`，不新增 `remote_repository_summary.md`，不新增 `prework/remote_repository_state.json`。远端 ref 的上次 SHA 从历史日期的 `run_status.json` 中查找最近一次成功记录。完整设计见 `docs/remote_repository_monitoring.md`。
+
 ## orchestrator
 
 `orchestrator` 记录最近一次 Orchestrator 运行，字段包括：

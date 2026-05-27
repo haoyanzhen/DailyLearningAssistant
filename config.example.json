@@ -41,6 +41,29 @@
       "path": "~/projects/DailyLearningAssistant"
     }
   ],
+  "remote_repositories": [
+    {
+      "urls": [
+        "git@github.com:your-name/private-notes.git",
+        "https://github.com/your-name/private-notes.git"
+      ],
+      "refs": [
+        "refs/heads/main"
+      ],
+      "enabled": false
+    },
+    {
+      "name": "public-library",
+      "urls": [
+        "https://github.com/some-org/some-library.git"
+      ],
+      "refs": [
+        "refs/heads/main",
+        "refs/tags/v1.0.0"
+      ],
+      "enabled": false
+    }
+  ],
   "llm": {
     "api_url": "https://api.deepseek.com/v1/chat/completions",
     "api_key": "YOUR_DEEPSEEK_API_KEY",

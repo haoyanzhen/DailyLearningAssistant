@@ -147,6 +147,8 @@ def call_chat_completion_once(
     }
     if llm.get("max_tokens"):
         payload["max_tokens"] = llm["max_tokens"]
+    if llm.get("response_format"):
+        payload["response_format"] = llm["response_format"]
     headers = {
         "Authorization": f"Bearer {llm['api_key']}",
         "content-type": "application/json",

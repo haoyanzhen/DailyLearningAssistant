@@ -21,7 +21,9 @@ Agent 位于 `agents/`，每个 Agent 都是可单独运行的脚本。Orchestra
 
 1. `daily_work_summary`
    - 扫描 `config.repositories` 中的本地仓库。
+   - 扫描 `config.remote_repositories` 中的远端仓库变化线索。
    - 收集当日提交、未提交变更、本地分支、worktree 证据。
+   - 对远端仓库配置的 URL 执行 `git ls-remote`，支持 SSH Git 和 HTTP(S) Git，任一 URL 成功即可确认 ref 当前 SHA。
    - 输出 `prework/YYYY-MM/YYYY-MM-DD/work_summary_[repo].md`。
 
 2. `concept_relevance`
@@ -43,6 +45,8 @@ Agent 位于 `agents/`，每个 Agent 都是可单独运行的脚本。Orchestra
    - 读取日报 manifest 和 HTML 文件。
    - 生成 HTML/纯文本邮件预览。
    - 显式传入 `--send-email` 时通过 SMTP 发送。
+
+远端仓库和本地仓库在内容输入上不区分：都生成 `work_summary_*.md`，都被第 2 步读取。区别只写入配置和 `run_status.json` 状态记录。远端仓库变化监控的完整设计见 `docs/remote_repository_monitoring.md`。
 
 ## 调度入口
 

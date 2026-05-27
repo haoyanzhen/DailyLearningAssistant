@@ -213,6 +213,7 @@ manifest 要求：
 
 
 def call_llm(llm: dict, prompt: str, timeout: int, retries: int, retry_delay: float) -> str:
+    llm = {**llm, "response_format": llm.get("response_format") or {"type": "json_object"}}
     return call_chat_completion(
         llm,
         [{"role": "user", "content": prompt}],
@@ -411,6 +412,8 @@ def validate_structured_payload(data: dict, target_date: str) -> dict:
         raise ValueError("LLM 输出 concepts 必须包含 3 个知识点。")
     if not isinstance(data.get("exploration_questions"), list) or len(data["exploration_questions"]) < 2:
         raise ValueError("LLM 输出 exploration_questions 至少包含 2 个问题。")
+    concept_names = [normalize_text(concept.get("name")) for concept in data["concepts"] if isinstance(concept, dict)]
+    has_external_connection = False
     for index, concept in enumerate(data["concepts"], start=1):
         if not isinstance(concept, dict):
             raise ValueError(f"concepts[{index}] 必须是 object。")
@@ -447,8 +450,19 @@ def validate_structured_payload(data: dict, target_date: str) -> dict:
                 if related_concept == "关联概念":
                     raise ValueError(f"concepts[{index}].connections[{connection_index}] 必须使用结构化对象，或写成“关联概念：关系说明”。")
                 normalized_connections.append({"concept": related_concept.strip(), "description": description.strip()})
+            related = normalized_connections[-1]["concept"]
+            if not any(related == name or name in related or related in name for name in concept_names):
+                has_external_connection = True
         concept["connections"] = normalized_connections
         concept["id"] = slugify(str(concept.get("id") or concept["name"]), index)
+    if not has_external_connection:
+        theme = normalize_text(data.get("theme"), "今日主题")
+        data["concepts"][0]["connections"].append(
+            {
+                "concept": theme,
+                "description": "今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。",
+            }
+        )
     return data
 
 

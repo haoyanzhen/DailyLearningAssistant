@@ -29,6 +29,50 @@ python3 scripts/check_config.py --config config.json --strict
 
 每个条目必须包含 `name` 和 `path`。`name` 会进入输出文件名 `work_summary_[name].md`。
 
+## remote_repositories
+
+`remote_repositories` 是待实现的远端仓库变化监控配置，用于跟踪本地不存在或不需要 clone 的远端仓库。它与 `repositories` 在配置和状态记录上分离，但在内容输入上统一：
+
+- `repositories`：本地仓库变化监控，读取 `path` 下的本机 Git 工作区。
+- `remote_repositories`：远端 ref 变化监控，只执行 `git ls-remote`，不 clone、不 fetch、不下载仓库内容。
+- 两者都生成 `prework/YYYY-MM/YYYY-MM-DD/work_summary_[name].md`，都作为后续知识点提取流程的参考输入。
+
+示例：
+
+```json
+{
+  "remote_repositories": [
+    {
+      "urls": [
+        "git@github.com:your-name/private-notes.git",
+        "https://github.com/your-name/private-notes.git"
+      ]
+    },
+    {
+      "urls": [
+        "https://github.com/some-org/some-library.git"
+      ],
+      "refs": ["refs/heads/main", "refs/tags/v1.0.0"]
+    }
+  ]
+}
+```
+
+字段说明：
+
+- `urls`：必填。远端 Git URL 列表，可以包含 SSH URL 和 HTTP(S) URL；按配置顺序尝试，任一 URL 成功即可完成该 ref 的检查。
+- `refs`：可选。要监控的 ref，默认 `["refs/heads/main"]`。
+- `name`：可选。远端仓库显示名，进入统一输出文件名 `work_summary_[name].md`。
+- `enabled`：可选，默认 `true`。
+
+`name` 未配置时，默认从第一个 URL 和 ref 派生：
+
+```text
+{repo_name}:{ref_name}
+```
+
+例如 `git@github.com:your-name/private-notes.git` + `refs/heads/main` 会得到 `private-notes:main`；实际文件名会做安全转换，例如 `work_summary_private-notes_main.md`。私人仓库通常依赖本机 SSH key 通过 SSH URL 读取；公开仓库可在无密钥情况下通过 HTTP(S) URL 读取。最终生成的远端输出名应和 `repositories[].name` 及其他远端输出名全局唯一，避免输出文件重名。完整设计见 `docs/remote_repository_monitoring.md`。
+
 ## llm
 
 - `api_url`：OpenAI Chat Completions 兼容接口地址。

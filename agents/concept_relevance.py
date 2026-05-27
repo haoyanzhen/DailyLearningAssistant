@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Generate concept_relevance.md from daily work summaries.
 
-This is the second independent local agent. It validates the required upstream
+This is the second independent local agent. It validates upstream
 work_summary files, calls the configured chat LLM to extract concepts and
 relationships, then records its run status in the shared daily run_status.json.
 """
@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import sys
 import time
 from dataclasses import dataclass
@@ -23,14 +24,6 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 from orchestrator.llm import LLMRetryPolicy, call_chat_completion
 from orchestrator.question_threads import QuestionThreadSelection, collect_recent_open_questions, render_questions_for_prompt
-REQUIRED_REPOSITORIES = [
-    "AInote",
-    "DailyLearningAssistant",
-    "interview_prepare",
-    "mcp",
-    "ResearchPaperBase_cc",
-    "ResearchPaperBase_codex",
-]
 
 
 @dataclass
@@ -130,11 +123,12 @@ def validate_inputs(input_dir: Path) -> tuple[list[InputSummary], list[str]]:
     summaries: list[InputSummary] = []
     problems: list[str] = []
 
-    for repo in REQUIRED_REPOSITORIES:
-        path = input_dir / f"work_summary_{repo}.md"
-        if not path.exists():
-            problems.append(f"{path} 不存在")
-            continue
+    paths = sorted(input_dir.glob("work_summary_*.md"))
+    if not paths:
+        return [], [f"{input_dir} 中没有 work_summary_*.md 输入文件"]
+
+    for path in paths:
+        repo = path.stem.removeprefix("work_summary_")
         try:
             content = path.read_text(encoding="utf-8")
         except OSError as exc:
@@ -235,14 +229,22 @@ def build_prompt(target_date: str, summaries: list[InputSummary], input_root: Pa
 
 
 def validate_output(content: str) -> list[str]:
-    required_patterns = [
-        "概念清单",
-        "当日核心主题",
-        "跨领域关联",
-        "最近 open 问题",
-        "详细关联",
+    required_sections = [
+        ("概念清单", re.compile(r"概念\s*清单")),
+        ("当日核心主题", re.compile(r"当日\s*核心\s*主题")),
+        ("跨领域关联", re.compile(r"跨领域\s*关联")),
+        (
+            "最近 open 问题",
+            re.compile(
+                r"(?:最近|过去|历史)\s*(?:\d+|[一二三四五六七八九十]+)?\s*(?:天|日)?\s*open\s*问题|"
+                r"open\s*问题\s*与\s*当天\s*概念|"
+                r"问题\s*与\s*当天\s*概念\s*的?\s*关联",
+                re.IGNORECASE,
+            ),
+        ),
+        ("详细关联", re.compile(r"详细\s*关联")),
     ]
-    problems = [pattern for pattern in required_patterns if pattern not in content]
+    problems = [label for label, pattern in required_sections if not pattern.search(content)]
     if not content.strip():
         problems.append("输出为空")
     return problems

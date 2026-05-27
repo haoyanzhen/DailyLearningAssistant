@@ -169,6 +169,11 @@ def previous_generation_failure_reason(status_data: dict) -> str:
     return ""
 
 
+def publish_agent_succeeded(status_data: dict) -> bool:
+    publish_status = (status_data.get("agents") or {}).get("learning_report_publish") or {}
+    return isinstance(publish_status, dict) and publish_status.get("status") == "success"
+
+
 def exact_report_exists(input_root: Path, target_date: str) -> bool:
     manifest_path = input_root / "daily_report" / "manifest.json"
     if not manifest_path.exists():
@@ -425,8 +430,10 @@ def main() -> int:
         step_input_root = output_root if fallback_events and spec.step >= 4 else input_root
         failure_notice_reason = ""
         if spec.name == "daily_email_send" and not args.dry_run:
-            failure_notice_reason = previous_generation_failure_reason(status_data_before)
-            if not failure_notice_reason and not exact_report_exists(step_input_root, target_date):
+            report_ready = exact_report_exists(step_input_root, target_date)
+            if not (report_ready and publish_agent_succeeded(status_data_before)):
+                failure_notice_reason = previous_generation_failure_reason(status_data_before)
+            if not failure_notice_reason and not report_ready:
                 failure_notice_reason = "HTML 生成发布任务尚未成功产出当天日报。"
         command = build_agent_command(
             spec,

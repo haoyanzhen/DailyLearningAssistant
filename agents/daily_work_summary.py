@@ -11,11 +11,13 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
 from dataclasses import dataclass
 from datetime import datetime, time, timedelta
 from pathlib import Path
+from urllib.parse import urlsplit, urlunsplit
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 
@@ -36,6 +38,14 @@ DEFAULT_REPOSITORIES = [
 class RepositoryConfig:
     name: str
     path: Path
+
+
+@dataclass
+class RemoteRepositoryConfig:
+    name: str
+    output_name: str
+    urls: list[str]
+    refs: list[str]
 
 
 @dataclass
@@ -74,6 +84,7 @@ class SummaryEvidence:
     has_branch_tip_changes: bool
     has_worktree_candidate_changes: bool
     evidence_type: str
+    has_remote_ref_changes: bool = False
 
     @property
     def should_call_llm(self) -> bool:
@@ -83,6 +94,7 @@ class SummaryEvidence:
                 self.has_primary_uncommitted_changes,
                 self.has_branch_tip_changes,
                 self.has_worktree_candidate_changes,
+                self.has_remote_ref_changes,
             )
         )
 
@@ -111,6 +123,16 @@ def run_git(repo_path: Path, args: list[str], check: bool = False) -> subprocess
     if check and result.returncode != 0:
         raise RuntimeError(result.stderr.strip() or result.stdout.strip() or f"git {' '.join(args)} failed")
     return result
+
+
+def run_git_ls_remote(url: str, ref: str, timeout: int = 30) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        ["git", "ls-remote", url, ref],
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        timeout=timeout,
+    )
 
 
 def load_config(path: Path) -> dict:
@@ -169,6 +191,96 @@ def resolve_repositories(args: argparse.Namespace, config: dict) -> list[Reposit
 
     projects_root = Path(os.path.expanduser(args.projects_root)).resolve()
     return [RepositoryConfig(name, projects_root / name) for name in DEFAULT_REPOSITORIES]
+
+
+def detect_access_type(url: str) -> str:
+    if url.startswith(("http://", "https://")):
+        return "http_git"
+    if url.startswith("ssh://") or re.match(r"^[^@\s]+@[^:\s]+:.+", url):
+        return "ssh_git"
+    return "git"
+
+
+def sanitize_url_for_status(url: str) -> str:
+    if not url.startswith(("http://", "https://")):
+        return url
+    parts = urlsplit(url)
+    host = parts.netloc.rsplit("@", 1)[-1]
+    return urlunsplit((parts.scheme, host, parts.path, "", ""))
+
+
+def repo_name_from_url(url: str) -> str:
+    if url.startswith(("http://", "https://", "ssh://")):
+        path = urlsplit(url).path
+    elif ":" in url and "@" in url.split(":", 1)[0]:
+        path = url.split(":", 1)[1]
+    else:
+        path = url
+    name = Path(path.rstrip("/")).name
+    return name.removesuffix(".git") or "remote-repository"
+
+
+def ref_display_name(ref: str) -> str:
+    for prefix in ("refs/heads/", "refs/tags/"):
+        if ref.startswith(prefix):
+            return ref.removeprefix(prefix)
+    return ref.removeprefix("refs/") or "ref"
+
+
+def safe_output_name(name: str) -> str:
+    cleaned = name.replace("/", "-").replace(":", "_")
+    cleaned = re.sub(r"[^A-Za-z0-9._-]+", "_", cleaned).strip("._-")
+    return cleaned or "remote_repository"
+
+
+def resolve_remote_repositories(config: dict, local_repos: list[RepositoryConfig]) -> list[RemoteRepositoryConfig]:
+    configured = config.get("remote_repositories") or []
+    if not isinstance(configured, list):
+        raise SystemExit("[错误] remote_repositories 必须是列表。")
+
+    used_output_names = {safe_output_name(repo.name) for repo in local_repos}
+    remotes: list[RemoteRepositoryConfig] = []
+
+    for index, item in enumerate(configured, start=1):
+        if not isinstance(item, dict):
+            raise SystemExit(f"[错误] remote_repositories 第 {index} 项必须是对象。")
+        if item.get("enabled", True) is False:
+            continue
+
+        raw_urls = item.get("urls") or []
+        if isinstance(raw_urls, str):
+            raw_urls = [raw_urls]
+        urls = [str(url).strip() for url in raw_urls if str(url).strip()]
+        if not urls:
+            raise SystemExit(f"[错误] remote_repositories 第 {index} 项缺少 urls。")
+
+        raw_refs = item.get("refs") or []
+        if isinstance(raw_refs, str):
+            raw_refs = [raw_refs]
+        refs = [str(ref).strip() for ref in raw_refs if str(ref).strip()]
+        if not refs:
+            refs = ["refs/heads/main"]
+
+        explicit_name = str(item.get("name") or "").strip()
+        if explicit_name:
+            name = explicit_name
+            output_name = safe_output_name(explicit_name)
+            if output_name in used_output_names:
+                raise SystemExit(f"[错误] 远端仓库输出名重复: {output_name}")
+            used_output_names.add(output_name)
+            remotes.append(RemoteRepositoryConfig(name, output_name, urls, refs))
+            continue
+
+        base_name = repo_name_from_url(urls[0])
+        for ref in refs:
+            display_name = f"{base_name}:{ref_display_name(ref)}"
+            output_name = safe_output_name(display_name)
+            if output_name in used_output_names:
+                raise SystemExit(f"[错误] 远端仓库输出名重复: {output_name}")
+            used_output_names.add(output_name)
+            remotes.append(RemoteRepositoryConfig(display_name, output_name, urls, [ref]))
+
+    return remotes
 
 
 def day_window(target_date: str, timezone: ZoneInfo) -> tuple[datetime, datetime]:
@@ -679,6 +791,295 @@ def build_summary_evidence(repo: RepositoryConfig, target_date: str, start: date
     )
 
 
+def stderr_excerpt(text: str, limit: int = 600) -> str:
+    one_line = " ".join((text or "").split())
+    return one_line[:limit]
+
+
+def classify_remote_failure(result: subprocess.CompletedProcess[str]) -> str:
+    blob = f"{result.stderr}\n{result.stdout}".lower()
+    if any(token in blob for token in ("permission denied", "authentication failed", "could not read username", "access denied")):
+        return "auth_failed"
+    if any(token in blob for token in ("repository not found", "not found", "does not appear to be a git repository")):
+        return "repo_missing"
+    if any(token in blob for token in ("could not resolve host", "failed to connect", "connection timed out", "network is unreachable", "tls", "ssl")):
+        return "network_failed"
+    return "command_failed"
+
+
+def parse_ls_remote_sha(stdout: str, ref: str) -> str | None:
+    for line in stdout.splitlines():
+        parts = line.split()
+        if len(parts) >= 2 and parts[1] == ref:
+            return parts[0]
+    return None
+
+
+def previous_remote_sha(output_root: Path, target_date: str, remote_name: str, ref: str) -> str | None:
+    prework_root = output_root / "prework"
+    if not prework_root.exists():
+        return None
+
+    try:
+        target = datetime.strptime(target_date, "%Y-%m-%d").date()
+    except ValueError:
+        return None
+
+    candidates: list[Path] = []
+    for status_path in prework_root.glob("????-??/????-??-??/run_status.json"):
+        try:
+            candidate_date = datetime.strptime(status_path.parent.name, "%Y-%m-%d").date()
+        except ValueError:
+            continue
+        if candidate_date < target:
+            candidates.append(status_path)
+
+    for status_path in sorted(candidates, key=lambda path: path.parent.name, reverse=True):
+        try:
+            data = json.loads(status_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        repositories = (((data.get("agents") or {}).get("daily_work_summary") or {}).get("repositories") or [])
+        for repo in repositories:
+            if not isinstance(repo, dict) or repo.get("source") != "remote" or repo.get("name") != remote_name:
+                continue
+            if repo.get("status") != "success":
+                continue
+            for ref_status in ((repo.get("remote") or {}).get("refs") or []):
+                if not isinstance(ref_status, dict):
+                    continue
+                if ref_status.get("ref") == ref and ref_status.get("status") in {"first_seen", "unchanged", "changed"}:
+                    sha = ref_status.get("current_sha")
+                    if sha:
+                        return str(sha)
+    return None
+
+
+def check_remote_ref(remote: RemoteRepositoryConfig, ref: str, output_root: Path, target_date: str) -> dict:
+    attempts: list[dict] = []
+    selected_access = None
+    current_sha = None
+    missing_attempt = False
+
+    for url in remote.urls:
+        access = detect_access_type(url)
+        safe_url = sanitize_url_for_status(url)
+        try:
+            result = run_git_ls_remote(url, ref)
+        except subprocess.TimeoutExpired as exc:
+            attempts.append(
+                {
+                    "access": access,
+                    "url": safe_url,
+                    "status": "network_failed",
+                    "returncode": None,
+                    "remote_ref": ref,
+                    "sha": None,
+                    "stderr_excerpt": stderr_excerpt(str(exc)),
+                }
+            )
+            continue
+
+        sha = parse_ls_remote_sha(result.stdout, ref) if result.returncode == 0 else None
+        if result.returncode == 0 and sha:
+            attempts.append(
+                {
+                    "access": access,
+                    "url": safe_url,
+                    "status": "success",
+                    "returncode": result.returncode,
+                    "remote_ref": ref,
+                    "sha": sha,
+                    "stderr_excerpt": stderr_excerpt(result.stderr),
+                }
+            )
+            selected_access = access
+            current_sha = sha
+            break
+
+        if result.returncode == 0:
+            missing_attempt = True
+            status = "ref_missing"
+        else:
+            status = classify_remote_failure(result)
+        attempts.append(
+            {
+                "access": access,
+                "url": safe_url,
+                "status": status,
+                "returncode": result.returncode,
+                "remote_ref": ref,
+                "sha": sha,
+                "stderr_excerpt": stderr_excerpt(result.stderr or result.stdout),
+            }
+        )
+
+    if current_sha:
+        for skipped_url in remote.urls[len(attempts) :]:
+            attempts.append(
+                {
+                    "access": detect_access_type(skipped_url),
+                    "url": sanitize_url_for_status(skipped_url),
+                    "status": "skipped_after_success",
+                }
+            )
+
+        previous_sha = previous_remote_sha(output_root, target_date, remote.name, ref)
+        if previous_sha is None:
+            status = "first_seen"
+            changed = False
+        elif previous_sha == current_sha:
+            status = "unchanged"
+            changed = False
+        else:
+            status = "changed"
+            changed = True
+        return {
+            "ref": ref,
+            "status": status,
+            "previous_sha": previous_sha,
+            "current_sha": current_sha,
+            "changed": changed,
+            "selected_access": selected_access,
+            "attempts": attempts,
+        }
+
+    return {
+        "ref": ref,
+        "status": "ref_missing" if missing_attempt else "failed",
+        "previous_sha": previous_remote_sha(output_root, target_date, remote.name, ref),
+        "current_sha": None,
+        "changed": False,
+        "selected_access": None,
+        "attempts": attempts,
+    }
+
+
+def render_remote_attempts(attempts: list[dict]) -> str:
+    if not attempts:
+        return "- 未记录访问尝试。"
+    lines = []
+    for attempt in attempts:
+        detail = f"- `{attempt.get('access')}` `{attempt.get('url')}`：{attempt.get('status')}"
+        if attempt.get("sha"):
+            detail += f"，SHA `{str(attempt['sha'])[:12]}`"
+        if attempt.get("stderr_excerpt"):
+            detail += f"，诊断：{attempt['stderr_excerpt']}"
+        lines.append(detail)
+    return "\n".join(lines)
+
+
+def build_remote_summary_evidence(remote: RemoteRepositoryConfig, target_date: str, output_root: Path) -> tuple[SummaryEvidence, dict]:
+    ref_statuses = [check_remote_ref(remote, ref, output_root, target_date) for ref in remote.refs]
+    changed_refs = [item for item in ref_statuses if item.get("changed")]
+    failed_refs = [item for item in ref_statuses if item.get("status") in {"failed", "ref_missing"}]
+    successful_refs = [item for item in ref_statuses if item.get("status") in {"first_seen", "unchanged", "changed"}]
+
+    rows = []
+    sections = []
+    for item in ref_statuses:
+        previous_sha = item.get("previous_sha") or "无历史记录"
+        current_sha = item.get("current_sha") or "未读取到"
+        rows.append(
+            f"| `{item['ref']}` | {item['status']} | `{str(previous_sha)[:12]}` | `{str(current_sha)[:12]}` | "
+            f"{'是' if item.get('changed') else '否'} | {item.get('selected_access') or '无'} |"
+        )
+        sections.append(
+            f"""### `{item['ref']}`
+
+- 状态：{item['status']}
+- 历史 SHA：`{previous_sha}`
+- 当前 SHA：`{current_sha}`
+- 是否发现远端 ref 指针变化：{'是' if item.get('changed') else '否'}
+
+访问尝试：
+
+{render_remote_attempts(item.get('attempts') or [])}
+"""
+        )
+
+    if changed_refs:
+        conclusion = f"发现 {len(changed_refs)} 个远端 ref 指针变化。"
+        evidence_type = "remote_ref_change"
+    elif successful_refs and not failed_refs:
+        conclusion = "未发现远端 ref 指针变化；首次看到的 ref 只记录基线，不视为新增提交。"
+        evidence_type = "no_change"
+    elif successful_refs:
+        conclusion = "部分远端 ref 已读取，部分 ref 读取失败或不存在。"
+        evidence_type = "unavailable"
+    else:
+        conclusion = "所有远端 ref 均读取失败或不存在。"
+        evidence_type = "unavailable"
+
+    markdown = f"""# {target_date} {remote.name} 更改总结
+
+本总结由第 1 步 Agent 基于远端 Git ref 元数据生成。远端仓库只通过 `git ls-remote` 读取 ref 指针，不 clone、不 fetch、不下载提交对象、文件树或工作区内容。
+
+## 结论
+
+{conclusion}
+
+## 基本信息
+
+| 项目 | 内容 |
+| --- | --- |
+| 仓库 | `{remote.name}` |
+| 来源 | 远端 Git |
+| 访问 URL 数 | {len(remote.urls)} |
+| 监控 ref 数 | {len(remote.refs)} |
+
+## Ref 检查结果
+
+| Ref | 状态 | 历史 SHA | 当前 SHA | 指针变化 | 成功访问方式 |
+| --- | --- | --- | --- | --- | --- |
+{chr(10).join(rows)}
+
+## 访问诊断
+
+{chr(10).join(sections)}
+
+## 主要工作主题
+
+- 远端监控只能证明 ref 指针是否变化，不能证明新增提交数量、提交信息、作者、文件列表或 diff 内容。
+- 若状态为 `changed`，后续概念提炼只能表述为“远端版本变化线索”或“ref 指针变化”，不要编造具体提交详情。
+
+## 可能涉及的知识点线索
+
+- Git 远端引用、分支和 tag 指针
+- 只读仓库监控、最小权限访问
+- 基于历史状态的变更检测
+
+## 对后续概念提炼任务的备注
+
+- 本文件和本地仓库的 `work_summary_*.md` 一样进入后续输入，但内容来源仅限远端 ref 元数据。
+- 对私人仓库，SSH 成功通常依赖本机 SSH key 或 SSH agent；状态文件不会记录密钥。
+- HTTP(S) URL 中的用户名、token 或密码在状态记录中会被脱敏。
+"""
+
+    status = "success" if not failed_refs else ("failed" if not successful_refs else "degraded")
+    return (
+        SummaryEvidence(
+            markdown=markdown,
+            has_confirmed_commits=False,
+            has_primary_uncommitted_changes=False,
+            has_branch_tip_changes=False,
+            has_worktree_candidate_changes=False,
+            evidence_type=evidence_type,
+            has_remote_ref_changes=bool(changed_refs),
+        ),
+        {
+            "name": remote.name,
+            "source": "remote",
+            "status": status,
+            "evidence_type": evidence_type,
+            "remote": {
+                "urls": [sanitize_url_for_status(url) for url in remote.urls],
+                "refs": ref_statuses,
+            },
+        },
+    )
+
+
 def infer_theme_lines(
     commits: list[CommitInfo],
     status: list[str],
@@ -775,6 +1176,7 @@ def build_llm_prompt(repo: RepositoryConfig, target_date: str, evidence_markdown
 - 只能基于证据草稿中可确认的信息总结，不要编造提交内容、文件变化或技术意图。
 - “窗口内提交记录”是目标日期前一天的已确认提交事实。
 - “主工作区未提交变更”和“worktree 状态”只能作为当前待确认变化线索；Git 不能证明它们一定发生在目标日期前一天，因此不要写成已经完成的昨日事实。
+- 如果证据来自远端仓库监控，只能说明远端 ref 指针是否变化；不能编造提交详情、作者、文件列表、diff 或新增提交数量。
 - 如果没有提交，也要保留“无提交记录”的结论；如果只有待确认变化线索，要明确标注“待确认”。
 - 输出必须是完整 Markdown 文件内容，不要输出 JSON，不要包裹 markdown 代码块。
 - 文件应包含：仓库名称、日期、当日提交概览、关键文件变更、主要工作主题、可能涉及的知识点线索、对后续概念提炼任务有帮助的备注。
@@ -855,6 +1257,33 @@ def summarize_agent_status(repositories: list[dict]) -> str:
     return "success"
 
 
+def summarize_repository_statuses(repositories: list[dict]) -> dict:
+    summary = {
+        "local_repositories": 0,
+        "remote_repositories": 0,
+        "ssh_git_success": 0,
+        "http_git_success": 0,
+        "remote_failed_refs": 0,
+        "remote_changed_refs": 0,
+    }
+    for repo in repositories:
+        if repo.get("source") == "remote":
+            summary["remote_repositories"] += 1
+            for ref_status in ((repo.get("remote") or {}).get("refs") or []):
+                if ref_status.get("status") in {"failed", "ref_missing"}:
+                    summary["remote_failed_refs"] += 1
+                if ref_status.get("changed"):
+                    summary["remote_changed_refs"] += 1
+                selected = ref_status.get("selected_access")
+                if selected == "ssh_git":
+                    summary["ssh_git_success"] += 1
+                elif selected == "http_git":
+                    summary["http_git_success"] += 1
+        else:
+            summary["local_repositories"] += 1
+    return summary
+
+
 def main() -> int:
     args = parse_args()
     config = load_config(Path(args.config))
@@ -875,6 +1304,7 @@ def main() -> int:
     elif not llm:
         print("[警告] config.json 中未找到可用 llm 配置，将直接写入 Git 证据总结。")
 
+    remote_repos = resolve_remote_repositories(config, repos)
     repository_statuses: list[dict] = []
 
     for repo in repos:
@@ -914,6 +1344,7 @@ def main() -> int:
         repository_statuses.append(
             {
                 "name": repo.name,
+                "source": "local",
                 "path": str(repo.path),
                 "status": repo_status,
                 "evidence_type": evidence.evidence_type,
@@ -931,7 +1362,60 @@ def main() -> int:
             }
         )
 
+    for remote in remote_repos:
+        evidence, remote_status_base = build_remote_summary_evidence(remote, target_date, output_root)
+        evidence_markdown = evidence.markdown.rstrip() + "\n"
+        content = evidence_markdown
+        repo_status = remote_status_base["status"]
+        llm_status = "skipped_disabled" if args.no_llm else "skipped_unconfigured"
+        llm_error = None
+
+        if llm and evidence.should_call_llm:
+            try:
+                content = generate_llm_summary(
+                    remote,  # type: ignore[arg-type]
+                    target_date,
+                    evidence_markdown,
+                    llm,
+                    args.timeout,
+                    args.llm_retries,
+                    args.llm_retry_delay,
+                )
+                print(f"[LLM] {remote.name}: 已生成正式总结。")
+                llm_status = "success"
+            except RuntimeError as exc:
+                llm_error = str(exc)
+                llm_status = "failed"
+                repo_status = "degraded" if repo_status == "success" else repo_status
+                print(f"[警告] {remote.name}: LLM 总结失败，改写入远端 Git 证据总结。原因：{exc}")
+        elif llm:
+            llm_status = "skipped_no_change"
+            print(f"[跳过] {remote.name}: 未发现远端 ref 指针变化，不调用 LLM。")
+
+        output_path = output_dir / f"work_summary_{remote.output_name}.md"
+        output_path.write_text(content, encoding="utf-8")
+        print(f"[完成] {remote.name}: {output_path}")
+
+        remote_status = {
+            **remote_status_base,
+            "status": repo_status,
+            "output_path": relative_to_root(output_path),
+            "llm": {
+                "status": llm_status,
+                "error": llm_error,
+            },
+            "signals": {
+                "has_confirmed_commits": evidence.has_confirmed_commits,
+                "has_primary_uncommitted_changes": evidence.has_primary_uncommitted_changes,
+                "has_branch_tip_changes": evidence.has_branch_tip_changes,
+                "has_worktree_candidate_changes": evidence.has_worktree_candidate_changes,
+                "has_remote_ref_changes": evidence.has_remote_ref_changes,
+            },
+        }
+        repository_statuses.append(remote_status)
+
     finished_at = datetime.now(timezone).isoformat()
+    repository_summary = summarize_repository_statuses(repository_statuses)
     agent_status = {
         "status": summarize_agent_status(repository_statuses),
         "started_at": started_at,
@@ -950,6 +1434,7 @@ def main() -> int:
             "retry_delay_seconds": args.llm_retry_delay,
         },
         "repositories": repository_statuses,
+        "repository_summary": repository_summary,
     }
     write_agent_status(status_path, target_date, agent_status, finished_at)
     print(f"[状态] 已更新: {status_path}")
