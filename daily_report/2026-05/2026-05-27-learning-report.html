@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-05-27 学习笔记日报</title>
+    <meta name="description" content="自包含报告消除外部依赖，Agent元认知避免自我污染，领域驱动设计划定智能系统边界，三步构建可信自动化认知闭环。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260527-map2" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-05-27</p>
+        <h1>系统的内聚与边界：自包含、元认知与领域建模</h1>
+        <p>今天的学习通过三个递进概念：自包含报告单元、Agent边界控制与领域驱动设计文档结构化，由浅入深地探讨了系统的内聚与边界，为构建可信自动化系统铺设从实现到行为的完整认知循环。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <svg class="relationship-svg" viewBox="0 0 700 300" role="img" aria-labelledby="relationship-map-title relationship-map-desc">
+                <title id="relationship-map-title">三节小课关系图</title>
+                <desc id="relationship-map-desc">中心主题连接三节小课，每节小课继续连接当天相关概念。</desc>
+                <defs>
+                  <marker id="relationship-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z"></path>
+                  </marker>
+                </defs>
+                <path class="relationship-line" d="M350 58 C350 78 152 80 152 102"></path>
+                <path class="relationship-line" d="M350 58 C350 82 350 82 350 102"></path>
+                <path class="relationship-line" d="M350 58 C350 78 548 80 548 102"></path>
+                <rect class="relationship-svg-hub" x="246" y="18" width="208" height="40" rx="20"></rect>
+                <text class="relationship-svg-hub-text" x="350" y="44"><tspan x="350" dy="0">LLM 工程化能力</tspan></text>
+                <rect class="relationship-svg-concept" x="74" y="102" width="156" height="68" rx="10"></rect>
+                <text class="relationship-svg-concept-text" x="152" y="126"><tspan x="152" dy="0">自包含报告单元</tspan></text>
+                <path class="relationship-line muted" d="M152 170 C152 192 152 198 152 213"></path>
+                <rect class="relationship-svg-related" x="80" y="198" width="144" height="28" rx="9"></rect>
+                <text class="relationship-svg-related-text" x="152" y="216"><tspan x="152" dy="0">Agent 边界控制与...</tspan></text>
+                <path class="relationship-line muted" d="M152 170 C152 192 152 230 152 245"></path>
+                <rect class="relationship-svg-related" x="80" y="230" width="144" height="28" rx="9"></rect>
+                <text class="relationship-svg-related-text" x="152" y="248"><tspan x="152" dy="0">生成流水线职责分离</tspan></text>
+                <rect class="relationship-svg-concept" x="272" y="102" width="156" height="68" rx="10"></rect>
+                <text class="relationship-svg-concept-text" x="350" y="126"><tspan x="350" dy="0">Agent 边界控制</tspan><tspan x="350" dy="17">与元认知</tspan></text>
+                <path class="relationship-line muted" d="M350 170 C350 192 350 198 350 213"></path>
+                <rect class="relationship-svg-related" x="278" y="198" width="144" height="28" rx="9"></rect>
+                <text class="relationship-svg-related-text" x="350" y="216"><tspan x="350" dy="0">自包含报告单元</tspan></text>
+                <path class="relationship-line muted" d="M350 170 C350 192 350 230 350 245"></path>
+                <rect class="relationship-svg-related" x="278" y="230" width="144" height="28" rx="9"></rect>
+                <text class="relationship-svg-related-text" x="350" y="248"><tspan x="350" dy="0">领域驱动设计的文档结构...</tspan></text>
+                <rect class="relationship-svg-concept" x="470" y="102" width="156" height="68" rx="10"></rect>
+                <text class="relationship-svg-concept-text" x="548" y="126"><tspan x="548" dy="0">领域驱动设计的文档结</tspan><tspan x="548" dy="17">构化</tspan></text>
+                <path class="relationship-line muted" d="M548 170 C548 192 548 198 548 213"></path>
+                <rect class="relationship-svg-related" x="476" y="198" width="144" height="28" rx="9"></rect>
+                <text class="relationship-svg-related-text" x="548" y="216"><tspan x="548" dy="0">Agent 边界控制与...</tspan></text>
+                <path class="relationship-line muted" d="M548 170 C548 192 548 230 548 245"></path>
+                <rect class="relationship-svg-related" x="476" y="230" width="144" height="28" rx="9"></rect>
+                <text class="relationship-svg-related-text" x="548" y="248"><tspan x="548" dy="0">自包含报告单元</tspan></text>
+              </svg>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub([LLM 工程化能力])
+  concept1["自包含报告单元"]
+  hub --&gt; concept1
+  concept2["Agent 边界控制与元认知"]
+  hub --&gt; concept2
+  concept3["领域驱动设计的文档结构化"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  related1["生成流水线职责分离"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept2
+  concept3 --&gt; concept1
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+            <div class="relationship-map-notes">
+              <p class="eyebrow">Concept Links</p>
+              <ul>
+              <li><strong>自包含报告单元 → Agent 边界控制与元认知</strong><span>两者都在划清“边界”：前者让报告不依赖外部，后者让Agent决策不受自身输出干扰，共同形成“产物内聚-行为自省”防线。</span></li>
+              <li><strong>自包含报告单元 → 生成流水线职责分离</strong><span>自包含的实现需要生成器、模板和校验器的协同，体现了流水线中结构、呈现和约束的清晰分工。</span></li>
+              <li><strong>Agent 边界控制与元认知 → 自包含报告单元</strong><span>共同构成“产物内聚—行为自省”防线：报告本身不依赖外部，Agent 不让自己的产物污染后续感知。</span></li>
+              <li><strong>Agent 边界控制与元认知 → 领域驱动设计的文档结构化</strong><span>领域文档为 Agent 提供了明确的服务边界和行为‘白名单’，让自省规则有据可依。</span></li>
+              <li><strong>领域驱动设计的文档结构化 → Agent 边界控制与元认知</strong><span>文档中明确的服务边界为 Agent 的自省规则提供了设计依据，成为行为自我过滤的‘白名单’。</span></li>
+              <li><strong>领域驱动设计的文档结构化 → 自包含报告单元</strong><span>都是面向‘内聚和边界’的设计实践：自包含在运行时保持报告完整，领域文档在设计阶段划定系统骨架和模块边界。</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="self-contained-report-unit">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>自包含报告单元</h3>
+              <p>Self-Contained Report Unit</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">自包含报告通过消灭外部文件依赖，让日报像一本独立的小册子，无论被复制、存档还是离线浏览，信息都完整可读。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>将图表、样式等原本依赖外部文件的内容直接嵌入报告，消除外部依赖</li>
+                <li>实现组件内聚和最小化外部依赖，让报告独立于环境</li>
+                <li>生成流水线中职责分离：生成器负责结构，样式负责呈现，校验器负责约束</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="self-contained-report-unit" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="agent-boundary-control">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 大语言模型</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>Agent 边界控制与元认知</h3>
+              <p>Agent Boundary Control and Metacognition</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">Agent 必须具备“忽略自己”的能力：在分析系统状态时排除自身产生的变更，才能避免把自己的脚印当作新路标，形成污染性的反馈循环。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>Agent 必须具备自我识别能力，排除自身产生的提交或输出，避免形成污染性的反馈循环</li>
+                <li>给 Agent 配备行为签名检测和输入源分类机制，实现基于规则的自省，而不是科幻中的觉醒</li>
+                <li>这是 Agent 从单纯执行命令走向理解自身行为后果的重要一步</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="agent-boundary-control" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="ddd-document-structuring">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★★</span>
+              </div>
+              <h3>领域驱动设计的文档结构化</h3>
+              <p>Domain-Driven Design Document Structuring</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">领域模型文档化是为智能工作流划定“硬边界”的工程实践，它可以同时约束人类的理解和 Agent 的执行范围，是多人多智能体协作的公共契约。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>先定义领域核心实体及其关系，再描述服务模块的职责，形成系统骨架地图</li>
+                <li>将隐性领域知识显式化，成为能同时约束人类理解和 Agent 执行范围的公共契约</li>
+                <li>为 Agent 知识服务划定‘硬边界’，明确数据触碰和操作许可，保障系统安全扩展</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="ddd-document-structuring" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="self-contained-report-unit">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>自包含报告单元</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>当你制作一份日报时，自然希望它里面所有的文字、样式、图表都很完整。可很多报告的图表只是记下了一个文件路径，比如“图片在哪台电脑的哪个文件夹里”。一旦这份报告被发给别人，或者被归档到云盘，那个路径就可能找不到图片，报告也就缺了一块。自包含报告单元要做的，就是把图表、样式这些原本可能依赖外部文件的内容，直接“写进”报告里，让报告本身成为一份独立完整的文档。这就像原来你给朋友发 Word 文件还附带一个图片压缩包，现在你直接把图片贴在 Word 里，对方打开就能看到全部内容。在软件工程里，这对应着“组件内聚”和“最小化外部依赖”两条原则：一个模块应该把完成自己功能所需要的所有东西打包在一起，尽量不要让外界环境的变化影响它。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>遵循组件内聚原则，将功能所需的所有资源打包在同一模块内</li>
+                <li>将外部文件引用替换为内嵌数据或当场生成的资源，如 Data URI 或内联 SVG</li>
+                <li>在生成流水线中应用职责分离，确保生成器、样式模板、校验器各司其职，共同输出自包含成果</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在 DailyLearningAssistant 项目中，每日报告原先用 &lt;img src='trend.svg'&gt; 引用外部 SVG 文件，迁移时图片可能丢失。改进后，生成脚本在构建 HTML 时调用函数当场生成 SVG 字符串，直接嵌在 &lt;svg&gt; 标签内，让图表与文字一起完整展示。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为自包含就是文件臃肿，所有资源暴力塞入；实际上它关注的是消灭不可控的外部依赖，允许内部合理复用</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>Agent 边界控制与元认知</td><td>两者都在划清“边界”：前者让报告不依赖外部，后者让Agent决策不受自身输出干扰，共同形成“产物内聚-行为自省”防线。</td></tr>
+                <tr><td>生成流水线职责分离</td><td>自包含的实现需要生成器、模板和校验器的协同，体现了流水线中结构、呈现和约束的清晰分工。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何在不显著增大幅面与载入时间的前提下，平衡自包含带来的内嵌资源体积？</li>
+                <li>对于需要共用的大型库（如数学公式渲染引擎），自包含报告能否通过选择性嵌入或资源指纹来同时保证可移植性和轻量化？</li>
+                <li>自包含单元的思想如何延伸到可交互报告，例如内嵌完整的数据集以供离线重新筛选和绘图？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="agent-boundary-control">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 大语言模型</p>
+                <h3>Agent 边界控制与元认知</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>假设你家有个扫地机器人，每天打扫完地板后会生成一份报告，说明今天扫了哪些区域。如果第二天它查看历史记录来规划路线时，却把自己的那份报告当成“有新的房间出现了”，就可能反复去扫同一个虚拟的房间。Agent 边界控制与元认知就是要让这个机器人明白：“这是我昨天写的报告，不是真的新房间，我应该忽略它”。在软件系统中，这意味着给自动运行的 Agent 配备一种自我识别能力：当它需要观察 Git 日志、文件列表或者对话历史来做出下一步决策时，必须先认出哪些内容是自己之前生成的，然后主动把它们排除在分析范围之外，避免把自身的行为当作新的外部事件，形成错误的增强回路。这是 Agent 从单纯“执行命令”走向“理解自身行为后果”的重要一步。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>建立行为签名检测机制，识别自身产出的特征模式（如提交信息、文件路径等）</li>
+                <li>在输入处理阶段加入自感知噪声过滤器，排除与自身相关的条目</li>
+                <li>将元认知设计为可审核、可撤销的工程化规则，确保可干预性</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>DailyLearningAssistant 的摘要 Agent 每天读取 Git 提交记录生成学习报告。它自己在生成时也会产生新的 Git 提交。在 `daily_work_summary.py` 中加入“omit self daily report”逻辑：Agent 检查每条提交信息，若属于自己生成的特定格式，则主动跳过，避免将自己报告行为再次当作学习内容。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为元认知是 Agent 产生了“自我意识”，实际上它只是基于规则的分类过滤，是一种工程化的自省</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>自包含报告单元</td><td>共同构成“产物内聚—行为自省”防线：报告本身不依赖外部，Agent 不让自己的产物污染后续感知。</td></tr>
+                <tr><td>领域驱动设计的文档结构化</td><td>领域文档为 Agent 提供了明确的服务边界和行为‘白名单’，让自省规则有据可依。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>在多任务、多步骤的复杂 Agent 流水线中，如何设计通用的自省机制，让 Agent 能可靠地认出所有形态的自身痕迹？</li>
+                <li>当多个 Agent 协作时，某一个 Agent 的输出对另一个 Agent 而言是外部输入还是内部噪声？边界应如何协商和传达？</li>
+                <li>能否将 Agent 的元认知行为设计为可审核、可撤销的，让人类随时介入并纠正误过滤或漏过滤的情况？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="ddd-document-structuring">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>领域驱动设计的文档结构化</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>多数设计文档被写成功能的流水账，看着整齐，但读到后面很难理解系统的骨架是什么。领域驱动设计的文档结构化要求换一种方式：先找到这个系统要处理的‘核心事物’是什么（比如论文、知识卡片、用户摘录），这些事物之间有怎样的组织关系，然后再描述为它们提供服务的功能模块分别负责什么。这样写出来的文档，就像给系统画了一张有山有水的地形图——即便后来的人中途接手，也能一眼看懂‘哪里是山脉、哪里是河流，彼此如何连接’，而不需要从零星的功能描述里拼凑全貌。对于由 Agent 提供知识服务的系统，这种做法尤其重要，因为它把 Agent 能触碰的数据、能执行的操作、不能越过的边界，都变成了明文约定，人容易理解，Agent 也更容易被限定在安全范围内运行。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>识别限界上下文和聚合，将系统划分为围绕核心领域模型的多个部分</li>
+                <li>用领域语言描述实体、值对象、服务，并将这些描述作为设计文档的骨架</li>
+                <li>明确 Agent 可以执行的操作和不可逾越的边界，将文档作为版本化、可追溯的工程制品</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>ResearchPaperBase_codex 的设计文档 `02_domain_core.md` 定义了‘论文’‘笔记’‘标签’等核心实体及其关系，`06_agent_knowledge_services.md` 围绕这些实体描述了 Agent 服务，如根据标签检索论文、生成摘要。这样将来新增 Agent 能力时，可立即在文档中找到领域归属和边界，安全扩展。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为结构化文档就是多写几层标题、套模板，实际上它的核心是显式化领域知识，让模型、关系、职责可讨论、可校验</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>Agent 边界控制与元认知</td><td>文档中明确的服务边界为 Agent 的自省规则提供了设计依据，成为行为自我过滤的‘白名单’。</td></tr>
+                <tr><td>自包含报告单元</td><td>都是面向‘内聚和边界’的设计实践：自包含在运行时保持报告完整，领域文档在设计阶段划定系统骨架和模块边界。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当项目快速演进时，如何保持领域文档与代码实现之间的一致，而不会让文档沦为一次性摆设？</li>
+                <li>领域驱动设计中的‘聚合’‘领域事件’等概念如何在文档结构中以可阅读、可校验的方式落地？</li>
+                <li>当多个 Agent 知识服务横跨多个子领域时，文档能否用‘有界上下文’的映射图来清晰表达集成点和隔离带？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">自包含报告单元实现产物的完整性和生成流水线的职责分离；Agent边界控制让系统识别并排除自身干扰信号；领域驱动设计的文档结构化为Agent服务范围提供设计蓝图。三者构成从技术实现到行为控制再到设计建模的完整认知闭环。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">好的自动化系统不仅把事做对，更懂得认清自己的足迹并遵守明确的领域规则。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何在不显著增大体积的前提下，平衡自包含报告的内嵌资源与轻量化需求？</li>
+            <li>在多任务、多步骤的复杂 Agent 流水线中，如何设计通用的自省机制，可靠地识别所有形态的自身痕迹？</li>
+            <li>当多个 Agent 知识服务横跨多个子领域时，如何用有界上下文清晰表达集成点和隔离带？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
