@@ -131,6 +131,15 @@ def require_llm_config(config: dict) -> dict:
     return llm
 
 
+def trust_env_proxy_enabled(llm: dict) -> bool:
+    value = llm.get("trust_env_proxy", False)
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        return value.strip().lower() in {"1", "true", "yes", "on"}
+    return bool(value)
+
+
 def call_chat_completion_once(
     llm: dict,
     messages: list[dict],
@@ -160,10 +169,16 @@ def call_chat_completion_once(
         write=float(llm.get("write_timeout", min(30, max(5, timeout // 4)))),
         pool=float(llm.get("pool_timeout", 5)),
     )
+    trust_env_proxy = trust_env_proxy_enabled(llm)
+    trace_base = {
+        "model": llm.get("model"),
+        "api_url": llm.get("api_url"),
+        "trust_env_proxy": trust_env_proxy,
+    }
 
     started = time.monotonic()
     try:
-        with httpx.Client(timeout=timeout_config, http2=False) as client:
+        with httpx.Client(timeout=timeout_config, http2=False, trust_env=trust_env_proxy) as client:
             response = client.post(llm["api_url"], headers=headers, json=payload)
             response.raise_for_status()
             result = response.json()
@@ -178,8 +193,7 @@ def call_chat_completion_once(
                 "attempt": attempt,
                 "max_attempts": max_attempts,
                 "elapsed_ms": elapsed_ms,
-                "model": llm.get("model"),
-                "api_url": llm.get("api_url"),
+                **trace_base,
                 "http_status": exc.response.status_code,
             }
         )
@@ -194,8 +208,7 @@ def call_chat_completion_once(
                 "attempt": attempt,
                 "max_attempts": max_attempts,
                 "elapsed_ms": elapsed_ms,
-                "model": llm.get("model"),
-                "api_url": llm.get("api_url"),
+                **trace_base,
             }
         )
         raise RuntimeError(f"LLM 调用失败: {exc}") from exc
@@ -208,8 +221,7 @@ def call_chat_completion_once(
             "attempt": attempt,
             "max_attempts": max_attempts,
             "elapsed_ms": elapsed_ms,
-            "model": llm.get("model"),
-            "api_url": llm.get("api_url"),
+            **trace_base,
             "input_messages": len(messages),
         }
     )
@@ -225,8 +237,7 @@ def call_chat_completion_once(
                 "attempt": attempt,
                 "max_attempts": max_attempts,
                 "elapsed_ms": elapsed_ms,
-                "model": llm.get("model"),
-                "api_url": llm.get("api_url"),
+                **trace_base,
             }
         )
         raise RuntimeError("LLM 响应格式不符合 chat completions 约定。") from exc
@@ -263,6 +274,7 @@ def call_chat_completion(
                     "elapsed_ms": int((time.monotonic() - total_started) * 1000),
                     "model": llm.get("model"),
                     "api_url": llm.get("api_url"),
+                    "trust_env_proxy": trust_env_proxy_enabled(llm),
                 }
             )
             return content
@@ -283,6 +295,7 @@ def call_chat_completion(
             "elapsed_ms": int((time.monotonic() - total_started) * 1000),
             "model": llm.get("model"),
             "api_url": llm.get("api_url"),
+            "trust_env_proxy": trust_env_proxy_enabled(llm),
             "error": "; ".join(errors[-3:]),
         }
     )

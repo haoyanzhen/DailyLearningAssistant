@@ -43,6 +43,7 @@ def summarize_llm_trace(trace_path: Path) -> dict:
             calls.append(item)
     by_status = Counter(str(item.get("status")) for item in attempts)
     by_agent = Counter(str(item.get("agent")) for item in attempts)
+    by_trust_env_proxy = Counter(str(item.get("trust_env_proxy")) for item in attempts if "trust_env_proxy" in item)
     error_types = Counter(str(item.get("error_type")) for item in attempts if item.get("error_type"))
     return {
         "path": str(trace_path),
@@ -51,6 +52,7 @@ def summarize_llm_trace(trace_path: Path) -> dict:
         "call_count": len(calls),
         "attempts_by_status": dict(by_status),
         "attempts_by_agent": dict(by_agent),
+        "attempts_by_trust_env_proxy": dict(by_trust_env_proxy),
         "error_types": dict(error_types),
     }
 
@@ -101,6 +103,7 @@ def main() -> int:
         if trace.get("exists"):
             print(
                 f"LLM trace: attempts={trace['attempt_count']} calls={trace['call_count']} "
+                f"proxy={trace.get('attempts_by_trust_env_proxy') or {}} "
                 f"errors={trace.get('error_types') or {}}"
             )
     return 0 if payload["complete"] else 1

@@ -204,9 +204,12 @@ agents.daily_work_summary.repositories[]
 - Agent 名称。
 - 尝试次数。
 - 模型和接口。
+- 是否信任环境代理。
 - 调用耗时。
 - 成功或失败状态。
 - 错误类型。
+
+`orchestrator/check_status.py` 会按 Agent、状态、错误类型和 `trust_env_proxy` 汇总 trace，便于判断失败是否与环境代理有关。
 
 ## 状态设计注意事项
 
