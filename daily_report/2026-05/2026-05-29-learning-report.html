@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-05-29 学习笔记日报</title>
+    <meta name="description" content="从分支隔离开发到显式代理配置，再到依赖收敛，揭示软件工程中对抗不确定性的确定性实践。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260529-map2" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-05-29</p>
+        <h1>把隐式变成显式：构建确定性的软件系统</h1>
+        <p>今天的知识讲解从两个仓库的实践出发，提炼出三个核心概念，它们共同指向一个目标：将系统中模糊、混乱的部分，转变为清晰、可审计的边界。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <svg class="relationship-svg" viewBox="0 0 700 300" role="img" aria-labelledby="relationship-map-title relationship-map-desc">
+                <title id="relationship-map-title">三节小课关系图</title>
+                <desc id="relationship-map-desc">中心主题连接三节小课，每节小课继续连接当天相关概念。</desc>
+                <defs>
+                  <marker id="relationship-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z"></path>
+                  </marker>
+                </defs>
+                <path class="relationship-line" d="M350 58 C350 78 152 80 152 102"></path>
+                <path class="relationship-line" d="M350 58 C350 82 350 82 350 102"></path>
+                <path class="relationship-line" d="M350 58 C350 78 548 80 548 102"></path>
+                <rect class="relationship-svg-hub" x="246" y="18" width="208" height="40" rx="20"></rect>
+                <text class="relationship-svg-hub-text" x="350" y="44"><tspan x="350" dy="0">LLM 工程化能力</tspan></text>
+                <rect class="relationship-svg-concept" x="74" y="102" width="156" height="68" rx="10"></rect>
+                <text class="relationship-svg-concept-text" x="152" y="126"><tspan x="152" dy="0">特性分支的并行开发与</tspan><tspan x="152" dy="17">分支合并策略</tspan></text>
+                <path class="relationship-line muted" d="M152 170 C152 192 152 198 152 213"></path>
+                <rect class="relationship-svg-related" x="80" y="198" width="144" height="28" rx="9"></rect>
+                <text class="relationship-svg-related-text" x="152" y="216"><tspan x="152" dy="0">LLM 网络代理的显式...</tspan></text>
+                <path class="relationship-line muted" d="M152 170 C152 192 152 230 152 245"></path>
+                <rect class="relationship-svg-related" x="80" y="230" width="144" height="28" rx="9"></rect>
+                <text class="relationship-svg-related-text" x="152" y="248"><tspan x="152" dy="0">依赖冲突解决与锁文件的...</tspan></text>
+                <rect class="relationship-svg-concept" x="272" y="102" width="156" height="68" rx="10"></rect>
+                <text class="relationship-svg-concept-text" x="350" y="126"><tspan x="350" dy="0">LLM 网络代理的显</tspan><tspan x="350" dy="17">式配置</tspan></text>
+                <path class="relationship-line muted" d="M350 170 C350 192 350 198 350 213"></path>
+                <rect class="relationship-svg-related" x="278" y="198" width="144" height="28" rx="9"></rect>
+                <text class="relationship-svg-related-text" x="350" y="216"><tspan x="350" dy="0">特性分支的并行开发与分...</tspan></text>
+                <path class="relationship-line muted" d="M350 170 C350 192 350 230 350 245"></path>
+                <rect class="relationship-svg-related" x="278" y="230" width="144" height="28" rx="9"></rect>
+                <text class="relationship-svg-related-text" x="350" y="248"><tspan x="350" dy="0">依赖冲突解决与锁文件的...</tspan></text>
+                <rect class="relationship-svg-concept" x="470" y="102" width="156" height="68" rx="10"></rect>
+                <text class="relationship-svg-concept-text" x="548" y="126"><tspan x="548" dy="0">依赖冲突解决与锁文件</tspan><tspan x="548" dy="17">的最小熵收敛</tspan></text>
+                <path class="relationship-line muted" d="M548 170 C548 192 548 198 548 213"></path>
+                <rect class="relationship-svg-related" x="476" y="198" width="144" height="28" rx="9"></rect>
+                <text class="relationship-svg-related-text" x="548" y="216"><tspan x="548" dy="0">特性分支的并行开发与分...</tspan></text>
+                <path class="relationship-line muted" d="M548 170 C548 192 548 230 548 245"></path>
+                <rect class="relationship-svg-related" x="476" y="230" width="144" height="28" rx="9"></rect>
+                <text class="relationship-svg-related-text" x="548" y="248"><tspan x="548" dy="0">LLM 网络代理的显式...</tspan></text>
+              </svg>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub([LLM 工程化能力])
+  concept1["特性分支的并行开发与分支合并策略"]
+  hub --&gt; concept1
+  concept2["LLM 网络代理的显式配置"]
+  hub --&gt; concept2
+  concept3["依赖冲突解决与锁文件的最小熵收敛"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["对抗不确定性，构建显式边界"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+            <div class="relationship-map-notes">
+              <p class="eyebrow">Concept Links</p>
+              <ul>
+              <li><strong>特性分支的并行开发与分支合并策略 → LLM 网络代理的显式配置</strong><span>代理配置的变更正是通过特性分支独立开发再合并进主线的，体现了规范的工程流程。</span></li>
+              <li><strong>特性分支的并行开发与分支合并策略 → 依赖冲突解决与锁文件的最小熵收敛</strong><span>两者都通过对边界的清晰划分，降低了整体系统的混乱风险。</span></li>
+              <li><strong>特性分支的并行开发与分支合并策略 → 对抗不确定性，构建显式边界</strong><span>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</span></li>
+              <li><strong>LLM 网络代理的显式配置 → 特性分支的并行开发与分支合并策略</strong><span>这个配置变更的过程本身就是通过一个特性分支独立开发、再合并回主线的。</span></li>
+              <li><strong>LLM 网络代理的显式配置 → 依赖冲突解决与锁文件的最小熵收敛</strong><span>两者共同追求确定性，都是要把可能导致系统行为摇摆的因素固定下来。</span></li>
+              <li><strong>依赖冲突解决与锁文件的最小熵收敛 → 特性分支的并行开发与分支合并策略</strong><span>依赖收敛为之后新增 API 路由和重构前端组件铺平了道路，因为只有项目依赖稳定了，新功能才不会与旧依赖的冲突撞车。</span></li>
+              <li><strong>依赖冲突解决与锁文件的最小熵收敛 → LLM 网络代理的显式配置</strong><span>两者共享同一个工程哲学：消除系统中的不确定性，让行为可以预测、可以复现。</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="feature-branch-merge">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>特性分支的并行开发与分支合并策略</h3>
+              <p>Feature Branch Development and Merge Strategy</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">分支是你的独立工作间，合并提交是你引入主线的正式记录。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>使用独立分支隔离开发，避免影响主干。</li>
+                <li>通过合并提交保留清晰的变更轨迹。</li>
+                <li>短分支、频繁合并，减少冲突。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="feature-branch-merge" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="llm-proxy-explicit-conf">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 大语言模型</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>LLM 网络代理的显式配置</h3>
+              <p>Explicit Configuration of LLM Network Proxy</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">代理地址应在配置文件里，而不是代码的隐秘角落。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>将代理地址写入配置文件，而非硬编码在代码中。</li>
+                <li>避免因环境变化导致连接失败，提高程序可移植性。</li>
+                <li>使网络层成为系统可观测的一部分，排除隐式故障源。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="llm-proxy-explicit-conf" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="dependency-convergence-entropy">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>依赖冲突解决与锁文件的最小熵收敛</h3>
+              <p>Dependency Conflict Resolution and Lockfile Minimal Entropy Convergence</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">锁文件的大幅瘦身不是数字游戏，而是依赖关系从混乱走向确定的信号。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>解决包依赖冲突，精简锁文件，消除冗余版本记录。</li>
+                <li>锁文件的瘦身标志着依赖关系从混乱走向确定。</li>
+                <li>确定性的依赖集合保证每次构建的可复现性。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="dependency-convergence-entropy" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="feature-branch-merge">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>特性分支的并行开发与分支合并策略</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>你可以把软件的主分支想象成一条主干河流，所有人都在河边接水喝。如果每个人直接在河边修水渠、建水坝，很容易互相影响，甚至把水源弄脏。特性分支就是给每个人单独挖一条临时的小水渠，你在自己的水渠里任意改造，没关系，不会影响主干。等你把渠道修好、测试没问题了，再用一个“合并”的动作，把你水渠里的水安全地引入主干。那个合并动作就像在主干上留一个标记，写明“某月某日，张三的水渠并入”，从此大家都知道这段新能力来自哪里。这样，即使五个人同时开发五个功能，大家也可以在自己分支上安安静静地工作，最后一个个合并，互不捣乱。合并时的那个“合并提交”就成了历史书里的书签，任何时候想回溯，都能找到这个功能是何时、从哪条分支进来的。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>特性分支创建隔离的工作空间，允许并行开发而不互相干扰。</li>
+                <li>合并提交在历史中创建一个显式的节点，记录功能引入的时间、来源和上下文。</li>
+                <li>频繁从主干拉取更新，保持分支与主干同步，减少合并冲突。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>想象你和室友合租，客厅是共享空间（主分支）。你觉得客厅需要一盏新灯，室友觉得需要一幅新画。如果你们俩直接在客厅里施工，一个拆电线、一个钉钉子，很容易吵架。聪明的做法是：你们各自先在阳台（特性分支）上组装好自己的东西，阳台是隔离的，怎么折腾都不影响客厅。等你把灯组装好、点亮确认没问题，你再小心翼翼地搬进客厅，并拍一张照片记录“2026年5月29日，灯从阳台搬入”。室友也是一样。客厅始终可用，而你们的创造过程各自安全。这张记录照片，就是合并提交。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为分支开得越多越专业，但实际上分支应短小精悍，频繁合并。</li>
+                <li>以为合并就是简单的覆盖，而实际上需要解决冲突，确保代码意图完整。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>LLM 网络代理的显式配置</td><td>代理配置的变更正是通过特性分支独立开发再合并进主线的，体现了规范的工程流程。</td></tr>
+                <tr><td>依赖冲突解决与锁文件的最小熵收敛</td><td>两者都通过对边界的清晰划分，降低了整体系统的混乱风险。</td></tr>
+                <tr><td>对抗不确定性，构建显式边界</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>合并时如果有冲突，Git 是如何检测和提示的，我们应该按什么步骤去解决？</li>
+                <li>什么时候应该压缩多个小提交为一个（squash），什么时候应该保留完整的提交历史？</li>
+                <li>多家公司流行的 Git 工作流（如 Git Flow、GitHub Flow）有什么不同，分别适合什么场景？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="llm-proxy-explicit-conf">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 大语言模型</p>
+                <h3>LLM 网络代理的显式配置</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>很多程序需要访问外部网络，比如调用大模型 API。但有时候我们的电脑在公司、学校或某些地区，直接访问外网可能不行，需要经过一个“代理服务器”，就像你托朋友帮忙代购一样——你的请求先发给朋友，朋友再去找真正的商家。以前，有些开发者会把这个代理地址直接写死在程序里，或者依赖电脑系统里一个隐含的设置。结果，一换电脑、一换网络，程序就莫名其妙连不上了。显式配置，就是把“代理用哪条线”这件事拿出来，写在一个叫做“配置文件”的文本里，程序启动时去读它。这样，换一个新的环境，你只要改一下配置文件里那一个地址，不用翻代码，也不用猜以前的人把设置藏在哪里。这听起来是个小改动，但它让程序的行为变得透明、可迁移，也避免了“在别人电脑上跑不起来”的尴尬。对大语言模型应用来说，代理一旦是显式且确定的，每次调用走的路就固定了，输出也就不会因为网络层的随机波动而出现莫名其妙的差异。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>配置外部化：将环境相关的参数抽取到配置文件，实现程序行为与环境的解耦。</li>
+                <li>透明化：通过显式声明网络依赖，使系统在不同环境下的行为可预测。</li>
+                <li>可迁移性：只需修改配置文件即可适应新环境，无需改动代码。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>小陈做了一个智能写作助手，在公司跑得很好。元旦回家想给爸妈演示，结果程序一启动就报错“连接超时”。他花了一下午，在代码里翻了十几处，才发现原来当初顺手把公司的专用代理地址写死在了某个角落。现在他在家得用家庭网络，自然通不了。如果当初他把代理地址写进一个配置文件，只需要在家修改那一个文件，程序就能正常工作。更妙的是，后来公司换了新代理，他也只改了那个文件，所有同事拉取最新代码后都不受影响。这个道理就像给电器做电源线接口：如果线是焊死在机器里的，换一个国家就没法用；做成可插拔的标准接口，你只需要换一根对应插头的线。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为代理只是一个网络问题，不值得在代码设计里专门花功夫；实际上，隐式代理会让 LLM 应用的行为变得不可预测。</li>
+                <li>以为把东西写进文件就行，还需要考虑当配置缺失或错误时，程序应有什么样的默认行为或清晰的报错。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>特性分支的并行开发与分支合并策略</td><td>这个配置变更的过程本身就是通过一个特性分支独立开发、再合并回主线的。</td></tr>
+                <tr><td>依赖冲突解决与锁文件的最小熵收敛</td><td>两者共同追求确定性，都是要把可能导致系统行为摇摆的因素固定下来。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果程序需要同时支持直连和多种代理，配置文件的结构应该如何设计才既灵活又不易出错？</li>
+                <li>当代理配置错误或代理服务宕机时，LLM 应用应该怎样优雅地降级或给出提示，而不是直接崩溃？</li>
+                <li>在大规模部署下，显式配置如何与容器环境变量、密钥管理服务配合，做到既安全又方便切换？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="dependency-convergence-entropy">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学</p>
+                <h3>依赖冲突解决与锁文件的最小熵收敛</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>做现代软件项目，几乎都会用别人写好的“包”，比如做网页可能用到 React、用到某个日期处理库。但是问题来了：你用的 A 包要求日期库的版本是 1.0，B 包却要求日期库的版本是 2.0，这两个版本可能不兼容。这时候，包管理器（比如 npm）就要扮演调解员的角色，尝试找出一个方案：要么让大家都迁就一个版本，要么在不同位置安装不同版本，但这就让依赖图变得很乱。我们项目里的一个文件叫做“锁文件”（package-lock.json），它会记录下最终确定安装了哪些包的什么版本。如果依赖冲突没有解决好，这个锁文件就会变得巨大、臃肿，像一个塞满了冗余备选方案的储物间。今天在 pi-web 仓库，我们看到锁文件被大大精简了，删除了大约 57.7% 的行数。这就像从一个杂乱无章的仓库里，清理掉了所有不再需要或者重复的备件，只留下一套整齐、确定、能恰好满足所有需求的组合。这个过程，在概念上称为“最小熵收敛”——从混乱的状态回归到一种最简洁、最有序的确定状态。这对于项目意味着：以后每次安装，都能稳定地复现同样一套包，不会再有因为安装时间不同而导致结果不同的怪事。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>包管理器解析依赖时，冲突会导致锁文件膨胀，记录多个备选方案。</li>
+                <li>通过升级或替换冲突包，达成一个兼容的版本集合，使锁文件只保留必要的版本。</li>
+                <li>最小熵收敛意味着依赖图达到最简单的确定状态，提高可复现性。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>小明租了一个工具间，需要同时给两个社团借工具。第一个社团的清单写着“锤子，型号 A”；第二个社团写的是“锤子，型号 B”，可是工具间只能放一把锤子。小明打电话问了两个社团，发现其实型号 B 的新锤子也能干型号 A 的活，于是他只借了型号 B，并在记事本上划掉了之前的纠结。之前他纠结时，记事本上密密麻麻写了“锤子 A 候选”“锤子 B 候选”“如果 A 没有就 B”等等；确定后，他把这些候选记录全删了，只留下一行“锤子型号 B”。记事本的厚度瞬间减少一半，而且谁来看都知道该用哪把锤子，不会再弄错。锁文件的精简就是这个过程：删除了大量的冲突标记、冗余的备选方案，只记录最终确定的一组版本，让所有人的认知和机器的行为都对齐到同一张清单上。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>一遇到依赖问题就直接删除锁文件和 node_modules 重新安装，这可能在无意中引入新版本的不兼容。</li>
+                <li>只关注锁文件大小的变化，而不去分析冲突的根本来源。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>特性分支的并行开发与分支合并策略</td><td>依赖收敛为之后新增 API 路由和重构前端组件铺平了道路，因为只有项目依赖稳定了，新功能才不会与旧依赖的冲突撞车。</td></tr>
+                <tr><td>LLM 网络代理的显式配置</td><td>两者共享同一个工程哲学：消除系统中的不确定性，让行为可以预测、可以复现。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>不同的包管理器（npm、yarn、pnpm）在解析冲突时有什么不同的策略，哪些更容易产生冗余的锁文件？</li>
+                <li>当项目扩容成 monorepo 时，多个包的依赖之间如何避免版本冲突的蔓延，锁文件的结构又有何不同？</li>
+                <li>除了肉眼观察锁文件大小，有没有工具可以帮助我们可视化依赖树，主动发现潜在的版本冲突并给出收敛建议？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">特性分支为显式代理的配置变更提供了规范的工程流程，而依赖收敛又为功能开发铺平了道路，三者一环扣一环，都在追求系统的确定性。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">今天的三件事，本质上都是在帮系统从“不知道会怎样”走向“知道并控制会怎样”。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何在团队中推广并坚守特性分支的最佳实践？</li>
+            <li>设计一个灵活的 LLM 代理配置方案，需要兼顾哪些异常场景？</li>
+            <li>如何自动化检测依赖冲突并引导锁文件收敛？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
