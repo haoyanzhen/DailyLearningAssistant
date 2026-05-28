@@ -78,6 +78,7 @@ python3 scripts/check_config.py --config config.json --strict
 - `api_url`：OpenAI Chat Completions 兼容接口地址。
 - `api_key`：真实 API key，不能保留 `YOUR_...` 占位符。
 - `model`：使用的模型名。
+- `trust_env_proxy`：是否让 LLM HTTP 请求读取 `http_proxy`、`https_proxy`、`no_proxy` 等环境变量。默认建议为 `false`，避免终端或系统代理设置影响定时流水线；确实需要通过代理访问 LLM API 时再显式改为 `true`。
 
 当前建议模型为 `deepseek-v4-pro`。LLM 网络调用使用 `httpx`，因此本地调度环境需要安装 `requirements.txt` 中的依赖。
 

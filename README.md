@@ -49,6 +49,7 @@ cp config.example.json config.json
 
 - `repositories`：要扫描的本地 Git 仓库列表。
 - `llm`：LLM API 地址、API key 和模型名。
+- `llm.trust_env_proxy`：是否让 LLM 请求读取终端环境代理，默认建议关闭。
 - `email`：发件邮箱、收件人、SMTP/IMAP 配置。
 - `site.base_url`：GitHub Pages 站点根地址。
 - `schedule.html_run_time`：日报生成和发布任务时间。

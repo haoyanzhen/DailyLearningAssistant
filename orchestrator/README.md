@@ -60,7 +60,7 @@ prework/YYYY-MM/YYYY-MM-DD/run_status.json
 
 ## LLM 重连与结果校验
 
-`llm.py` 使用 `httpx` 提供统一的 Chat Completions 调用和重试能力。各 Agent 只保留业务调用和失败解释，不再自行实现循环等待、指数退避或断联重连。现阶段 orchestrator 会把 `--llm-retries` 和 `--llm-retry-delay` 继续下发给支持的 Agent，具体重试执行由 `llm.py` 完成。总调度运行时会把每次 LLM 尝试写入当天的 `llm_trace.jsonl`，记录 Agent、尝试次数、耗时、模型、接口和错误类型。
+`llm.py` 使用 `httpx` 提供统一的 Chat Completions 调用和重试能力。各 Agent 只保留业务调用和失败解释，不再自行实现循环等待、指数退避或断联重连。现阶段 orchestrator 会把 `--llm-retries` 和 `--llm-retry-delay` 继续下发给支持的 Agent，具体重试执行由 `llm.py` 完成。总调度运行时会把每次 LLM 尝试写入当天的 `llm_trace.jsonl`，记录 Agent、尝试次数、耗时、模型、接口、是否信任环境代理和错误类型。LLM 请求默认不读取 `http_proxy`、`https_proxy` 等环境代理；如需代理访问，可在 `llm.trust_env_proxy` 中显式开启。
 
 `manifest.py` 负责站点索引的统一管理，会强校验日期格式、路径格式、重复项、倒序和必要字段；在生成日报或发送邮件时，还会检查 manifest 指向的本地文件是否存在且非空。
 
