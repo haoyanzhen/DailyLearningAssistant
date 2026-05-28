@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-05-28 学习笔记日报</title>
+    <meta name="description" content="探索软件系统边界设计，通过配置契约化、工作区聚合边界和状态机驱动的工作执行，驯服系统演化复杂性，构建可靠知识服务。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260528-map2" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-05-28</p>
+        <h1>边界设计：从配置到状态机的清晰管控</h1>
+        <p>当小工具进化为知识助手，如何用明确的契约和边界驯服系统演化？今日深入配置契约化、工作区聚合和状态机驱动，看边界如何让不确定的世界变得可管理。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <svg class="relationship-svg" viewBox="0 0 700 300" role="img" aria-labelledby="relationship-map-title relationship-map-desc">
+                <title id="relationship-map-title">三节小课关系图</title>
+                <desc id="relationship-map-desc">中心主题连接三节小课，每节小课继续连接当天相关概念。</desc>
+                <defs>
+                  <marker id="relationship-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z"></path>
+                  </marker>
+                </defs>
+                <path class="relationship-line" d="M350 58 C350 78 152 80 152 102"></path>
+                <path class="relationship-line" d="M350 58 C350 82 350 82 350 102"></path>
+                <path class="relationship-line" d="M350 58 C350 78 548 80 548 102"></path>
+                <rect class="relationship-svg-hub" x="246" y="18" width="208" height="40" rx="20"></rect>
+                <text class="relationship-svg-hub-text" x="350" y="44"><tspan x="350" dy="0">LLM 工程化能力</tspan></text>
+                <rect class="relationship-svg-concept" x="74" y="102" width="156" height="68" rx="10"></rect>
+                <text class="relationship-svg-concept-text" x="152" y="126"><tspan x="152" dy="0">配置契约化</tspan></text>
+                <path class="relationship-line muted" d="M152 170 C152 192 152 198 152 213"></path>
+                <rect class="relationship-svg-related" x="80" y="198" width="144" height="28" rx="9"></rect>
+                <text class="relationship-svg-related-text" x="152" y="216"><tspan x="152" dy="0">工作区作为聚合边界</tspan></text>
+                <path class="relationship-line muted" d="M152 170 C152 192 152 230 152 245"></path>
+                <rect class="relationship-svg-related" x="80" y="230" width="144" height="28" rx="9"></rect>
+                <text class="relationship-svg-related-text" x="152" y="248"><tspan x="152" dy="0">状态机驱动的工作执行</tspan></text>
+                <rect class="relationship-svg-concept" x="272" y="102" width="156" height="68" rx="10"></rect>
+                <text class="relationship-svg-concept-text" x="350" y="126"><tspan x="350" dy="0">工作区作为聚合边界</tspan></text>
+                <path class="relationship-line muted" d="M350 170 C350 192 350 198 350 213"></path>
+                <rect class="relationship-svg-related" x="278" y="198" width="144" height="28" rx="9"></rect>
+                <text class="relationship-svg-related-text" x="350" y="216"><tspan x="350" dy="0">配置契约化</tspan></text>
+                <path class="relationship-line muted" d="M350 170 C350 192 350 230 350 245"></path>
+                <rect class="relationship-svg-related" x="278" y="230" width="144" height="28" rx="9"></rect>
+                <text class="relationship-svg-related-text" x="350" y="248"><tspan x="350" dy="0">状态机驱动的工作执行</tspan></text>
+                <rect class="relationship-svg-concept" x="470" y="102" width="156" height="68" rx="10"></rect>
+                <text class="relationship-svg-concept-text" x="548" y="126"><tspan x="548" dy="0">状态机驱动的工作执行</tspan></text>
+                <path class="relationship-line muted" d="M548 170 C548 192 548 198 548 213"></path>
+                <rect class="relationship-svg-related" x="476" y="198" width="144" height="28" rx="9"></rect>
+                <text class="relationship-svg-related-text" x="548" y="216"><tspan x="548" dy="0">配置契约化</tspan></text>
+                <path class="relationship-line muted" d="M548 170 C548 192 548 230 548 245"></path>
+                <rect class="relationship-svg-related" x="476" y="230" width="144" height="28" rx="9"></rect>
+                <text class="relationship-svg-related-text" x="548" y="248"><tspan x="548" dy="0">工作区作为聚合边界</tspan></text>
+              </svg>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub([LLM 工程化能力])
+  concept1["配置契约化"]
+  hub --&gt; concept1
+  concept2["工作区作为聚合边界"]
+  hub --&gt; concept2
+  concept3["状态机驱动的工作执行"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["系统边界管理"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+            <div class="relationship-map-notes">
+              <p class="eyebrow">Concept Links</p>
+              <ul>
+              <li><strong>配置契约化 → 工作区作为聚合边界</strong><span>配置契约定义外部输入，工作区聚合边界定义内部一致性，两者共同划定系统边界。</span></li>
+              <li><strong>配置契约化 → 状态机驱动的工作执行</strong><span>状态机根据配置决定是否触发同步状态，配置错误时迁移到“配置无效”状态。</span></li>
+              <li><strong>配置契约化 → 系统边界管理</strong><span>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</span></li>
+              <li><strong>工作区作为聚合边界 → 配置契约化</strong><span>配置契约定义外部输入，工作区聚合定义内部一致性，两者共同划定系统边界。</span></li>
+              <li><strong>工作区作为聚合边界 → 状态机驱动的工作执行</strong><span>状态机的状态迁移可以保护聚合内部操作的完整性，例如同步时锁定工作区。</span></li>
+              <li><strong>状态机驱动的工作执行 → 配置契约化</strong><span>运行时状态机需要根据配置来决定是否触发“同步中”状态，并在配置错误时迁移到“配置无效”状态。</span></li>
+              <li><strong>状态机驱动的工作执行 → 工作区作为聚合边界</strong><span>状态机控制工作区操作的流程，确保聚合内部操作在正确状态下进行。</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="configuration-contractualization">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>配置契约化</h3>
+              <p>Configuration Contractualization</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">配置契约化就像租房合同，你签了字，房东和租客都清楚各自的权利义务。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>配置是系统能力的声明式协议，明确必须与可选参数。</li>
+                <li>启动时校验配置合法性，拒绝启动而非运行时崩溃。</li>
+                <li>配置契约支持版本化与扩展，降低变更风险。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="configuration-contractualization" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="workspace-as-aggregate-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>工作区作为聚合边界</h3>
+              <p>Workspace as Aggregate Boundary</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">聚合就像一个边界守卫，坚守着业务规则的一致性。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>工作区聚合根封装内部实体，所有修改必须通过它，确保事务一致性。</li>
+                <li>聚合边界强制执行业务规则，如“论文只能属于一个工作区”。</li>
+                <li>支持天然的多用户隔离，未来扩展不用重构一致性逻辑。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="workspace-as-aggregate-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="state-machine-driven-execution">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学</span>
+                <span class="tag warm">★★★★★</span>
+              </div>
+              <h3>状态机驱动的工作执行</h3>
+              <p>State-Machine-Driven Work Execution</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">用显式状态机编排异步任务，让复杂流水线变得可追踪、可恢复，而不是靠隐式的等待和假设。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>将任务流程建模为有限状态机，明确状态和迁移条件。</li>
+                <li>状态机强制检查当前状态是否允许动作，防止无效操作。</li>
+                <li>异常状态下安全迁移并记录，支持重试与恢复，提高健壮性。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="state-machine-driven-execution" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="configuration-contractualization">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>配置契约化</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象你要给一个智能助手增加“监控朋友的代码仓库”的功能。你不能在代码里写死“只监控张三的仓库”，因为明天可能要监控李四的。这时，你需要一个配置文件，里面写上仓库的网址、需要的权限、要拉取的分支等信息。程序读取这个文件后，按照里面约定的格式和内容去连接远程仓库。这就是配置契约化：配置文件不仅仅是几个选项，而是系统能力与使用者之间的一份明确协议。契约规定了必须提供什么信息（比如仓库地址），可以选填什么（比如只监控某个文件夹），以及填错了会怎样（比如启动时就报错，而不是跑到一半崩溃）。这种思想就像租房合同，你签了字，房东和租客都清楚各自的权利义务；系统与配置文件的关系也类似，程序启动时先检查合同条款是否满足，满足才开工。这样做的好处是，未来扩展新功能时，只要在契约里增加新条款，不必改动核心业务逻辑，系统更稳固，也更容易向外人说明它能做什么、需要什么。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>配置契约规定了系统输入的要求、格式和校验规则。</li>
+                <li>程序启动时读取并校验，符合契约才运行，不符合则终止并报错。</li>
+                <li>契约将功能需求声明式表达，与核心逻辑解耦，便于独立演进。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一个项目团队增加远程仓库支持时，使用 config.example.json 列出 remote_repos 数组，新同事复制并填写信息即可，启动时自动校验地址格式，格式错误立即提示，避免运行到一半才崩溃。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>配置文件只是放常量的地方，随便写几个 key-value 就可以。</li>
+                <li>配置文件不需要文档和校验，出错时再改。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>工作区作为聚合边界</td><td>配置契约定义外部输入，工作区聚合边界定义内部一致性，两者共同划定系统边界。</td></tr>
+                <tr><td>状态机驱动的工作执行</td><td>状态机根据配置决定是否触发同步状态，配置错误时迁移到“配置无效”状态。</td></tr>
+                <tr><td>系统边界管理</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>配置契约的校验应该放在程序启动时、编译时，还是以单独测试的形式进行？不同的时机有什么优缺点？</li>
+                <li>当配置契约版本升级时，如何让旧配置文件平滑迁移而不中断服务？可以借鉴数据库迁移脚本的思想吗？</li>
+                <li>在微服务架构中，如果多个服务共享同一套配置中心，配置契约化如何帮助各服务独立演进而不互相影响？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="workspace-as-aggregate-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>工作区作为聚合边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象你在电脑上管理自己的论文阅读：你创建了不同的文件夹分别放“机器学习”和“软件工程”的论文，每个文件夹里有自己的 PDF、标注和阅读进度记录。现在要求你不能让机器学习文件夹里的标签突然跑到软件工程文件夹里去，也不能让一次崩溃导致两个文件夹的数据混乱。这就是“工作区作为聚合边界”的核心：在程序设计中，我们把一个工作区以及它内部的论文、标签、进度、导出配置等打包成一个“聚合”，所有对内部数据的修改都必须通过工作区这个唯一入口，并且保证这些修改要么全部成功，要么全部回滚，不会留下半毁状态。聚合就像一个边界守卫，坚守着业务规则的一致性。例如，“一篇论文只能属于一个工作区”“删除工作区时必须同时删掉里面所有论文”，这些规则靠聚合来强制执行。这种设计直接来自领域驱动设计（DDD），它让复杂业务逻辑不会散落到代码各处，而是围绕工作区这个中心凝聚起来。将来需要支持多用户各自拥有独立工作区时，因为聚合本身就是天然隔离边界，扩展起来非常自然。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>依据 DDD 聚合设计，将紧密相关的实体和值对象打包，以聚合根为唯一访问入口。</li>
+                <li>通过数据库事务或代码约束保证一组修改的原子性。</li>
+                <li>聚合确定一致性边界，外部只能通过 ID 引用，不能直接修改内部对象。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一个论文管理项目引入工作区后，批量导入功能不小心绕过了工作区直接写入了论文表，导致某些论文悬空、没有归属工作区，前端显示混乱。修复时强制所有论文创建操作都必须先定位到目标工作区，从此再未出现类似问题。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把工作区仅仅看作界面上的分组或文件夹。</li>
+                <li>认为聚合就是随便的数据容器，忽略了一致性边界的严格要求。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>配置契约化</td><td>配置契约定义外部输入，工作区聚合定义内部一致性，两者共同划定系统边界。</td></tr>
+                <tr><td>状态机驱动的工作执行</td><td>状态机的状态迁移可以保护聚合内部操作的完整性，例如同步时锁定工作区。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>在一个聚合内部，如果某些子实体需要独立被外部访问（例如通过 REST API 直接获取某篇论文），如何设计才能不破坏聚合的不变性？</li>
+                <li>当业务要求不同工作区之间共享部分数据（如公共标签库）时，聚合边界应该如何调整？是引入领域事件还是重新划分聚合？</li>
+                <li>如何判断哪些对象属于同一个聚合、哪些应该拆分为不同聚合？在实际项目中，有没有试探性的设计启发式方法？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="state-machine-driven-execution">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学</p>
+                <h3>状态机驱动的工作执行</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象你正在执行一个每日自动化任务：先检查是否有新论文，然后拉取，最后生成总结。如果拉取时网络断了，怎么办？程序是应该傻等还是直接报错？如果同时有多个远程仓库要处理，如何协调？状态机驱动的工作执行就是解决这类问题的经典方法。我们把整个工作流程分解成几个离散的状态，比如“空闲”、“同步中”、“同步成功”、“同步失败”、“分析中”、“分析完成”等等，然后明确规定这些状态之间可以怎样跳转。例如，只有在“空闲”状态下才能开始同步，同步成功后自动进入“分析中”；如果同步失败，就停留在“同步失败”状态并记录错误原因，等待人工干预或定时重试。这样程序就像一个严格遵守红绿灯的司机，不会闯红灯导致混乱。底层用一个变量记录当前状态，每次要执行动作时都先检查当前状态是否允许该动作，动作完成后再更新状态。这种模式把原本充斥大量 if-else 和回调的异步逻辑，变成了一张清晰的迁移图，任何时刻我们都能准确知道系统“现在在干什么、下一步可以干什么”，大大降低复杂异步系统的 bug 率。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>定义工作流程的离散状态和允许的转换。</li>
+                <li>每个动作执行前检查状态是否匹配，执行后更新状态。</li>
+                <li>异常处理映射到特定失败状态，并设计重试或恢复路径。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>早期日报系统没有状态机，git pull 卡住导致后续步骤假死。引入显式状态机后，网络错误马上进入失败状态并记录，调度器可定时重试，系统不再卡死，新成员也能一眼看懂任务生命周期。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>我的代码只是一条直线执行，没必要用状态机，太复杂了。</li>
+                <li>状态机只适用于硬件控制，软件中用条件判断就够了。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>配置契约化</td><td>运行时状态机需要根据配置来决定是否触发“同步中”状态，并在配置错误时迁移到“配置无效”状态。</td></tr>
+                <tr><td>工作区作为聚合边界</td><td>状态机控制工作区操作的流程，确保聚合内部操作在正确状态下进行。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何设计状态机的持久化机制，使得即使进程崩溃或重启，系统也能从上次的状态安全恢复，而不会重复或遗漏步骤？</li>
+                <li>当多个状态机实例并行运行时，如何设计并发控制以避免资源冲突或死锁？</li>
+                <li>除了经典有限状态机，还有哪些模型适合描述更复杂的异步工作流？比如层次状态机或基于 Actor 的模型，它们各有什么优势？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念共同构成了一套边界管理工具箱。配置契约化定义了系统与外界的接口约定，告诉系统“允许什么样的远程仓库接入、需要提供哪些信息”，就像一份双方签字的协议。工作区作为聚合边界，则在领域模型内部画出了一致性保护圈，保证一个工作区里的论文元数据、阅读进度、标签等不会因为外部操作而变得不一致。状态机驱动的工作执行进一步把这些边界落实到运行时的行为编排上：系统在“空闲”“同步中”“同步失败”“分析中”等状态之间有序迁移，确保每一项异步任务都在受控边界内完成。三者层层递进，从声明式契约到结构化领域模型，再到运行时的状态编排，为构建可靠、可扩展的知识服务系统提供了清晰的范式。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">用明确的契约和边界来驯服系统演化的复杂性，让不确定的外部世界变得可管理。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>配置契约版本升级时，如何设计平滑迁移方案？</li>
+            <li>如何在保证聚合不变性的前提下，提供子实体的独立外部访问？</li>
+            <li>状态机持久化如何保证崩溃恢复时不重复、不遗漏步骤？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
