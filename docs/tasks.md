@@ -19,7 +19,7 @@
 - [x] 本地调度：新增完整流水线的 launchd 准备脚本，调度 `run_daily.py`，而不是只调度邮件或 git push；当前只新增脚本，不修改或加载现有每日自动运行项。
 - [x] 发布集成：在完整流水线成功后执行 git commit / push，并在成功发布后调用第 5 步邮件 Agent。
 - [x] 配置整理：补充 `config.example.json` 中的本地仓库路径、调度时间、时区、LLM、邮件和站点配置说明，并新增配置检查脚本与文档。
-- [ ] 远端仓库变化监控：扩展第 1 步 `daily_work_summary`，对 `remote_repositories[].urls` 执行 `git ls-remote`；私人仓库可用 SSH URL 和本机 SSH key 读取，公开仓库可在无密钥情况下走 HTTP(S) URL；任一 URL 成功即可记录远端分支/tag SHA 变化，不 clone/fetch、不下载仓库内容；远端和本地仓库都输出统一的 `work_summary_[name].md`，作为后续知识点提取输入，只在配置和状态中区分来源。设计见 `docs/remote_repository_monitoring.md`。
+- [x] 远端仓库变化监控：扩展第 1 步 `daily_work_summary`，对 `remote_repositories[].urls` 执行 `git ls-remote`；私人仓库可用 SSH URL 和本机 SSH key 读取，公开仓库可在无密钥情况下走 HTTP(S) URL；任一 URL 成功即可记录远端分支/tag SHA 变化，不 clone/fetch、不下载仓库内容；远端和本地仓库都输出统一的 `work_summary_[name].md`，作为后续知识点提取输入，只在配置和状态中区分来源。设计见 `docs/remote_repository_monitoring.md`。
 - [x] 可继续探索的问题——跨天连续延伸
 - [ ] 周报——对日报的总结与讨论
 
