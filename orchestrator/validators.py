@@ -142,8 +142,10 @@ def validate_relationship_map_html(html: str) -> list[str]:
     required_fragments = [
         "relationship-map",
         "relationship-map-visual",
-        "relationship-svg",
-        "relationship-map-notes",
+        "relationship-orbit",
+        "relationship-hub",
+        "relationship-node",
+        "relationship-map-summary",
     ]
     problems.extend([f"关系图缺少必要片段: {item}" for item in required_fragments if item not in lower_html])
     if not re.search(r'<pre\b[^>]*class="[^"]*\bmermaid\b[^"]*"', html, flags=re.I):
@@ -164,19 +166,22 @@ def validate_relationship_map_html(html: str) -> list[str]:
     mermaid_source = _extract_mermaid_source(html)
     problems.extend(_validate_mermaid_source(mermaid_source, lesson_titles))
 
-    notes_block = _extract_first(
-        r'<div\b[^>]*class="[^"]*\brelationship-map-notes\b[^"]*"[^>]*>([\s\S]*?)</div>',
-        html,
+    node_count = len(
+        re.findall(r'<article\b[^>]*class="[^"]*\brelationship-node\b[^"]*"', html, flags=re.I)
     )
-    note_items = re.findall(r"<li\b[^>]*>([\s\S]*?)</li>", notes_block, flags=re.I)
-    if len(note_items) < 3:
-        problems.append("关系图 HTML 说明区至少需要 3 条关系说明")
-    for index, item in enumerate(note_items, start=1):
-        text = unescape(_strip_tags(item))
-        if "→" not in text:
-            problems.append(f"关系图第 {index} 条说明缺少“源概念 → 目标概念”格式")
-        if len(text) < 20:
-            problems.append(f"关系图第 {index} 条说明过短，无法解释关系")
+    if node_count != 3:
+        problems.append(f"关系图需要恰好 3 个可见知识节点，当前为 {node_count} 个")
+
+    summary_text = unescape(
+        _strip_tags(
+            _extract_first(
+                r'<p\b[^>]*class="[^"]*\brelationship-map-summary\b[^"]*"[^>]*>([\s\S]*?)</p>',
+                html,
+            )
+        )
+    )
+    if len(summary_text) < 20:
+        problems.append("关系图摘要过短，无法说明三节小课的整体关联")
 
     return problems
 

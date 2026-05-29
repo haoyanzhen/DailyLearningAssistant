@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>2026-05-29 学习笔记日报</title>
     <meta name="description" content="从分支隔离开发到显式代理配置，再到依赖收敛，揭示软件工程中对抗不确定性的确定性实践。" />
-    <link rel="stylesheet" href="../../style/main.css?v=20260529-map2" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260529-map3" />
   </head>
   <body>
     <main class="page">
@@ -45,47 +45,34 @@
 
           <div class="relationship-map" aria-label="三节小课关系图">
             <div class="relationship-map-visual">
-              <svg class="relationship-svg" viewBox="0 0 700 300" role="img" aria-labelledby="relationship-map-title relationship-map-desc">
-                <title id="relationship-map-title">三节小课关系图</title>
-                <desc id="relationship-map-desc">中心主题连接三节小课，每节小课继续连接当天相关概念。</desc>
-                <defs>
-                  <marker id="relationship-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-                    <path d="M 0 0 L 10 5 L 0 10 z"></path>
-                  </marker>
-                </defs>
-                <path class="relationship-line" d="M350 58 C350 78 152 80 152 102"></path>
-                <path class="relationship-line" d="M350 58 C350 82 350 82 350 102"></path>
-                <path class="relationship-line" d="M350 58 C350 78 548 80 548 102"></path>
-                <rect class="relationship-svg-hub" x="246" y="18" width="208" height="40" rx="20"></rect>
-                <text class="relationship-svg-hub-text" x="350" y="44"><tspan x="350" dy="0">LLM 工程化能力</tspan></text>
-                <rect class="relationship-svg-concept" x="74" y="102" width="156" height="68" rx="10"></rect>
-                <text class="relationship-svg-concept-text" x="152" y="126"><tspan x="152" dy="0">特性分支的并行开发与</tspan><tspan x="152" dy="17">分支合并策略</tspan></text>
-                <path class="relationship-line muted" d="M152 170 C152 192 152 198 152 213"></path>
-                <rect class="relationship-svg-related" x="80" y="198" width="144" height="28" rx="9"></rect>
-                <text class="relationship-svg-related-text" x="152" y="216"><tspan x="152" dy="0">LLM 网络代理的显式...</tspan></text>
-                <path class="relationship-line muted" d="M152 170 C152 192 152 230 152 245"></path>
-                <rect class="relationship-svg-related" x="80" y="230" width="144" height="28" rx="9"></rect>
-                <text class="relationship-svg-related-text" x="152" y="248"><tspan x="152" dy="0">依赖冲突解决与锁文件的...</tspan></text>
-                <rect class="relationship-svg-concept" x="272" y="102" width="156" height="68" rx="10"></rect>
-                <text class="relationship-svg-concept-text" x="350" y="126"><tspan x="350" dy="0">LLM 网络代理的显</tspan><tspan x="350" dy="17">式配置</tspan></text>
-                <path class="relationship-line muted" d="M350 170 C350 192 350 198 350 213"></path>
-                <rect class="relationship-svg-related" x="278" y="198" width="144" height="28" rx="9"></rect>
-                <text class="relationship-svg-related-text" x="350" y="216"><tspan x="350" dy="0">特性分支的并行开发与分...</tspan></text>
-                <path class="relationship-line muted" d="M350 170 C350 192 350 230 350 245"></path>
-                <rect class="relationship-svg-related" x="278" y="230" width="144" height="28" rx="9"></rect>
-                <text class="relationship-svg-related-text" x="350" y="248"><tspan x="350" dy="0">依赖冲突解决与锁文件的...</tspan></text>
-                <rect class="relationship-svg-concept" x="470" y="102" width="156" height="68" rx="10"></rect>
-                <text class="relationship-svg-concept-text" x="548" y="126"><tspan x="548" dy="0">依赖冲突解决与锁文件</tspan><tspan x="548" dy="17">的最小熵收敛</tspan></text>
-                <path class="relationship-line muted" d="M548 170 C548 192 548 198 548 213"></path>
-                <rect class="relationship-svg-related" x="476" y="198" width="144" height="28" rx="9"></rect>
-                <text class="relationship-svg-related-text" x="548" y="216"><tspan x="548" dy="0">特性分支的并行开发与分...</tspan></text>
-                <path class="relationship-line muted" d="M548 170 C548 192 548 230 548 245"></path>
-                <rect class="relationship-svg-related" x="476" y="230" width="144" height="28" rx="9"></rect>
-                <text class="relationship-svg-related-text" x="548" y="248"><tspan x="548" dy="0">LLM 网络代理的显式...</tspan></text>
-              </svg>
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>把隐式变成显式</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>特性分支的并行开发与分支合…</strong>
+                <small>分支是你的独立工作间，合并提交是你…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>LLM 网络代理的显式配置</strong>
+                <small>代理地址应在配置文件里，而不是代码…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>依赖冲突解决与锁文件的最小…</strong>
+                <small>锁文件的大幅瘦身不是数字游戏，而是…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">特性分支为显式代理的配置变更提供了规范的工程流程，而依赖收敛又为功能开发铺平了道路，三者一环扣一环，都在追求系统的确定性。</p>
               <pre class="mermaid mermaid-source" aria-hidden="true">
 flowchart LR
-  hub([LLM 工程化能力])
+  hub(["把隐式变成显式"])
   concept1["特性分支的并行开发与分支合并策略"]
   hub --&gt; concept1
   concept2["LLM 网络代理的显式配置"]
@@ -107,18 +94,6 @@ flowchart LR
   class concept1,concept2,concept3 primary
   class related1 related
               </pre>
-            </div>
-            <div class="relationship-map-notes">
-              <p class="eyebrow">Concept Links</p>
-              <ul>
-              <li><strong>特性分支的并行开发与分支合并策略 → LLM 网络代理的显式配置</strong><span>代理配置的变更正是通过特性分支独立开发再合并进主线的，体现了规范的工程流程。</span></li>
-              <li><strong>特性分支的并行开发与分支合并策略 → 依赖冲突解决与锁文件的最小熵收敛</strong><span>两者都通过对边界的清晰划分，降低了整体系统的混乱风险。</span></li>
-              <li><strong>特性分支的并行开发与分支合并策略 → 对抗不确定性，构建显式边界</strong><span>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</span></li>
-              <li><strong>LLM 网络代理的显式配置 → 特性分支的并行开发与分支合并策略</strong><span>这个配置变更的过程本身就是通过一个特性分支独立开发、再合并回主线的。</span></li>
-              <li><strong>LLM 网络代理的显式配置 → 依赖冲突解决与锁文件的最小熵收敛</strong><span>两者共同追求确定性，都是要把可能导致系统行为摇摆的因素固定下来。</span></li>
-              <li><strong>依赖冲突解决与锁文件的最小熵收敛 → 特性分支的并行开发与分支合并策略</strong><span>依赖收敛为之后新增 API 路由和重构前端组件铺平了道路，因为只有项目依赖稳定了，新功能才不会与旧依赖的冲突撞车。</span></li>
-              <li><strong>依赖冲突解决与锁文件的最小熵收敛 → LLM 网络代理的显式配置</strong><span>两者共享同一个工程哲学：消除系统中的不确定性，让行为可以预测、可以复现。</span></li>
-              </ul>
             </div>
           </div>
 

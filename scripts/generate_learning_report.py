@@ -265,84 +265,39 @@ def mermaid_label(value: object) -> str:
     return normalize_text(value).replace('"', "'")
 
 
-def svg_text_lines(value: object, max_chars: int, max_lines: int) -> list[str]:
+def compact_label(value: object, max_chars: int = 12) -> str:
     text = normalize_text(value)
-    lines = []
-    current = ""
-    for char in text:
-        current += char
-        if len(current) >= max_chars:
-            lines.append(current)
-            current = ""
-            if len(lines) == max_lines:
-                break
-    if current and len(lines) < max_lines:
-        lines.append(current)
-    if len(lines) == max_lines and len("".join(lines)) < len(text):
-        lines[-1] = lines[-1].rstrip("。,.，、 ") + "..."
-    return lines or [""]
+    if len(text) <= max_chars:
+        return text
+    return text[: max_chars - 1].rstrip("，、。 ") + "…"
 
 
-def render_svg_text(value: object, x: int, y: int, max_chars: int, max_lines: int, css_class: str, line_height: int = 17) -> str:
-    tspans = []
-    for index, line in enumerate(svg_text_lines(value, max_chars, max_lines)):
-        dy = 0 if index == 0 else line_height
-        tspans.append(f'<tspan x="{x}" dy="{dy}">{escape_text(line)}</tspan>')
-    return f'                <text class="{css_class}" x="{x}" y="{y}">{"".join(tspans)}</text>'
-
-
-def render_svg_relationship_graph(concepts: list[dict]) -> str:
-    concept_positions = [(152, 126), (350, 126), (548, 126)]
-    svg_parts = [
-        '              <svg class="relationship-svg" viewBox="0 0 700 300" role="img" aria-labelledby="relationship-map-title relationship-map-desc">',
-        '                <title id="relationship-map-title">三节小课关系图</title>',
-        '                <desc id="relationship-map-desc">中心主题连接三节小课，每节小课继续连接当天相关概念。</desc>',
-        '                <defs>',
-        '                  <marker id="relationship-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">',
-        '                    <path d="M 0 0 L 10 5 L 0 10 z"></path>',
-        '                  </marker>',
-        '                </defs>',
-        '                <path class="relationship-line" d="M350 58 C350 78 152 80 152 102"></path>',
-        '                <path class="relationship-line" d="M350 58 C350 82 350 82 350 102"></path>',
-        '                <path class="relationship-line" d="M350 58 C350 78 548 80 548 102"></path>',
-        '                <rect class="relationship-svg-hub" x="246" y="18" width="208" height="40" rx="20"></rect>',
-        render_svg_text("LLM 工程化能力", 350, 44, 15, 1, "relationship-svg-hub-text", 16),
-    ]
-
-    for index, concept in enumerate(concepts):
-        x, y = concept_positions[index]
-        svg_parts.append(f'                <rect class="relationship-svg-concept" x="{x - 78}" y="{y - 24}" width="156" height="68" rx="10"></rect>')
-        svg_parts.append(render_svg_text(concept["name"], x, y, 10, 2, "relationship-svg-concept-text", 17))
-        for connection_index, connection in enumerate(concept["connections"][:2]):
-            chip_y = 216 + connection_index * 32
-            svg_parts.append(f'                <path class="relationship-line muted" d="M{x} {y + 44} C{x} {y + 66} {x} {chip_y - 18} {x} {chip_y - 3}"></path>')
-            svg_parts.append(f'                <rect class="relationship-svg-related" x="{x - 72}" y="{chip_y - 18}" width="144" height="28" rx="9"></rect>')
-            svg_parts.append(render_svg_text(connection.get("concept"), x, chip_y, 11, 1, "relationship-svg-related-text", 14))
-
-    svg_parts.append("              </svg>")
-    return "\n".join(svg_parts)
-
-
-def render_relationship_graph(concepts: list[dict]) -> str:
+def render_relationship_graph(concepts: list[dict], theme: str, association: str) -> str:
     concept_names = [normalize_text(concept["name"]) for concept in concepts]
     concept_node_ids = {concept["name"]: f"concept{index}" for index, concept in enumerate(concepts, start=1)}
     related_node_ids: dict[str, str] = {}
     mermaid_lines = [
         "flowchart LR",
-        "  hub([LLM 工程化能力])",
+        f'  hub(["{mermaid_label(theme)}"])',
     ]
-    legend_items = []
+    lesson_nodes = []
 
-    for concept in concepts:
+    for index, concept in enumerate(concepts, start=1):
         node_id = concept_node_ids[concept["name"]]
         mermaid_lines.append(f'  {node_id}["{mermaid_label(concept["name"])}"]')
         mermaid_lines.append(f"  hub --> {node_id}")
+        lesson_nodes.append(
+            f"""              <article class="relationship-node relationship-node-{index}">
+                <span class="relationship-node-index">{index:02d}</span>
+                <strong>{escape_text(compact_label(concept["name"], 14))}</strong>
+                <small>{escape_text(compact_label(concept["memory_sentence"], 18))}</small>
+              </article>"""
+        )
 
     for concept in concepts:
         source_id = concept_node_ids[concept["name"]]
         for connection in concept["connections"]:
             related = normalize_text(connection.get("concept"))
-            description = normalize_text(connection.get("description"))
             target_id = ""
             for concept_name in concept_names:
                 if related == concept_name or concept_name in related or related in concept_name:
@@ -356,9 +311,6 @@ def render_relationship_graph(concepts: list[dict]) -> str:
                 else:
                     target_id = related_node_ids[related]
             mermaid_lines.append(f"  {source_id} --> {target_id}")
-            legend_items.append(
-                f"""              <li><strong>{escape_text(concept["name"])} → {escape_text(related)}</strong><span>{escape_text(description)}</span></li>"""
-            )
 
     mermaid_lines.extend(
         [
@@ -374,16 +326,20 @@ def render_relationship_graph(concepts: list[dict]) -> str:
 
     return f"""          <div class="relationship-map" aria-label="三节小课关系图">
             <div class="relationship-map-visual">
-{render_svg_relationship_graph(concepts)}
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>{escape_text(compact_label(theme, 18))}</strong>
+                </div>
+{chr(10).join(lesson_nodes)}
+              </div>
+              <p class="relationship-map-summary">{escape_text(association)}</p>
               <pre class="mermaid mermaid-source" aria-hidden="true">
 {html.escape(chr(10).join(mermaid_lines), quote=False)}
               </pre>
-            </div>
-            <div class="relationship-map-notes">
-              <p class="eyebrow">Concept Links</p>
-              <ul>
-{chr(10).join(legend_items)}
-              </ul>
             </div>
           </div>"""
 
@@ -534,7 +490,7 @@ def render_report_html(data: dict, target_date: str) -> str:
     questions = "\n".join(f"            <li>{escape_text(item)}</li>" for item in data["exploration_questions"])
     lesson_cards_html = "\n".join(lesson_cards)
     lesson_details_html = "\n".join(lesson_details)
-    relationship_graph_html = render_relationship_graph(concepts)
+    relationship_graph_html = render_relationship_graph(concepts, data["theme"], data["association"])
     return f"""<!doctype html>
 <html lang="zh-CN">
   <head>
@@ -542,7 +498,7 @@ def render_report_html(data: dict, target_date: str) -> str:
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{escape_text(data["title"])}</title>
     <meta name="description" content="{escape_text(data["summary"])}" />
-    <link rel="stylesheet" href="../../style/main.css?v={target_date.replace("-", "")}-map2" />
+    <link rel="stylesheet" href="../../style/main.css?v={target_date.replace("-", "")}-map3" />
   </head>
   <body>
     <main class="page">
