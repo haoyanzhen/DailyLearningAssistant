@@ -191,7 +191,7 @@ agents.daily_work_summary.repositories[]
 
 - 每个必要 Agent 必须成功。
 - `daily_work_summary` 接受 `success` 或 `partial_success`。
-- 如果第 1 步确认所有仓库无变化，并且 `html_publish` 成功记录了 fallback，则第 2/3 步允许跳过。
+- 如果第 1 步确认所有仓库无变化，状态会记录 `day_context.no_change_day = true`，但第 2/3 步仍必须成功；第 2 步负责生成复习型 `concept_relevance.md`。
 - 拆分调度时，优先使用 `orchestrator_runs.html_publish` 判断生成阶段状态。
 
 ## LLM trace

@@ -48,6 +48,8 @@ def update_orchestrator(
     status_data = load_status(status_path, target_date)
     status_data["date"] = target_date
     status_data["updated_at"] = now_iso(timezone)
+    if "day_context" in payload:
+        status_data["day_context"] = payload["day_context"]
     status_data[ORCHESTRATOR_STATUS_KEY] = payload
     if run_key:
         status_data.setdefault("orchestrator_runs", {})
@@ -74,31 +76,12 @@ def summarize_agents(status_data: dict) -> dict:
 
 def is_success(status_data: dict, required_agents: list[str]) -> bool:
     agents = status_data.get("agents") or {}
-    orchestrator = status_data.get(ORCHESTRATOR_STATUS_KEY) or {}
-    orchestrator_runs = status_data.get("orchestrator_runs") or {}
-    generation_orchestrator = (
-        orchestrator_runs.get("html_publish")
-        or orchestrator_runs.get("full")
-        or orchestrator
-    )
     success_statuses_by_agent = {
         "daily_work_summary": {"success", "partial_success"},
-    }
-    skipped_steps = set(generation_orchestrator.get("skipped_steps") or [])
-    fallback_events = generation_orchestrator.get("fallback_events") or []
-    skippable_agents = {
-        "concept_relevance": 2,
-        "knowledge_explaination": 3,
     }
     for name in required_agents:
         accepted_statuses = success_statuses_by_agent.get(name, {"success"})
         if (agents.get(name) or {}).get("status") in accepted_statuses:
-            continue
-        if (
-            generation_orchestrator.get("status") == "success"
-            and fallback_events
-            and skippable_agents.get(name) in skipped_steps
-        ):
             continue
         return False
     return True

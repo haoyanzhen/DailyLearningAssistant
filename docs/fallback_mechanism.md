@@ -24,20 +24,18 @@
 
 如果第 1 步确认所有仓库均无新增变更，Orchestrator 会：
 
-1. 跳过第 2 步 `concept_relevance`。
-2. 跳过第 3 步 `knowledge_explaination`。
-3. 查找上一份有效 `knowledge_explaination.md` 和知识日志。
-4. 将上一份知识讲解复制到当日目录，并在文件开头写入“无新增变更复用说明”。
-5. 继续运行第 4 步生成复习、深化或延展型日报。
+1. 将 `day_context.no_change_day = true` 写入状态。
+2. 继续运行第 2 步 `concept_relevance`，由第 2 步切换为复习选题模式并生成当日新的 `concept_relevance.md`。
+3. 第 3/4 步继续按原流程生成知识讲解和 HTML 日报。
 
-该事件记录在：
+该属性记录在：
 
 ```text
-orchestrator_runs.html_publish.fallback_events
-orchestrator_runs.html_publish.skipped_steps = [2, 3]
+day_context.no_change_day
+agents.concept_relevance.mode = no_change_review
 ```
 
-完整成功判断会接受这种跳过。
+完整成功判断为第 2/3/4 步必须真实成功。
 
 ## 生成阶段失败
 

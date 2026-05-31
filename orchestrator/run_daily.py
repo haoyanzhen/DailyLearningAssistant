@@ -6,9 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-import shutil
 import subprocess
-from datetime import datetime, timedelta
 from pathlib import Path
 
 if __package__ is None or __package__ == "":
@@ -198,55 +196,14 @@ def daily_work_has_no_changes(status_data: dict) -> bool:
     return bool(repositories) and all(repo.get("evidence_type") == "no_change" for repo in repositories)
 
 
-def find_previous_knowledge_source(target_date: str, roots: list[Path]) -> tuple[str, Path, Path] | None:
-    current = datetime.strptime(target_date, "%Y-%m-%d").date()
-    for offset in range(1, 370):
-        candidate = (current - timedelta(days=offset)).isoformat()
-        year_month = candidate[:7]
-        for root in roots:
-            knowledge_path = root / "prework" / year_month / candidate / "knowledge_explaination.md"
-            log_path = root / "knowledge_log" / f"{year_month}-knowledge-log.md"
-            if knowledge_path.exists() and knowledge_path.read_text(encoding="utf-8").strip() and log_path.exists():
-                return candidate, knowledge_path, log_path
-    return None
-
-
-def prepare_no_change_fallback(target_date: str, output_root: Path, input_root: Path) -> dict:
-    source = find_previous_knowledge_source(target_date, [output_root, input_root, PROJECT_ROOT])
-    if not source:
-        raise RuntimeError("无变更日需要复用上一日第三步结果，但未找到上一份有效 knowledge_explaination.md")
-    source_date, source_knowledge, source_log = source
-    output_dir = day_dir(output_root, target_date)
-    output_dir.mkdir(parents=True, exist_ok=True)
-    target_knowledge = output_dir / "knowledge_explaination.md"
-    target_log = output_root / "knowledge_log" / f"{target_date[:7]}-knowledge-log.md"
-    source_content = source_knowledge.read_text(encoding="utf-8").rstrip()
-    note = f"""# {target_date} 无新增变更复用说明
-
-当日第一步 Git 证据显示所有仓库均无新增变更，因此第二步概念提炼和第三步知识讲解不生成新的正式内容。
-
-本文件复用上一份有效第三步结果：`{source_knowledge}`。
-
-后续第四步生成日报时应遵循：
-
-- 若接收的概念列表与已经讲过的概念部分重复，优先考虑知识点有用性，而不是机械追求“全新概念”。
-- 遇到重复概念时，应根据上一轮已经讲过的内容进行深化，例如补充更底层的原理、更清晰的例子、常见误区或跨领域联系。
-- 不要把“无新增变更”伪装成新的项目进展，应明确这是复习、深化或延展型日报。
-
----
-
-{source_content}
-"""
-    target_knowledge.write_text(note.rstrip() + "\n", encoding="utf-8")
-    target_log.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(source_log, target_log)
-    return {
-        "source_date": source_date,
-        "source_knowledge_path": str(source_knowledge),
-        "target_knowledge_path": str(target_knowledge),
-        "source_log_path": str(source_log),
-        "target_log_path": str(target_log),
+def build_day_context(status_data: dict) -> dict:
+    no_change_day = daily_work_has_no_changes(status_data)
+    context = {
+        "no_change_day": no_change_day,
     }
+    if no_change_day:
+        context["reason"] = "daily_work_summary_all_repositories_no_change"
+    return context
 
 
 def run_git_command(args: list[str], cwd: Path, *, check: bool = True) -> subprocess.CompletedProcess[str]:
@@ -384,6 +341,7 @@ def main() -> int:
             print("[续跑] 选定范围内的 Agent 均已完成，无需重跑。")
     run_key = orchestrator_run_key(args, requested_steps)
 
+    initial_day_context = build_day_context(previous_status)
     update_orchestrator(
         status_path,
         target_date,
@@ -399,6 +357,7 @@ def main() -> int:
             "continue_on_failure": args.continue_on_failure,
             "commands": [],
             "llm_trace_path": str(llm_trace_path),
+            "day_context": initial_day_context,
         },
         timezone,
         run_key,
@@ -406,28 +365,11 @@ def main() -> int:
 
     commands = []
     failures = []
-    fallback_events = []
     publish_events = []
-    skipped_steps = []
     failure_reason = ""
     for spec in steps:
         status_data_before = load_status(status_path, target_date)
-        if spec.step == 2 and daily_work_has_no_changes(status_data_before):
-            try:
-                event = prepare_no_change_fallback(target_date, output_root, input_root)
-                event["reason"] = "daily_work_summary_all_repositories_no_change"
-                fallback_events.append(event)
-                skipped_steps.extend([2, 3])
-                print("[回退] 第 1 步显示当日无变更，跳过第 2/3 步，复用上一份第三步结果进入第 4 步。")
-            except RuntimeError as exc:
-                failures.append({"step": 2, "agent": spec.name, "returncode": 1, "diagnostic": str(exc)})
-                failure_reason = str(exc)
-                if not args.continue_on_failure:
-                    break
-            continue
-        if spec.step == 3 and 3 in skipped_steps:
-            continue
-        step_input_root = output_root if fallback_events and spec.step >= 4 else input_root
+        step_input_root = input_root
         failure_notice_reason = ""
         if spec.name == "daily_email_send" and not args.dry_run:
             report_ready = exact_report_exists(step_input_root, target_date)
@@ -528,6 +470,7 @@ def main() -> int:
         )
 
     status_data = load_status(status_path, target_date)
+    final_day_context = build_day_context(status_data)
     final_status = "success" if not failures else "failed"
     if args.dry_run:
         final_status = "dry_run"
@@ -546,10 +489,9 @@ def main() -> int:
             "continue_on_failure": args.continue_on_failure,
             "commands": commands,
             "llm_trace_path": str(llm_trace_path),
+            "day_context": final_day_context,
             "failures": failures,
-            "fallback_events": fallback_events,
             "publish_events": publish_events,
-            "skipped_steps": skipped_steps,
             "agent_summary": summarize_agents(status_data),
         },
         timezone,
