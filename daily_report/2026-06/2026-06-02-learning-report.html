@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-06-02 学习笔记日报</title>
+    <meta name="description" content="文档即代码奠定设计可追溯性，领域参考文档显式化限界上下文，GraphRAG实现图检索增强生成。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260602-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-06-02</p>
+        <h1>设计本身的工程化</h1>
+        <p>今天没有一行功能代码，六次提交全是设计文档。这是一次自底向上的建模收敛：先用文档固定领域语义，再用语义指导技术选型，最后让Agent分工和UI设计对齐到同一个精炼模型上。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>设计本身的工程化</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>文档即代码与小步迭代设计</strong>
+                <small>文档即代码保存的不是最终版本，而是…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>领域参考文档与限界上下文映射</strong>
+                <small>领域参考文档的价值不在于写得多么完…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>GraphRAG：图检索增…</strong>
+                <small>GraphRAG的核心判断很朴素：…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">今日三个概念构成了一条逐级递进的认知链条。从最基础的“文档即代码”工作模式出发，理解设计文档为何需要像代码一样被版本化和分步迭代；然后上升到“领域参考文档”如何成为限界上下文的显式化产物，把模糊的领域认知变成可评审的结构化文本；最后抵达GraphRAG这一具体技术方案，理解图检索与向量检索的互补关系，以及它如何反过来要求领域模型和Agent能力边界同步进化。三个概念从工作方法、到建模实践、再到技术原理，难度递增但逻辑连贯，适合从易到难逐步展开。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["设计本身的工程化"])
+  concept1["文档即代码与小步迭代设计"]
+  hub --&gt; concept1
+  concept2["领域参考文档与限界上下文映射"]
+  hub --&gt; concept2
+  concept3["GraphRAG：图检索增强生成"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["设计本身的工程化"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="docs-as-code">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>文档即代码与小步迭代设计</h3>
+              <p>Docs-as-Code and Small-Step Iteration</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">文档即代码保存的不是最终版本，而是思考过程本身。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>文档用纯文本格式，由Git版本化追踪每次改动，差异清晰可见。</li>
+                <li>修改拆成小步提交，每步只做一件事，附带清晰说明，意图可追溯。</li>
+                <li>文档变更可被评审、讨论、回退，像代码评审一样保障设计质量。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="docs-as-code" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="domain-reference-doc">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 领域驱动设计</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>领域参考文档与限界上下文映射</h3>
+              <p>Domain Reference Document and Bounded Context Mapping</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">领域参考文档的价值不在于写得多么完整，而在于它让模糊认知变成一个团队可以逐行评审、逐版追溯的语义锚点。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>领域参考文档明确回答系统关心哪些事物，它们叫什么，彼此之间是什么关系。</li>
+                <li>限界上下文划定词汇在不同场景下的特定含义，防止概念混淆，同一词汇在不同边界内可独立定义。</li>
+                <li>通过显式化语义边界，团队在设计阶段达成共识，减少后期歧义和因概念错位导致的返工。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="domain-reference-doc" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="graphrag">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 信息检索</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>GraphRAG：图检索增强生成</h3>
+              <p>GraphRAG: Graph Retrieval-Augmented Generation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">GraphRAG的核心判断很朴素：向量检索找“相似的”，图检索找“相关的”。“相似”和“相关”不是一回事。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>RAG（检索增强生成）解决大模型知识截止问题，在回答前先从知识库检索相关资料，如同开卷答题。</li>
+                <li>传统RAG依赖向量检索，擅长找“相似”内容，但难以捕捉论文引用、作者合作等“相关”的多跳关系。</li>
+                <li>GraphRAG使用图结构，将实体作为节点、关系作为边，通过图遍历实现关联推理，与向量检索互补。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="graphrag" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="docs-as-code">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>文档即代码与小步迭代设计</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>文档即代码（Docs-as-Code）是一种设计协作模式，核心思想就一句话：对待设计文档，就像对待程序代码一样。具体来说就是三条规则：第一，文档用纯文本格式编写，而非二进制格式，以便版本控制系统追踪每一次改动；第二，文档修改被拆成小步提交，每一步只做一件事，每步附带清晰说明；第三，文档变更可以被评审、讨论和回退，如同代码评审。大段修改文档不留历史，会丢失“最初的想法、中间经历的权衡、决策的时间和决策者”这些至关重要的设计上下文。当团队面对一份几十页的设计文档时，如果不做版本化小步迭代，就只能被动接受当前结论，而无法追溯结论的来源。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>文本格式让文档可被版本控制追踪，像代码一样逐行比较差异，保留设计演进的完整历史。</li>
+                <li>小步提交把大规模修改分解为单一意图的变更，每步均可独立理解，避免意图淹没在大量变更中。</li>
+                <li>评审和讨论机制使得设计文档成为一个可协作演化的制品，而非孤立的文件，确保设计决策经得起推敲。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>老师合写教学大纲，用Git管理每次改动并附说明，半年后任何新老师都能通过提交历史还原决策来龙去脉，而不必面对“最终版_final_真的最终.docx”的困惑。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为“文档即代码”是要求文档内容写得像代码一样技术化、全用术语，实际上它强调的是管理方式像代码，而非内容风格。</li>
+                <li>认为小步提交只适用于代码，文档不需要。事实相反：代码有编译器检查错误，文档错误容易淹没在大段修改中难以定位，更需要小步提交。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>领域参考文档与限界上下文映射</td><td>领域参考文档本身作为设计文档，天然适合采用Docs-as-Code管理，使其每一次修改和决策都可被追溯，保证领域模型的演变透明。</td></tr>
+                <tr><td>GraphRAG：图检索增强生成</td><td>当GraphRAG设计文档被小步提交，评审者能清晰看到选型从初版大纲到API细节的演化路径，设计意图全程可追踪，保障技术决策的合理性。</td></tr>
+                <tr><td>设计本身的工程化</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果一份设计文档需要给非技术出身的业务方评审，文档即代码的Markdown+Git模式会不会增加他们的参与门槛？有没有办法在保持版本化的同时降低评审难度？</li>
+                <li>小步提交的粒度有没有一个最佳实践？粒度太细会显得琐碎，太粗又丢失了意图的精确性——如何判断？</li>
+                <li>文档即代码模式在日常工作中的推广难点在哪里？如果团队里有人觉得“太麻烦”，有什么低成本的妥协方案？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="domain-reference-doc">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 领域驱动设计</p>
+                <h3>领域参考文档与限界上下文映射</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>领域参考文档是一份结构化记录，它的任务是明确回答：我们这个系统到底在关心哪些事物，它们叫什么名字，彼此之间是什么关系。它的真正价值藏在另一个专业术语背后——限界上下文（Bounded Context）。限界上下文是领域驱动设计中的一个核心概念。它说的是：同一个词汇在不同场景下可能有不同的含义，我们必须明确划定每个词汇在哪个“边界”内生效。举个例子，“客户”在销售系统里可能指“付钱的单位”，在客服系统里则指“打电话的人”，如果两个团队用同一个数据库存“客户”信息而不声明各自的上下文边界，就很容易产生混淆。领域参考文档就是用来显式地画出这些边界的。它把核心概念列出来，写明它们的属性、关联和它们属于哪个上下文。有了这份文档，概念间的歧义就不再是开发者脑海里的模糊认知，而是白纸黑字可以被逐行评审的语义约定。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>识别核心概念和关系，建立领域词汇表，作为系统建模的基础。</li>
+                <li>为每个概念明确其所属的限界上下文，定义其在该上下文中的准确含义，划清术语的有效边界。</li>
+                <li>通过文档化，确保团队遵循统一的语义模型，使概念一致性贯穿开发、测试和维护全过程。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>想象接手书店库存系统，老板说管理书、订单和客户。财务部、市场部、门店对“客户”定义不同：付款方、邮件联系人、到店的人。若不明确边界，一个“客户”字段会承载三种逻辑导致冲突。领域参考文档提前写清“财务上下文中的客户”“市场上下文中的客户”等，让所有人对术语含义达成一致。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把领域参考文档等同于“数据字典”或“数据库表设计文档”。数据字典描述字段名、类型、约束等实现细节，而领域参考文档描述业务概念本身，不涉及实现。</li>
+                <li>认为领域参考文档必须一次性写完才算完整。实际上它应该迭代演进，根据需求逐步补充，这正是Git版本化管理能发挥优势的地方。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>文档即代码与小步迭代设计</td><td>领域参考文档作为设计文档，采用Docs-as-Code进行版本化和小步迭代，使领域模型的演化可追溯，每一次修改都可独立评审。</td></tr>
+                <tr><td>GraphRAG：图检索增强生成</td><td>领域参考文档定义了实体和关系，为GraphRAG的图结构提供了schema基础；GraphRAG的引入也会反推领域参考文档的完善，因为图检索可能发现新的关联细微差别。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>限界上下文的边界划分有没有一个明确的判断标准？当两个上下文共用同一个实体时，应该各自维护独立定义还是共享定义并标明视角差异？</li>
+                <li>领域参考文档一旦变成版本化产物，维护成本上升。如果代码里的领域逻辑改了但文档没同步，会出现什么后果？有没有机制检测“文档与实现之间的漂移”？</li>
+                <li>领域参考文档与功能需求之间存在需求可追溯性关系，如何保持领域概念到功能需求、再到测试用例的可追溯链条不断裂？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="graphrag">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 信息检索</p>
+                <h3>GraphRAG：图检索增强生成</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>GraphRAG的全称是“图检索增强生成”，它是RAG（检索增强生成）技术路线的一个分支。大语言模型有一个天生的限制：它的知识截止于训练数据的时间点，无法回答需要最新信息的问题。RAG就是为了解决这个限制——在生成答案之前，先去一个知识库里检索出相关的资料，把资料和用户问题一起喂给语言模型，让模型根据最新资料来回答。传统RAG的检索方式主要是向量检索。它为每段文档计算一个数值向量，根据问题向量和文档向量的相似度来找出“最匹配”的段落。这个方法找“相似的”很强，但找“相关的”就力不从心——比如论文A引用了论文B，这表示两者“相关”，但它们讨论的内容可能完全“不相似”。GraphRAG的改进思路就是用图结构替代或补充向量检索。它把实体（论文、作者、标签）变成图的节点，把关系（引用、署名、归类）变成图的边。当用户提问题时，系统可以在图上做遍历——比如从“论文C”这个节点出发，沿着“引用”边往上游走，找到C引用过的论文，再继续追溯，就能得到一条完整的理论继承链。图检索捕捉的是关联性，向量检索捕捉的是相似性，两者互补。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>大模型的知识有截止日期，RAG在生成前检索外部知识进行增强，提升答案的时效性和准确性。</li>
+                <li>向量检索基于嵌入向量的相似度匹配，擅长发现内容相似的段落，但无法直接捕获结构化关系。</li>
+                <li>图检索利用节点和边捕获实体间的关联，支持多跳遍历和推理，弥补向量检索在语义关联捕捉上的不足。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>图书馆管理员小张被问“和我手里这篇论文相关的还有哪些？”。若只会按书名相似度查书（向量检索），可能推荐书名相似但无关的书。后来小张画了一张图，论文和作者为节点，引用关系为箭头，从目标论文出发沿箭头找到引用链，就能回答关联性问题。但图也有烦恼：作者重名、负面引用——图的构建质量决定检索质量。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把GraphRAG和“知识图谱”混为一谈。知识图谱是图结构的数据库，GraphRAG是一种检索策略，可以使用知识图谱作为数据源，但两者不是一回事。</li>
+                <li>认为GraphRAG一定比向量检索好。实际上两者互补：向量检索适合相似段落查找，图检索适合多跳关系推理，选型关键在于各取所长，而不是全盘替换。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>文档即代码与小步迭代设计</td><td>GraphRAG的设计文档采用Docs-as-Code模式，通过小步提交清晰展示从选型评估到API定义的演化过程，使技术决策全程可追踪。</td></tr>
+                <tr><td>领域参考文档与限界上下文映射</td><td>领域参考文档定义了实体和关系，为GraphRAG的图结构提供了schema基础；GraphRAG的引入也会反推领域参考文档的完善，因为图检索可能发现新的关联细微差别。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>图检索的图结构维护成本很高——实体抽取会出错、关系类型需要人工标注。实际项目中，图的初始构建和持续更新如何做到自动化又能保证质量？</li>
+                <li>当GraphRAG的图检索结果和向量检索结果需要融合时，在Agent层面如何设计融合策略？如果两者返回相互矛盾的信息，应该相信谁？</li>
+                <li>GraphRAG如果作为一个独立服务，会带来网络开销和延迟。当用户等答案时，先做图检索再等向量检索再融合，整体响应时间如何控制在可接受范围内？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">今日三个概念构成了一条逐级递进的认知链条。从最基础的“文档即代码”工作模式出发，理解设计文档为何需要像代码一样被版本化和分步迭代；然后上升到“领域参考文档”如何成为限界上下文的显式化产物，把模糊的领域认知变成可评审的结构化文本；最后抵达GraphRAG这一具体技术方案，理解图检索与向量检索的互补关系，以及它如何反过来要求领域模型和Agent能力边界同步进化。三个概念从工作方法、到建模实践、再到技术原理，难度递增但逻辑连贯，适合从易到难逐步展开。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">向量检索找“相似的”，图检索找“相关的”——这两者不是一回事。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>文档即代码模式如何在实际团队中推广，当成员不熟悉Git时，有什么低成本妥协方案？</li>
+            <li>领域参考文档与代码实现如何保持同步，避免领域模型与实现漂移？</li>
+            <li>GraphRAG图结构的构建与维护成本如何控制，怎样自动化保证实体和关系质量？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
