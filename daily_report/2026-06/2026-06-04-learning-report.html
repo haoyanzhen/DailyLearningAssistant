@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-06-04 学习笔记日报</title>
+    <meta name="description" content="从工作区修改的脆弱性，到设计文档未提交的追溯断裂，再到多仓库静默背后的信息压缩原理，层层深入揭示软件工程中“状态”的信息意义。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260604-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-06-04</p>
+        <h1>安静仓库里的微光：理解工作区状态、设计文档与多仓库静默</h1>
+        <p>今天的工作站上出现了一个有趣的现象：八个被关注的项目仓库中，有七个完全安静，只有一个仓库的工作区里有一份设计文档被修改了但还没提交。这就像是一个安静的小镇，几乎所有人都在休息，只有一个窗口透出微光。这一天的教学价值恰恰不在“发现了新概念”，而在于“静默和未完成状态本身教给了我们什么”。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>静默与未完成状态的知识价值</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>工作区状态与暂存区边界</strong>
+                <small>Git的工作区修改就像写在草稿纸上…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>设计文档的未提交修改</strong>
+                <small>设计文档的修改如果一直停留在工作区…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>多仓库同步静默的压缩解释</strong>
+                <small>七个仓库同时静默这件事本身就是一个…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">今天选择的三个概念构成了一条从微观到宏观的知识链路。“工作区状态与暂存区边界”关注的是单个文件的一次修改在Git的三阶段模型中处于什么位置——它解释了为什么停留在工作区的修改是脆弱的、缺乏保护的。“设计文档的未提交修改”将这个问题投射到软件工程的协作场景中，展示了当设计文档处于“已改但未提交”状态时，团队的设计共识如何出现断裂风险。“多仓库同步静默的压缩解释”则从信息论的角度审视大局——它把多个仓库的同时安静看作一个可以被压缩或不能被压缩的“消息”，并探讨这种判断如何影响监控系统的告警策略。三个概念共同刻画了一个主题：软件工程中的“状态”（无论是代码状态、文档状态还是系统监控状态）都携带着信息，识别这些状态、理解它们的意义，是构建可靠系统的基础能力。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["静默与未完成状态的知识价值"])
+  concept1["工作区状态与暂存区边界"]
+  hub --&gt; concept1
+  concept2["设计文档的未提交修改"]
+  hub --&gt; concept2
+  concept3["多仓库同步静默的压缩解释"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["静默与未完成状态的知识价值"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="workspace-staging-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>工作区状态与暂存区边界</h3>
+              <p>Working Area Status and Staging Boundary</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">Git的工作区修改就像写在草稿纸上的想法——它存在，但Git还没有承诺保护它，随时可能被覆盖或丢失。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>Git通过编辑-暂存-提交三阶段管理修改，工作区中的更改处于最脆弱、最无保护的第一阶段。</li>
+                <li>未暂存的修改没有作者、时间戳和提交说明，在审计上证据层级最低，只能确认“有人在这个电脑上改过这个文件”。</li>
+                <li>只有执行git add进入暂存区，再git commit进入版本库，修改才成为不可变的历史，获得永久追溯能力。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="workspace-staging-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="design-doc-uncommitted">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>设计文档的未提交修改</h3>
+              <p>Uncommitted Design Document Modification</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">设计文档的修改如果一直停留在工作区不提交，就像一份没有签名的合同修订稿——团队其他成员看不到它，也无法基于它做出响应，设计共识就此断裂。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>未提交的设计文档修改导致设计决策的历史缺失，无法追溯“为什么当时这样设计”，出现“追溯断裂”。</li>
+                <li>团队其他成员无法看到未提交的修改，可能基于旧版本设计进行开发，造成协作分歧和返工。</li>
+                <li>“文档即代码”的实践要求设计文档与代码同步提交，保持原子化的对应关系，避免设计契约停留在草稿阶段。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="design-doc-uncommitted" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="multi-repo-silence-compression">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>多仓库同步静默的压缩解释</h3>
+              <p>Compression Explanation of Multi-repo Silence</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">七个仓库同时静默这件事本身就是一个“信号”：如果它们都因为同一个原因而安静，这件事的解释就很短；但如果各有各的原因，解释就会变得冗长。监控系统需要学会区分这两种情况来决定要不要发告警。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>多个仓库同时安静可能由统一原因（如开发者休息）导致，此时解释复杂度低；若原因各自独立，解释长度随仓库数量线性增长。</li>
+                <li>引入Kolmogorov复杂度的思想：事件的“最短描述长度”决定其信息复杂性，能否被压缩是判断静默性质的关键。</li>
+                <li>监控系统需利用仓库元数据（历史活跃模式、开发者关联、节假日等）估算统一因果置信度，并据此选择聚合或分开发送告警。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="multi-repo-silence-compression" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="workspace-staging-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>工作区状态与暂存区边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>Git把一次代码修改的旅程分成了三个房间。第一个房间叫“工作区”，你在这里写代码、改文件，可以随时涂改，就像在草稿纸上演算。第二个房间叫“暂存区”，你决定“这次改的东西差不多了，我先记下来”，于是把文件从工作区搬到这里——这相当于把草稿纸上的内容誊到一张正式的表格上，但你还没签名。第三个房间叫“版本库”，你执行“提交”操作，Git给这张表格生成一个独一无二的编号（SHA值），盖上时间戳，写下你的名字，从此这张表格的内容就不可更改了——它就是历史的一部分。今天ResearchPaperBase_codex仓库里有一份设计文档被修改了，但它还待在第一个房间里，没有进暂存区，更没有提交。这意味着这次修改处于一个很脆弱的状态：Git知道文件变了，但它没有承诺保护这个变化——你可以用git checkout或者git restore直接把文件恢复到修改前的样子，这次的修改就永远消失了，连个影子都不留。这种“改了但没暂存”的状态，在审计上证据层级最低：它没有时间记录、没有作者签名、没有解释为什么要改。它的存在只能告诉我们一件事：“有人在这个电脑上改过这个文件。”至于谁改的、什么时候改的、改的目的是什么，都无从得知。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Git通过三阶段模型解耦修改的提交过程：工作区（草稿）→ 暂存区（意图声明）→ 版本库（不可变历史），每一层提供不同的保护强度和证据层级。</li>
+                <li>未暂存的修改缺少元数据（作者、时间戳、提交说明），在审计上孤立无援，其脆弱性源于Git默认不主动保存工作区快照。</li>
+                <li>工作区状态监测依赖于文件系统，但文件修改时间（mtime）容易被无关操作篡改，因此不能作为修改发生时间的可靠证据。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>你花了一个下午修改论文第三章，但改完后只在工作区保存，没有git add或git commit。第二天你决定回到原版，执行git restore，昨天所有修改瞬间消失，毫无痕迹。如果当时先git add，至少修改进了暂存区，还能通过git fsck找回悬空对象；如果git commit，则永久记录在版本历史中。这直观展示了工作区修改的脆弱性。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>很多人以为Git会自动追踪所有修改，觉得“文件被改了”和“修改被记录了”是一回事。实际上，Git只记录那些你明确告诉它“请记住这个”的修改——即经过了git add进入暂存区、然后又经过git commit进入版本库的内容。工作区里改了但没有执行这两步的内容，Git完全是睁一只眼闭一只眼。</li>
+                <li>以为文件系统的“最后修改时间”能可靠地告诉我们工作区修改发生在什么时候。实际上，很多操作（比如切换分支、拉取代码）都会更新文件的修改时间，这使得mtime在审计中几乎不可信。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>设计文档的未提交修改</td><td>当修改发生在设计文档上时，工作区未提交的相同脆弱性会直接导致团队设计共识的断裂，设计历史出现追溯空白。</td></tr>
+                <tr><td>多仓库同步静默的压缩解释</td><td>工作区修改的痕迹是判断仓库是否真正静默的细化信息，多个仓库中个别仓库的工作区修改可能打破统一的静默解释。</td></tr>
+                <tr><td>静默与未完成状态的知识价值</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果一份重要的修改已经在工作区停留了好几天但一直没被暂存，有哪些技术手段可以推断它大概是在什么时间产生的？（提示：除了不可靠的文件mtime，还有没有其他线索？）</li>
+                <li>Git的stash命令可以把工作区的修改暂时保存到一个补丁对象中，这个补丁对象的证据层级比未暂存的修改高在哪里？比正式的提交又低在哪里？</li>
+                <li>在一个多人协作的仓库中，如果一个人的工作区里积攒了大量未暂存的修改，这对团队的持续集成流程会产生什么实际影响？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="design-doc-uncommitted">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>设计文档的未提交修改</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>今天的报告中有一个细节很值得关注：ResearchPaperBase_codex仓库里被修改的文件在docs/design/目录下，文件名包含“ui_workspace”。这说明被改的不是代码，而是一份设计文档。在软件工程里，有一种重要的实践叫“文档即代码”——意思是设计文档不应该用Word文件传来传去、邮件附件满天飞，而应该和程序代码放在同一个版本库里，用Git来追踪每一次修改。这样做的本质，是把设计文档从“一次性产物”变成“持续演化的活文档”：每次设计决策的变化都对应一个提交，有作者、有时间、有变更说明，可以随时追溯“我们当时为什么把按钮放在左边而不是右边”。但今天的情况是：这份UI工作区设计文档被修改了，却还停留在工作区里没有被提交。这会造成一个问题——“追溯断裂”。如果几周后有人打开这份文档的历史记录，想看看某个设计决策是什么时候做的，他们会发现历史记录里找不到这次修改的任何痕迹。设计文档和代码实现之间失去了原子化的对应关系：你知道代码做了什么，但不知道设计文档在这一刻是不是和代码一致。就像一份合同，双方口头商量好了一个条款修改，但谁都没在合同文本上签字——法律上这份修改是不生效的，出了纠纷谁也证明不了有过这个商量。从团队协作角度看，未提交的设计文档修改意味着设计契约还处于“草稿”阶段：团队其他成员不知道这个修改的存在，也无法对它进行评审。如果有人在此期间基于旧版本的设计文档做了开发，就会出现“我实现的东西和你脑子里想的设计不一样”的尴尬局面。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>设计文档的版本化是文档即代码的核心，每次设计变更都应通过提交形成不可变的历史记录，保证设计意图可追溯。</li>
+                <li>未提交的修改切断了文档与代码之间的原子对应，当设计文档滞后于实现时，团队将失去对“为什么代码长这样”的共识理解。</li>
+                <li>版本控制不仅保护代码，也保护设计知识——设计文档的提交就是设计决策的“签名”，未提交状态意味着设计决策尚未进入团队共同契约。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>你和同事共同开发一个Web应用，你负责UI设计，同事负责实现。你在设计文档里将“三个选项卡”改成“两个选项卡加一个下拉菜单”，但忘了git commit。同事按照旧版设计文档实现了三个选项卡，代码评审时你才发现分歧。你打开文件看到修改还在自己工作区，但同事看到的是上一个提交的版本——这就是设计文档未提交造成的典型追溯断裂。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为“改了但没提交”只是暂时性的，没什么大不了，过几天想起来再提交就行。但软件项目时间线往往拉得很长，几个月后你可能完全不记得当时为什么改了这个文档、修改是否完整、是否还需要继续。</li>
+                <li>把设计文档当成“辅助材料”而不是“正式产物”——认为代码的版本历史才是重要的，文档的版本历史可有可无。实际上，设计文档承载的是“为什么代码长这样”的解释，失去了设计文档的版本对应关系，后人在读代码时就像在看一本没有注释的侦探小说。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>工作区状态与暂存区边界</td><td>设计文档的修改停留在工作区，同样处于Git三阶段模型的第一阶段，缺乏暂存和提交的保护，无法形成可追溯的版本记录。</td></tr>
+                <tr><td>多仓库同步静默的压缩解释</td><td>如果多个仓库中只有一个在设计文档工作区有未提交修改，而其他仓库完全静默，这一异常可能打破统一静默解释，提示需要单独关注。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果设计文档的修改长期处于未提交状态，除了人工检查，有没有自动化的工具或脚本来检测这种“文档修改与代码提交之间的时间差”，从而提醒团队潜在的追溯断裂风险？</li>
+                <li>在“文档即代码”的实践中，设计文档的提交粒度应该如何把握？是和代码提交一一对应（每次代码改动都同步改文档），还是允许文档有自己的提交节奏？</li>
+                <li>如果一个团队使用Git进行设计文档的版本控制，但某些成员习惯在本地做大量修改然后一次性提交，如何用工作流规范来减少“设计文档长期处于未提交状态”的情况？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="multi-repo-silence-compression">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>多仓库同步静默的压缩解释</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>今天的监控报告显示了一个特别的情况：八个被关注的仓库中，七个没有任何变化——没有提交、工作区干净。只有一个仓库的工作区里有一点点修改痕迹。这种情况在信息论中可以用一个有趣的方式来思考：如果这七个仓库的安静都来自同一个原因，比如“今天是开发者的休息日”，那么解释这整件事只需要一句话——信息可以被高度压缩。但如果每个仓库各有各的安静原因——A仓库在等待外部输入、B仓库的功能开发暂告段落、C仓库的负责人请假了而其他人没权限、D仓库周末本来就没人动……那么每增加一个安静的仓库，就需要增加一段新的解释，总的解释长度随着仓库数量线性增长。这种“解释这件事需要多长的一句话”的度量，在信息论里有一个名字叫Kolmogorov复杂度——一个数据串的复杂度由能生成它的最短程序的长度来定义。如果七个仓库的安静可以用很短的“程序”（比如“开发者休息”）来解释，那这个静默事件的复杂度就低；如果必须分别解释每个仓库，复杂度就高。这不仅是理论上的趣味，对实际监控系统的设计也有影响：如果静默来自统一原因，就不应该给每个仓库分别发告警——把它们聚合成一条摘要告警就够了。如果是独立原因，则每个仓库的安静可能传递着不同的信息，需要分开评估。今天七个安静仓库的类型各不相同——有笔记类、有学习助手、有论文库、有前端项目、有公共库——这种多样性降低了“统一原因”的可能性，但“周末”或“开发者休假”仍然可能是一个统一的压缩因子。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Kolmogorov复杂度为事件的信息量提供了理论度量：多个静默事件若可由单一原因描述（如“放假”），则信息量低；若需枚举每个仓库的独立原因，则信息量高。</li>
+                <li>监控系统能否正确压缩解释取决于它掌握的元数据：包括仓库历史活跃时段、工作日模式、开发者重合度、依赖关系等，这些数据帮助估算“统一因果置信度”。</li>
+                <li>告警策略应与非压缩性判断挂钩：高压缩性的静默适合聚合为一条摘要告警，低压缩性的静默可能需要逐仓库分析，避免漏检藏在统一安静下的异常。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>周末你路过一条商业街，八家店铺有七家关门，一句“今天是周日”就解释了整个场景，信息高度压缩。但如果是周三下午，每家店关门的原因各不相同——理发店固定休息、餐馆午休、店主生病、装修……解释就会变得很长。监控系统面对多个仓库同时安静时，就像站在街上的观察者，需要根据历史模式和上下文判断背后的原因是可压缩的统一事件还是独立的杂散事件，从而做出恰当的告警决策。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为“多个仓库同时静默”一定意味着有统一的系统性问题或环境故障。实际上，静默可能真的是因为没工作发生——在分布式系统中，“没有事件”本身就是一个合法状态。</li>
+                <li>觉得通过仓库数量就能判断静默是统一原因还是独立原因——仓库多了不一定就是独立事件，如果这些仓库共享相同的开发者和工作时间模式，统一原因的解释仍然可能成立。反之，仓库少了也不一定就是统一事件。关键在于分析仓库之间的“相关性”。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>工作区状态与暂存区边界</td><td>工作区修改痕迹是判断仓库是否真正静默的细化信号：如果工作区有未暂存修改，则静默并非完全无活动，需要更复杂的解释。</td></tr>
+                <tr><td>设计文档的未提交修改</td><td>当多个仓库中仅某个设计文档工作区有未提交修改时，该异常可能打破统一静默假设，成为需要独立解释的“异常窗口”。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果监控系统想要自动判断多个仓库的同步静默是统一原因还是独立原因，它需要读取哪些仓库元数据？（提示：考虑开发者信息、历史活跃时段、仓库之间的依赖关系、节假日日历等）</li>
+                <li>Kolmogorov复杂度在理论上是一个不可计算的值——不存在通用算法能算出任意数据的最短描述程序。那么在实际监控系统中，我们如何近似地估算“静默的解释复杂度”？用“过去30天该仓库在此日期的提交概率”作为代理是否合理？</li>
+                <li>当系统判断静默为统一原因而决定不告警，但其中某个仓库的静默实际上掩盖了一个异常（比如CI/CD管道悄悄坏了），这种“聚合告警导致的漏检”如何通过设计补偿机制来防范？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">今天选择的三个概念构成了一条从微观到宏观的知识链路。“工作区状态与暂存区边界”关注的是单个文件的一次修改在Git的三阶段模型中处于什么位置——它解释了为什么停留在工作区的修改是脆弱的、缺乏保护的。“设计文档的未提交修改”将这个问题投射到软件工程的协作场景中，展示了当设计文档处于“已改但未提交”状态时，团队的设计共识如何出现断裂风险。“多仓库同步静默的压缩解释”则从信息论的角度审视大局——它把多个仓库的同时安静看作一个可以被压缩或不能被压缩的“消息”，并探讨这种判断如何影响监控系统的告警策略。三个概念共同刻画了一个主题：软件工程中的“状态”（无论是代码状态、文档状态还是系统监控状态）都携带着信息，识别这些状态、理解它们的意义，是构建可靠系统的基础能力。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">Git的工作区修改就像写在草稿纸上的想法——它存在，但Git还没有承诺保护它，随时可能被覆盖或丢失。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>在一个多人协作的仓库中，如果一个人的工作区里积攒了大量未暂存的修改，这对团队的持续集成流程会产生什么实际影响？</li>
+            <li>如果需要自动检测设计文档修改与代码提交之间的时间差来预警追溯断裂风险，可以设计哪些检测指标或脚本？</li>
+            <li>当监控系统因判断静默为统一原因而聚合不告警，但其中某个仓库的静默实际掩盖了异常，如何通过补偿机制防范这类漏检？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
