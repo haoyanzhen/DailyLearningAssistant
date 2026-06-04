@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-06-05 学习笔记日报</title>
+    <meta name="description" content="从一份未提交修改出发，深入Git worktree并行机制、修改状态机模型与工作流审计证据层级，厘清代码修改的全周期可追溯性。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260605-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-06-05</p>
+        <h1>从一份未提交修改说起：Git worktree、状态机与证据层级</h1>
+        <p>今天几乎所有仓库都处于零提交状态，唯有ResearchPaperBase_codex仓库存在一份未提交的文档修改静静停留在工作区。这份“几乎静止”的观测记录，为我们提供了一个深度审视Git版本控制底层概念的契机。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>零提交日里的Git深度审思</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>Git worktree…</strong>
+                <small>Git worktree 让同一个…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>未提交修改的状态机模型</strong>
+                <small>用状态机角度看 Git 修改，文件…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>工作流审计中的证据层级体系</strong>
+                <small>工作流审计的证据层级从文件系统时间…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">这三个概念沿着“技术机制—形式化模型—工程治理框架”的主线层层递进。Git worktree 是支撑多任务并行开发的底层机制，它让同一个仓库可以同时存在多个独立的工作区，但也因此增加了状态管理的复杂度；状态机模型则用形式化的方式把工作区、暂存区和提交历史之间的流转规则描述清楚，帮助我们理解一份修改“走到哪一步了”及其审计含义；证据层级体系则站在工程审计和可信度的角度，把这些技术状态映射为从低到高的证据强度，从而指导团队在面对未提交修改、远端只读监控等场景时做出合理的判断和应对。三者共同构成了一幅完整的“修改生命周期与可追溯性”图景。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["零提交日里的Git深度审思"])
+  concept1["Git worktree 与多工作区并行开发"]
+  hub --&gt; concept1
+  concept2["未提交修改的状态机模型"]
+  hub --&gt; concept2
+  concept3["工作流审计中的证据层级体系"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["零提交日里的Git深度审思"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="git-worktree">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>Git worktree 与多工作区并行开发</h3>
+              <p>Git Worktree and Multi-Workspace Parallel Development</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">Git worktree 让同一个仓库可以同时拥有多个并行工作目录，适合同时处理不同特性或修复不同问题，但也需要审计脚本覆盖所有 worktree 的状态。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>允许为同一仓库创建多个独立工作目录，可检出不同分支，实现并行开发。</li>
+                <li>共享提交历史和对象数据库，节省空间，但每个worktree维护独立的工作区和暂存区。</li>
+                <li>审计时需扫描所有活跃的worktree状态，避免遗漏重要未提交修改。</li>
+                <li>常见误区：worktree 不是分支的别名，多个 worktree 不会重复存储底层对象。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="git-worktree" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="state-machine-model">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>未提交修改的状态机模型</h3>
+              <p>State Machine Model of Uncommitted Changes</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">用状态机角度看 Git 修改，文件从‘干净’到‘已修改未暂存’、‘已暂存未提交’、‘已提交’的每一次转移，都对应着开发者意图声明的递进，也决定了该修改的可信度和可追溯性。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>文件状态从“干净”到“已修改未暂存”到“已暂存未提交”到“已提交”，每个状态有不同含义。</li>
+                <li>状态转移对应开发者意图声明的递进，影响可信度和可追溯性。</li>
+                <li>未暂存修改最脆弱，无Git主动保护；暂存区声明意图但未固化；提交后进入不可变历史。</li>
+                <li>可以使用 git restore、git reset 等操作在状态间后退，但提交后撤销代价较大。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="state-machine-model" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="evidence-hierarchy">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>工作流审计中的证据层级体系</h3>
+              <p>Evidence Hierarchy in Workflow Audit</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">工作流审计的证据层级从文件系统时间戳到远端已推送提交，可信度逐级升高；停留在工作区的未提交修改处于证据链的最底层，不应作为决策的唯一依据。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>证据从低到高：文件时间戳、IDE历史、工作区未暂存、暂存区、正式提交、远端推送。</li>
+                <li>未提交修改停留在证据链底层，只能作为线索，不能作为决策事实。</li>
+                <li>审计系统应分层收集证据并评估可信度，高层级证据才可作为决策依据。</li>
+                <li>常见误区：以为改了文件就等于留下了不可磨灭的记录，实际上只有提交并推送才真正固化为可靠证据。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="evidence-hierarchy" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="git-worktree">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>Git worktree 与多工作区并行开发</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>平时我们用 Git 克隆一个仓库，会得到一个工作目录，里面是代码文件和一个隐藏的 .git 目录。在这个工作目录里，你只能检出（checkout）一个分支，如果你正在开发一个新功能，突然需要紧急修复一个 bug，就必须先保存手头的修改，切换到修复分支，修完再切回来。但有了 worktree，你可以为同一个仓库创建多个工作目录，每个目录可以独立检出不同的分支，就像同时打开了多个窗口，各干各的，互不干扰。每个 worktree 有独立的工作区、暂存区，但共享同一个仓库的提交历史。今天的观测中就发现 ResearchPaperBase_codex 仓库有一个活跃的 worktree 名为 ‘codex’，它和主工作区指向了同一个被修改的文件，说明开发者可能在并行处理与设计文档相关的多个任务。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>共享对象数据库：worktree 复用仓库的提交历史和对象，不会重复存储。</li>
+                <li>独立工作区：每个 worktree 有独立的 HEAD、索引和工作目录，可检出不同分支。</li>
+                <li>元数据管理：.git/worktrees 目录存放每个 worktree 的引用和配置，管理其生命周期。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>开发者正在 feature/frontend-redesign 分支重构界面，突遇紧急 bug，执行 `git worktree add ../hotfix-bug hotfix/critical` 瞬间在 ../hotfix-bug 目录获得新工作区检出 hotfix/critical 分支，修 bug、测试、提交全不干扰原工作区。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为 worktree 和分支是同一个概念，或者觉得多个 worktree 就是多份完整的代码拷贝，会占用大量磁盘空间。实际上，每个 worktree 会独立维护自己的工作区和少量元数据，但底层的提交历史、对象数据库是共享的，不会重复存储。</li>
+                <li>觉得一个 worktree 可以在同一时刻检出多个分支，其实一个 worktree 只能检出一个分支，并行是通过多个 worktree 实现的。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>未提交修改的状态机模型</td><td>引入 worktree 后，状态机需为每个工作区单独实施，审计复杂度增加。</td></tr>
+                <tr><td>工作流审计中的证据层级体系</td><td>并行工作区若未被扫描，会导致某些未提交修改完全逃离证据链。</td></tr>
+                <tr><td>零提交日里的Git深度审思</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果同一个仓库的多个 worktree 同时修改了同一个文件，但没有冲突，在最终合并时 Git 会如何处理，审计脚本应该如何检测这种潜在的设计意图不一致？</li>
+                <li>在持续集成环境中，构建脚本是否需要扫描所有 worktree 的状态，还是只需关注主工作区和当前分支？不同的选择对 CI 的漏检风险有什么影响？</li>
+                <li>是否应该限制仓库中活跃 worktree 的数量上限，以防止开发环境过度复杂化导致审计盲区？这个上限应根据什么指标来设定（如团队规模、分支数量或磁盘空间）？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="state-machine-model">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>未提交修改的状态机模型</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>我们经常用 Git 查看状态时看到 `modified: somefile.md`，这表示文件发生了修改但还没有被暂存或提交。如果用一个状态机来描述，从文件被 Git 跟踪开始，它会经历几个明确的状态：首先是‘干净’（Clean），表示文件内容和最近一次提交完全一致，没有改动；当你用编辑器修改了文件，它就进入了‘已修改未暂存’（Modified but unstaged）状态；如果你执行 `git add`，则转移到‘已暂存未提交’（Staged but not committed）；最后 `git commit` 让它成为‘已提交’（Committed），形成一个不可变的历史记录。这些状态之间的转移是规则明确的，有些是可逆的（比如用 `git restore` 把已修改的文件退回干净状态），有些一旦发生就很难逆转（比如 commit 后再要撤销，就不是简单的文件操作了）。今天观察到的 `docs/design/03_ui_workspace.md` 就卡在‘已修改未暂存’状态，表明开发者还没有发出“这个修改值得纳入历史”的意图声明。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>文件状态由 Git 跟踪，从干净开始，经过编辑、暂存、提交等操作改变。</li>
+                <li>状态转移可逆性不同：未暂存可轻易还原，暂存可取消，提交则需额外步骤。</li>
+                <li>状态决定保护程度：未暂存修改不受 Git 版本控制保护，暂存区内容可能被 GC 清理。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>文件 index.html 处于干净状态（HEAD 指向提交记录哈希 abcd123）。开发者修改标题，文件进入‘已修改未暂存’。执行 `git add index.html`，文件转入‘已暂存未提交’。最后 `git commit -m 'Update title'`，文件变成‘已提交’。若中途反悔：未暂存阶段用 `git restore index.html` 放弃修改；已暂存阶段用 `git restore --staged index.html` 退回未暂存；提交后则需 `git revert` 或 `git reset`。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为工作区里修改过但没 `git add` 的文件和暂存区里已 `git add` 的文件，在安全性上差不多，都是‘还没提交’。但其实差别很大：已暂存的状态至少说明开发者主动声明过‘这个改动有意义，准备保存’，而只停留在工作区连暂存都没做的修改，只能说明‘文件系统上多了几行字’，缺乏意图声明，也更容易被意外覆盖或删除。</li>
+                <li>认为只要改动进了 Git 仓库，不管是否提交，Git 都能保护它。实际上未暂存的修改只存在于工作区的普通文件里，Git 根本不主动记录，一旦被误删或 `git checkout` 覆盖就彻底消失；暂存区的内容虽然被 Git 捕捉并压缩成 blob 对象，但这些对象是临时的，如果长期不提交且没有被其他引用链触及，Git 的垃圾回收可能会清理掉它们。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>Git worktree 与多工作区并行开发</td><td>状态机需覆盖所有 worktree，每个 worktree 可能有不同的文件状态。</td></tr>
+                <tr><td>工作流审计中的证据层级体系</td><td>不同状态对应证据层级的不同台阶，状态机模型将状态明确化，利于审计映射。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果工作区中存在大量长期未暂存的修改，状态机模型能否扩展出‘意图遗忘’或‘废弃实验’这样的复合状态，帮助审计系统做出更智能的告警？</li>
+                <li>在 Git worktree 多工作区环境中，状态机是否需要为每个 worktree 单独建模，还是可以抽象出通用规则并叠加实例？这会给并行状态审计带来哪些挑战？</li>
+                <li>除了 edit → add → commit 这条主线，还有 stash、reset、revert 等操作会让文件在状态间跳跃，能否设计一个完整的 Git 修改生命周期状态图，覆盖所有常见操作和异常路径？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="evidence-hierarchy">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>工作流审计中的证据层级体系</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>在软件开发中，当我们需要回答‘这个人到底改了什么？’‘这个修改发生在什么时候？’‘这件事是谁做的？’这类问题时，不同来源的‘证据’可信度是不一样的。比如，文件系统上的修改时间可以被轻易篡改，几乎不可信；IDE 的本地历史记录稍微好一些，但仅限于本机；Git 工作区的未暂存修改虽然真实存在，但没有附加任何谁改的、为什么改的元信息；`git add` 后的暂存区补丁表达了开发者“我要保留这个”的意图，但仍未固化；正式的 Git 提交则拥有不可篡改的 SHA、作者、时间戳，可信度大大提升；如果这个提交还被推送到远程仓库并被其他人拉取，它就得到了分布式验证，几乎无可抵赖。从低到高，我们把这些可信程度的阶梯叫做证据层级。今天的研究发现，`docs/design/03_ui_workspace.md` 的修改就停留在低层级的‘工作区未暂存’状态，因此在没有其他辅助证据的情况下，我们只能把它当作‘待确认线索’，不能直接当作已确认的工作成果。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>不同来源证据提供不同强度的信息，文件时间戳易篡改，提交记录不可逆。</li>
+                <li>审计系统应按层级收集信息，从工作区到远端逐步提升可信度。</li>
+                <li>低层级证据需结合上下文和交叉验证，才能提高置信度。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一场数据泄露追溯：先查文件时间戳（可篡改，不可信），再看 IDE 本地历史（稍好但仍可伪造），接着查 Git 工作区未暂存修改（存在但无作者信息），然后查暂存区（有意保留）和正式提交记录（包含作者、时间、说明），最后查远端已推送的记录（分布式验证，几乎无法抵赖）。今天那份未提交文档修改就处在“改了，但没留下签名和理由”的危险区。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>很多人认为只要改动进了 Git 仓库，不管是否提交，Git 都能保护它。实际上，Git 的‘保护’程度严格跟随证据层级：未暂存的修改只存在于工作区的普通文件里，Git 根本不主动记录；暂存区的内容是临时对象，可能被垃圾回收清理。只有正式提交才真正写入了不可变的历史。</li>
+                <li>以为文件系统上的修改时间可以作为有效证据，但任何有权限的人可以用一条命令修改这个时间，因此在审计中不能依赖。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>Git worktree 与多工作区并行开发</td><td>并行 worktree 使证据分散，必须扫描所有 worktree 才能完整收集证据。</td></tr>
+                <tr><td>未提交修改的状态机模型</td><td>状态机中的每个状态正好对应证据层级的一个台阶——未暂存对应最低层，已暂存对应中层，已提交对应高层。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>在自动审计流水线中，如何为每个证据层级设计合适的置信度加权算法，使得当低层级线索多次出现或与高层级矛盾时，系统能自动调整最终判定？</li>
+                <li>如果团队采用 squash merge 策略，会导致多个低层级的工作区/暂存区修改被压缩成一个高层级提交，原中间的暂存和意图记录全部丢失，这是否破坏了证据层级的可追溯性，应如何权衡？</li>
+                <li>对于没有正式提交、仅停留在工作区的设计文档修改，是否应该强制启用文件系统审计工具（如 auditd、Windows File Audit）来弥补 Git 不可见区域的证据真空？这样做会引入哪些性能和隐私成本？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">这三个概念沿着“技术机制—形式化模型—工程治理框架”的主线层层递进。Git worktree 是支撑多任务并行开发的底层机制，它让同一个仓库可以同时存在多个独立的工作区，但也因此增加了状态管理的复杂度；状态机模型则用形式化的方式把工作区、暂存区和提交历史之间的流转规则描述清楚，帮助我们理解一份修改“走到哪一步了”及其审计含义；证据层级体系则站在工程审计和可信度的角度，把这些技术状态映射为从低到高的证据强度，从而指导团队在面对未提交修改、远端只读监控等场景时做出合理的判断和应对。三者共同构成了一幅完整的“修改生命周期与可追溯性”图景。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">工作流审计的证据层级从文件系统时间戳到远端已推送提交，可信度逐级升高。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>在持续集成环境中，构建脚本是否需要扫描所有 worktree 的状态，还是只需关注主工作区和当前分支？</li>
+            <li>除了 edit → add → commit 主线，能否设计一个完整的 Git 修改生命周期状态图？</li>
+            <li>在自动审计流水线中，如何为每个证据层级设计合适的置信度加权算法？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
