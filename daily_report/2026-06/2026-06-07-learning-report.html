@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-06-07 学习笔记日报</title>
+    <meta name="description" content="探索组件抽象、服务端动态路由与工作目录验证，学习如何从代码层设立变化传播的阻断点、承载点与外移闸机。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260607-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-06-07</p>
+        <h1>变化管理的三个层次：组件、路由、环境</h1>
+        <p>今日通过三个概念，揭示了软件工程中管理变化传播的核心方法：从组件提取到路由安全，再到环境验证的外部化，层层设立边界，让变化在可控范围内流动。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>变化传播与边界设计</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>前端组件抽象与单一职责原则</strong>
+                <small>一个组件，一份职责，一个改变的理由。</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>服务端路由与动态路径参数—…</strong>
+                <small>灵活的路由，严格的安检，缺一不可。</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>工作目录验证——运行环境前…</strong>
+                <small>将隐藏假设显式化，为环境变化设立唯…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">今天三个概念的递进关系很清晰：C2（组件抽象与单一职责）是最基础的“阻断术”，教我们识别出内聚的职责并把它从复合组件中剥离——就像从瑞士军刀上拆下一个独立的螺丝刀，以后拧螺丝的变化只会影响螺丝刀本身。C4（服务端动态路由与安全校验）把视角提升到 API 层面，展示了 Catch-All 路由的灵活性如何与路径穿越攻击的防护形成张力——路由越灵活，安全校验的责任就越重，必须在路由入口处建立严格的校验屏障。C5（工作目录验证的外部化）则是 C4 思想的自然延伸：不仅路由入口需要校验，整个系统的运行环境假设都可以被外部化成一个独立的验证服务，让“环境正确性”这个约束发生变更时，所有依赖它的业务逻辑都不需要修改——因为它们都通过这个独立端点来确认环境状态。三个概念共同描绘了一张“变化管理网络”：C2 在组件层设立阻断点，C4 在路由层设立阻断点，C5 在环境层设立阻断点，层层递进地把变化锁在最小的可能范围内。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["变化传播与边界设计"])
+  concept1["前端组件抽象与单一职责原则"]
+  hub --&gt; concept1
+  concept2["服务端路由与动态路径参数——文件系统接口的边界设计"]
+  hub --&gt; concept2
+  concept3["工作目录验证——运行环境前置条件的安全化表达"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  related1["变化传播与边界设计"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="component-abstraction">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>前端组件抽象与单一职责原则</h3>
+              <p>Component Abstraction and Single Responsibility Principle</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">一个组件，一份职责，一个改变的理由。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>单一职责原则：一个组件应该只做一件事，并且应该只有一个原因导致它被修改。</li>
+                <li>通过提炼（extraction）将下载逻辑从 FileViewer 和 SessionSidebar 中独立为 DownloadButton 组件。</li>
+                <li>变化隔离：修改下载逻辑只影响 DownloadButton，不会波及文件查看器和侧边栏，同时各组件更专注于核心任务。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="component-abstraction" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="server-routing">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>服务端路由与动态路径参数——文件系统接口的边界设计</h3>
+              <p>Server-side Routing and Dynamic Path Parameters - File System Interface Boundary Design</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">灵活的路由，严格的安检，缺一不可。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>Catch-All 路由 ([...path]) 允许匹配任意深度的文件路径，简化路由定义。</li>
+                <li>灵活性的代价是必须手写路径消毒逻辑：标准化路径、拼接安全基路径、检测路径穿越攻击。</li>
+                <li>服务端设计需平衡灵活性与安全性：路由越灵活，安全校验层责任越重。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="server-routing" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="working-directory-validation">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>工作目录验证——运行环境前置条件的安全化表达</h3>
+              <p>Working Directory Validation - Secure Expression of Runtime Preconditions</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">将隐藏假设显式化，为环境变化设立唯一的闸机。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>将工作目录验证独立为一个 API 端点 /api/cwd/validate，消除各业务请求中重复的环境检查代码。</li>
+                <li>集中化错误定义：环境异常时返回统一格式的错误信息，前端可据此设计用户提示。</li>
+                <li>安全边界外移：环境验证作为系统入口闸机，在最早时刻拦截异常请求，避免深入业务逻辑。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="working-directory-validation" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="component-abstraction">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学</p>
+                <h3>前端组件抽象与单一职责原则</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象你有一个瑞士军刀——它既能切东西、又能开瓶盖、还能拧螺丝。这看起来很全能，但有一个问题：如果有一天你只想改进“拧螺丝”的功能，你没办法只修那个螺丝刀头，因为它是和整把刀连在一起的。于是你做了个决定：把螺丝刀头拆下来，做成一把独立的螺丝刀。现在你有了两样东西——一把精简了的瑞士军刀和一把专用螺丝刀。以后拧螺丝的问题只跟螺丝刀有关，切东西的问题只跟刀有关，一个改了不影响另一个。这就是软件工程中的“单一职责原则”：一个组件应该只做一件事，并且应该只有一个原因导致它被修改。今天 pi-web 仓库中的一次提交正是做了这件事——工程师发现 FileViewer（文件查看器）和 SessionSidebar（会话侧边栏）两个组件里都内嵌了“下载文件”的代码，于是他们把下载逻辑提取成一个独立的 DownloadButton 组件。这个操作叫“提炼”（extraction），辨识出“下载”是一个有自己独立边界的职责——它有自己的按钮外观、点击响应、下载状态提示、以及与后端 API 的通信方式——然后把这份职责从原来身兼数职的组件中拉出来，成为一个干净的、可以独立演化的单元。这样做的好处是双向的：一方面，当下载逻辑本身需要修改时（比如改下载格式、改进度条、加权限检查），只需要改 DownloadButton 一个地方，不会意外影响文件预览或侧边栏的行为；另一方面，FileViewer 和 SessionSidebar 卸下了下载的包袱后，自己的代码也变短了、变清楚了，更专注于自己的核心任务——一个负责展示文件内容，一个负责管理会话导航。这种通过不断提取来降低系统耦合度的实践，是构建可维护前端应用的基石。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>识别内聚职责：将“下载”作为一个独立的业务能力集，包含按钮外观、状态提示、API通信等子任务，自成一体。</li>
+                <li>提炼与解耦：创建 DownloadButton 组件，让 FileViewer 和 SessionSidebar 通过引用它来复用下载功能，实现职责分离。</li>
+                <li>变化隔离：当下载逻辑需要修改时，只需改动 DownloadButton，所有使用它的组件自动获得新行为，不会引发连锁修改。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>电影院把检票员和卖爆米花的人分开——检票员只负责检票，爆米花柜台独立，扫码流程变化不会影响爆米花销售。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误区：单一职责就是函数越细越好。正解：职责是业务能力的内聚集合，如“下载文件”包含多个子任务，但它们属于同一能力域，不应过度拆分。关键在于识别正确的内聚边界，而非无限细分。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>服务端路由与动态路径参数——文件系统接口的边界设计</td><td>前端组件抽象为服务端路由变更提供了隔离层：如果文件下载的 API 路径结构变化，良好抽象的 DownloadButton 只需要在调用层修改，FileViewer 和 SessionSidebar 无需改动，阻断耦合传播。</td></tr>
+                <tr><td>变化传播与边界设计</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果一个组件的职责变得越来越复杂，我们什么时候应该再次提炼？有没有量化的指标（如代码行数、修改频率、依赖数量）可以帮助我们做这个判断？</li>
+                <li>单一职责原则在 React 的 Hooks 体系中是如何体现的？自定义 Hook（如 useDownload）和独立组件（如 DownloadButton）在职责提炼上各有什么优劣？</li>
+                <li>当多个团队共享同一个组件库时，如何防止 DownloadButton 为了满足不同场景的需求而逐渐变成“第二个瑞士军刀”——即重新积累复合职责？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="server-routing">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>服务端路由与动态路径参数——文件系统接口的边界设计</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>假设你是一家快递公司的分拣中心主管。普通包裹上写着明确的目的地地址，分拣员看一眼就知道该放进哪个货柜——这就像普通的 API 路由，/api/files/document.pdf 对应一个固定的处理逻辑。但现在来了一个特殊客户，他说：“我每天要寄几百个包裹，地址格式不固定，有的写到文件夹层级（部门/项目组/文件），有的只写文件名，我不想每个地址都单独告诉你一声。”于是你设计了一个“智能货柜”——任何格式的地址扔进来，柜子自动解析出路径，找到对应文件，送到正确的处理流程。这在 Next.js 中就是 Catch-All 路由（[...path] 语法）。它允许 /api/files/a.txt 和 /api/files/projects/2026/report.pdf 都命中同一个处理程序，程序内部自己从 path 参数中拆解出实际的文件路径。这种灵活性极大简化了路由定义——你不需要为每个可能的文件路径层级都写一个路由规则。但灵活性带来一个致命的问题：如果地址里包含了 `../../etc/passwd` 这样的特殊写法，智能柜会不会被人耍，把系统核心文件送出去？这叫做“路径穿越攻击”——攻击者通过在文件路径中插入 `../` 来跳出允许的目录范围，访问服务器上的敏感文件。因此，Catch-All 路由的内部必须内置严格的“路径消毒”（sanitization）流程：先把路径参数标准化（去掉多余的斜杠、解码 URL 编码字符），再拼接到一个安全的“工作目录基路径”上，最后检查解析后的真实路径是否仍然在允许的目录范围内——如果尝试逃逸，直接拒绝。这里的核心知识点是：路由层越灵活，安全校验层的责任就越重。灵活性与安全边界之间的张力，是服务端接口设计中永恒的平衡题。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>路由灵活性：Catch-All 路由使用 [...path] 语法接收任意层级路径，交由处理函数统一解析。</li>
+                <li>安全消毒流程：标准化路径字符串 → 拼接安全基路径 → 解析真实路径 → 检查是否在允许范围内，防止路径穿越。</li>
+                <li>责任转移：框架不再在路由匹配阶段校验路径合法性，开发者必须在处理函数中实现严格校验，否则留下安全漏洞。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>酒店智能门童：客人说房间号，系统从数据库验证身份后授权钥匙，但黑客可能注入特殊字符试图越权——系统必须在每次授权前层层验证，防止路径穿越。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误区：Catch-All 路由能匹配任何路径，就不需要再做路径校验。正解：越能接收任意输入的地方，越需要手写严格校验，因为框架已将校验责任从路由匹配阶段撤掉，完全交给开发者。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>前端组件抽象与单一职责原则</td><td>前端组件抽象降低了路由变更的耦合：如果 API 路由结构调整，抽象的 DownloadButton 只需在自己的调用层修改，不会连锁影响使用它的组件。</td></tr>
+                <tr><td>工作目录验证——运行环境前置条件的安全化表达</td><td>Catch-All 路由在处理每个文件请求前，应调用工作目录验证端点确认环境状态，因为如果工作目录不存在或不可写，所有路径校验都失去基础。同时，验证端点本身也是一个 API 路由，需要运用 Catch-All 路由中讨论的安全校验机制。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>Catch-All 路由与中间件（middleware）配合使用时，路径校验逻辑应该放在路由处理函数内部还是放在全局中间件里？两种选择的优劣和适用场景分别是什么？</li>
+                <li>如果工作目录本身是一个分布式文件系统（如 NFS 或云存储挂载），路径穿越的检测逻辑是否需要考虑符号链接（symlink）和硬链接带来的间接逃逸？这类问题如何防护？</li>
+                <li>在微服务架构中，一个 BFF（Backend for Frontend）层的 Catch-All 路由在转发请求到后端文件服务时，应该如何设计路径重写规则以避免在中间链路中引入新的安全漏洞？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="working-directory-validation">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>工作目录验证——运行环境前置条件的安全化表达</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>继续刚才快递分拣中心的比喻。你的智能货柜（Catch-All 路由）虽然会给每个包裹做路径安检，但有一个前提假设：整个分拣中心是有电的，传送带是转的，仓库里确实有货架可以放包裹。如果某天早晨，传送带坏了，或者仓库因为消防检查被清空了，那么每个包裹在安检通过后依然无法被处理——而且这个失败会在包裹已经进入分拣流程后才暴露，浪费了大量的处理时间。于是你做了一个聪明的决定：在分拣中心的入口处单独设立一个“环境状态检查闸机”。每个包裹在进入分拣流程之前，先被这个闸机快速扫一下，闸机不做复杂处理，只确认一件事——分拣中心的核心设施（传送带、货架、温控）都处于可用状态。如果环境异常，闸机直接亮红灯，所有包裹暂时不进入分拣流程，并返回清晰的错误信息：“传送带故障，请联系维护人员”或“仓库温度超标，等待降温后再投递”。这就是今天 C5 概念的核心：pi-web 仓库的工程师创建了一个独立的 API 端点 `/api/cwd/validate`，专门用来验证工作目录的合法性和可用性，而不是把这个检查分散地嵌入到每个需要操作文件的业务请求中。这种设计的工程价值有三层：第一层是消除重复——不需要在文件下载、文件上传、文件列表等每个功能里都写一遍“检查工作目录是否存在”的代码；第二层是集中错误定义——环境异常时的错误信息格式和内容在一个地方统一管理，前端可以基于统一的错误码设计用户提示；第三层是安全边界外移——环境状态验证变成了系统入口处的一个闸机，不管攻击者试图通过哪个 API 入口进入系统，环境检查闸机都会在最早的可能时刻拦截环境异常的请求，不让他们深入到包含更多业务逻辑的内部。这种把“环境假设”从隐式的前置条件变成显式的、可调用的独立服务的思想，在软件工程中被称为“前置条件的外部化”。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>消除重复：提取公共的环境检查逻辑到一个独立端点，避免在每个需要文件操作的业务请求中重复编写。</li>
+                <li>集中管理与演化：验证逻辑可独立升级（如增加磁盘空间检查），而不影响所有调用方，返回格式保持稳定。</li>
+                <li>安全前置：将环境状态验证作为系统的第一道防线，在请求进入业务逻辑前就予以拦截，防止异常请求消耗内部资源。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>医院急诊室的分诊台：病人先经分诊台护士快速评估生命体征，确认适合进入后续诊疗后才放行；分诊台还能在急诊室断电时告知所有来诊者暂时关闭——这个闸机保护了内部资源，集中处理异常。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误区：一个简单的目录检查没必要单独做成 API，直接放在公共函数里就行。正解：验证逻辑会随时间演化（加入权限、磁盘空间、审计等），集中到独立端点可以独立演化、测试和部署，避免修改公共函数波及所有调用点。这不是过度设计，而是为未来变化预留管理空间。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>服务端路由与动态路径参数——文件系统接口的边界设计</td><td>Catch-All 路由在处理文件请求前应调用工作目录验证端点，确保环境可用；同时，验证端点本身也是 API 路由，需要运用路径消毒等安全校验机制，形成双向依赖。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果一个分布式部署的系统有多个工作目录（不同的微服务操作不同的挂载点），C5 的验证端点应该设计成单体检查所有目录，还是为每个工作目录提供一个独立的验证端点？两种设计的可用性和安全影响有何不同？</li>
+                <li>C5 端点本身如何防范拒绝服务攻击？如果攻击者对这个验证端点发起高频请求，虽然验证逻辑很轻量，但毕竟要经过文件系统调用——如何设计请求频率限制而不影响合法用户的正常验证需求？</li>
+                <li>在容器化环境中，工作目录可能在容器启动后才动态挂载，C5 在启动时验证通过不代表运行时一直有效——应该如何设计定期健康检查或事件驱动的验证机制，来捕捉工作目录在运行期间失效的情况？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">今天三个概念的递进关系很清晰：C2（组件抽象与单一职责）是最基础的“阻断术”，教我们识别出内聚的职责并把它从复合组件中剥离——就像从瑞士军刀上拆下一个独立的螺丝刀，以后拧螺丝的变化只会影响螺丝刀本身。C4（服务端动态路由与安全校验）把视角提升到 API 层面，展示了 Catch-All 路由的灵活性如何与路径穿越攻击的防护形成张力——路由越灵活，安全校验的责任就越重，必须在路由入口处建立严格的校验屏障。C5（工作目录验证的外部化）则是 C4 思想的自然延伸：不仅路由入口需要校验，整个系统的运行环境假设都可以被外部化成一个独立的验证服务，让“环境正确性”这个约束发生变更时，所有依赖它的业务逻辑都不需要修改——因为它们都通过这个独立端点来确认环境状态。三个概念共同描绘了一张“变化管理网络”：C2 在组件层设立阻断点，C4 在路由层设立阻断点，C5 在环境层设立阻断点，层层递进地把变化锁在最小的可能范围内。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">门越宽，守门人的责任就越大。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如果一个组件的职责变得越来越复杂，我们什么时候应该再次提炼？有没有量化的指标（如代码行数、修改频率、依赖数量）可以帮助我们做这个判断？</li>
+            <li>Catch-All 路由与中间件（middleware）配合使用时，路径校验逻辑应该放在路由处理函数内部还是放在全局中间件里？两种选择的优劣和适用场景分别是什么？</li>
+            <li>如果一个分布式部署的系统有多个工作目录（不同的微服务操作不同的挂载点），C5 的验证端点应该设计成单体检查所有目录，还是为每个工作目录提供一个独立的验证端点？两种设计的可用性和安全影响有何不同？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
