@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-06-06 学习笔记日报</title>
+    <meta name="description" content="从七个静默仓库出发，探索无变更日的信息论意义、工作区未提交修改的脆弱证据地位，以及用压缩解释思想判断多仓库静默的统一性。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260606-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-06-06</p>
+        <h1>静默与噪声的审计主旋律</h1>
+        <p>今天，我们在七个完全静默的仓库和一个有未提交修改的仓库之间，发现了一条贯穿信息论与软件工程审计的主线。它告诉我们：大量的“没有事件”可能是一个高度可压缩的统一信号，而微小的未提交修改却是审计中最不确定的线索。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>静默与噪声：信息论视角下的审计监控</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>无变更日作为信息事件</strong>
+                <small>静默不是空白，而是排除了可能性的信…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>工作区未提交变更的审计地位</strong>
+                <small>工作区修改像便签上的铅笔字：存在…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>多仓库静默的压缩解释</strong>
+                <small>描述越短，原因越统一；描述越长，越…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">今天三个概念的递进关系非常清晰:先把“无变更日”从感觉层面的“今天好像没发生什么”提升到信息事件的高度去理解;再通过工作区未提交变更这个具体载体，看清楚 Git 在证据层级上的设计——并不是所有被 Git “看到”的修改都具有同等的可信度;最后在多仓库维度上，用压缩解释的思想把前两个概念编织在一起:如果多个仓库同时静默，这句“同时”本身就提供了压缩的可能性，而当某一个仓库出现未提交修改时，这份“噪声”会破坏原本可以很短的解释，使描述长度增加，从而提示系统对分散异常保持警惕。
+
+这三个概念共同指向一个工程现实:一个成熟的自动化审计系统，不能只数有没有 commit，还要区分“干净的沉默”与“藏着线索的安静”，并试图在静默发生时判断这到底是一个值得告警的信号，还是一个可以安全忽略的统一状态。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["静默与噪声：信息论视角下的审计监控"])
+  concept1["无变更日作为信息事件"]
+  hub --&gt; concept1
+  concept2["工作区未提交变更的审计地位"]
+  hub --&gt; concept2
+  concept3["多仓库静默的压缩解释"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["静默与噪声：信息论视角下的审计监控"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="no-change-day-as-information-event">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>无变更日作为信息事件</h3>
+              <p>No-Change Day as an Information Event</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">静默不是空白，而是排除了可能性的信号。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>无提交日也是信息，因为它排除了提交发生的可能性。</li>
+                <li>信息量取决于事件发生概率，活跃仓库静默更反常。</li>
+                <li>多个仓库同时静默放大了信息量，促使寻找统一原因。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="no-change-day-as-information-event" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="uncommitted-changes-audit-status">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>工作区未提交变更的审计地位</h3>
+              <p>Audit Status of Uncommitted Working-tree Changes</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">工作区修改像便签上的铅笔字：存在，但无签无时。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>Git 分层：工作区、暂存区、提交历史，证据强度逐级递增。</li>
+                <li>未暂存修改没有作者签名和可靠时间戳，只能算“待确认线索”。</li>
+                <li>文件系统元数据（mtime）不可靠，易被重置，不能作为时间证据。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="uncommitted-changes-audit-status" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="compressible-explanation-multi-repo-silence">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>多仓库静默的压缩解释</h3>
+              <p>Compressible Explanation of Multi-Repository Silence</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">描述越短，原因越统一；描述越长，越需分开盘查。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>基于 Kolmogorov 复杂度：能用很短程序生成的状态意味着低复杂度、高可压缩性。</li>
+                <li>多仓库同时静默若可用一句话解释，则可能是统一事件（如假日）。</li>
+                <li>若需为每个仓库写不同解释，则暗示分散异常，应提高告警优先级。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="compressible-explanation-multi-repo-silence" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="no-change-day-as-information-event">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>无变更日作为信息事件</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>我们先从最直观的问题开始:如果一个仓库今天什么新提交都没有，这件事有没有意义？很多人会觉得“没变化”就等于“没发生任何事”，不值得关注。但从信息论的角度看，“没有事件”和“有事件”一样，都是排除了其他可能性的结果，因此它本身就是一条信息。
+
+想象你每天早上都收到朋友的一条消息说“我到了”，如果有一天消息没来，你会不会觉得奇怪？“消息没来”这件事本身就是一个信号——它可能意味着朋友睡过了、手机没电了，或者别的什么意外。同理，一个代码仓库如果历史上每天都有提交，忽然有一天安安静静，这个安静就是一种偏离常态的事件，它携带了值得注意的信息。
+
+在信息论中，我们用“负熵”或“信息量”来衡量一个事件有多意外。如果一个事件发生的概率很低，一旦它真的发生，我们就获得了较大的信息量;反之，如果一件事几乎每天都会发生，它发生一次提供的信息量就很小。所以，判断一个无变更日到底意味着什么，关键要看这个仓库的“背景活跃度”:一个每天有几十个提交的热闹仓库突然沉默一天，和一个月也未必有一次提交的休眠仓库安静一天，信息量是完全不同的。
+
+今天我们有七个仓库同时进入无变更日，这个“同时”本身就放大了信息量——如果它们各自独立地沉默，每个仓库单独解释就够了;但如果它们像约好了一样一起安静，我们就更有理由去怀疑背后存在一个统一的原因，比如今天是休息日、或者有统一的版本冻结。这种从“多个个体沉默”到“可能统一原因”的推导，正是下一个概念“压缩解释”的起点。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>信息论中，事件是否携带信息取决于其概率：低概率事件发生带来高信息量。</li>
+                <li>无提交日的惊奇程度与该仓库历史提交频率成反比。</li>
+                <li>多仓库同时静默的巧合概率与它们的背景活跃度和关联度相关。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>闹钟比喻：闹钟每天按时响，某天不响就是重要信号，可能暗示电池耗尽或设置失误；若闹钟本身时响时不响，一天不响就不足为奇。同样，高频活跃仓库的静默远比休眠仓库的静默更有信息量。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误区：认为无变更日就是空日，应在自动化系统中直接忽略。真相：无变更日是一类正常事件记录，忽略它会丢失一半信息——无法区分“观察过但确实没变化”与“根本没观察”。</li>
+                <li>误区：所有无变更日同等重要。真相：要根据每个仓库的历史活动模式分别计算惊奇程度，活跃仓库的静默远比休眠仓库的静默更值得关注。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>工作区未提交变更的审计地位</td><td>如果工作区存在未提交修改，则无变更日的判定需要确认修改的时间归属，否则不能简单判定为静默。</td></tr>
+                <tr><td>多仓库静默的压缩解释</td><td>多个仓库同时无变更是压缩解释的前提，只有先准确判定每个仓库的静默状态，才能探讨统一解释的可能性。</td></tr>
+                <tr><td>静默与噪声：信息论视角下的审计监控</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果仓库的历史提交频率呈现周期性波动，如何建模这种周期性以避免将正常周末当作异常告警？</li>
+                <li>多个仓库同时无变更时，如何从它们的历史关联度（如共享开发者、微服务依赖）推断静默原因的统一概率？</li>
+                <li>提交概率分布随时间变化，如何持续更新背景模型使惊奇度计算始终保持准确？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="uncommitted-changes-audit-status">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>工作区未提交变更的审计地位</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>今天我们在 ResearchPaperBase_codex 仓库的工作区里发现了一份设计文档的修改:三行增加，三行删除。但它没有被暂存，也没有被提交——它就这么静悄悄地躺在工作区里。在审计人员眼中，这种状态到底算不算“今天有人工作了”？
+
+要回答这个问题，我们需要理解 Git 对文件的修改是如何分层的。最底层是工作区，也就是你直接在文件系统上编辑文件的地方，修改在这里只是一种磁盘上的变化;向上一层是暂存区，你通过 git add 命令告诉 Git“我计划把这次修改纳入下一次提交”;再往上是提交历史，通过 git commit 你可以把暂存区的内容永久保存成一个有作者签名、时间戳和唯一哈希值的提交对象。
+
+这三层构成了逐级递增的证据强度。一个提交对象因为带有加密签名、被哈希链保护，一旦产生就极难篡改，是审计中最高层级的证据;暂存区里的内容至少表明开发者有提交意向，但还没有被永久保存，属于中等层级;而停留在工作区里的未暂存修改，既没有作者签名也没有可靠的时间戳，你只能通过文件的修改时间这类容易被改动的元数据来推测它是什么时候产生的，因此它处于证据层级的最底端。
+
+今天这份设计文档修改的处境，正是这个最底端位置的绝佳例子。Git 可以告诉我们文件现在的样子和上一次提交时的样子差了三行增三行删，但 Git 没有记录这个修改是今天上午十点开始的，还是昨天下午留下的，甚至可能是一个星期前的废弃草稿。文件系统的 mtime 看似能给出修改时间，但这个时间完全可能因为执行 git checkout、touch 命令、或者编辑器自动保存而被覆盖，在取证上不可靠。因此，审计系统只能谨慎地将它标记为“待确认变化线索”——它说明这个仓库可能有活动，但时间和作者都需要其他手段来确认，不能直接等同于“今天的工作”。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Git 三层架构：工作区（磁盘修改）、暂存区（待提交）、提交历史（永久记录）。</li>
+                <li>证据层级由篡改难度与元数据完整性决定，提交历史因哈希链和签名而最可信。</li>
+                <li>未暂存修改缺乏签名与可靠时间戳，文件 mtime 易变，故只能作为线索，不能作为事实。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>今天 ResearchPaperBase_codex 仓库中 docs/design/03_ui_workspace.md 工作区版本比 HEAD 多三行、少三行。如果这份修改是今天开始编辑的，今天应记为“有工作区活动”；若它是昨天遗留的草稿，则今天仍可判为无变更日。单凭 Git 无法区分，就像在共享厨房发现一个用过的杯子，只能知道有水迹，无法确定是五分钟前还是三天前留下的。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误区：认为 git status 能显示修改，所以 Git 知道修改时间。真相：git status 只做内容比对，不记录工作区修改的发生时间。</li>
+                <li>误区：依赖文件修改时间（mtime）来推断。真相：mtime 极易被 git checkout、touch 或编辑器自动保存等操作重置，审计中不可信。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>无变更日作为信息事件</td><td>工作区未提交修改直接影响无变更日的判定：如果这份修改被确认为今天产生，则静默判定需修正；否则可维持无变更日结论。</td></tr>
+                <tr><td>多仓库静默的压缩解释</td><td>若某仓库出现未提交修改打破静默，会破坏原本可压缩的统一解释，增加描述长度，提示系统可能存在分散异常。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>除了检查文件 mtime 和编辑器备份文件，还有哪些技术手段（如 inotify 监控、文件系统日志）可以帮助推断工作区修改的产生时间？</li>
+                <li>对于长时间停留在“已修改未暂存”状态的文件，是否可以设计状态停留超时机制，自动提醒开发者处理，以避免证据真空？</li>
+                <li>在多 worktree 环境中，各工作区可能各自存在未提交修改，审计脚本怎样高效遍历所有活跃 worktree 并汇总为完整的仓库状态快照？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="compressible-explanation-multi-repo-silence">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>多仓库静默的压缩解释</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>今天最引人注目的事实不是某一个仓库静默，而是七个仓库同时静默。这让我们很自然地想追问:它们是一起安静的，还是碰巧各自安静了？这个问题的回答方式，恰好把我们带到了计算机科学中一个深刻的思想实验——Kolmogorov 复杂度，也就是“最短描述长度”的概念。
+
+先把这个思想实验用日常语言讲清楚。假设你有两串数字:第一串是 123412341234，第二串是 837205938471。如果让你用最简短的一句话向别人描述每一串数字，第一串你可能会说“1234重复三次”，描述非常简短;第二串你可能只能老老实实地一个数字一个数字念出来，或者干脆说“我把它抄下来给你看”，描述就会长很多。在 Kolmogorov 复杂度的定义中，一个对象的复杂度等于能够生成这个对象的最短程序的长度。如果对象有简洁的规律可循，它的复杂度就低;如果对象看起来像随机噪声，没有短程序能生成它，复杂度就高。
+
+把同样的思路应用到多仓库静默上。如果今天七个仓库同时无提交的原因非常统一——比如今天是星期日、或者团队发了一封冻结通知——那么我们只需要一句话就能解释所有仓库的静默状态:“所有人今天休息。”这条解释极度简短，意味着整个静默格局的复杂度很低，可以被高度压缩。相反，如果这七个仓库的静默原因各不相同:仓库 A 是 CI 故障导致无法推送，仓库 B 是主开发者生病，仓库 C 是在等待外部依赖更新……我们就必须为每个仓库分别写一段解释，总体描述长度类似于把每个仓库的独立状态“念一遍”，复杂度明显更高。描述越短，说明背后的原因越可能是统一的;描述越长，越提示静默可能只是巧合，甚至在某些仓库中存在隐蔽的阻塞故障。
+
+今天的情况给了我们一个具体的素材去思考:我们能不能用一些易于获取的元数据来近似估算这种描述长度？比如，如果这七个仓库共享大量开发者、都处在同一个组织架构中，那么“统一休假”这件事的概率就较高;如果它们分属完全不同的团队、且历史提交模式并不相同，那么同时静默就更值得细分追查。这就是压缩解释思想在审计监控中的实用启发——它为“是否应该聚合告警”提供了一个原则性的判断框架。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Kolmogorov 复杂度：对象的最短生成程序长度反映其规律性，越有规律越可压缩。</li>
+                <li>统一原因使多个静默状态呈现一致规律，描述短；分散原因使静默像噪声，描述长。</li>
+                <li>通过可获取的元数据（团队归属、工作日历、CI 状态等）可近似估算描述长度，从而决定告警聚合或分开处理。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>数字序列 123412341234 可压缩为“1234 重复三次”，描述简短；乱序序列 837205938471 只能逐字抄录，描述长。同理，若七个仓库同属一个团队且今天放假，静默可描述为“全体休息”；若各自原因不同，则需逐个说明，描述变长。实际中可依据团队、假日、CI 状态等元数据估算描述长度，为告警聚合策略提供依据。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误区：认为只要仓库数够多，同时静默就一定可疑。真相：若它们本就关联（如同一微服务系统），集体静默可能是常态，信息量低。</li>
+                <li>误区：压缩解释可以脱离上下文凭空判断。真相：必须依赖可计算的元数据特征来近似描述长度，而不是纯理论猜测。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>无变更日作为信息事件</td><td>多仓库静默的判定直接依赖每个仓库的无变更日信息，只有先准确判定单个仓库的静默，才能讨论多仓库的统一解释。</td></tr>
+                <tr><td>工作区未提交变更的审计地位</td><td>若某仓库的工作区修改被证实为今天产生，则该仓库不再静默，从而破坏原有的可压缩解释，导致描述长度增加，告警优先级上升。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>除了团队同属性和假日标记，还有哪些元数据（如历史提交时间序列的互信息）可以在不触及仓库内容的前提下估算多仓库静默的描述长度？</li>
+                <li>当静默的压缩解释显示低复杂度时，自动化系统是否应该完全抑制告警？还是应发送一条“聚合低风险提示”，保留可追溯记录？</li>
+                <li>如果某个仓库的 CI 系统默默发生故障导致无法推送，这一情况在可获取的元数据中完全未体现，此时压缩解释方法是否会产生危险的漏报？如何设计兜底策略？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">今天三个概念的递进关系非常清晰:先把“无变更日”从感觉层面的“今天好像没发生什么”提升到信息事件的高度去理解;再通过工作区未提交变更这个具体载体，看清楚 Git 在证据层级上的设计——并不是所有被 Git “看到”的修改都具有同等的可信度;最后在多仓库维度上，用压缩解释的思想把前两个概念编织在一起:如果多个仓库同时静默，这句“同时”本身就提供了压缩的可能性，而当某一个仓库出现未提交修改时，这份“噪声”会破坏原本可以很短的解释，使描述长度增加，从而提示系统对分散异常保持警惕。
+
+这三个概念共同指向一个工程现实:一个成熟的自动化审计系统，不能只数有没有 commit，还要区分“干净的沉默”与“藏着线索的安静”，并试图在静默发生时判断这到底是一个值得告警的信号，还是一个可以安全忽略的统一状态。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">大量的“没有事件”本身可能是一个高度可压缩的统一事件。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何设计算法根据仓库历史活动模式计算静默事件的惊奇度？</li>
+            <li>如何结合文件系统日志等多源信息提高工作区修改的时间归属置信度？</li>
+            <li>多仓库静默的压缩解释能否引入条件熵来校准告警阈值？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
