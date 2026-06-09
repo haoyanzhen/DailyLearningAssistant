@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-06-09 学习笔记日报</title>
+    <meta name="description" content="今天通过 tiny-sea-war 仓库的设计文档体系搭建，学习了技术方案文档作为系统骨架的作用、文档随职责增加而精简的重构方法、以及审计文档作为设计质量闸门的价值。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260609-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-06-09</p>
+        <h1>用文档为交互系统编码：骨架 · 职责 · 审计</h1>
+        <p>今日通过 tiny-sea-war 仓库在两个小时里密集落地的设计文档体系，展示了如何先确立技术方案骨架，再生长出核心机制与数据模式，最后用审计文档形成质量闭环。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>设计文档的系统工程</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>技术方案文档的系统骨架作用</strong>
+                <small>设计文档的第一块积木应该是技术方案…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>技术文档随关联文档增加而重…</strong>
+                <small>当专门文档各自独立后，早期包罗万象…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>设计文档的审计与质量闸门</strong>
+                <small>完整的设计交付物，不光要写清楚“我…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">这三个概念构成一个由浅入深的递进：技术方案文档是整个设计的骨架，划定边界、提供锚点；当核心机制、美术原则、数据模式等专门文档各自独立后，技术方案文档被大幅精简，这是文档职责的提炼重构；最后，在全部设计文档成形时补充审计文档，为整个设计体系装上质量闸门。三者合在一起，让我们看到设计文档不是随意码字，而是像软件一样需要架构、重构和质量保证的系统工程。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["设计文档的系统工程"])
+  concept1["技术方案文档的系统骨架作用"]
+  hub --&gt; concept1
+  concept2["技术文档随关联文档增加而重构精简"]
+  hub --&gt; concept2
+  concept3["设计文档的审计与质量闸门"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["设计文档的系统工程"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="tech-doc-skeleton">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>技术方案文档的系统骨架作用</h3>
+              <p>Technical Solution Document as System Skeleton</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">设计文档的第一块积木应该是技术方案文档——它像建筑的钢结构，先划定边界和模块关系，避免后续设计成为空中楼阁。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>最先确立，划定客户端、服务端等模块边界与对话方式。</li>
+                <li>为后续核心机制、美术、数据等设计提供可行基础与工程锚点。</li>
+                <li>不必过早陷入实现细节，重在界定职责，以便未来精简和委托。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="tech-doc-skeleton" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="tech-doc-slimming">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>技术文档随关联文档增加而重构精简</h3>
+              <p>Technical Document Slimming through Extraction</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">当专门文档各自独立后，早期包罗万象的技术方案文档反而应该被精简，这不是偷懒，而是让信息各归其位，是文档层面的“提取类”重构。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>起初技术方案文档承载大量临时信息，是因为专门文档尚未创建。</li>
+                <li>核心机制、美术原则、数据模式等文档独立后，应删除冗余描述，仅保留架构概览。</li>
+                <li>精简是文档职责提炼，遵循单一职责原则，降低未来修改的影响范围。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="tech-doc-slimming" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="design-audit-gate">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>设计文档的审计与质量闸门</h3>
+              <p>Audit Document as Quality Gate</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">完整的设计交付物，不光要写清楚“我们做了什么”，还应该附带一份审计文档说明“用什么标准检查它对不对”——这是把设计从一叠想法变成可验证工程制品的关键一步。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>在所有设计文档成形后，应补充一份审计文档，列出检查标准。</li>
+                <li>审计文档不是事后追责，而是提前定义“通过”的标准，是质量闸门。</li>
+                <li>它把零散的设计文档串联成一个可交付、可验证的工程制品。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="design-audit-gate" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="tech-doc-skeleton">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>技术方案文档的系统骨架作用</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>技术方案文档是什么？你可以把它理解成整个项目的骨架，就像盖房子时最先搭起来的钢筋结构。它不会把每面墙、每扇窗画得特别细，但它要清清楚楚地标出：哪些部分是客户端负责的、哪些归服务端管、它们之间怎么对话。为什么一定要先写它？因为如果连框架都没有，后面去设计具体的玩法规则、美术风格、数据格式时，很容易设计出一些技术上根本实现不了的东西——就像还没画好楼层平面图，就激动地买了一张三米长的沙发，结果发现门框只有一米宽。因此技术方案文档是其他所有设计文档的前置条件，它给出的是系统的边界和约束，让创意不只停留在幻想里，而从一开始就长在可行的土地上。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>系统必须先有骨架，才能承载具体设计，否则创意会变得不可实现。</li>
+                <li>骨架明确模块职责与通信规则，防止职责错乱（如客户端与服务器逻辑混淆）。</li>
+                <li>骨架专注边界而非细节，为后续文档提供清晰的委托目标，实现职责分离。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>tiny-sea-war 项目第一个提交就是一份 598 行的技术方案文档。它明确客户端只负责渲染和输入，服务端负责规则计算和状态同步。这样当核心机制文档设计“船只相撞扣血”时，就知道这属于服务端逻辑，避免将伤害计算错误放在客户端。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为技术方案文档必须一开始就详细到每个接口参数——事实上它重在划定模块边界。</li>
+                <li>觉得只有大型项目才需要技术方案文档，小项目可以跳过——但 tiny-sea-war 作为小游戏依然受益于清晰的骨架。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>技术文档随关联文档增加而重构精简</td><td>技术方案文档最初大而全，之后随着核心机制等文档的出现而精简，这是骨架作用的自然延伸。</td></tr>
+                <tr><td>设计文档的审计与质量闸门</td><td>审计文档以技术方案中的架构约束为基准，检查所有领域设计是否遵守骨架划定的边界。</td></tr>
+                <tr><td>设计文档的系统工程</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果技术方案本身一开始就画错了边界，后续文档会受什么影响？有没有办法在设计过程中及早发现这种架构漂移？</li>
+                <li>为一个小游戏和一个大型在线服务写技术方案文档，侧重点有什么不同？骨架的“粒度”该由什么因素决定？</li>
+                <li>当项目进入迭代期后，技术方案文档应该以什么频率更新？每次改架构都要同步修改它吗？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="tech-doc-slimming">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>技术文档随关联文档增加而重构精简</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象你有一本万能笔记本，最开始所有想法——购物清单、学习计划、周末菜谱——都往上面写。后来你买了专业的分科目活页本，购物清单归入“生活”册，学习计划归入“成长”册，菜谱归入“料理”册。这时候你再翻开最初那本万能笔记本，发现里面大部分内容都可以撕掉了，它只需要保留一个总索引，提醒你每类信息现在各自在哪。tiny-sea-war 的技术方案文档就经历了这样一个过程：最开始长达 598 行，因为别的地方还不存在，它不得不先把玩法、美术、数据的初步想法都暂时收留。但一旦这些领域各自有了独立的专门文档，原本收留的内容就成了冗余——应该立刻清理，让技术方案文档回归它最纯粹的职责：架构概览与模块关系说明。这种精简不是偷工减料，而是文档职责的一次“提炼”，和程序员重构代码时把一个大类拆成几个小类，然后把原来的类变小的思想一模一样。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>文档体系像代码一样需要重构，随着专门文档的出现，原始文档应删减冗余，避免同一信息多处维护。</li>
+                <li>遵循单一职责原则：每个文档只负责一类信息，降低耦合，提升可维护性。</li>
+                <li>精简使修改影响范围可控：改动美术风格只需更新美术文档，无需触碰技术方案文档。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>tiny-sea-war 提交记录里，开发者先创建了 598 行技术方案文档，紧接着又提交了一次，新增了核心机制、美术设计和数据模式三份文档，同时对技术方案文档进行了大幅删减。原本关于船只属性、伤害计算的描述被移除，改为指向对应专门文档的引用，让技术方案回归纯粹的架构概览。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>很多人觉得文档越厚越有价值，精简等于偷懒。但实际上，保持一份什么都写的文档非常危险——将来任何一个领域的小改动，都要求作者去修改这份庞大的文件，很容易改漏、改错。</li>
+                <li>误以为精简就是删除有用信息——其实是将信息迁移到更适合的专门文档中，并建立引用链接。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>技术方案文档的系统骨架作用</td><td>精简前的技术方案文档扮演了骨架与杂物收纳的双重角色，精简后回归纯粹的骨架职能。</td></tr>
+                <tr><td>设计文档的审计与质量闸门</td><td>精简后的文档体系职责分明，审计者可以很容易定位哪些规则归属哪个文档，从而更高效地验证职责没有交叉或遗漏。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>团队在什么时机应该从总揽文档中分离出新的专门文档？有没有一些标志，比如某一段落修改频繁、或者开始出现相互矛盾的描述？</li>
+                <li>如果技术方案文档精简后，新加入的成员只看它无法理解整体设计，怎么办？是否需要维持一份新手引导性质的过渡文档？</li>
+                <li>除了按领域（规则、视觉、数据）分离，文档职责还有哪些常见的合理切分维度，比如按模块、按用户角色？各自的利弊是什么？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="design-audit-gate">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>设计文档的审计与质量闸门</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>当所有设计文档都差不多写好时，tiny-sea-war 的团队做了最后一件事：创建一份超过 500 行的审计文档。这份文档不描述任何新功能，而是专门列出检查标准，用来回答同一个问题——“我们写的这些东西，怎么证明它是对的、好的、完整的？”你可以把它想象成考试之前自己给自己出的那张复习检测卷。你先把知识点整理成笔记（设计文档），但光有笔记不行，你还需要一套问题来检验自己是不是真懂了，哪个地方还模糊，哪个知识点根本没覆盖。审计文档就是这样一套“自我检测题”，它把零散的各份设计文档串连成一个可交付的工程制品——因为从现在起，任何一个人拿到这套设计，都不仅知道团队“做了什么”，还知道团队“以什么标准来判断它是否合格”。把审计文件作为设计体系的标准配备，意味着团队承认：设计完成态的等价定义，不是“我们写完了最后一页”，而是“我们写完了，并且有可以据此验证的审查标准”。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>审计文档将隐性的质量判断显性化，为交付物提供客观的验证标准。</li>
+                <li>它像考试前的自测卷，确保设计覆盖全面、无矛盾。</li>
+                <li>审计作为质量闸门，不追究过失，而是在入口处定义“及格”条件，推动前移质量保障。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在 tiny-sea-war 所有设计文档写完以后，团队又写了 518 行的审计文档，包含了诸如“对于核心机制文档中描述的每条伤害计算公式，必须能在数据模式文档中找到所有参与计算的属性定义”这样的验证条目。这样，即使代码一行没写，设计文档之间的矛盾就能被审计标准提前捕获。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>不少人把审计等同于事后追责，觉得“审计”是个很负面的词。但设计文档体系里的审计文档，用得最好时是作为质量闸门——它不追究任何人的过失，只负责在交付前就定义好“通过”的标准。</li>
+                <li>认为审计文档是一次性的，设计迭代后无需更新——然而设计演化时审计标准也需相应演进。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>技术方案文档的系统骨架作用</td><td>审计文档以技术方案中的架构约束为基准，检查各领域设计是否遵守骨架划定的边界。</td></tr>
+                <tr><td>技术文档随关联文档增加而重构精简</td><td>审计文档确保精简后的各专门文档之间衔接正确，没有信息遗漏，保护了“各司其职”的文档结构。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果审计文档本身也需要更新，谁来审计这份审计文档？如何避免审计标准僵化、跟不上设计演化？</li>
+                <li>在实际工程中，有什么办法可以把审计文档里一部分可量化的检查条目编写成自动化脚本，在持续集成环境里跑起来？</li>
+                <li>对于一些无法量化、必须人工品味的设计维度，比如“美术风格是否符合设计原则”，审计文档应该用什么方式表达这些审查标准，才能让评审者有一把可用的尺子而不是一句空话？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">这三个概念构成一个由浅入深的递进：技术方案文档是整个设计的骨架，划定边界、提供锚点；当核心机制、美术原则、数据模式等专门文档各自独立后，技术方案文档被大幅精简，这是文档职责的提炼重构；最后，在全部设计文档成形时补充审计文档，为整个设计体系装上质量闸门。三者合在一起，让我们看到设计文档不是随意码字，而是像软件一样需要架构、重构和质量保证的系统工程。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">完整的设计交付物，不光要写清楚“我们做了什么”，还应该附带一份审计文档说明“用什么标准检查它对不对”——这是把设计从一叠想法变成可验证工程制品的关键一步。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如果技术方案本身一开始就画错了边界，如何通过迭代机制及早发现并修正架构漂移？</li>
+            <li>团队在什么时机应该从总揽文档中分离出新的专门文档？有哪些可量化的信号？</li>
+            <li>如何将审计文档中可量化的检查条目编写成自动化脚本，在 CI 中持续守护设计一致性？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
