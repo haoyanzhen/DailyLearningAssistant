@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-06/2026-06-10-learning-report.html">2026-06-10</a>
+      </td>
+      <td>Conventional Commits的结构化意图编码</td>
+      <td>软件工程</td>
+      <td>★★</td>
+      <td>Conventional Commits是一套给Git提交信息加结构化前缀的约定，它让提交信息同时成为人可读的摘要和机器可解析的数据，从而实现自动化的版本号管理和changelog生成。</td>
+      <td>下次可以深入讲解Conventional Commits前缀与语义化版本号（SemVer）的精确映射规则：fix→patch, feat→minor, BREAKING CHANGE→major，以及当一次发布包含多个不同类型提交时，版本号升级策略的优先级算法。同时可以引入自动化changelog生成工具（如standard-version）的实际配置方法，让今天的理论约定落地为明天的工程流水线。</td>
+    </tr>
+    <tr>
+      <td>React自定义Hook的单一职责封装</td>
+      <td>软件工程</td>
+      <td>★★★</td>
+      <td>React自定义Hook是把一种特定行为逻辑从组件中抽取出来封装的机制，它让“滚动该怎么处理”和“消息该怎么显示”各自独立变化，互不干扰。</td>
+      <td>下次可以从Hook的职责封装延伸到一个更广泛的前端架构模式——“自定义Hook的组合模式”：当多个单一职责的Hook需要协同工作时，如何设计Hook之间的接口契约和数据流向？可以引入“受控Hook”和“非受控Hook”的概念，类比React组件中的受控/非受控模式，讨论Hook间状态同步的不同策略及其对单一职责原则的影响。</td>
+    </tr>
+    <tr>
+      <td>浏览器滚动事件与渲染管线的协同优化</td>
+      <td>计算机科学</td>
+      <td>★★★★</td>
+      <td>浏览器滚动优化不是让代码跑得更快，而是让滚动处理对齐到浏览器的渲染帧节奏，避免在一帧之内做超过一帧该做的事。</td>
+      <td>下次可以深入requestAnimationFrame的浏览器实现原理：它与宏任务（setTimeout）和微任务（Promise.then）在事件循环中的执行时机有何不同？为什么用它处理滚动比用setTimeout(fn, 16)更可靠？同时可以引入“布局抖动检测工具”——Chrome DevTools的Performance面板如何帮助识别强制同步布局（forced synchronous layout）的调用链，以及如何利用这些信息来系统性地治理滚动性能问题。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-06/2026-06-09-learning-report.html">2026-06-09</a>
       </td>
       <td>技术方案文档的系统骨架作用</td>

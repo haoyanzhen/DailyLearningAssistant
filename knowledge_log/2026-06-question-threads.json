@@ -3,6 +3,96 @@
   "year_month": "2026-06",
   "threads": [
     {
+      "id": "2026-06-10-reacthook-de17791fdb",
+      "question": "自定义Hook的可测试性是一个重要优势——如何为一个封装了浏览器滚动行为的Hook编写单元测试，模拟scroll事件和requestAnimationFrame的触发时机？",
+      "source_date": "2026-06-10",
+      "source_concept": "React自定义Hook的单一职责封装",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-06-10T06:04:33.991216+08:00",
+      "updated_at": "2026-06-10T06:04:33.991216+08:00"
+    },
+    {
+      "id": "2026-06-10-reacthook-be29ec72fe",
+      "question": "当多个Hook都需要访问同一个全局状态（比如当前用户设置）时，应该如何避免每个Hook都去重复订阅这个状态，导致职责边界模糊？",
+      "source_date": "2026-06-10",
+      "source_concept": "React自定义Hook的单一职责封装",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-06-10T06:04:33.991216+08:00",
+      "updated_at": "2026-06-10T06:04:33.991216+08:00"
+    },
+    {
+      "id": "2026-06-10-reacthook-08fc7708bf",
+      "question": "如果一个Hook内部依赖另一个Hook的状态（比如useAutoScroll依赖useMessageStream的消息队列），这两种Hook之间应该通过什么机制通信才能保持各自的单一职责不退化？",
+      "source_date": "2026-06-10",
+      "source_concept": "React自定义Hook的单一职责封装",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-06-10T06:04:33.991216+08:00",
+      "updated_at": "2026-06-10T06:04:33.991216+08:00"
+    },
+    {
+      "id": "2026-06-10-conventional-commits-e1d8451362",
+      "question": "在团队推行Conventional Commits时，如何用Git hook或CI检查自动拒绝不符合规范的提交信息，从而让约定真正落地执行？",
+      "source_date": "2026-06-10",
+      "source_concept": "Conventional Commits的结构化意图编码",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-06-10T06:04:33.991216+08:00",
+      "updated_at": "2026-06-10T06:04:33.991216+08:00"
+    },
+    {
+      "id": "2026-06-10-conventional-commits-ba77f5d0ec",
+      "question": "如果一个提交同时修复了一个bug又新增了一个小功能，应该用fix:还是feat:？存在“复合提交”的约定处理方式吗？",
+      "source_date": "2026-06-10",
+      "source_concept": "Conventional Commits的结构化意图编码",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-06-10T06:04:33.991216+08:00",
+      "updated_at": "2026-06-10T06:04:33.991216+08:00"
+    },
+    {
+      "id": "2026-06-10-conventional-commits-48556d6823",
+      "question": "Conventional Commits规范中还有`BREAKING CHANGE`标记用于标识不兼容变更——这种标记如何影响自动化工具的版本号推断逻辑？",
+      "source_date": "2026-06-10",
+      "source_concept": "Conventional Commits的结构化意图编码",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-06-10T06:04:33.991216+08:00",
+      "updated_at": "2026-06-10T06:04:33.991216+08:00"
+    },
+    {
+      "id": "2026-06-10-concept-a89f497528",
+      "question": "requestAnimationFrame的回调在浏览器标签页处于后台时会被暂停或降频——这会不会导致用户切回标签页时看到“滚动位置卡在半路”的视觉问题？如何处理这种场景？",
+      "source_date": "2026-06-10",
+      "source_concept": "浏览器滚动事件与渲染管线的协同优化",
+      "domain": "计算机科学",
+      "status": "open",
+      "created_at": "2026-06-10T06:04:33.991216+08:00",
+      "updated_at": "2026-06-10T06:04:33.991216+08:00"
+    },
+    {
+      "id": "2026-06-10-concept-42ceecaa64",
+      "question": "除了requestAnimationFrame，现代浏览器还提供了IntersectionObserver API——它能否替代手动监听scroll事件来实现“用户是否接近底部”的判断？两者的性能差异在什么场景下会变得显著？",
+      "source_date": "2026-06-10",
+      "source_concept": "浏览器滚动事件与渲染管线的协同优化",
+      "domain": "计算机科学",
+      "status": "open",
+      "created_at": "2026-06-10T06:04:33.991216+08:00",
+      "updated_at": "2026-06-10T06:04:33.991216+08:00"
+    },
+    {
+      "id": "2026-06-10-concept-13faaed4b0",
+      "question": "被动事件监听器（passive event listener）在这个场景中的作用是什么？如果一个滚动事件处理函数被标记为passive，为什么能避免阻塞合成线程？",
+      "source_date": "2026-06-10",
+      "source_concept": "浏览器滚动事件与渲染管线的协同优化",
+      "domain": "计算机科学",
+      "status": "open",
+      "created_at": "2026-06-10T06:04:33.991216+08:00",
+      "updated_at": "2026-06-10T06:04:33.991216+08:00"
+    },
+    {
       "id": "2026-06-09-concept-f9f162be0a",
       "question": "除了按领域（规则、视觉、数据）分离，文档职责还有哪些常见的合理切分维度，比如按模块、按用户角色？各自的利弊是什么？",
       "source_date": "2026-06-09",

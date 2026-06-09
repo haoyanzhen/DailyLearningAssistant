@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-06-10 学习笔记日报</title>
+    <meta name="description" content="通过Conventional Commits、React Hook封装与滚动渲染优化，将系统行为可预测地组织起来，从工程约定、架构模式到底层性能协同逐层深入。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260610-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-06-10</p>
+        <h1>把系统行为可预测地组织起来</h1>
+        <p>今天通过pi-web前端体验优化与tiny-sea-war游戏设计体系构建两条线索，探索如何让复杂系统的行为变得可预测、可维护、可追溯。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>让复杂行为可预测 —— 从提交约定…</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>Conventional…</strong>
+                <small>Conventional Comm…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>React自定义Hook的…</strong>
+                <small>Hook封装让“滚动”与“渲染”解…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>浏览器滚动事件与渲染管线的…</strong>
+                <small>不要在一帧之内做超过一帧该做的事—…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">今天的三个概念构成了一个从“写代码的人怎么做决策”到“计算机怎么跑代码”的认知梯度。Conventional Commits是最外层的工程约定——它解决的是“如何让提交信息同时被人和机器读懂”；React自定义Hook的单一职责封装是中国层的架构实践——它解决的是“如何把特定行为装进独立的逻辑盒子，让修改不扩散”；浏览器滚动事件与渲染管线的协同优化是最内层的计算机科学原理——它解释了“为什么把逻辑装进盒子之后，我们还要关心浏览器每一帧怎么画”。这三层层层深入：约定让协作有序，封装让修改局部化，底层原理让优化有据可依。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["让复杂行为可预测 —— 从提交约定到渲染帧对齐"])
+  concept1["Conventional Commits的结构化意图编码"]
+  hub --&gt; concept1
+  concept2["React自定义Hook的单一职责封装"]
+  hub --&gt; concept2
+  concept3["浏览器滚动事件与渲染管线的协同优化"]
+  hub --&gt; concept3
+  related1["Git远端ref指针作为最小权限监控的信号边界"]
+  concept1 --&gt; related1
+  related2["设计文档集的层次化组织结构"]
+  concept1 --&gt; related2
+  concept2 --&gt; concept3
+  related3["tiny-sea-war中的美术资产管线与工序拆分"]
+  concept2 --&gt; related3
+  related4["前端组件抽象与单一职责原则"]
+  concept2 --&gt; related4
+  concept3 --&gt; concept2
+  related5["流式内容渲染中的DOM扰动控制"]
+  concept3 --&gt; related5
+  related6["生产者-消费者速率不匹配"]
+  concept3 --&gt; related6
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4,related5,related6 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="conventional-commits-intent-coding">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>Conventional Commits的结构化意图编码</h3>
+              <p>Conventional Commits: Structural Intent Encoding</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">Conventional Commits把Git提交信息变成了机器可读的结构化元数据，用约定标签替代人工解读。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>通过fix:、feat:、style:等前缀将提交意图编码为结构化标签，让自动化工具无需读代码就能推断版本号变化。</li>
+                <li>提交信息同时为人读和机器解析，降低信息获取成本。</li>
+                <li>自动化版本号推断与changelog生成，让发版决策从“人自己想”变成“机器自动算”。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="conventional-commits-intent-coding" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="react-custom-hook-srp">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>React自定义Hook的单一职责封装</h3>
+              <p>React Custom Hook: Single Responsibility Encapsulation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">Hook封装让“滚动”与“渲染”解耦，修改不扩散。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>将滚动状态、事件监听、性能逻辑等封装在独立Hook中，实现单一职责。</li>
+                <li>组件只关心UI渲染，行为逻辑与展示层解耦。</li>
+                <li>修改局部化：修复滚动逻辑只需改Hook，组件本身几乎不受波及。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="react-custom-hook-srp" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="scroll-render-pipeline-coordination">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>浏览器滚动事件与渲染管线的协同优化</h3>
+              <p>Coordinating Scroll Events and the Browser's Rendering Pipeline</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">不要在一帧之内做超过一帧该做的事——用requestAnimationFrame把滚动处理对齐到渲染节奏。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>滚动是高频事件，每秒可触发数十次，容易导致布局抖动。</li>
+                <li>用requestAnimationFrame将滚动处理对齐到渲染帧，合并多余操作。</li>
+                <li>性能优化的核心是降低执行频率，而非单纯加速单次执行。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="scroll-render-pipeline-coordination" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="conventional-commits-intent-coding">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>Conventional Commits的结构化意图编码</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象你每天要写很多便条贴在家里的留言板上。如果你的便条格式很随意——有时候写“修了个bug”，有时候写“改了改界面”，有时候什么都不写——那你的家人想通过扫一眼留言板来了解今天发生了什么，就会很费力。Conventional Commits（约定式提交）就是给Git提交信息（相当于代码世界的留言板便条）设计了一套统一的格式：每次“便条”开头都要用一个标准标签说明你做了什么类型的事，比如fix:表示修了bug，feat:表示加了新功能，style:表示调整了样式。这样做有两个巨大的好处：第一，人扫一眼就能知道这次提交大概是什么性质；第二，机器也能读懂这些标签——自动化工具可以自动决定版本号是升0.0.1还是0.1.0，可以自动生成更新日志。本质上，这是把一条本来只给人读的自然语言信息，同时设计成了机器可以解析的结构化数据。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>标准化前缀标签：将提交意图划分为fix、feat、style等固定类别，形成统一的语义约定。</li>
+                <li>机器可解析：前缀标签作为结构化信号，可被CI系统自动消费，驱动版本号计算与changelog生成。</li>
+                <li>降低信息获取成本：通过结构化元数据替代完整内容阅读，让人和工具都能高效判断提交性质。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>pi-web仓库在6月10日有三个连续提交分别使用了style:、feat:、fix:前缀。style:调整侧边栏样式不触发版本升级，feat:新增“滚动到底部”按钮触发次版本号升级，fix:修复流式内容滚动异常触发补丁版本号升级。若配置了自动发版工具，这三个提交足以让工具正确判断版本号变化。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>很多人以为Conventional Commits只是给提交信息加了个好看的前缀，本质上还是给人看的。实际上，它的核心价值恰恰在于“机器可解析”——当CI系统读到fix:前缀时，不只是知道“这是个修复”，而是可以自动执行一系列版本管理动作。如果只把它当格式规范来遵守，而不用自动化工具来消费这些结构化信息，就等于只做了一半的工作。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>Git远端ref指针作为最小权限监控的信号边界</td><td>共享通过结构化元数据降低信息获取成本的思想：CC让自动化从提交前缀推断版本号而不需读diff，ref监控让系统知道有变化而不需clone仓库。</td></tr>
+                <tr><td>设计文档集的层次化组织结构</td><td>如果文档之间的引用关系像CC前缀一样是显式声明的结构化数据，那么变更影响分析也可以用“读引用图”替代“读全部文档”来完成。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果一个提交同时修复了一个bug又新增了一个小功能，应该用fix:还是feat:？存在“复合提交”的约定处理方式吗？</li>
+                <li>Conventional Commits规范中还有`BREAKING CHANGE`标记用于标识不兼容变更——这种标记如何影响自动化工具的版本号推断逻辑？</li>
+                <li>在团队推行Conventional Commits时，如何用Git hook或CI检查自动拒绝不符合规范的提交信息，从而让约定真正落地执行？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="react-custom-hook-srp">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>React自定义Hook的单一职责封装</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>假设你家里有一个万能工具箱，里面既装着螺丝刀，又装着锤子、剪刀、卷尺——每次你要拧螺丝的时候，都得在箱子里翻半天，而且箱子太重，不好携带。一个更聪明的做法是：把螺丝刀单独拿出来，做成一个独立的螺丝刀工具包，它只负责拧螺丝这件事，轻便好用，而且以后拧螺丝的问题只归它管。React自定义Hook就是前端开发中的“螺丝刀工具包”——它把一种特定的行为逻辑（比如“管理聊天窗口的滚动位置”）从整个组件中抽取出来，封装成一个独立的函数。这个函数只做一件事：管理滚动相关的状态、监听滚动事件、判断是否要显示“滚到底部”按钮。组件本身则只负责UI的渲染——按钮长什么样、消息怎么排版。当滚动逻辑需要修复或优化时，只需要改这个Hook，组件几乎不受影响。这就是“单一职责封装”：每个代码单元只负责一件明确的事，变动的风险被隔离在最小的范围内。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>单一职责：每个Hook只负责一个明确的行为领域，不混杂无关逻辑。</li>
+                <li>解耦行为与UI：组件将行为委托给Hook，自身仅负责渲染，两个关注点可以独立变化。</li>
+                <li>局部化修改：行为变更的影响范围被限制在Hook内部，不泄露到组件或其他模块。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>pi-web仓库的useAgentSession.ts封装了“Agent会话中的滚动行为状态”。在今天的一个提交中，开发者为了修复流式内容滚动的性能异常，在这个Hook里改动了80行代码，但对ChatWindow组件本身只删了6行。说明滚动逻辑和UI渲染已被成功解耦：修复可以集中在Hook内部进行，组件层面几乎不受波及。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>很多人误以为Hook仅仅是一种“避免重复代码”的技巧——把多个组件共享的逻辑抽出来复用。但这只是Hook价值的一半。另一半、也是更重要的价值在于职责分离：即使一个Hook只被一个组件使用（没有复用需求），把“滚动该怎么处理”从“消息该怎么显示”中分离出来，本身就有巨大的架构收益——它让两个不同关注点的代码可以独立修改、独立测试、独立理解。复用是结果，不是目的。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>浏览器滚动事件与渲染管线的协同优化</td><td>正是因为滚动逻辑被封装在独立的Hook中，性能优化（如requestAnimationFrame对齐、被动事件监听器）才能在局部实施而不污染组件结构。</td></tr>
+                <tr><td>tiny-sea-war中的美术资产管线与工序拆分</td><td>两者都是把“不同性质的工作”拆成独立的处理单元：Hook拆分把“滚动”与“渲染”解耦，管线拆分把“艺术创作”与“格式标准化”解耦。</td></tr>
+                <tr><td>前端组件抽象与单一职责原则</td><td>Hook封装是组件拆分的延续：组件拆分作用于UI结构，Hook拆分作用于行为逻辑，两者都是单一职责原则在不同层面的表达。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果一个Hook内部依赖另一个Hook的状态（比如useAutoScroll依赖useMessageStream的消息队列），这两种Hook之间应该通过什么机制通信才能保持各自的单一职责不退化？</li>
+                <li>自定义Hook的可测试性是一个重要优势——如何为一个封装了浏览器滚动行为的Hook编写单元测试，模拟scroll事件和requestAnimationFrame的触发时机？</li>
+                <li>当多个Hook都需要访问同一个全局状态（比如当前用户设置）时，应该如何避免每个Hook都去重复订阅这个状态，导致职责边界模糊？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="scroll-render-pipeline-coordination">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学</p>
+                <h3>浏览器滚动事件与渲染管线的协同优化</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>先想象一个场景：你正在看一部电影，但电影放映机坏了——它不再按稳定的每秒24帧播放画面，而是有人随机按快进键，画面时快时慢甚至跳帧。你的观看体验会非常糟糕。浏览器的渲染也类似：它按照一个稳定的节奏刷新画面（通常是每秒60次，即每16.6毫秒刷新一帧），这叫做“渲染管线”。但用户的滚动操作是一个高频事件——你轻轻滚动一下鼠标滚轮，浏览器可能在一秒内触发几十次scroll事件。如果每次scroll事件到来时，你的代码都立刻去计算当前滚动位置、比较是否接近底部、更新按钮显示状态，还要触发React的重新渲染，就会造成“布局抖动”——浏览器在两次正常渲染帧之间被强制做了额外工作，导致画面卡顿或闪烁。优化的核心思想叫做“帧同步”：不要把scroll事件的处理分散在任意时刻，而是把所有需要重新计算和绘制的东西都对齐到浏览器的渲染帧节奏上。具体工具是requestAnimationFrame——它相当于告诉浏览器：“我这段代码不急着现在执行，请你安排在下一帧开始之前一起处理。”</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>渲染管线与帧率：浏览器以每秒约60帧稳定刷新，每帧之间约16.6ms。</li>
+                <li>帧同步优化：通过requestAnimationFrame将滚动处理绑定到渲染帧前，避免在帧间触发额外布局。</li>
+                <li>降低执行频率：合并在同一帧内的多次滚动计算，只保留最后一次结果，消除无用功。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设一个聊天应用的自动滚动逻辑每次收到新消息时执行`element.scrollTop = element.scrollHeight`。如果消息来得很快（一秒30个token），这句话一秒执行30次，其中29次是多余的。优化后维护一个`needsScrollToBottom`标志位，收到新消息时只设标志为true，不立即滚动；通过requestAnimationFrame注册一个回调，在下一帧渲染前检查标志，若为true才执行一次滚动并复位。不管一帧之间收到多少消息，滚动操作只执行一次。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>很多人以为性能优化的核心是“让代码执行得更快”，所以拼命减少单次执行的计算量。但对于滚动这种高频事件场景，核心矛盾不是“执行太慢”而是“执行太多次”——一秒60帧的渲染频率下，如果你在一帧之间触发了3次滚动计算，其中2次的结果都会被下一帧覆盖，变成了无用功。真正的优化是“别在一帧之内做超过一帧该做的事”。因此，降低执行频率（通过requestAnimationFrame合并）往往比加速单次执行更重要。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>React自定义Hook的单一职责封装</td><td>滚动优化依赖Hook封装：useAgentSession将滚动状态与副作用集中管理，使得requestAnimationFrame对齐和被动监听器等性能策略可以在Hook内部局部实施。</td></tr>
+                <tr><td>流式内容渲染中的DOM扰动控制</td><td>流式token到达的不确定频率是滚动异常的根因之一，而滚动优化本身包含了通过合并渲染周期来间接控制流式更新频率的效果。</td></tr>
+                <tr><td>生产者-消费者速率不匹配</td><td>LLM服务的token产出速率（生产者）与浏览器渲染帧速率（消费者）不匹配，需要中间缓冲层（Hook中的合并逻辑）来平滑粒度差异。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>requestAnimationFrame的回调在浏览器标签页处于后台时会被暂停或降频——这会不会导致用户切回标签页时看到“滚动位置卡在半路”的视觉问题？如何处理这种场景？</li>
+                <li>除了requestAnimationFrame，现代浏览器还提供了IntersectionObserver API——它能否替代手动监听scroll事件来实现“用户是否接近底部”的判断？两者的性能差异在什么场景下会变得显著？</li>
+                <li>被动事件监听器（passive event listener）在这个场景中的作用是什么？如果一个滚动事件处理函数被标记为passive，为什么能避免阻塞合成线程？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">今天的三个概念构成了一个从“写代码的人怎么做决策”到“计算机怎么跑代码”的认知梯度。Conventional Commits是最外层的工程约定——它解决的是“如何让提交信息同时被人和机器读懂”；React自定义Hook的单一职责封装是中国层的架构实践——它解决的是“如何把特定行为装进独立的逻辑盒子，让修改不扩散”；浏览器滚动事件与渲染管线的协同优化是最内层的计算机科学原理——它解释了“为什么把逻辑装进盒子之后，我们还要关心浏览器每一帧怎么画”。这三层层层深入：约定让协作有序，封装让修改局部化，底层原理让优化有据可依。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">浏览器的滚动优化不是让代码跑得更快，而是让滚动处理对齐到浏览器的渲染帧节奏，避免在一帧之内做超过一帧该做的事。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如果一个提交同时修复了一个bug又新增了一个小功能，应该用fix:还是feat:？存在“复合提交”的约定处理方式吗？</li>
+            <li>如何为一个封装了浏览器滚动行为的Hook编写单元测试，模拟scroll事件和requestAnimationFrame的触发时机？</li>
+            <li>requestAnimationFrame的回调在浏览器标签页处于后台时会被暂停或降频——这会不会导致用户切回标签页时看到“滚动位置卡在半路”的视觉问题？如何处理这种场景？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
