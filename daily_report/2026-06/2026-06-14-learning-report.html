@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-06-14 学习笔记日报</title>
+    <meta name="description" content="从最小权限监控到工具链故障传递，再到Git工作区证据缺口，揭示软件系统中信息获取的主动与被动边界。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260614-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-06-14</p>
+        <h1>信息边界：主动设计与被动认知</h1>
+        <p>今天，我们穿越三个层层递进的知识点，从主动用最少信息完成监控，到被动接受工具链断裂的现实，最终直面Git元数据模型固有的证据缺口。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>信息边界 —— 获取与缺失的艺术</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>远端引用的最小权限监控</strong>
+                <small>监控不一定要获取完整数据，用最少的…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>工具链故障的传递效应</strong>
+                <small>工具链像多米诺骨牌一样，一个组件缺…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>工作区未提交变更的证据缺口</strong>
+                <small>Git对未提交的修改就像对草稿纸上…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">今天的三个概念共同指向软件系统中“信息”的本质问题。远端引用的最小权限监控展示了一种主动的智慧——我们有意只获取最少的信息，既完成判断又不暴露多余权限。工具链故障的传递效应则是一种被动的教训——当依赖边界被意外打破时，信息流会以出人意料的方式被截断。而工作区未提交变更的证据缺口，则揭示了一个系统性的认知边界——有些信息在Git的设计模型中根本就不存在，不是“暂时没拿到”，而是“永远拿不到”。三者之间还有一条因果链串联：工具链故障直接加重了证据缺口，而最小权限监控的方法论又可以反过来启发我们如何设计更安全的证据采集策略。理解这三个概念，就是理解在任何软件系统中，我们必须清醒地知道“我们能知道什么”和“我们无法知道什么”。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["信息边界 —— 获取与缺失的艺术"])
+  concept1["远端引用的最小权限监控"]
+  hub --&gt; concept1
+  concept2["工具链故障的传递效应"]
+  hub --&gt; concept2
+  concept3["工作区未提交变更的证据缺口"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["信息边界 —— 获取与缺失的艺术"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept2
+  concept3 --&gt; concept1
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="minimal-permission-remote-monitoring">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>远端引用的最小权限监控</h3>
+              <p>Minimal Permission Remote Monitoring</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">监控不一定要获取完整数据，用最少的信息完成判断，既安全又高效。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>使用git ls-remote只获取远端ref指针的SHA值来判断变化，不下载任何文件内容</li>
+                <li>利用Git传输协议“引用发现”阶段独立的特点，将监控代价降至几个字节的网络传输</li>
+                <li>实现最小权限原则：监控系统只接触元数据，不接触源代码，大幅缩减攻击面</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="minimal-permission-remote-monitoring" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="toolchain-fault-propagation">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>工具链故障的传递效应</h3>
+              <p>Toolchain Fault Propagation Effect</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">工具链像多米诺骨牌一样，一个组件缺失会导致整条链路失效。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>软件工具链存在依赖关系网络，一个组件缺失会沿着依赖关系向上传导</li>
+                <li>Git依赖git-lfs的filter-process读取LFS文件状态，缺失时导致git status报错（fail-fast）</li>
+                <li>fail-fast策略虽然避免潜在错误，但可能导致“爆炸半径”过大，需要考虑优雅降级（graceful degradation）</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="toolchain-fault-propagation" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="evidence-gap-uncommitted-changes">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>工作区未提交变更的证据缺口</h3>
+              <p>Evidence Gap of Uncommitted Working Tree Changes</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">Git对未提交的修改就像对草稿纸上的涂改——知道变了，但不知道什么时候变的。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>Git对已提交内容提供完整的证据链（作者、时间、变更），但工作区修改没有这些元数据</li>
+                <li>工作区修改只能通过与HEAD快照的比较被标记为modified，无法记录修改时间、次数、中间状态</li>
+                <li>这是Git内容寻址存储模型的固有边界，弥补缺口需借助文件系统mtime、审计日志等外部证据源</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="evidence-gap-uncommitted-changes" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="minimal-permission-remote-monitoring">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学</p>
+                <h3>远端引用的最小权限监控</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象你想确认朋友是否在家。你不需要敲门进去翻冰箱，只需要站在楼下看窗户的灯是否亮着。灯亮着就是“在家”的信号，获取这个信号只需要你抬头看一眼，不需要进入朋友家的内部空间。在Git的世界里，git ls-remote就是“抬头看窗户灯”的操作——它只向远端仓库询问“你的分支指针现在指向哪个提交的SHA值？”，然后把这个SHA值和上次记录的值比较。如果相同，说明仓库没更新；如果不同，说明有新的提交产生了。整个过程不需要下载任何文件内容，甚至不需要在本地创建一个仓库副本。这背后的原理是Git传输协议的分层设计。Git的远程通信分为两个阶段：第一阶段叫“引用发现”，客户端向服务端请求所有分支和标签的指针信息，服务端返回一串“ref名字→SHA值”的映射；第二阶段叫“对象传输”，客户端根据需要请求具体的提交对象、树对象和文件内容。git ls-remote只触发第一阶段，不触发第二阶段。这就把一个看似必须“全量获取”的监控任务，拆成了两个独立的操作：先花极小的代价判断“有没有变化”，如果确实有变化，再决定是否投入更大的代价去获取“变化了什么”。从安全角度看，这种设计还有一个额外的好处：监控系统只接触到了仓库的元数据（分支名和SHA值），完全没有接触到源代码内容，即使监控系统被入侵，攻击者能拿到的也只是“这个仓库有几个分支、最近一次提交的SHA是什么”，拿不到任何实际代码。这就是最小权限原则在监控场景中的具体落实。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Git远程通信分为“引用发现”和“对象传输”两个阶段，ls-remote只触发第一阶段，返回ref→SHA映射</li>
+                <li>只需比较前后两次SHA值是否相同，即可判断仓库是否变化，无需下载对象</li>
+                <li>最小权限设计使监控系统只拥有元数据访问权，无法触及源代码内容</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在public-library仓库中，监控脚本每天运行git ls-remote origin，获取main分支的ref SHA值（比如abc123f）。把这个值和昨天记录的SHA比较——完全相同，说明远端没有新提交。整个过程只产生了几个字节的网络传输，没有下载任何提交对象或文件内容。如果将来某天SHA值不同了，监控系统再决定是否需要执行git fetch去拉取变更内容。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误解1：认为监控就必须获取完整数据，否则就是不全面的。实际上，判断“变化是否发生”只需要一个比特的信息，完全不需要下载文件。</li>
+                <li>误解2：把“判断变化”和“获取变化内容”混为一谈，导致监控成本过高和安全边界过大。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>工具链故障的传递效应</td><td>两者都涉及系统设计中的边界策略——最小权限监控是主动设计信息获取的边界来降低风险，而工具链故障传递是当依赖边界被意外打破时的连锁后果。</td></tr>
+                <tr><td>工作区未提交变更的证据缺口</td><td>两者都指向“在给定条件下，我们能获取到什么信息”这个核心问题——最小权限监控是主动选择少获取信息以换取安全，证据缺口则是被迫接受某些信息在Git的设计中就是不可获取的。</td></tr>
+                <tr><td>信息边界 —— 获取与缺失的艺术</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>Git传输协议中“引用发现”和“对象传输”两个阶段的分离设计，在HTTP协议（If-Modified-Since头）、数据库增量同步（binlog位点）等其他系统中有哪些类似的“先判断有无变化，再决定是否获取细节”的模式？</li>
+                <li>如果监控脚本被入侵，攻击者在不同监控方式下（ls-remote / fetch / clone）分别能获取到什么信息、能造成什么危害、需要设计什么样的额外防护？</li>
+                <li>信息最小化原则在API设计中如何应用？比如一个用户查询接口，如何设计返回字段才能既满足前端需求又不暴露多余的个人隐私数据？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="toolchain-fault-propagation">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学</p>
+                <h3>工具链故障的传递效应</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>你有没有遇到过这种情况——因为一个看似无关紧要的小插件没装，整个软件就打不开了？在tiny-sea-war仓库中，就发生了这样的事：因为git-lfs这个工具没有被安装，导致git status这个最基础的命令直接报错退出。为什么一个工具的缺失会让另一个看似不相干的工具也罢工？因为软件系统不是由孤立的工具组成的，而是由一层层依赖关系编织成的一张网。Git在检查文件状态时，对于用LFS（大文件存储）管理的大文件，需要调用一个叫git-lfs filter-process的过滤器来正确读取文件的状态。你可以把这个过滤器想象成一个翻译官——Git看不懂LFS的指针文件，需要翻译官来帮忙解读。当这个翻译官不在时，Git面临一个选择：是假装文件没问题、给出一个可能错误的结果，还是直接报错、告诉用户“我无法完成这个操作”？Git选择了后者——这叫做fail-fast（快速失败）。这个选择有它的合理性：如果Git假装LFS文件没有变化，而实际上那些大文件已经被修改了，用户可能会误以为一切正常，导致更严重的后果。但它也带来一个让人头疼的问题：一个原本只影响大文件管理的辅助工具，缺失时却让最基础的git status都不可用——就像因为遥控钥匙没电了，整辆车连机械钥匙都打不开。这个“一个组件失效影响范围”的问题，在软件工程中被称为“爆炸半径”。理想的设计应该控制爆炸半径——对于git status这种只读操作，理论上可以优雅降级（graceful degradation），跳过LFS文件的状态检查，给出一个“部分可用但LFS文件状态未知”的结果，而不是整个命令都失败。但Git目前的实现没有做这种区分。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Git内部通过git-lfs filter-process处理LFS指针文件，git status依赖该过滤器获取完整状态</li>
+                <li>当filter-process不可用时，Git选择fail-fast策略，返回错误并退出，停止后续所有处理</li>
+                <li>故障沿依赖链向上传导：git-lfs缺失 → filter调用失败 → git status报错 → 上层审计脚本中断</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>tiny-sea-war仓库的故障传导链路非常清晰：第一步，git-lfs没有安装，filter-process不可用。第二步，用户运行git status，Git在检查文件状态时调用git-lfs filter-process失败。第三步，Git报错退出（fail-fast），返回非零退出码。第四步，上层的工作区状态审计脚本收到错误退出码，无法获取任何变更信息——原本应该报告“有哪些文件被修改了”的审计流程完全中断。从git-lfs缺失到审计流程失效，四个层级依次传导，每一层都把失败传递到上一层，最终用户看到的只是一个冰冷的报错信息。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误解1：很多人以为软件工具链中的每个工具都是独立运行的，一个出问题不会影响其他。实际上，现代软件系统是高度耦合的依赖网络。</li>
+                <li>误解2：认为fail-fast策略一定比graceful degradation更好或更差。事实是两者各有适用场景：当不完整结果可能导致数据损坏时，fail-fast更安全；当操作是只读的，不完整结果不会造成永久性损害时，graceful degradation对用户体验更友好。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>远端引用的最小权限监控</td><td>两者都涉及系统设计中的边界策略——最小权限监控是主动设计信息获取的边界来降低风险，而工具链故障的传递效应揭示了当依赖边界被意外打破时的后果。</td></tr>
+                <tr><td>工作区未提交变更的证据缺口</td><td>工具链故障直接且严重地加重了证据缺口——在tiny-sea-war中，连“文件有没有被修改”都读不出来，证据缺口从时间维度扩展到了内容维度，审计链条彻底断裂。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>除了Git和git-lfs的依赖关系，还有哪些常见的开发工具链存在类似的fail-fast传递效应？比如编译器缺失导致构建系统报错、Docker daemon未启动导致容器编排工具失败等场景中，爆炸半径分别是多大？</li>
+                <li>如何设计一个前置健康检查脚本，在工具链正式运行之前就系统地验证所有依赖是否就绪（比如检查git-lfs是否已安装且功能正常），从而把故障发现在最前端而不是在流程中间突然中断？</li>
+                <li>在什么情况下应该选择fail-fast，在什么情况下应该选择graceful degradation？这个判断标准的底层原则是什么？能不能总结出一个决策框架，帮助开发者在设计自己的工具链时做出合理选择？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="evidence-gap-uncommitted-changes">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学</p>
+                <h3>工作区未提交变更的证据缺口</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象你有一本重要的笔记本，每一页都要求签名、写日期。这样任何后来的人翻看时，都能知道每一页是谁在什么时候写的。但如果你在其中某一页上用铅笔改了几行字，既没有重新签名，也没有写上修改日期，那么后来的读者只能看出“这一页和原始内容不同”，却完全无法判断这个修改是什么时候做的、是分几次改的、每次改了什么。Git的工作区里的未提交修改，就是这种“改了但没签名”的状态。Git对已经提交的内容提供了强大的证据链：每次提交都记录了作者、提交时间、父提交的SHA值、以及完整的变更内容。这些信息通过SHA哈希链串联在一起，形成了一条不可篡改的历史记录——任何一个提交的内容或时间被修改，它的SHA值就会变化，后续所有提交的SHA都会连锁变化，篡改痕迹一目了然。但问题在于，Git的这套元数据机制是绑定在“提交对象”上的，不是绑定在“文件”或“工作区”上的。未提交的修改还没有生成提交对象，所以自然就没有作者、时间戳、变更记录这些元数据。Git对工作区的记录仅限于一个粗略的状态标记——“这个文件被修改了”——它是通过比较工作区文件的当前内容和暂存区/HEAD中保存的快照来判断的。如果内容不同，就标记为modified。但至于这个修改是五分钟前发生的还是五天前发生的、是一次改完的还是反复修改的，Git完全不记录。这就是“工作区未提交变更的证据缺口”。这个缺口不是Git的bug，而是Git设计模型的内在特征。Git的核心是一个“内容寻址的文件系统”——它用内容的哈希值来命名和索引一切。时间、作者这些信息属于“元数据”，只在创建提交对象时被附加到对象上。工作区作为提交之前的临时空间，天然不在这个元数据覆盖范围内。从一个更抽象的视角看，工作区状态是一个“无时间标签的状态向量”——它只能告诉你当前状态和HEAD之间的差异，不能告诉你这个差异是在什么时间点上产生的。要从“当前存在差异”反推“差异产生的时间”，就必须引入Git之外的证据源——比如文件系统记录的修改时间（mtime）、操作系统审计日志、编辑器自动备份文件的时间戳等。但这些外部证据各自有其可靠性问题。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Git的对象模型中，时间戳、作者等元数据绑定在commit对象上；工作区尚未创建commit，因此没有这些记录</li>
+                <li>Git status仅通过内容比较得出modified标记，不记录修改过程（时间、次数、中间状态）</li>
+                <li>文件系统mtime虽可作为时间线索，但它高度不可靠（可能被复制、手动修改、checkout重置等），需结合多种外部证据综合推断</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>DailyLearningAssistant仓库中有一个脚本文件scripts/run_daily_pipeline.sh，负责执行每日的自动化流水线。当天检查发现这个文件在工作区中存在未提交修改。我们能确认的事实只有一条：当前工作区中这个文件的内容，和HEAD（最后一次提交的快照）中记录的内容不同。但我们完全无法回答以下问题：这个修改是在6月14日做的，还是6月13日甚至更早？修改是一次性完成的，还是分多次修改的？修改是人为手动编辑的，还是某个自动化工具生成的？如果开发者当天用修改后的脚本跑了流水线但忘记提交，第二天另一个开发者接手维护时会看到旧脚本，按旧逻辑理解流水线，却可能在生产环境中遇到与理解不符的行为。这就是“操作知识的版本漂移”——执行逻辑已经更新（因为开发者用新脚本跑过了），但记录逻辑的权威副本（仓库中的文件）没有更新，新逻辑只存在于原开发者的记忆中。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误解1：很多人以为Git能像追踪已提交内容一样追踪工作区的所有变化细节。实际上，Git对工作区的“追踪”非常有限，只产生一个布尔值（是否相同），不记录变化的时间、次数、中间状态。</li>
+                <li>误解2：认为文件系统的“最后修改时间”（mtime）可以代替Git的时间戳。实际上，mtime高度不可靠，可能被轻易改变，不能作为严谨证据使用。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>工具链故障的传递效应</td><td>在tiny-sea-war仓库中，工具链故障导致连“文件是否被修改”都读不出来，证据缺口从“不知道什么时候改的”恶化到“完全不知道有没有改”——工具链故障从内容维度直接且严重地加重了证据缺口。</td></tr>
+                <tr><td>远端引用的最小权限监控</td><td>两者都围绕着“信息的可获取性边界”展开——最小权限监控是主动选择不获取某些信息以换取安全和效率，而证据缺口是被迫接受某些信息在Git的元数据模型中就是不可获取的。一个体现了设计的智慧，一个揭示了系统的内在局限。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>Git的对象模型中，blob、tree、commit、tag四类对象各自携带什么元数据？为什么工作区的内容和修改时间不在任何一类对象的覆盖范围内？这个设计在当时的历史背景下有什么合理性？</li>
+                <li>如果要在Git之外设计一套工作区变更的审计系统，应该收集哪些证据源（文件系统mtime、inode信息、操作系统审计日志、编辑器备份文件、终端历史记录等）？如何给每个证据源设定置信度权重，组合出一个综合的时间窗口评估？</li>
+                <li>在持续集成（CI）流水线中，如果检测到工作区存在未提交变更，应该如何处理？是直接拒绝构建（fail-fast），还是发出警告但继续构建（graceful degradation）？这个决策标准应该是什么？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">今天的三个概念共同指向软件系统中“信息”的本质问题。远端引用的最小权限监控展示了一种主动的智慧——我们有意只获取最少的信息，既完成判断又不暴露多余权限。工具链故障的传递效应则是一种被动的教训——当依赖边界被意外打破时，信息流会以出人意料的方式被截断。而工作区未提交变更的证据缺口，则揭示了一个系统性的认知边界——有些信息在Git的设计模型中根本就不存在，不是“暂时没拿到”，而是“永远拿不到”。三者之间还有一条因果链串联：工具链故障直接加重了证据缺口，而最小权限监控的方法论又可以反过来启发我们如何设计更安全的证据采集策略。理解这三个概念，就是理解在任何软件系统中，我们必须清醒地知道“我们能知道什么”和“我们无法知道什么”。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">监控不一定要获取完整数据——用git ls-remote只获取ref指针的SHA值，就能判断远端仓库是否更新，这是信息最小化原则在日常工程中的具体实践。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>Git传输协议中“引用发现”和“对象传输”分离设计，在其他系统中有哪些类似的先判断有无变化再决定是否获取细节的模式？</li>
+            <li>如何设计一个前置健康检查脚本，在工具链正式运行之前验证所有依赖是否就绪？</li>
+            <li>如果要在Git之外设计工作区变更审计系统，应该收集哪些证据源，如何设定置信度权重？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
