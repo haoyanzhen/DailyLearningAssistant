@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-06-13 学习笔记日报</title>
+    <meta name="description" content="声明式契约让美术资产质量可自动验货，资产验收构建边界检查证据链，未提交变更的时间归属则是一场审计推理——三者合力把质量保障拉入程序化轨道。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260613-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-06-13</p>
+        <h1>学习日报 · 2026年6月13日</h1>
+        <p>一份把美术规范写死的合同文档，通过自动化脚本逐条验货，最终生成可存档的验收报告，形成完整的证据链闭环。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>游戏美术资产的契约式质量保障体系</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>艺术资产管线的声明式契约</strong>
+                <small>声明式契约把美术规范从团队口头约定…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>资产验收与边界质量检查</strong>
+                <small>资产验收不是盖章签字，而是生成可追…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>worktree未提交变更…</strong>
+                <small>未提交的修改存在，但没有时间戳——…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">今天的三个概念构成了一条完整的因果链：先从最基础的“声明式资产契约”讲起，它回答了“美术资产的质量标准应该怎么写成一份可以自动检查的结构化合同”；接着进入“资产验收与边界质量检查”，讲的是如何根据这份合同，把资产从绑定点到材质到边缘细节都排查一遍，让验收从“人说了算”变成“证据说了算”；最后落到“worktree未提交变更的时间归属推断”，它揭示了当所有这些都是以未提交状态存在时，我们必须面对的一个审计难题——这些修改真的是今天发生的吗？用什么样的横向证据可以给它们加上时间戳？这三个概念合在一起，讲的是一件事：如何把艺术资产的质量保障，从靠记忆和感觉的模糊地带，拉到程序化、可追溯、可审计的严谨轨道上。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["游戏美术资产的契约式质量保障体系"])
+  concept1["艺术资产管线的声明式契约"]
+  hub --&gt; concept1
+  concept2["资产验收与边界质量检查"]
+  hub --&gt; concept2
+  concept3["worktree未提交变更的时间归属推断"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["游戏美术资产的契约式质量保障体系"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="declarative-asset-contract">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>艺术资产管线的声明式契约</h3>
+              <p>Declarative Asset Contract in Art Pipeline</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">声明式契约把美术规范从团队口头约定变成可执行工程约束。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>契约式设计思想迁移到美术管线：用前置、后置条件和不变量定义资产规范。</li>
+                <li>结构化文档声明必需文件、分辨率、材质类型等关键属性。</li>
+                <li>审计脚本读契约自动判定通过/不通过，让质量保障透明、一致、可重复。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="declarative-asset-contract" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="asset-acceptance-boundary-qa">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>资产验收与边界质量检查</h3>
+              <p>Asset Acceptance and Boundary Quality Check</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">资产验收不是盖章签字，而是生成可追溯的质量证据链。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>资产验收类似出厂质检，除常规检查外还需测试极端边界条件。</li>
+                <li>生成静态报告（HTML）让评审脱离制作环境，证据链可逆推问题。</li>
+                <li>边界检查暴露隐藏缺陷，如部分遮挡、极端光照、屏幕边缘裁剪。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="asset-acceptance-boundary-qa" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="worktree-time-attribution">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>worktree未提交变更的时间归属推断</h3>
+              <p>Time Attribution for Uncommitted Changes in Worktree</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">未提交的修改存在，但没有时间戳——推断时间归属是一场信息有限的审计推理。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>未提交修改在Git中没有时间戳，只有文件系统元数据可作辅助线索。</li>
+                <li>推断需综合mtime、备份文件、系统日志等横向证据，但每种证据都有限度。</li>
+                <li>输出为置信度区间而非确定性结论，低置信度时只能标记为待确认线索。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="worktree-time-attribution" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="declarative-asset-contract">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>艺术资产管线的声明式契约</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>所谓契约式设计，最早是软件工程里用来保证代码质量的一套思想，它不用事无巨细地规定“你先做A再做B再做C”，而是提前写好三条铁律：前置条件——你调用这段代码之前必须满足什么要求；后置条件——调用完之后这段代码保证交出什么样的结果；不变量——从开始到结束，哪些状态是绝对不能变的。这套思想迁移到美术资产管线上，就变成了“声明式资产契约”。我们不需要规定画师第一天画头第二天画脚，只要在最终交付时用一份结构化文档声明清楚：这个角色的资产包里必须包含什么文件、每个文件的分辨率必须是多少、材质必须来自哪几种指定的类型。然后把这份声明交给一个审记脚本去自动检查，检查通过了就算验货完成，不通过就退回去修改。这样一来，“角色资产合格”就不再依赖某个资深美术总监的主观判断，而是变成了一串程序可判定的真或假断言，让质量保障变得透明、一致、可重复。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>用前置条件、后置条件和不变量定义契约，而非过程步骤。</li>
+                <li>结构化文档将美术规范转化为可验证的断言集合。</li>
+                <li>审计脚本逐条执行断言，输出通过或不通过的二进制结果。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>想象一下，你去一家餐厅点了一碗牛肉面，菜单上写的是“牛肉面”，服务生端上来的却是素面，你问老板为什么没牛肉，老板说“我理解的牛肉面就是面条里掺了牛肉味的汤”。这时候你就会想，如果菜单上能提前把“牛肉面”的定义写清楚——牛肉不少于5片、面条必须是拉面、汤底必须是牛骨熬制不少于2小时——那么端上来的面就不可能偷工减料。声明式资产契约，就是在给美术资产写这样一份没有歧义的菜单。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>契约写得越详细越好——事实是过度细化会难以维护，契约应抓住关键可判定的规范边界。</li>
+                <li>契约是操作手册——契约只管控必须满足的关键属性，不指导制作过程。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>资产验收与边界质量检查</td><td>声明式契约定义标准，资产验收负责逐条核验，是标准设计与标准执行的上下游关系。</td></tr>
+                <tr><td>worktree未提交变更的时间归属推断</td><td>当契约文件未提交时，其修改时间的可信度直接影响验收证据链的有效性。</td></tr>
+                <tr><td>游戏美术资产的契约式质量保障体系</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果同一个游戏项目里有100个角色，每份角色契约都独立编写，当通用规范发生变化时如何避免逐份修改？</li>
+                <li>声明式契约中的某些断言可能无法完全自动化检查——比如“角色的整体观感必须符合Z国风格”，这类主观性规范如何在契约中表达和验证？</li>
+                <li>当契约文档和审计脚本同时演进时，如何保证脚本的检查逻辑与文档的声明条款始终保持严格一致？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="asset-acceptance-boundary-qa">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>资产验收与边界质量检查</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>资产验收听起来很抽象，其实它很像产品出厂前的最终质检。工厂里生产一台手机，不仅要看屏幕亮不亮、按键灵不灵这些常规项目，还要专门测试一些极端情况：把手机放进零下20度的冰箱里能不能开机、从一米高的地方摔下去屏幕会不会碎、充电口反复插拔一万次之后接触好不好。这些极端情况在工程上叫做边界条件，对应的检查就叫边界质量检查。游戏资产的边界质量检查也是同样的思路——一个角色正常站在画面中间可能没问题，但如果他走到屏幕边缘只露出半个肩膀，绑定点是否还在正确位置？材质边缘是否出现撕裂？如果光照强度被修改到极端值（比如全黑或全白），贴图的细节是否仍然可辨认？资产验收就是把这些常规检查和边界检查的证据收集起来，生成静态报告（比如一个HTML页面），让所有评审人员可以脱离具体的制作环境，只凭这份报告就能判断资产是否合格。这样做最大的好处是，一旦日后某个角色在游戏中出现问题，可以从这份验收档案逆推到当时通过验收时的真实状态，定位到底是制作环节的问题，还是在后续加工中被意外破坏的。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>验收由常规检查和边界条件检查组成，覆盖正常与极端场景。</li>
+                <li>检查结果固化为静态报告和对照图，形成不可篡改的证据链。</li>
+                <li>证据链支持事后逆推溯源，明确质量问题的产生环节。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一件消防服在出厂前的验收测试，不仅要保证它在常规火场中能正常工作，还要在测试中暴露在比真实火场更高的温度里、用比人更快的动作反复折叠、甚至用尖锐的物品划过表面检查材质是否撕裂——这些看似“没必要这么狠”的测试，正是为了找出常规检查发现不了的缺陷。游戏中的边界质量检查同理：如果角色在90%的时间里都正常显示，但偏偏在释放大招的1秒钟里因为叠加了太多特效而出现材质穿模，那么不接受边界检查的资产就会在这种瞬间把整个游戏的观感拉到谷底。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>资产验收是一次性“过与不过”判定——其本质是生成可追溯证据链，不仅为当下判定，更为日后溯源。</li>
+                <li>只看常规表现即可——边界条件测试是为了发现常规检查找不到的缺陷，是质量闸门的关键部分。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>艺术资产管线的声明式契约</td><td>验收标准全部来源于声明式契约中的条款，契约定义合格标准，验收执行核实。</td></tr>
+                <tr><td>worktree未提交变更的时间归属推断</td><td>验收证据链的可靠性与契约、脚本文件的修改时间归属直接相关，未提交状态增加审计风险。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>边界质量检查应该覆盖哪些维度的极端情况？如何系统性地枚举出一个资产类型的所有潜在边界条件？</li>
+                <li>当验收报告显示某个边界检查失败时，如何设计一套“严重程度分级”机制来区分阻断性错误和边缘瑕疵？</li>
+                <li>在多平台游戏开发中，同一份资产可能在PC和手机上的渲染表现不同——资产验收的证据链如何支持跨平台差异性记录？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="worktree-time-attribution">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>worktree未提交变更的时间归属推断</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>Git是一个版本控制系统，它的核心职责是记录每一次提交的快照，并给这个快照打上时间戳和作者信息。但如果你在本地改了一堆文件，却没有用`git add`存到暂存区，更没有用`git commit`正式提交，那么Git对于这些修改的唯一态度就是“我知道这些文件变了，但至于什么时候变的、是谁变的，我没有任何记录”。这就好比一座大楼的门禁系统只记录了刷卡进出的人，但任何人不刷卡、直接跟着前面的人溜进去，门禁系统就一无所知——它知道屋里可能多了一个人，但不知道是谁、也不知道是什么时候进来的。在今天的材料中，`tiny-sea-war`仓库的工作区存在大量未暂存修改和未跟踪文件，但没有任何提交记录——这种情况触发了所谓的“时间归属推断”问题：我们必须从Git系统之外寻找横向证据来判断这些修改到底是不是在目标时间窗口（即2026年6月12日）产生的。可以使用的信息源包括：文件系统元数据中的修改时间、编辑器自动备份文件的时间戳、操作系统的文件系统事件日志、项目构建日志或CI记录等。但这些信息各有各的信度缺陷——文件时间戳可能被手动修改，编辑器备份文件可能被误删，系统日志可能因为日志轮转而丢失。因此，推断的结果通常只能给出一个置信度区间，而不是一个确定性的结论。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Git对未提交修改不记录时间戳和作者，形成证据真空。</li>
+                <li>利用文件系统mtime、编辑器备份、系统日志等横向证据构建时间线索。</li>
+                <li>综合多项证据给出置信度评估，低置信度时不应作为工程事实。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>侦探在调查一起入室盗窃案时发现，嫌疑人家里的电脑桌面上有一份详细记录了受害者家庭作息时间的文档。如果这份文档有正常的创建时间和修改时间，侦探可以相对准确地判断它是案发前还是案发后写的。但如果这份文档被放在桌面上却没有任何时间戳——文件属性显示“创建时间：未知”“最后修改时间：未知”——侦探能像福尔摩斯那样靠逻辑推理得到一些线索（比如文档内容中提到了某个特定日期的事件，说明它至少写于那个日期之后），但他永远无法用铁证证明它的精确写作时间。worktree里的未提交修改，就是这样一份没有时间戳的线索文件。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>文件系统的“最后修改时间”可以单独作为可靠时间判据——mtime极易被修改、复制或保留旧时间，只能作为辅助证据。</li>
+                <li>时间归属推断可以做到完全确定——实际上只能得到概率区间，必须明确局限与风险。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>艺术资产管线的声明式契约</td><td>未提交状态直接影响契约文件及审计脚本的时间可信度，导致契约条款是否今日生效存疑。</td></tr>
+                <tr><td>资产验收与边界质量检查</td><td>验收证据链的构建依赖于文件变更时间的可确认性，未提交变更会腐蚀证据链的可靠性。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>除了文件系统mtime和编辑器备份文件，还有哪些技术手段可用于推断工作区修改时间？各自优缺点是什么？</li>
+                <li>当多个开发者在同一台共享开发服务器上工作时，如何将未提交修改与特定开发者关联？</li>
+                <li>如何在工程流程层面减少“证据真空”风险——比如设计预提交钩子定期快照工作区状态？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">今天的三个概念构成了一条完整的因果链：先从最基础的“声明式资产契约”讲起，它回答了“美术资产的质量标准应该怎么写成一份可以自动检查的结构化合同”；接着进入“资产验收与边界质量检查”，讲的是如何根据这份合同，把资产从绑定点到材质到边缘细节都排查一遍，让验收从“人说了算”变成“证据说了算”；最后落到“worktree未提交变更的时间归属推断”，它揭示了当所有这些都是以未提交状态存在时，我们必须面对的一个审计难题——这些修改真的是今天发生的吗？用什么样的横向证据可以给它们加上时间戳？这三个概念合在一起，讲的是一件事：如何把艺术资产的质量保障，从靠记忆和感觉的模糊地带，拉到程序化、可追溯、可审计的严谨轨道上。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">声明式资产契约是在给美术资产写一份没有歧义的菜单——把“合格”变成程序可判定的真或假断言。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>当契约文件数量激增时，如何设计“元契约”来保持不同角色契约的结构统一，让审计脚本通用解析？</li>
+            <li>资产验收中，如何系统性地枚举一个资产类型的所有潜在边界条件，而不是依赖随机经验？</li>
+            <li>在多平台开发中，资产验收的证据链如何支持跨平台差异性记录，避免用统一报告掩盖质量差异？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
