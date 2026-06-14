@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-06-15 学习笔记日报</title>
+    <meta name="description" content="游戏资产交付的工程化三部曲：声明式契约定义标准，自动审计执行检查，多模态证据让质量无可辩驳。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260615-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-06-15</p>
+        <h1>从主观手艺到客观工程：让质量可以被审计的交付流程</h1>
+        <p>一天之内，七名角色资产以完整、规范、附带证据的形态入库。这不仅是美术交付，更是将创意行为转化为可验证工程流程的生动实践。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>质量保证的结构化工程</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>声明式资产契约</strong>
+                <small>声明式资产契约让“看着没问题”变成…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>自动化契约审计与结果聚合</strong>
+                <small>自动化审计的精髓不是省钱，而是消除…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>多模态质量保证证据</strong>
+                <small>证据的形态要与它的消费者精确匹配—…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">这三个概念构成从“质量承诺”到“质量证明”的完整工程链条。声明式资产契约是源头，定义可执行的断言；自动化契约审计是引擎，在全量资源上执行检查；多模态质量保证证据是交付物，将生硬结果转化为人机皆可读的证明。三者合力，将依赖个人经验的“手艺活”升级为依赖系统和流程的“工程任务”。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["质量保证的结构化工程"])
+  concept1["声明式资产契约"]
+  hub --&gt; concept1
+  concept2["自动化契约审计与结果聚合"]
+  hub --&gt; concept2
+  concept3["多模态质量保证证据"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["质量保证的结构化工程"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="declarative-asset-contract">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>声明式资产契约</h3>
+              <p>Declarative Asset Contract</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">声明式资产契约让“看着没问题”变成“断言全部通过”。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>将美术质量要求转化为可被脚本检查的结构化断言，例如动画帧数、Alpha通道尺寸等</li>
+                <li>契约是写给程序看的，用精确的布尔条件替代自然语言的模糊描述</li>
+                <li>契约保障了美术创作的软件和方法自由，同时强制了最终交付物的可验证标准</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="declarative-asset-contract" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="automated-contract-audit">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>自动化契约审计与结果聚合</h3>
+              <p>Automated Contract Audit &amp; Aggregation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">自动化审计的精髓不是省钱，而是消除主观——把“看起来差不多”变为严格的布尔结果。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>自动化审计脚本逐项比对资产是否符合契约，生成不可篡改的通过/失败记录</li>
+                <li>批量审计将所有角色统一扫描并聚合结果，提供整体合规视图</li>
+                <li>消除了测试疲劳导致的人为漏判，实现“绝对一致、绝对无情”的检查</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="automated-contract-audit" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="multimodal-quality-evidence">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>多模态质量保证证据</h3>
+              <p>Multimodal Quality Assurance Evidence</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">证据的形态要与它的消费者精确匹配——给机器JSON、给美术GIF、给管理者HTML。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>针对不同角色的信息消费者（机器、美术、管理者）提供不同形态的证据：JSON、PNG、GIF、HTML报告</li>
+                <li>所有证据描述同一批资产，但各形态精确匹配特定读者的认知习惯和决策需求</li>
+                <li>证据的多维度锁定让质量问题几乎不可能在混乱中被忽略，支持原子性入库决策</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="multimodal-quality-evidence" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="declarative-asset-contract">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>声明式资产契约</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>声明式资产契约是将模糊的质量要求转变为精确的、可被脚本自动验证的断言。它不是写给人看的需求文档，而是写给检查程序的“合格标准”。比如，不写“角色动画要流畅”，而是定义“每个角色必须有 idle、attack、move、hit、firepower 五种状态的完整四帧图片序列，且 Alpha 通道尺寸与原图完全一致”。这样，美术人员用什么工具和风格创作是自由的，但最终资产必须通过这些硬性检查。这份契约成为人与机器之间的共同约定，把原本依赖主观审美的验收过程变成了客观的、可重复的逻辑判定。在今天的交付中，资产契约以 `character_asset_contract_audit.md` 的形式落地，标志着它从设计概念变成了真实的工程制品。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>声明式：只描述目标状态（“应该有什么”）而不规定实现步骤，与命令式对立</li>
+                <li>可判定性：每个检查项都能返回真或假，没有中间地带</li>
+                <li>契约与执行分离：契约文件独立于审计脚本，修改规则无需改动代码逻辑</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在 tiny-sea-war 的例子中，资产契约为每个角色定义了必须的动画状态（idle, attack, move, hit, firepower），要求 Spritesheet 和 Alpha 通道文件成对出现且尺寸一致。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为声明式契约就是详细的需求文档——需求文档允许理解偏差，契约则是精确的逻辑断言</li>
+                <li>以为写得越详细越好——契约的重点在于可验证性，无法自动检查的条目应谨慎纳入，否则变成一纸空文</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>自动化契约审计与结果聚合</td><td>声明式契约为自动化审计提供了可执行的规则清单，前者定义“查什么”，后者负责“怎么查”</td></tr>
+                <tr><td>多模态质量保证证据</td><td>契约定义的检查项，其通过/失败结果构成多模态证据的数据来源</td></tr>
+                <tr><td>质量保证的结构化工程</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果不同角色的美术质量控制标准差异很大（比如最终Boss的特效要求远超小兵），我们该如何设计契约来优雅地处理这种差异？</li>
+                <li>既然契约是给脚本看的，是否可以用更严格的格式如JSON Schema或YAML编写，以便自动检查契约文件本身的合法性？</li>
+                <li>当美术工具的导出格式换代时，契约中所有关于文件格式的条目都需要修改，如何追踪和管理这种大规模的契约更新？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="automated-contract-audit">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>自动化契约审计与结果聚合</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>有了契约，还需要铁面无私的验货人。自动化契约审计就是反复执行契约检查的程序。它可以单独检查一个角色，也可以像今天新增的 `batch_character_art.py` 那样一次性扫描全部七名角色。审计脚本严格依赖目录结构和文件命名规则，逐一验证每个角色的动画状态文件夹是否齐全、图片数量是否正确、Alpha通道尺寸是否匹配、配置文件中的坐标是否越界等。每检查一项，就在报告中盖上“通过”或“失败”。批量审计不仅速度快，更重要的是实现了结果聚合：能够回答“总共还有多少项没通过？”“哪个角色合规率最低？”等宏观问题，把零散的点连成全局的面。这一步将审计从单品抽查升级为全线普查，为大规模交付提供了工程效率和组织手段。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>规则驱动：审计脚本不内嵌具体判断逻辑，而是读取契约文件以获得检查规则</li>
+                <li>原子化报告：每个检查项的结果独立记录，便于回溯和聚合</li>
+                <li>批量聚合：通过遍历所有角色的契约，计算汇总统计，揭示整体质量趋势</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>Bismarck 角色的攻击动画文件夹缺少 Alpha 通道图片，手工检查容易忽略，但自动化脚本严格按路径查找，找不到即标红；批量审计则汇总所有角色状态，生成“Bismarck: 1项未通过；Hood: 全部通过”的全局报告。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为自动化审计就是为了省人力——其核心价值是消除“测试疲劳”导致的不一致判断</li>
+                <li>以为自动化审计可以完全替代人工——对于契约无法覆盖的主观质量（如动画流畅度），仍需要人类审查</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>声明式资产契约</td><td>自动化审计依赖契约定义的规则来执行检查，契约是审计的依据</td></tr>
+                <tr><td>多模态质量保证证据</td><td>审计脚本的输出（JSON、图片、GIF）直接构成多模态证据的原材料</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何保证自动化审计脚本本身的正确性？是否需要引入对审计脚本的测试或交叉验证？</li>
+                <li>当批量审计发现少量非关键失败时，应直接阻断提交还是允许带已知问题入库？是否应设计告警分级机制？</li>
+                <li>随着资产数量增长，全量审计可能耗时很长，在CI流程中如何设计执行策略来避免拖慢开发节奏？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="multimodal-quality-evidence">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>多模态质量保证证据</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>审计的最终目的是让人相信质量合格。“模态”是指信息的表现形式。多模态质量保证证据就是针对同一个审计结果，生成适应不同读者需求的证明文件。例如，在今天的入库交付中，`qa/` 文件夹包含了JSON数据（供脚本对比和历史追溯）、PNG图片（供技术人员检查边界）、GIF动图（供美术直观查看动画流畅度）、HTML报告（供制作人在浏览器中快速浏览全貌）。这一设计的巧妙之处在于：所有证据都基于同一批资产和同一套检查结果，但每种形式的表达重点和详细程度完全不同，让每种角色都能以最低认知成本获取所需信息。它还回应了“主观质量如何验证”的问题——对于动画自然度等难以脚本打分的内容，通过GIF和HTML预览交给人的眼睛来最终裁决，脚本负责组织数据，人类负责审美判断。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>单一事实源：所有证据均从同一次审计结果派生，避免信息分裂</li>
+                <li>消费者导向：证据形式的选择基于“为谁生成什么”，而非多多益善</li>
+                <li>多维度锚定：同一问题用多种形式表达，降低任何单一证据被忽略的风险</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>当审计发现 Bismark 的炮塔旋转轴坐标超出画布时，JSON 报告精确记录数值，PNG 校验图用大红叉标出越界点，HTML 摘要页将角色标记为“不通过”并链接到红叉图，实现数据、视觉、概览三重锁定。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为证据越多越好——多模态不是多多益善，而是精准匹配消费者，避免生成无人使用的冗余报告</li>
+                <li>认为生成多模态证据是浪费资源——当问题被数据、视觉、概览三重锁定后，沟通成本和返工风险大幅降低</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>声明式资产契约</td><td>契约定义了哪些检查项需要生成证据，以及证据的严重性级别</td></tr>
+                <tr><td>自动化契约审计与结果聚合</td><td>审计脚本是证据的生产者，其输出内容直接决定了各模态证据的数据来源</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当不同模态的证据出现矛盾时（如JSON报告说尺寸匹配，但视觉校验图显示偏差），应信赖程序逻辑还是人工视觉？如何设计仲裁流程？</li>
+                <li>是否可以将静态证据升级为动态QA仪表盘，支持从项目级下钻到具体文件，提供更灵活的交互式审查？</li>
+                <li>证据文件本身应纳入版本控制吗？大量PNG、GIF、HTML文件可能使仓库膨胀，如何平衡证据可追溯性与仓库洁净度？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">这三个概念构成从“质量承诺”到“质量证明”的完整工程链条。声明式资产契约是源头，定义可执行的断言；自动化契约审计是引擎，在全量资源上执行检查；多模态质量保证证据是交付物，将生硬结果转化为人机皆可读的证明。三者合力，将依赖个人经验的“手艺活”升级为依赖系统和流程的“工程任务”。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">真正的工程化不是凭空谈规范，而是把规范写成脚本能够执行、结果能够审查的声明式契约。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如果不同角色的美术质量控制标准差异很大，如何优雅地设计契约来处理差异，而不是写多个完全不同的契约文件？</li>
+            <li>如何保证自动化审计脚本本身是正确的？谁来审计“审计者”？</li>
+            <li>当不同模态的证据出现矛盾时（如JSON说尺寸匹配但视觉图显示问题），应信赖程序逻辑还是视觉校验图？如何设计仲裁流程？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
