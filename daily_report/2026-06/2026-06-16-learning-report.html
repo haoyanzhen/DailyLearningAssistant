@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-06-16 学习笔记日报</title>
+    <meta name="description" content="以确定性战斗原型为核心的领域驱动设计，涵盖数据驱动公式配置、确定性伪随机与可复现模拟、领域与基础设施分离架构。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260616-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-06-16</p>
+        <h1>确定性战斗原型与领域驱动设计</h1>
+        <p>今日知识增量集中在 tiny-sea-war 仓库，开发者以短周期完成「设计—实现—集成」建造活动，提炼出三大核心概念。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>以确定性战斗原型为核心的领域驱动型…</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>战斗数值公式的数据驱动配置</strong>
+                <small>把战斗公式写在 JSON 文件里而…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>确定性伪随机数生成与可复现…</strong>
+                <small>确定性伪随机数生成器的种子，就像是…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>领域服务与基础设施的分离架构</strong>
+                <small>把伤害计算和修饰器逻辑放在纯粹的领…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">今天选择的三个概念形成了一个从‘数据层’到‘计算层’再到‘架构层’的递进逻辑。战斗数值公式的数据驱动配置解决了‘数学关系如何被机器解析’的问题，让攻击力、防御力、伤害公式这些数学模型从硬编码中解放出来，变成可独立修改、可版本化的 JSON 文件。确定性伪随机数生成与可复现模拟在此基础上更进一步，解决了‘随机性如何被驯服’的问题——通过可种子化的随机数生成器，把原本不可预测的战斗过程转化为一个确定性函数，相同的种子加相同的决策必然产生相同的结果。领域服务与基础设施的分离架构则为前两者提供了工程上的安身之所：公式 JSON 由基础设施层加载，确定性随机源也属于基础设施层，而真正的伤害计算和修饰器叠加逻辑则放在纯粹的领域服务中，不依赖任何游戏引擎或外部系统。三层协作，让战斗系统既灵活（公式可配）、又可靠（结果可复现）、又可测试（逻辑与引擎解耦）。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["以确定性战斗原型为核心的领域驱动型游戏系统设计"])
+  concept1["战斗数值公式的数据驱动配置"]
+  hub --&gt; concept1
+  concept2["确定性伪随机数生成与可复现模拟"]
+  hub --&gt; concept2
+  concept3["领域服务与基础设施的分离架构"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["以确定性战斗原型为核心的领域驱动型游戏系统设计"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="data-driven-combat-formula-config">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>战斗数值公式的数据驱动配置</h3>
+              <p>Data-Driven Combat Formula Configuration</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">把战斗公式写在 JSON 文件里而不是代码里，本质上是在说“数学关系是数据，不是执行步骤”。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>将公式与代码解耦，实现数值调整独立于编程，数值策划可直接修改 JSON 文件。</li>
+                <li>JSON 作为结构化数据格式表达数学关系，承认“公式即数据”，让数学模型获得独立于代码的生命。</li>
+                <li>为未来的平衡性调整提供灵活性，支持快速迭代和版本管理。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="data-driven-combat-formula-config" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="deterministic-prng-and-reproducible-simulation">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>确定性伪随机数生成与可复现模拟</h3>
+              <p>Deterministic Pseudo-Random Number Generation and Reproducible Simulation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">确定性伪随机数生成器的种子，就像是一把钥匙——同样的钥匙开启同样的随机序列，这让战斗回放、批量测试和防作弊审计有了数学上的保证。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>伪随机数生成器（PRNG）是确定性算法，相同的种子+相同的调用顺序会永远产生完全相同的随机序列。</li>
+                <li>种子化战斗系统使战斗结果可复现，支持完美回放、精确调试和批量仿真测试，将概率问题转化为科学实验。</li>
+                <li>确定性随机为防作弊审计提供了数学保证：赛后可回放每一场对局，检测异常随机结果。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="deterministic-prng-and-reproducible-simulation" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="domain-service-infrastructure-separation">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>领域服务与基础设施的分离架构</h3>
+              <p>Separation of Domain Services and Infrastructure</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">把伤害计算和修饰器逻辑放在纯粹的领域服务中，不依赖任何引擎代码，这种做法保护了核心逻辑的‘纯函数’特性，让它更容易测试、更容易迁移。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>将纯粹的游戏规则（领域层）与技术支撑（基础设施层）严格分离，领域层不引用任何游戏引擎特有的类。</li>
+                <li>领域层可脱离引擎进行单元测试，基础设施层可独立替换，实现了高可测试性、可替换性和可移植性。</li>
+                <li>通过依赖注入将基础设施实例传入领域服务，遵循依赖倒置原则，保持领域层的纯函数特性。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="domain-service-infrastructure-separation" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="data-driven-combat-formula-config">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学</p>
+                <h3>战斗数值公式的数据驱动配置</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>在传统游戏开发中，伤害公式、命中率公式这些数值计算规则往往是直接写在程序代码里的。比如程序员会写一行 damage = attack * 1.5 - defense * 0.8，然后这段代码就和其他游戏逻辑混在一起，编译成可执行文件。每次数值策划想调整‘1.5’这个系数时，都得找程序员改代码、重新编译、重新发布——这就像你要调整微波炉的加热时间，却必须先拆开外壳、重新焊接电路板一样不合理。‘数据驱动配置’的做法，是把这些公式和参数从代码中剥离出来，放到独立的 JSON 文件里。JSON 是一种人类和机器都能轻松阅读的结构化文本格式，就像一张填好数字的表格。代码启动时读这张‘表格’，按照表格里的公式和参数来执行计算。这样一来，数值策划可以直接修改 JSON 文件里的数字，甚至调整公式的结构（比如把‘攻击力×1.5’改成‘攻击力×1.2+暴击×0.5’），而完全不需要碰代码。这背后的数学思想是‘计算模型的外部化’：数学关系本身是一种抽象的存在，它不依赖于任何一种编程语言；把它用结构化的数据格式表达出来，就是承认‘公式即数据’，让数学模型获得了独立于代码的生命。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>计算模型的外部化：数学关系抽象于编程语言，通过结构化数据独立表达。</li>
+                <li>数据驱动配置将可变参数与不变逻辑分离，实现关注点隔离。</li>
+                <li>结构化数据格式（JSON）使得公式可被程序解析、验证和动态加载，支持运行时灵活性。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设 combat_formulas.json 里有一条伤害公式定义：{"name": "basic_attack", "expression": "attacker.atk * 1.2 - defender.def * 0.6", "random_factor": {"source": "seeded_random", "range": [0.9, 1.1]}}。代码中的 DamageService 在计算伤害时，不写死公式，而是从 ConfigRegistry 中读取这个名叫 basic_attack 的公式配置，解析 expression 字段，代入实际的攻击者和防御者属性值，再从 SeededRandomSource 获取一个在 0.9 到 1.1 之间的随机因子，最终得出伤害值。如果数值策划觉得防御力的减伤效果太强，他只需要把 0.6 改成 0.4，提交这个 JSON 文件，整个游戏的伤害计算行为就会改变——不需要任何程序员介入，也不需要重新编译代码。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为‘数据驱动’意味着公式本身变得很简单，只能做加减乘除。实际上，数据驱动并不限制公式的复杂度，JSON 可以存储任意嵌套的数学表达式。</li>
+                <li>认为数据驱动配置就是‘把所有东西都放进配置文件’——这会导致配置文件本身变得臃肿难懂。合理的做法是只把可能频繁变化的数值和公式结构放进配置。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>确定性伪随机数生成与可复现模拟</td><td>公式的 JSON 文件中声明了随机因子的取值范围和来源，而确定性随机源则保证了‘同一组公式参数+同一个随机种子=同一个随机因子’，使整个伤害计算变成可复现的确定性过程。</td></tr>
+                <tr><td>领域服务与基础设施的分离架构</td><td>公式数据存储在 data/formulas/ 目录下，由基础设施层的 ConfigRegistry 加载，再传递给领域层的 DamageService 执行计算——数据、基础设施、领域三者的边界在此清晰划定。</td></tr>
+                <tr><td>以确定性战斗原型为核心的领域驱动型游戏系统设计</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果公式的复杂度继续增长（比如引入了分段函数、条件分支、技能组合叠加），JSON 的表达能力是否足够？有没有更适合表达复杂数学关系的声明式格式（比如 YAML 或自定义 DSL）？</li>
+                <li>如何设计一套‘公式版本管理’机制，让每次公式调整都有完整的变更历史，并且在发现‘新公式导致严重平衡问题’时能够快速回滚到上一个版本的公式配置？</li>
+                <li>当多个公式之间存在依赖关系时（比如某个技能的伤害公式引用了另一个 buff 技能的数值），如何保证公式配置的一致性和无循环依赖？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="deterministic-prng-and-reproducible-simulation">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学</p>
+                <h3>确定性伪随机数生成与可复现模拟</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>大多数游戏里都有‘随机’——开宝箱掉什么装备、这一刀有没有暴击、敌人下一回合放什么技能。但计算机本质上是一台精确执行指令的机器，它不会‘真正地’随机。所谓‘随机’，其实是运行了一个叫‘伪随机数生成器’（PRNG）的算法。这个算法像一个极其复杂的数学函数：你给它一个初始值（叫‘种子’，seed），它吐出一串看起来毫无规律、分布均匀的数字。关键点在于：算法是确定的——同样的种子，在同样的调用顺序下，永远产生同样的数字序列。这就像一本厚厚的‘随机数密码本’，种子决定了你从哪一页开始读。tiny-sea-war 的 SeededRandomSource 正是利用了这个特性。在战斗开始时，系统可以指定一个种子值（比如 12345），之后所有需要‘随机’的地方——暴击判定、伤害浮动、技能触发——都从这个种子衍生的序列中取数。结果是：如果用种子 12345 加同一组角色决策运行一场战斗 100 次，100 次的结果完全一样。这种‘确定性’有什么好处？第一，战斗回放不需要录屏，只需要记录初始种子和玩家的操作序列，就能在任何时候完美复现整场战斗——就像记住谜题和解题步骤，随时可以重演。第二，调试时如果发现某个伤害值异常，可以固定种子反复重现那个场景，相当于把概率问题变成了可反复实验的科学问题。第三，批量测试时可以用 100 个不同种子运行 100 场战斗，比较修改代码前后同一组种子下的结果变化——如果结果变了，说明代码修改影响了战斗逻辑；如果结果不变，说明修改是安全的。这就把‘随机’这种不确定的东西，变成了工程上可控、可验证的工具。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>伪随机数生成器是确定性数学函数，输出完全由种子和调用顺序决定。</li>
+                <li>种子作为初始状态，确定了整个随机序列的起点，从而实现可复现性。</li>
+                <li>可复现模拟将原本充满概率的博弈过程转化为可反复实验的科学模型，便于调试和验证。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>想象 tiny-sea-war 里有一场战斗：角色 A 使用技能‘连斩’攻击角色 B，‘连斩’的基础命中率是 85%，伤害在 40 到 60 之间浮动。战斗开始时，系统使用种子 99999 初始化 SeededRandomSource。第一次调用随机数判断命中——从种子序列中取第一个值，假设算法结果映射为‘命中’；第二次调用随机数计算伤害浮动——取第二个值，假设映射为 53 点伤害。如果代码无误，每次用种子 99999 重跑这场战斗，第一次判定永远是命中，伤害永远是 53。现在，假设开发者修改了‘连斩’的命中率公式，但忘了更新 modifier_service 中的优先级规则，导致一场原本应该命中的攻击变成了未命中。用种子 99999 运行批量仿真测试时，系统会发现‘伤害输出’的断言失败了——期待 53 点伤害，实际得到 0——于是测试报错，开发者立即知道自己的修改影响了战斗逻辑。如果没有确定性随机，同样的测试可能这次命中、下次不命中，无法判断是代码修改造成的还是正常随机波动造成的。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把‘伪随机’误解为‘假随机’或‘低质量的随机’。现代 PRNG（如梅森旋转）具有极好的统计性质，在很多场景下与真随机无异，区别在于可预测性恰好是所需的特性。</li>
+                <li>以为‘固定种子后战斗就没有随机性了’。实际上随机数列依然存在，战斗中的随机事件依然发生，只是每次播放的结果完全一致，如同电影回放。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>战斗数值公式的数据驱动配置</td><td>公式 JSON 中声明随机因子的来源和范围，确定性随机源则保证同一组参数+同一种子→同一结果，两者配合实现可复现的伤害计算。</td></tr>
+                <tr><td>领域服务与基础设施的分离架构</td><td>确定性伪随机数生成器 SeededRandomSource 位于基础设施层，通过接口向领域层提供随机数，领域服务不依赖具体实现，符合依赖倒置原则。同时，确定性约束要求修饰器叠加规则也必须确定，否则种子相同也可能导致分歧。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果玩家知道了当前战斗的种子值，并且了解伪随机算法的内部状态，理论上是否能‘预测’下一次攻击会不会暴击？这种‘预测攻击’在实践中是否可能构成作弊，以及如何防护？</li>
+                <li>伪随机数生成器的选择（线性同余、梅森旋转、PCG 等）对战斗系统的确定性和性能有什么不同影响？不同的 PRNG 算法在周期长度、生成速度和随机质量上如何取舍？</li>
+                <li>在多人对战场景下，如果双方玩家各自运行战斗模拟，如何保证双方使用的是同一个种子和同一个随机序列？这是否需要‘服务器端权威随机源’的架构设计？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="domain-service-infrastructure-separation">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>领域服务与基础设施的分离架构</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>当你写一个游戏程序时，代码天然会分成两类。一类描述的是‘这个游戏本身是什么’——比如‘一个角色对另一个角色造成伤害的规则’‘一个 buff 如何叠加到角色属性上’‘战斗胜负如何判定’。这些规则不关心数据是从硬盘读的还是从网络传的，不关心画面如何渲染，不关心玩家用的键盘还是手柄。它们纯粹是游戏世界的法律。另一类代码则是为这些‘法律’提供技术服务的——比如从 JSON 文件加载配置数据、生成随机数、记录战斗日志、连接数据库。这些东西和游戏规则本身没有直接关系，没有它们法律照样成立，但有了它们法律才能在实际的机器上执行。‘领域服务与基础设施的分离架构’，就是把这两类代码严格分开：领域层（Domain Layer）放纯粹的游戏规则，基础设施层（Infrastructure Layer）放技术支撑。tiny-sea-war 的目录结构清楚地展示了这种分离：domain/services/damage_service.gd 是伤害计算规则，domain/services/modifier_service.gd 是 buff 叠加规则——这两个文件不引用任何 Godot 游戏引擎特有的类，不访问硬盘，不画 UI，它们就是纯粹的‘数学函数 + 业务逻辑’。而 infrastructure/config_registry.gd 负责读 JSON 配置，infrastructure/random/seeded_random_source.gd 负责生成随机数——它们为领域服务提供‘弹药’，但自己不知道这些弹药要用来干什么。这种分离的好处是什么？第一，领域逻辑可以脱离游戏引擎进行单元测试——你不需要启动整个游戏，写几行测试代码就能验证‘当攻击力 100、防御力 50、暴击率 20% 时，伤害输出是否在预期范围内’。第二，基础设施可以被替换——如果将来不想用 JSON 存配置了，想换成数据库或远程配置中心，只需要改 ConfigRegistry，DamageService 一行代码都不用动。第三，领域层因为不依赖引擎，理论上可以被移植到其他平台——比如将来要把战斗逻辑从客户端挪到服务器上做权威计算，DamageService 可以直接搬过去（只要目标平台支持同样的脚本语言），因为里面没有 Sprite、没有 AnimationPlayer、没有 Godot 特有的任何东西。这是软件架构中‘依赖倒置原则’的体现：高层的业务规则不依赖于低层的技术细节，两者都依赖于抽象的接口约定。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>领域层包含纯粹的游戏规则，不依赖任何外部系统或框架，是系统的心脏。</li>
+                <li>基础设施层为领域层提供技术支撑，实现领域层定义的接口，但不知道业务语义。</li>
+                <li>依赖注入使领域层与具体基础设施解耦，提高了可测试性、可替换性和可移植性。</li>
+                <li>分离让各部分独立变化：领域规则稳定，基础设施可演进，架构更灵活。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>tiny-sea-war 中，DamageService 的伤害计算逻辑大概是这样的（伪代码）：calculate_damage(attacker, defender, skill, random_source)。注意，它不直接从全局变量拿随机数，而是接受一个 random_source 参数。在真实游戏运行时，系统会注入 SeededRandomSource 的实例；但在单元测试中，可以注入一个‘假随机源’，比如编写一个 MockRandomSource，它永远返回固定值 0.5。测试代码就可以写：assert(damage_service.calculate_damage(mock_attacker, mock_defender, mock_skill, mock_random) == 预期值)——不需要启动游戏引擎，不需要加载场景和角色模型，瞬间就能跑完测试。ModifierService 同理，它的修饰器叠加逻辑只依赖于传入的属性值和修饰器列表，不访问任何全局状态或引擎对象。这种‘纯函数’特性，在函数式编程中被认为是代码质量的重要指标。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为‘分离’意味着领域层完全不能调用基础设施层的任何东西。实际上分离的关键是‘方向性’——领域层定义接口，基础设施层实现接口，通过依赖注入协作，领域层只知道‘有这么一个东西能提供随机数’，但不知道具体实现。</li>
+                <li>以为这种分离只在大项目里才有用，小游戏这样搞是过度设计。实际上，分离带来的‘可测试性’与‘可替换性’在小项目中同样立竿见影——当你发现 DamageService 有个 bug 时，能写一行测试脚本立刻验证修复，比每次都要启动整个游戏来验证效率高得多。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>战斗数值公式的数据驱动配置</td><td>公式 JSON 由基础设施层的 ConfigRegistry 加载，然后传递给领域层的 DamageService 执行计算，数据从基础设施流向领域，依赖方向清晰单向。</td></tr>
+                <tr><td>确定性伪随机数生成与可复现模拟</td><td>确定性伪随机数生成器 SeededRandomSource 位于基础设施层，它实现了领域层需要的‘随机数提供’接口，领域层的 DamageService 和 ModifierService 通过接口使用它而不依赖其具体实现——这是‘依赖倒置原则’的典型应用。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果领域服务完全不依赖任何引擎特性，如何表达‘伤害计算完成后需要触发动画或音效’这类表现层需求？这通常通过‘领域事件’（Domain Events）模式解决——领域服务发布事件，表现层订阅事件，两者依然不直接耦合。这种模式的具体实现方式是什么？</li>
+                <li>在多人游戏场景下，如果伤害计算放在服务器端（领域服务迁移），客户端只负责播放动画，那么‘客户端预测’（在服务器确认前先显示预期伤害）如何与确定性战斗系统协调？这是否会造成客户端与服务器的状态分歧？</li>
+                <li>如果未来的某个领域服务需要调用一个具有‘副作用’的操作（比如发送邮件、扣除玩家积分），这在‘领域纯粹性’原则下如何处理？通常会将副作用操作建模为领域服务产出的‘命令’对象，由基础设施层负责执行，这样领域层本身依然保持纯净。这种‘命令模式’与函数式编程中的 IO Monad 有何异同？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">今天选择的三个概念形成了一个从‘数据层’到‘计算层’再到‘架构层’的递进逻辑。战斗数值公式的数据驱动配置解决了‘数学关系如何被机器解析’的问题，让攻击力、防御力、伤害公式这些数学模型从硬编码中解放出来，变成可独立修改、可版本化的 JSON 文件。确定性伪随机数生成与可复现模拟在此基础上更进一步，解决了‘随机性如何被驯服’的问题——通过可种子化的随机数生成器，把原本不可预测的战斗过程转化为一个确定性函数，相同的种子加相同的决策必然产生相同的结果。领域服务与基础设施的分离架构则为前两者提供了工程上的安身之所：公式 JSON 由基础设施层加载，确定性随机源也属于基础设施层，而真正的伤害计算和修饰器叠加逻辑则放在纯粹的领域服务中，不依赖任何游戏引擎或外部系统。三层协作，让战斗系统既灵活（公式可配）、又可靠（结果可复现）、又可测试（逻辑与引擎解耦）。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">把游戏战斗系统当作科学实验来设计。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如果公式的复杂度继续增长（比如引入了分段函数、条件分支、技能组合叠加），JSON 的表达能力是否足够？有没有更适合表达复杂数学关系的声明式格式？</li>
+            <li>如果玩家知道了当前战斗的种子值，并且了解伪随机算法的内部状态，理论上是否能‘预测’下一次攻击会不会暴击？这种‘预测攻击’在实践中是否可能构成作弊，以及如何防护？</li>
+            <li>如果领域服务完全不依赖任何引擎特性，如何表达‘伤害计算完成后需要触发动画或音效’这类表现层需求？领域事件模式的具体实现方式是什么？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
