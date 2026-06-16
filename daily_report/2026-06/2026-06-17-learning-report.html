@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-06-17 学习笔记日报</title>
+    <meta name="description" content="从分层边界到资产目录，再到契约校验与加工分离，今日主线围绕游戏资产管线的声明式契约如何从设计走向工程落地展开。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260617-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-06-17</p>
+        <h1>资产管线的声明式契约：从设计图纸到代码落地</h1>
+        <p>今日知识主线围绕游戏资产管线展开，通过三个核心概念揭示如何从分层理念出发，经间接寻址的资源管理，最终抵达流水线架构中校验与加工的硬核分离。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>声明式契约与资产管线工程化</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>表现层与应用层的分层边界</strong>
+                <small>分层架构的核心纪律是只能向下依赖…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>运行时资产目录</strong>
+                <small>运行时资产目录的本质是一本逻辑名→…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>契约校验与加工分离的流水线…</strong>
+                <small>将校验脚本和加工脚本拆分成两个独立…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">当天的三个核心概念——表现层与应用层的分层边界、运行时资产目录、契约校验与加工分离的流水线架构——共同构成了一个逻辑自洽的资产管线实践体系。分层边界划定了代码的职责边疆；运行时资产目录则像是架设在分层边界上的海关口岸，让表现层不必知道像素密度和文件格式的细节；而契约校验与加工分离的架构，则是这些口岸背后的质检与加工厂，确保只有合法合规的资产才能进入运行时。从分层到目录再到流水线，是一条从宏观架构到微观执行、从设计原则到工程纪律的递进之路。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["声明式契约与资产管线工程化"])
+  concept1["表现层与应用层的分层边界"]
+  hub --&gt; concept1
+  concept2["运行时资产目录"]
+  hub --&gt; concept2
+  concept3["契约校验与加工分离的流水线架构"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["声明式契约与资产管线工程化"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="presentation-application-separation">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>表现层与应用层的分层边界</h3>
+              <p>Presentation-Application Layer Separation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">分层架构的核心纪律是只能向下依赖，不能向上依赖。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>应用层专注业务逻辑，只发出抽象事件，绝不操控视觉控件。</li>
+                <li>表现层仅负责将事件转化为视觉效果，对下层服务有依赖但下层不知其存在。</li>
+                <li>分层使得界面可替换，战斗逻辑可在无图形环境下独立测试。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="presentation-application-separation" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="runtime-asset-catalog">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>运行时资产目录</h3>
+              <p>Runtime Asset Catalog</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">运行时资产目录的本质是一本逻辑名→物理路径的字典，让游戏代码不再硬编码文件路径。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>通过逻辑名映射避免硬编码物理文件路径，降低散弹式修改的痛苦。</li>
+                <li>集中封装多分辨率适配逻辑，根据设备像素比自动选择最合适的资源变体。</li>
+                <li>作为间接寻址层，让资源文件的位置、格式和分辨率更改对上层代码透明。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="runtime-asset-catalog" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="contract-verification-processing-pipeline">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>契约校验与加工分离的流水线架构</h3>
+              <p>Contract Verification and Processing Pipeline</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">将校验脚本和加工脚本拆分成两个独立工具，不是多写了代码，而是让检查与加工两件事可以各自独立测试、独立优化、独立失败。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>校验脚本仅负责根据契约条款检查资产是否合规，输出简单的通过/不通过。</li>
+                <li>加工脚本仅处理已校验通过的资产，执行格式转换、压缩优化等重体力工作。</li>
+                <li>两者独立演进、独立测试、独立失败，任何一个的修改不影响另一个，大幅降低长期维护成本。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="contract-verification-processing-pipeline" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="presentation-application-separation">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>表现层与应用层的分层边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>在游戏开发中，将代码按职责划分为应用层、表现层和基础设施层。应用层承载核心业务逻辑（如战斗回合推进、伤害计算），表现层负责视觉渲染（如海洋表面、HUD信息面板），基础设施层提供底层服务（如配置表、资产目录）。核心规则是上层可以调用下层，但下层绝对不知道上层的存在。这意味着战斗会话的代码永远不写“把血量条变红”这类与表现细节相关的话，只发出抽象事实，由表现层自行解释。这种分离的收益极大：更换整个图形界面甚至改为纯文字版，只需替换表现层，应用层一行代码不用改。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>依赖方向原则：上层代码依赖下层接口，下层不感知上层具体实现。</li>
+                <li>职责分离：业务逻辑与视觉表现分别封装，各自独立变化。</li>
+                <li>间接通信：通过事件或抽象服务降低耦合，实现界面与技术实现的可替换性。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>释放火球术时，应用层的battle_session.gd只发出“玩家受到30点伤害”事件，表现层的battle_hud.gd自行决定如何将伤害表现为血条缩短和数值飘字。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把分层误解为“按文件类型分文件夹”——比如图片归图片、脚本归脚本，这不是分层，只是分类。真正的分层依据是抽象层级和职责边界。</li>
+                <li>认为分层会增加额外性能开销，但实际上这种架构带来的可维护性和可测试性收益远超微小的间接调用成本。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>运行时资产目录</td><td>表现层通过资产目录获取资源，严格遵守“只能依赖下层服务”的纪律，避免直接写死文件路径。</td></tr>
+                <tr><td>契约校验与加工分离的流水线架构</td><td>分层思想在工具链中的延伸：校验与加工分属不同层级，各司其职，互不污染。</td></tr>
+                <tr><td>声明式契约与资产管线工程化</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果应用层需要知道表现层动画是否播放完毕才能推进回合，如何在不违反分层规则的前提下实现？</li>
+                <li>基础设施层（如资产目录）加载失败时，错误信息应以何种形式向上返回给表现层？</li>
+                <li>在团队规模小、项目周期短的情况下，分层架构是否会成为过度设计？如何判断是否值得引入？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="runtime-asset-catalog">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>运行时资产目录</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>运行时资产目录维护一张从逻辑资源名到物理文件路径的映射表，类似于现实中的通讯录。代码中不再出现硬编码的路径，而是引用稳定的逻辑名，由目录负责查找实际文件。目录还可以根据设备像素密度，从多个分辨率变体中选择最合适的一个。这样，资源重命名、目录重组或多分辨率适配只需修改目录中的几行记录，所有引用的地方自动生效。它的价值在于消除硬编码路径的脆弱性，并让资源加载策略集中管理，虽然会引入极微小的查表开销，但架构收益巨大。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>间接寻址：引入一个中间层，解耦逻辑意图与物理存储细节。</li>
+                <li>封装变化：将多分辨率选择、文件格式差异等可变因素隐藏在目录内部。</li>
+                <li>服务化设计：作为基础设施层的纯粹服务，不包含任何业务逻辑，只提供资源查找功能。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>tiny-sea-war的asset_catalog.gd中记录攻击图标的多个分辨率路径，当battle_hud请求“icon.attack”时，目录根据当前设备像素比自动返回对应的文件，如2x版本。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为资产目录的作用是加速资源加载，实际上它解决的是耦合问题而非性能问题。</li>
+                <li>认为把所有资源路径集中在一处就是资产目录，但关键是要实现逻辑名到物理路径的动态映射和变体选择，而不仅仅是静态列表。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>表现层与应用层的分层边界</td><td>表现层通过逻辑名向资产目录请求资源，遵守向下依赖的规则，不直接触碰文件系统细节。</td></tr>
+                <tr><td>契约校验与加工分离的流水线架构</td><td>资产目录只加载经过校验和加工的成品，运行前提是资产已通过所有契约检查，体现了构建时与运行时的职责分离。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当设备像素比为1.5等非整数倍时，资产目录应选择省内存的1x还是清晰但消耗更大的2x？决策权在目录内部还是应暴露给调用者？</li>
+                <li>如果某个逻辑资源缺少某个分辨率变体，资产目录如何自动降级？这种不完备性应在工具链的哪个阶段捕获？</li>
+                <li>随着项目规模扩大，如何避免一次性加载整张映射表？能否实现按场景按需加载分片映射？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="contract-verification-processing-pipeline">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>契约校验与加工分离的流水线架构</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>在资产管线中，校验和加工是两道截然不同的工序，应当分离到不同的工具中。校验脚本（如check_ui_asset_contract.py）追求逻辑简单、速度快，只做契约合规性检查；加工脚本（如process_ui_art.py）可以复杂且耗时，但面对的都是已确认合规的原料。这种分离遵循单一职责原则，使得当契约条款变化时只需修改校验器，加工目标平台变化时只需修改加工器，两个模块独立变化，不会相互污染。这类似于编译器中前端语法检查与后端代码生成的分工，是工业流水线思想在软件开发中的经典应用。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>单一职责：校验关注合规性判断，加工关注格式转换与优化，各司其职。</li>
+                <li>前置校验保证输入合法，加工流程可以安全地假设资产已满足所有约束。</li>
+                <li>模块独立变化：契约条款变动只影响校验器，平台需求变动只影响加工器，风险隔离。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>美术提交UI图标后，check_ui_asset_contract.py检查每个图标是否具备所有分辨率变体，只有通过后，process_ui_art.py才将其转为WebP格式并压缩。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为把校验和加工写在一个文件里更简单，却忽略了长期维护中复杂的耦合、指数增长的测试难度以及修改时相互影响的风险。</li>
+                <li>以为只要有了校验脚本，所有资产就万无一失，但实际校验脚本自身也可能存在 bug，需要针对校验器本身编写测试。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>表现层与应用层的分层边界</td><td>工具链（校验+加工）位于构建阶段，与运行时表现层和应用层在时间上和职责上分离，是分层思想向编辑器工具链的延伸。</td></tr>
+                <tr><td>运行时资产目录</td><td>资产目录加载的是加工后的成品，校验与加工分离确保了目录面对的永远是合法且完备的资产包。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当校验脚本发现一批资产中仅部分通过时，加工脚本应如何处理？是全盘拒绝还是仅加工通过的部分？</li>
+                <li>如何测试校验脚本本身的正确性？是否需要编写一套故意构造的合法/非法文件来验证其判断逻辑？</li>
+                <li>当目标平台扩展时，如何设计加工脚本的插件化架构，使得新增平台支持时只添加新模块而不修改核心逻辑？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">当天的三个核心概念——表现层与应用层的分层边界、运行时资产目录、契约校验与加工分离的流水线架构——共同构成了一个逻辑自洽的资产管线实践体系。分层边界划定了代码的职责边疆；运行时资产目录则像是架设在分层边界上的海关口岸，让表现层不必知道像素密度和文件格式的细节；而契约校验与加工分离的架构，则是这些口岸背后的质检与加工厂，确保只有合法合规的资产才能进入运行时。从分层到目录再到流水线，是一条从宏观架构到微观执行、从设计原则到工程纪律的递进之路。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">分层架构的核心纪律是只能向下依赖，不能向上依赖——表现层可以调用资产目录加载纹理，但资产目录绝不能反过来知道“我是被战斗HUD用的还是被海洋表面用的”。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如果应用层需要知道表现层到底有没有成功播放完一段攻击动画，才能继续推进战斗回合，这种“向上依赖”的需求应该如何在不破坏分层规则的前提下优雅地实现？</li>
+            <li>当设备像素比为1.5时，资产目录应该返回1x版本还是2x版本？这个决策逻辑应该内置在目录还是允许外部覆盖？</li>
+            <li>如果校验脚本发现一批资产中有一半通过、一半失败，加工脚本是全部拒绝还是只加工通过的那一半？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
