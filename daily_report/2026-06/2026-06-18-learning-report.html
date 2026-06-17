@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-06-18 学习笔记日报</title>
+    <meta name="description" content="数据驱动调色板、战斗HUD数据绑定、流程控制器状态机，三个概念勾勒出游戏开发中‘数据、表现、控制’的架构三重奏。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260618-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-06-18</p>
+        <h1>2026-06-18 学习笔记日报</h1>
+        <p>从数据驱动的调色板，到战斗 HUD 的数据绑定，再到游戏流程控制器的有限状态机，今天三个概念覆盖了游戏开发中‘数据、表现、控制’三个维度的架构实践。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>数据、表现、控制的架构三角</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>数据驱动的调色板配置</strong>
+                <small>数据驱动的调色板让视觉风格从代码中…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>战斗 HUD 的数据绑定与…</strong>
+                <small>HUD 是比分牌，只倾听不询问，让…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>游戏流程控制器的有限状态机…</strong>
+                <small>状态机让游戏流程像洗衣机程序，按固…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">今天展开的三个概念形成了一条清晰的架构线索：从最表面的视觉数据配置，到交互层的观察者模式解耦，再到全局流程的状态机编排。数据驱动的调色板将易变的视觉风格从着色器逻辑中剥离；战斗 HUD 的数据绑定通过事件订阅实现模型与视图的独立演化；游戏流程控制器用有限状态机规定了游戏阶段的合法切换，避免了场景跳转的混乱。三者共同服务于‘高内聚、低耦合’的目标，也是 tiny-sea-war 开发者此次重构可能想要达到的理想状态。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["数据、表现、控制的架构三角"])
+  concept1["数据驱动的调色板配置"]
+  hub --&gt; concept1
+  concept2["战斗 HUD 的数据绑定与表现层逻辑"]
+  hub --&gt; concept2
+  concept3["游戏流程控制器的有限状态机实现"]
+  hub --&gt; concept3
+  related1["着色器参数接口"]
+  concept1 --&gt; related1
+  related2["战斗数值公式的数据驱动配置"]
+  concept1 --&gt; related2
+  related3["项目配置演进管理"]
+  concept1 --&gt; related3
+  related4["战斗会话的状态管理"]
+  concept2 --&gt; related4
+  related5["原型战斗逻辑的分离"]
+  concept2 --&gt; related5
+  concept2 --&gt; concept3
+  concept3 --&gt; related4
+  related6["项目配置演进"]
+  concept3 --&gt; related6
+  related7["场景表现测试的回归验证"]
+  concept3 --&gt; related7
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4,related5,related6,related7 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="data-driven-palette-config">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>数据驱动的调色板配置</h3>
+              <p>Data-driven Palette Configuration</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">数据驱动的调色板让视觉风格从代码中独立，美术改色如换衣，安全高效。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>着色器代码与颜色数据分离，美术修改颜色无需触碰代码。</li>
+                <li>通过 JSON 文件集中管理视觉风格参数，方便版本控制和团队协作。</li>
+                <li>数据驱动不仅适用于数值公式，也可用于视觉等易变资源，降低修改风险。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="data-driven-palette-config" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="battle-hud-data-binding">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>战斗 HUD 的数据绑定与表现层逻辑</h3>
+              <p>Battle HUD Data Binding and Presentation Logic</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">HUD 是比分牌，只倾听不询问，让表现层和逻辑层独立进化。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>HUD 作为观察者订阅战斗事件，不主动查询状态，实现单向依赖。</li>
+                <li>表现层与逻辑层解耦，可独立测试、独立替换。</li>
+                <li>通过事件广播机制（信号）同步状态，避免双向依赖和性能问题。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="battle-hud-data-binding" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="game-flow-controller-fsm">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>游戏流程控制器的有限状态机实现</h3>
+              <p>Game Flow Controller with Finite State Machine</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">状态机让游戏流程像洗衣机程序，按固定规则切换阶段，杜绝混乱跳转。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>有限状态机定义互斥状态（主菜单、战斗、暂停等）和合法转移，保证流程清晰。</li>
+                <li>每个状态有进入、更新、退出动作，负责资源加载、输入处理和清理工作。</li>
+                <li>流程控制器作为全局协调者，组合各子模块，实现分层架构中的‘组合根’。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="game-flow-controller-fsm" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="data-driven-palette-config">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>数据驱动的调色板配置</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象一位画家在画海洋，他不需要每次重新调配颜料，而是从一个调色盒里选取颜色。在游戏开发中，着色器代码是画家的手，而 JSON 配置文件就是那个调色盒。我们把一堆颜色值（比如天的蓝、浪的白）单独写在一个 JSON 文件里，着色器读取这些颜色来渲染海洋。这样，美术同事想试试夕阳下的金色海面，只需要改 JSON 文件里的几个数字，然后重启游戏就能看到效果，完全不用碰复杂的着色器代码，也不用担心改坏了代码的性能。这种分离就让‘逻辑’和‘数据’各司其职，修改更安全，版本对比也更清晰。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>数据与逻辑分离：颜色值存储在独立的 JSON 配置文件中，着色器只负责渲染逻辑。</li>
+                <li>配置驱动：引擎在加载时读取 JSON 并将对应的值传递给着色器的 uniform 变量。</li>
+                <li>安全迭代：修改配置文件不涉及代码编译，降低引入 bug 的风险，让美术能快速尝试多种方案。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在 tiny-sea-war 项目中，ocean_palettes.json 可能长这样：{ "deep_water": "#1B3A4A", "shallow_water": "#2D8B8B", "foam": "#FFFFFF" }。着色器代码通过 uniform vec3 deep_color; 声明外部变量，引擎根据 JSON 内容自动把颜色值传递给这个变量。修改 JSON 后，海洋颜色瞬间改变，无需改动着色器一行代码。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为‘数据驱动’就是所有东西都应该配置化。其实，如果把永远不会变的核心渲染算法也写进 JSON，会让配置文件变得庞大难懂，反而增加了维护成本。数据驱动的精髓是分离那些‘经常变化、因人而异’的数据，而不是把所有静态逻辑都外置。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>着色器参数接口</td><td>与着色器参数接口共同构成可微调的视觉表现层，两者通过 uniform 变量和 JSON 数据共同暴露可调参数。</td></tr>
+                <tr><td>战斗数值公式的数据驱动配置</td><td>跨领域可类比，都是把易变数据从代码中分离，让非程序员也能安全参与调整。</td></tr>
+                <tr><td>项目配置演进管理</td><td>调色板文件也是项目配置的一部分，需要纳入版本控制并协调变更，与项目配置演进管理相结合。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果美术想调整的不只是颜色，还有波浪频率，这种数值也可以数据驱动吗？如何扩展 JSON 模式来包容更多类型的参数？</li>
+                <li>如何保证修改后的颜色值符合视觉标准（比如必须为 6 位十六进制颜色）？能否在持续集成中加入一个校验脚本，自动检查调色板 JSON 的合法性？</li>
+                <li>当多个关卡需要共用同一套调色板时，如何避免重复定义？能否用继承或引用的方式设计配置文件结构？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="battle-hud-data-binding">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>战斗 HUD 的数据绑定与表现层逻辑</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象一下，你在看一场足球比赛直播，屏幕上的比分牌不会自己决定进球，而是默默‘听’裁判和传感器的信号，每进一个球，它就立刻更新。在游戏里，战斗 HUD（比如血条、伤害数字、技能图标）就是那个比分牌，它应该只负责显示，不负责判断谁被谁打了。而管理战斗规则、计算伤害的那个模块叫‘战斗会话’，就像裁判和运动员。数据绑定就是一根无形的线，让 HUD‘订阅’战斗会话的消息：当战斗会话说‘战士受到了 15 点伤害’，HUD 就立刻弹出‘-15’的数字并缩短血条。反过来，HUD 永远不能直接去问战斗会话‘现在血量多少？’并自己乱改，否则一旦频繁刷新就会导致卡顿和难以理解的 bug。这种模式就是观察者模式——让表现层成为逻辑层的忠实倾听者，双方独立演化，测试也可以单独进行。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>观察者模式：战斗会话作为主题 (Subject) 广播事件，HUD 作为观察者 (Observer) 响应事件更新显示。</li>
+                <li>事件驱动通信：通过信号 (signal) 连接，战斗逻辑不依赖具体 HUD 实现，只发射事件。</li>
+                <li>HUD 内部状态机：管理 UI 动画状态（如正常、受伤闪烁、数字弹出），防止并发更新导致的动画错乱。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在 tiny-sea-war 的 battle_session.gd 中，可能有一个信号 unit_health_changed(unit_id, old_hp, new_hp, delta)。当战士受到攻击时，战斗会话发射这个信号。battle_hud.gd 在初始化时连接了该信号到一个函数 _on_unit_health_changed(...)，这个函数里包括：更新血条长度、播放红色闪烁、如果伤害超过阈值则弹出大号伤害数字。393 行的大幅修改很可能就是在 HUD 内部引入了一个 UI 状态机，管理‘正常’‘受伤闪烁’‘数字弹出中’等状态，避免动画重叠。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为数据绑定就是‘UI 自动同步数据’，所以只管单向从模型到视图就行。其实，如果 HUD 上有按钮（比如‘攻击’），就需要反向通信——此时 HUD 应该通过发送事件（如 player_action_requested）来通知战斗会话，而不是直接调用战斗会话的函数。严格区分‘请求’和‘命令’是保持单向依赖的关键，否则稍不留神又会形成双向依赖。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>战斗会话的状态管理</td><td>战斗会话是广播事件的生产者，HUD 是消费者，两者共同构成战斗系统的核心交互。</td></tr>
+                <tr><td>原型战斗逻辑的分离</td><td>数据绑定让战斗会话可以脱离真实 HUD 进行独立测试，增强可测试性。</td></tr>
+                <tr><td>游戏流程控制器</td><td>流程控制器切换场景时可能需要暂停或重置 HUD 的绑定，确保生命周期正确管理。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果 HUD 需要播放一个持续 2 秒的伤害动画，在动画期间又受到新伤害，应该打断重叠还是排队？如何设计 HUD 内部的动画状态机来优雅处理？</li>
+                <li>如何在依赖注入框架中管理 HUD 的绑定生命周期？当战斗会话被销毁时，如何确保 HUD 断开所有信号以防止内存泄漏？</li>
+                <li>面对多种不同的战斗界面形态（如手机竖屏和横屏），如何让同一个战斗会话无须修改就能适配不同的 HUD 实现？能否通过定义抽象的 HUD 接口来支持热插拔？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="game-flow-controller-fsm">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>游戏流程控制器的有限状态机实现</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>一台洗衣机有‘浸泡’‘洗涤’‘漂洗’‘脱水’几个步骤，它不会在脱水的时候突然开始浸泡，因为每一步的切换都有明确的规则。游戏的主流程就像洗衣机，玩家在不同的画面之间跳转：主菜单、游戏进行中、暂停、结算画面。如果随便用 if 和 else 来管理这些切换，代码会变成一团乱麻，很容易让玩家卡在瞬移般的 bug 里。有限状态机就是一个管理这些状态的机器，它设定几个固定的‘状态’（例如 MainMenu, InBattle, Paused），并规定好哪些状态可以跳转到哪些状态（比如在战斗中按暂停键可以进入暂停，但不能在暂停时直接跳进战斗）。每个状态都有三个行为：进入时做什么（比如播放菜单音乐），更新时做什么（比如检查按键），退出时做什么（比如停止音乐、保存数据）。游戏流程控制器就是这台状态机的实现者，它保证游戏不会出现‘在结算画面里突然开始战斗’的混乱局面。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>有限状态机模型：定义有限个互斥的状态和它们之间的合法转移规则，强制流程的确定性。</li>
+                <li>状态动作封装：每个状态拥有 OnEnter、OnUpdate、OnExit 动作，集中处理初始化和清理，避免残留数据污染后续状态。</li>
+                <li>层级状态机思想：游戏流程控制器作为顶层状态机，战斗状态内部可以包含子状态（如对话、动画播放），实现复杂逻辑的组合。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在 tiny-sea-war 中，新增的 game_flow.gd 很可能实现了类似这样的逻辑：当玩家在主菜单点击‘开始战斗’按钮时，菜单发出事件，game_flow 收到后执行：退出菜单状态（隐藏菜单 UI、释放菜单资源）-&gt; 切换到‘加载 battle 场景’中间状态（显示加载画面）-&gt; 进入战斗状态（实例化 battle_session，启动 HUD，连接控制）。这个过程被状态机严格编排，确保每一步顺序正确。如果加载失败，状态机可以跳转到错误提示状态，而不是卡死在一个空白屏幕上。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>一个常见的错误是，把状态机当成万能膏药，试图把游戏内一切对象都建模成状态机，导致状态爆炸。比如一个敌人有‘巡逻’‘追击’‘攻击’‘受伤’四个状态，这完全可以用行为树或者更简单的条件判断。状态机最适合的是‘全局的、互斥的、有限数个’的大阶段，而不是每一个细小的行为变换。滥用会让整个项目变得僵硬难改。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>战斗会话的状态管理</td><td>构成层级关系：游戏流程控制器是顶层状态机，战斗会话是‘战斗中’状态下的子状态机。</td></tr>
+                <tr><td>项目配置演进</td><td>流程控制器通常被配置为引擎的自动加载单例，其设定在 project.godot 中管理，与项目配置演进相关。</td></tr>
+                <tr><td>场景表现测试的回归验证</td><td>当流程控制器改变场景切换逻辑时，测试脚本可以模拟各种状态跳转以验证流程正确性。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>在一个大型游戏中，如果‘战斗中’状态内部又有复杂的子状态（如‘对话’‘动画播放’‘菜单选择’），如何在游戏流程控制器中实现嵌套状态机，同时保持状态历史的可回溯性？</li>
+                <li>当需要从暂停状态直接返回主菜单（跳过战斗）时，如何保证所有战斗数据被正确清理，同时又不能丢失玩家的游戏进度存档？清理和存档的顺序如何用状态机动作组合保证？</li>
+                <li>是否可以用配置文件（如 JSON 或 ScriptableObject）来声明整个游戏的状态转移表和进入/退出动作，从而让设计师也可以调整流程而不必写代码？这将带来哪些调试和维护上的挑战？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">今天展开的三个概念形成了一条清晰的架构线索：从最表面的视觉数据配置，到交互层的观察者模式解耦，再到全局流程的状态机编排。数据驱动的调色板将易变的视觉风格从着色器逻辑中剥离；战斗 HUD 的数据绑定通过事件订阅实现模型与视图的独立演化；游戏流程控制器用有限状态机规定了游戏阶段的合法切换，避免了场景跳转的混乱。三者共同服务于‘高内聚、低耦合’的目标，也是 tiny-sea-war 开发者此次重构可能想要达到的理想状态。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">数据驱动不仅仅用于战斗公式，也可以用于视觉调色板——把颜色放进 JSON，让美术改色如换衣，改代码的风险降为零。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何扩展 JSON 配置模式以支持非颜色参数（如波浪频率），并保证修改后的配置在 CI 中自动校验合法性？</li>
+            <li>当 HUD 正在播放伤害动画时又收到新的伤害事件，如何设计 HUD 内部的动画状态机来优雅处理动画重叠或排队？</li>
+            <li>是否能用配置文件声明整个游戏的状态转移表和进出动作，让设计师调整流程而不必写代码？这将带来哪些调试和维护上的挑战？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
