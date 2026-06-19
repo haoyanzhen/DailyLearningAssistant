@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-06-20 学习笔记日报</title>
+    <meta name="description" content="理解Git暂存区边界导致的证据缺失，探讨未提交变更时间归属不确定性的影响，以及通过文档编号体系为机器可读性而设计的实践。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260620-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-06-20</p>
+        <h1>证据边界与结构化设计：从Git工作区到文档编号体系</h1>
+        <p>当天九个仓库零提交，却暗藏数百个待确认修改。这迫使我们从Git的工作区状态出发，理解未提交修改的证据边界，追问时间归属的推断方法，最终见证文档编号体系为自动化Agent扫清可读性障碍——一条贯穿“主动设计可见性、可追溯性与可解析性”的主线。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>可见性、可追溯性与可解析性的主动设计</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>Git工作区状态的暂存区边界</strong>
+                <small>工作区的修改就像写在草稿纸上的铅笔…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>未提交变更的时间归属不确定性</strong>
+                <small>工作区里的未提交修改就是没有刻印日…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>文档编号体系与Agent可…</strong>
+                <small>文档编号体系看起来只是改改文件名…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">今天三个概念形成了递进的逻辑链条。C9（Git暂存的边界）建立了最基本的认识：Git只对进入暂存区并提交的内容负责，工作区的修改在Git眼中是透明的——存在，但没有元数据。这直接导致了C10（时间归属的不确定性）：当工作区有未提交修改时，我们无法从Git本身得知这些修改是什么时候做的，这构成了工程审计中的一个真实困境。C2（文档编号与Agent可读性）则展示了另一个维度的“可读性设计”：不仅Git需要结构化来保证可追溯性，文档的组织也需要结构化来保证自动化工具（包括大语言模型Agent）能够可靠地消费和理解。有意思的是，C10描述的困境恰好反向说明了C2这种实践的价值——当Git无法告诉我们某些信息时，我们更需要通过其他结构化的组织方式来降低项目知识的理解和检索成本。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["可见性、可追溯性与可解析性的主动设计"])
+  concept1["Git工作区状态的暂存区边界"]
+  hub --&gt; concept1
+  concept2["未提交变更的时间归属不确定性"]
+  hub --&gt; concept2
+  concept3["文档编号体系与Agent可读性"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  related1["基于ref指针的只读仓库监控"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  related2["提示词驱动的UI资产生成流程"]
+  concept3 --&gt; related2
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="git-staging-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>Git工作区状态的暂存区边界</h3>
+              <p>Git Staging Boundary</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">工作区的修改就像写在草稿纸上的铅笔字——存在，但没有签名，也没有日期戳。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>Git的三区模型：工作区、暂存区、对象库，只有进入对象库的提交才永久记录并携带时间戳和作者信息。</li>
+                <li>暂存区是提交前的意图标记区，git add将修改放入暂存区，但时间信息只有在git commit后才绑定到提交对象上。</li>
+                <li>工作区修改在Git视角中是“透明的”——git status能发现文件变化，但不记录修改时间、修改者，也不提供任何审计元数据。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="git-staging-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="uncommitted-changes-time-uncertainty">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>未提交变更的时间归属不确定性</h3>
+              <p>Uncommitted Changes Time Uncertainty</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">工作区里的未提交修改就是没有刻印日期的陶片：它们的内容可能非常有价值，但它们的年代归属永远只能是推断。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>Git本身不记录工作区修改的时间信息，其对象模型中只有commit和tag携带时间戳。</li>
+                <li>文件系统元数据（mtime、ctime）可被工具随意修改，作为证据的可靠性极低。</li>
+                <li>仅凭git status快照无法推断修改的时间窗口，需要组合编辑器本地历史、系统审计日志等多源辅助证据才能进行粗略估计。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="uncommitted-changes-time-uncertainty" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="document-numbering-system-agent-readability">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 大语言模型</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>文档编号体系与Agent可读性</h3>
+              <p>Document Numbering System &amp; Agent Readability</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">文档编号体系看起来只是改改文件名，但背后是一种为机器可读性而设计知识结构的软件工程思维：编号让自动化Agent能用正则表达式精确锁定目标，而不需要像人类一样去理解自然语言文件名。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>编号前缀将文档的领域归属从需要语义理解的自然语言转换为可被正则表达式精确匹配的语法规则。</li>
+                <li>编号体系不仅仅是为文件排序，而是隐式编码了一套域分类学，使Agent能通过编号段推理文档所属领域。</li>
+                <li>结合AGENTS.md和workorder/目录，形成了为机器可读性而设计的完整知识库结构，降低自动化工具的知识检索成本。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="document-numbering-system-agent-readability" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="git-staging-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学</p>
+                <h3>Git工作区状态的暂存区边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象一下，你的电脑桌面上有三个抽屉。第一个抽屉叫“工作区”，你在这里随意写字、涂改、丢草稿纸，乱是乱一点，但这是你的自由创作空间。第二个抽屉叫“暂存区”，你想把哪些草稿正式归档，就先放进这个抽屉。第三个抽屉叫“对象库”，这是一个带编号、带日期戳、带锁的铁柜子——一旦放进去了，内容就永远保存在Git的历史里，谁也别想偷偷改。
+
+这个比喻的核心就是Git的三区模型。工作区就是你现在在编辑器里修改代码的地方，改完了Git会发现文件变了，但它不记录这些变化。暂存区是你用git add命令把选中的修改放进来的地方——放进来了，这些修改就有了“我想提交这些”的意图标记。对象库是你git commit之后产生的那个带SHA-1哈希值的提交对象——这是Git历史中唯一的永久记录。
+
+关键的认知是：工作区的修改在Git的视角中是“透明的”。git status能告诉你哪些文件被改了，仅此而已。它不会告诉你谁改的、什么时候改的、改了多少次——这些信息只绑定在提交对象上，不绑定在工作区文件上。这就是为什么今天我们看到tiny-sea-war有数百个文件在工作区被修改，但我们不能断定这些修改发生在今天，因为它们从未踏入暂存区和对象库的大门。
+
+这道边界也是工程审计中一个非常重要的约束：如果你在做合规检查或事故调查，只有进入了对象库的提交才能作为“事实”来使用。工作区里的修改，哪怕内容再完整、再重要，在法律或流程意义上都只是“线索”而非“证据”。理解这道边界，你就理解了为什么敏捷开发强调小步提交——频繁的git add和git commit不仅是为了备份，更是为了给每次修改都留下可追溯的时间锚点。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>工作区：当前编辑的文件状态，Git检测变化但不存档。</li>
+                <li>暂存区：通过git add存入的修改集合，代表“准备提交”的意图，但仍无时间记录。</li>
+                <li>对象库：git commit生成带SHA-1哈希的提交对象，永久保存并绑定作者、时间戳等元数据。</li>
+                <li>证据资格只有进入对象库的提交才具备，工作区修改仅作线索。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>早晨上班后你用git status检查仓库，发现三个文件标记为modified。你无法回答经理的问题：“你是今天早晨改的吗？还是昨晚下班前改的忘了提交？”这些问题Git回答不了，因为答案全在工作区那道边界之外。只有执行git add . &amp;&amp; git commit -m "fix: 修复登录页面的样式问题"之后，Git才会给这次修改打上时间戳和作者信息，这些元数据才成为可审计的事实。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>一个非常普遍的误区是认为“git status显示文件被修改了，Git一定知道修改发生在什么时间”。实际上，Git内部完全不做这件事。Git的对象模型基于内容寻址——它用文件内容的SHA-1哈希值来找对象，而不是用时间戳。当你git status时，Git做的是实时比较：拿工作区文件的当前内容，计算一个哈希，然后跟暂存区或最后一次提交中对应文件的哈希比一下。如果哈希不同，就报告“已修改”。整个过程没有任何时间记录环节。文件系统层面的mtime确实存在，但可以被touch命令任意更改，Git既不读取它也不信赖它，因为Git的设计哲学是只信任自己生成的内容哈希。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>未提交变更的时间归属不确定性</td><td>C9是理解C10的前提——正因为暂存区是证据边界，工作区修改才无法通过Git获得时间定位。只有理解了C9的三区模型，才能理解C10描述的不确定性为什么是git status的必然结果，而不是某个版本的bug或配置问题。</td></tr>
+                <tr><td>基于ref指针的只读仓库监控</td><td>C9与C11存在概念类比关系：暂存区边界是本地证据边界，远端ref指针是远程证据边界，两者都定义了“在什么条件下我们认为有可确认的变化”。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果我想让Git在工作区也记录文件的修改时间和修改者，需要修改Git的底层对象模型吗？这会不会破坏Git的分布式设计原则？</li>
+                <li>在持续集成环境中，CI脚本通常在一个临时的沙箱里运行，工作区修改几乎不存在（因为每次都是从远端clone或fetch干净的commit）。那么对这个沙箱来说，暂存区边界的概念还有意义吗？</li>
+                <li>Git的stash命令（git stash）可以把工作区修改暂时存起来，这个过程中修改进入了Git的哪个区域？stash操作会给修改添加时间戳吗？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="uncommitted-changes-time-uncertainty">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>未提交变更的时间归属不确定性</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>既然我们已经知道Git不对工作区修改记录时间，那么一个直接的问题就来了：如果我现在看到一个文件在工作区被修改了，我能推断这个修改是什么时候发生的吗？答案非常微妙：能做推断，但不确定，而且推断的质量取决于你手里有多少辅助证据。
+
+先说明为什么Git本身提供不了这个信息。Git的整个历史记录系统建立在四个对象类型上：blob（文件内容）、tree（目录结构）、commit（一次提交快照）、tag（指向某个commit的标签）。这四类对象中，只有commit和tag携带时间戳，而它们都是通过git commit或git tag主动创建的。工作区中的修改没有对应任何Git对象，因此在这个四类对象的图谱里根本不存在，自然没有时间信息。
+
+那我们怎么办？靠工作区之外的东西。文件系统在每个文件上维护了修改时间（mtime）、状态变更时间（ctime）和访问时间（atime）——这些是操作系统记录的，但不是为版本控制设计的。它们可以被程序的写操作自然更新，也可以被人为用touch命令任意修改。编译器的编译输出、代码格式化工具的自动保存、甚至IDE的自动备份功能，都会改变这些时间戳，让它们失去作为“开发者有意识修改时间”的证据意义。
+
+还有编辑器本地历史——VS Code、IntelliJ IDEA等现代编辑器会在本地保存文件的历史版本，这些历史记录带有时间信息。但它们是本地存储的，不上传到Git仓库，CI环境通常访问不到。操作系统级别的审计日志（如Linux的auditd）可以记录哪些进程在什么时间写入了哪些文件，但这种级别的日志通常只在安全要求极高的环境中才会开启和保存。
+
+所以今天我们看到tiny-sea-war有数百个文件的待确认修改时，我们能确定的是：“在拍摄快照的这一刻，这些文件是这个状态”。我们无法确定这些修改发生在检查窗口（06-19 00:00 至 06-20 00:00）内——它们可能是更早积累的编辑，也可能是刚刚完成的改动，甚至可能是从其他分支合并时残留的半成品。这个不确定性把所有的待确认变更锁定在“线索”层面，而无法晋升为“事实”。这也是为什么在整个concept_relevance文件中，tiny-sea-war的所有概念都被严格标注为“待确认”——不是工程上的保守，而是证据逻辑的必然。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Git对象模型：只有commit/tag带时间戳，工作区修改无对象对应。</li>
+                <li>文件系统时间戳：mtime/ctime可被轻易修改，不可信赖。</li>
+                <li>辅助证据源：编辑器本地历史、系统审计日志等可辅助推断，但各有限制。</li>
+                <li>证据层级：无时间锚点的修改只能作为线索，不能作为事实。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设你和同事共用一台开发服务器，你发现三个文件显示modified，但你不记得改过它们。是昨晚同事改的忘了提交？是某个定时脚本自动修改？还是一个月前的实验残留？在没有频繁提交习惯的情况下，多个开发者的修改会在工作区里混在一起，再也分不清谁是谁。解决办法是频繁提交，一人一个分支，让每次修改都在Git的历史中获得明确的时间戳和作者归属。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>很多人以为只要文件的时间戳（mtime）在今天之内，就可以认定修改发生在今天。这个想法有两个致命漏洞。第一，mtime可以轻易被修改——touch命令就是为了干这个的。第二，很多自动化工具会修改mtime却不代表有语义变化：代码格式化工具保存文件时可能只重新排版而不改逻辑，但mtime照更新不误；编译前的预处理脚本可能生成临时文件而后又删除，留下mtime变化却没留下内容。所以用mtime来推断修改时间，相当于用温度计来测风速——工具用错了地方，结果自然不可信。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>Git工作区状态的暂存区边界</td><td>C10是C9（Git暂存区边界）的直接逻辑后果——正是因为暂存区是Git的证据边界、工作区修改不在其覆盖范围内，才导致了时间归属的不确定性。</td></tr>
+                <tr><td>文档编号体系与Agent可读性</td><td>C10描述的困境反向说明了C2这类结构化组织实践的价值：当Git本身无法提供某些元信息时，我们更需要通过其他类型的结构化设计来降低信息的检索和理解成本。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果我想要在团队中强制所有工作区修改都在一定时间内被提交（或至少被stash），我可以在Git的hook机制中实现这个检查吗？pre-commit hook能在工作区修改发生时触发吗？</li>
+                <li>文件系统的inode记录了文件的创建时间（birth time / crtime），这个时间也无法被随意修改。为什么Git不利用crtime来辅助推断工作区修改的时间？</li>
+                <li>假设我设计一个脚本，在每次git status时自动采集mtime、ctime、文件大小等信息并存入一个本地数据库，下次再git status时对比变化——这个方案能在多大程度上解决C10的问题？会引入什么新的维护成本？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="document-numbering-system-agent-readability">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 大语言模型</p>
+                <h3>文档编号体系与Agent可读性</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>当你在图书馆里找书时，你不需要一本一本地翻目录——你只需要看索书号，就能知道这本书属于哪个学科领域、在哪个书架的哪个位置。这就是编号体系的力量：它把人类知识的主观分类转化成了客观的空间坐标。
+
+今天我们在tiny-sea-war项目中观察到，docs目录下的文档进行了一次大规模重命名：从前文档叫core_mechanics.md、combat_formula.md、art_design.md这样的自然语言文件名，现在变成了10_game_core_mechanics.md、12_combat_formula_design.md、40_art_direction_design.md这样的编号前缀结构。编号本身暗示了一个域分类体系：10系列是核心玩法，20系列是数据架构，30系列是技术架构，40系列是美术方向，90系列是审计文档。
+
+这个做法对我们人类来说帮助不大——我们本来就能从文件名推断出core_mechanics是讲核心机制的，加个10_前缀不过是在我们已知的信息前加了个数字。但对程序来说，这是天壤之别。一个自动化脚本（或一个大语言模型Agent）想要“读取所有技术架构相关的文档”，如果文件名是自然语言，它必须理解什么是“技术架构”、这个词与“程序设计”“实现研究”的语义差别在哪里——这是需要人类级别语言理解的困难任务。但如果文档遵循编号体系，Agent只需要做一件事：用正则表达式匹配docs/3[0-9]_.*\.md，就能精确且无遗漏地找到所有30系列的技术架构文档。
+
+这就是“为机器可读性而设计文档结构”的核心思想。编号前缀充当了一种命名空间，它把文档的领域归属从需要语义理解的自然语言，变成了可被简单模式匹配解析的语法规则。对LLM Agent来说，这意味着从“语义猜测”升级为“结构化查询”——Agent不再需要去猜“这篇文档讲的是不是技术架构”，而是直接根据编号前缀就可以确定。同样，AGENTS.md文件充当了知识库的使用说明书，告诉Agent编号体系怎么用、每个目录包含了什么类型的知识、在什么任务下应该查阅哪个编号段的文档。workorder/目录则可能承载Agent可执行的具体工作指令，让Agent带着明确的检索目标去消费这个结构化的知识库。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>编号编码领域分类：将文档按照预定义的域分类学赋予数字前缀，10-19核心玩法，20-29数据，30-39技术，40-49美术，90-99审计。</li>
+                <li>模式匹配代替语义理解：Agent通过正则表达式（如docs/3[0-9]_.*）即可精确检索，无需理解自然语言。</li>
+                <li>AGENTS.md作为元说明书：指导Agent如何利用编号体系、各目录的知识类型和适用场景。</li>
+                <li>结构化知识库降低检索成本：为自动化工具设计清晰的接口，使知识消费变得机械、快速且准确。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设你给一个LLM Agent下达指令：“查找项目中所有关于战斗系统数值平衡的设计文档，总结其中的公式设计原则。”如果文档按自然语言命名，Agent需要理解“战斗系统”“数值平衡”等语义，逐个读取文件判断，容易遗漏或误判。但如果文档遵循编号体系，Agent可以根据AGENTS.md中的说明，用grep docs/1[2-9]_.*.md和docs/4[4-4]_.*.md瞬间排除95%的无关文档，只读取那几篇确定相关的，摘要和总结的质量自然大幅提升。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>一个常见的误读是把这种编号体系理解为“只不过给文件加了数字前缀，好看一点”。这个理解漏掉了关键的设计动机：编号前缀的选择本身已经隐式编码了一个领域的分类学。如果团队的编号只是按时间顺序流水号（01、02、03...），那确实只是好看——只是把文件排了序。但tiny-sea-war的编号体系显然经过设计：10-19是核心玩法，20-29是数据，30-39是技术，这形成了一个完整的域分类体系。这种分类本身对自动化Agent来说是有语义价值的——Agent可以通过编号段来推理一个文档属于哪个领域，而这个推理不需要任何自然语言理解。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>提示词驱动的UI资产生成流程</td><td>C2与C1共同反映了tiny-sea-war项目中一种把机器（LLM或自动化脚本）当作一等消费者的工程意识——C1在资产生成流程中为LLM设计接口（提示词即源文件），C2在知识组织中为Agent设计接口（编号即命名空间）。</td></tr>
+                <tr><td>未提交变更的时间归属不确定性</td><td>C10描述的未提交变更时间归属不确定性，反向说明了C2这类结构化组织实践的价值：当Git本身无法提供某些元信息时，我们更需要通过其他类型的结构化设计来降低信息的检索和理解成本，文档编号体系就是这种设计的一个实例。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果文档编号越多越细（比如从两位数扩展到三位数甚至四位数的编号段），对Agent来说检索精度会提升，但这种复杂度会不会增加人类维护者的认知负担？这条边界应该划在哪里？</li>
+                <li>当两个领域的文档发生交叉内容（比如技术架构文档中有一段关于美术管线的描述），编号体系如何处理这种跨域情况？是按照主导领域严格分配一个编号，还是允许在多个编号段中都有引用？</li>
+                <li>AGENTS.md本身会随着项目的演进而更新。如果AGENTS.md过期了（描述了旧的编号体系但新文档已经用新编号），Agent怎么检测出这个不一致，避免错误地使用旧的检索策略？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">今天三个概念形成了递进的逻辑链条。C9（Git暂存的边界）建立了最基本的认识：Git只对进入暂存区并提交的内容负责，工作区的修改在Git眼中是透明的——存在，但没有元数据。这直接导致了C10（时间归属的不确定性）：当工作区有未提交修改时，我们无法从Git本身得知这些修改是什么时候做的，这构成了工程审计中的一个真实困境。C2（文档编号与Agent可读性）则展示了另一个维度的“可读性设计”：不仅Git需要结构化来保证可追溯性，文档的组织也需要结构化来保证自动化工具（包括大语言模型Agent）能够可靠地消费和理解。有意思的是，C10描述的困境恰好反向说明了C2这种实践的价值——当Git无法告诉我们某些信息时，我们更需要通过其他结构化的组织方式来降低项目知识的理解和检索成本。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">工作区的修改无论有多少、多重要，只要没有git add和git commit，Git就既不记录也不保护它们——这是设计，不是bug。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如果我想让Git在工作区也记录文件的修改时间和修改者，需要修改Git的底层对象模型吗？这会不会破坏Git的分布式设计原则？</li>
+            <li>如果我想要在团队中强制所有工作区修改都在一定时间内被提交（或至少被stash），我可以在Git的hook机制中实现这个检查吗？pre-commit hook能在工作区修改发生时触发吗？</li>
+            <li>当两个领域的文档发生交叉内容（比如技术架构文档中有一段关于美术管线的描述），编号体系如何处理这种跨域情况？是按照主导领域严格分配一个编号，还是允许在多个编号段中都有引用？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
