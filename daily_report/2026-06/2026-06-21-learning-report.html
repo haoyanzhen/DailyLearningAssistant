@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-06-21 学习笔记日报</title>
+    <meta name="description" content="从Git远端监控到游戏视觉驱动，再到状态机与导演协调，三层分离理念贯穿今日学习。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260621-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-06-21</p>
+        <h1>信息的三层分离：检测、配置与协调</h1>
+        <p>今天我们用三个例子观察软件设计中的精巧边界：远端变更检测如何以最小信息量判断变化，游戏特效如何用数据驱动解放美术，以及多个角色的演出如何通过状态机与导演模式优雅配合。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>用最小的耦合换取最大灵活性</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>远端引用的只读变更检测（信…</strong>
+                <small>git ls-remote 像‘看…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>战斗视觉配置的数据驱动播放</strong>
+                <small>战斗特效的数据驱动配置把特效参数写…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>动画状态机与效果导演的协调…</strong>
+                <small>动画状态机是每个角色的自传，效果导…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念看似分别属于 Git 工具、游戏视觉配置和表现层架构，但它们的内核一致：通过清晰的边界分离来管理复杂度。远端引用监控把“知道有变化”与“知道变化细节”分离，用最少权限完成判断；数据驱动配置把“如何表现”从“表现什么”中分离，让参数自由变化而不碰逻辑；导演模式把“个体动画逻辑”与“群体协调时序”分离，让每个部分只关心自己抽象层次的事。这种分层与分离的思维是软件工程中反复出现的主题，从 Git 协议到游戏引擎设计一以贯之。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["用最小的耦合换取最大灵活性"])
+  concept1["远端引用的只读变更检测（信息最小化监控）"]
+  hub --&gt; concept1
+  concept2["战斗视觉配置的数据驱动播放"]
+  hub --&gt; concept2
+  concept3["动画状态机与效果导演的协调模式"]
+  hub --&gt; concept3
+  related1["Git 远端监控的信息最小化原则"]
+  concept1 --&gt; related1
+  related2["工作区未提交变更的时间归属不确定性"]
+  concept1 --&gt; related2
+  related3["美术资产管线的契约化自动审计"]
+  concept2 --&gt; related3
+  related4["游戏引擎表现层架构"]
+  concept2 --&gt; related4
+  concept3 --&gt; related4
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="remote-change-detection">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>远端引用的只读变更检测（信息最小化监控）</h3>
+              <p>Remote Reference Change Detection (Minimal Information Monitoring)</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">git ls-remote 像‘看门牌号有没有换’，不进门翻箱倒柜，用最小的信息量就能判断远端仓库是否更新。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>通过 git ls-remote 仅获取分支指针 SHA，不下载文件内容，实现最小信息量判断仓库是否更新。</li>
+                <li>相比 git fetch 或 clone，大幅减少网络带宽和磁盘占用，并降低安全暴露面。</li>
+                <li>适用于监控多个仓库的自动化脚本，先检测变化再决定是否拉取详细数据。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="remote-change-detection" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="data-driven-visual-config">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>战斗视觉配置的数据驱动播放</h3>
+              <p>Data-Driven Visual Configuration for Battle Effects</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">战斗特效的数据驱动配置把特效参数写成 JSON，让美术自己决定爆炸持续多久、颜色如何渐变，而不用让程序改一行代码。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>将特效参数（时长、精灵帧、缩放曲线、颜色渐变等）从代码中抽离到 JSON 配置文件。</li>
+                <li>程序代码仅作为“播放器”，读取配置并按定义播放，不关心具体数值，实现逻辑与表现的分离。</li>
+                <li>美术和策划可以独立、快速地调整视觉效果，无需程序介入，提升迭代效率。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="data-driven-visual-config" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="state-machine-director-coordination">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>动画状态机与效果导演的协调模式</h3>
+              <p>Animation State Machine and Effect Director Coordination Pattern</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">动画状态机是每个角色的自传，效果导演是总谱，导演不替代自传，而是调度众多个体的自传按时间线合奏出一场战斗大戏。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>动画状态机封装单个角色的动作切换逻辑，保证个体行为的正确性和内聚性。</li>
+                <li>效果导演作为全局协调者，负责编排多个角色的演出时序，决定何时触发各自的状态机。</li>
+                <li>分离个体逻辑与群体协调，降低耦合，使两部分可以独立修改和测试。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="state-machine-director-coordination" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="remote-change-detection">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学</p>
+                <h3>远端引用的只读变更检测（信息最小化监控）</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象一下，你想知道朋友家今晚有没有人，但你不想敲门进去，也不想窥探隐私。你只需要远远看一眼窗户里有没有灯光——灯亮了就说明有人在家。Git 的 git ls-remote 就扮演了这种“看窗户”的角色。它会去问远程仓库：“嘿，你的分支指针现在指向哪个提交？”远程仓库只回答一个 SHA 值（一串字母数字，像提交的身份证号），而不把真正的代码文件传过来。如果 SHA 和上次看到的不一样，就说明远程仓库有了新提交；如果一样，就说明没变。这种方式消耗的网络流量极小，也不会暴露远程仓库里的具体内容，体现了一种叫做“信息最小化”的安全原则：只拿刚好够判断变化的信息，绝不多拿。相比 git fetch 或 git clone（它们会把全部文件历史下载到本地），git ls-remote 就像在门缝里递出一张小纸条就关门，安全又省事。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Git 远端仓库的引用（如分支）只存储指向最新提交的 SHA-1 哈希，ls-remote 命令查询这些引用，不传输任何对象数据。</li>
+                <li>通过对比前后两次获取的 SHA 值，可以推断远程是否有新提交，实现无状态、轻量级变更检测。</li>
+                <li>这种设计遵循信息最小化原则，只泄漏恰好用于判断变化的信息，避免暴露更多内部状态。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>监控脚本对 public-library 仓库运行 git ls-remote origin main，得到 SHA，第二天再运行得到不同的 SHA，脚本即触发 git fetch 获取更新。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为 git ls-remote 能显示谁提交了、改了哪些文件，实际上它仅返回 commit ID。</li>
+                <li>认为 ls-remote 能区分正常新提交和 force push 后的 SHA 变化，其实无法区分变化性质。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>Git 远端监控的信息最小化原则</td><td>远端引用检测是这一原则的典型实现，两者共同强调只获取必要信息以减少攻击面和资源消耗。</td></tr>
+                <tr><td>工作区未提交变更的时间归属不确定性</td><td>两者都受限于 Git 对象模型的元数据携带能力，只能在效率和证据确定性之间权衡。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果攻击者劫持了远程仓库，在 ls-remote 层面给出虚假 SHA，如何设计验证机制防止被欺骗？</li>
+                <li>怎样在一个 CI 流水线中优雅地结合 ls-remote 和 fetch，实现“先判断有无变化，再决定是否拉取细节”的自动化更新策略？</li>
+                <li>ls-remote 返回的 SHA 固定不变就一定能保证远端内容未修改吗？force push 是否会绕过这种检测？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="data-driven-visual-config">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>战斗视觉配置的数据驱动播放</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>很多游戏里，角色放技能时会播放华丽特效：火球飞出去、爆炸、屏幕震动。如果每次调整火焰颜色、飞行速度、爆炸持续时间都要程序员打开代码修改，那美术和策划就得排队等程序员，效率极低。数据驱动的办法是：把所有这些表现参数写在一个 JSON 配置文件中，比如“火球飞行时长 0.8 秒”“缩放从 1.0 到 1.5”“渐变颜色由红变橙”。游戏代码不关心具体数值，它只负责读取配置，然后说：“好，就按这个来播放”。这样，美术人员只需要修改 JSON 文件，甚至可以用自己做的工具导出，就能立刻在游戏中看到效果变化，完全不用碰到代码。这就像一台 DVD 播放机，你给它什么光盘它就播什么内容，机器本身不需要知道光盘里是什么电影。这种“播放器+数据盘”的设计，让表现层可以独立、快速地迭代。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>数据驱动设计将易变的“表现参数”与稳定的“播放逻辑”分离，播放器只需要实现一次通用逻辑。</li>
+                <li>通过 JSON 等结构化数据格式，非程序员可以安全地修改特效属性，而不会影响程序控制流或引入语法错误（若配合 schema 验证）。</li>
+                <li>这种模式源于通用软件工程中的“策略模式”或“配置化”思想，将决策点外部化，提高组件的可复用和可维护性。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在 tiny-sea-war 中，data/visuals/projectile_fire.json 定义了火球精灵表、帧时长、缩放曲线和颜色渐变，VFX控制器读取后播放。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为数据驱动意味着以后不需要程序员了，实际上播放器本身的架构、错误处理和性能优化仍需程序员设计。</li>
+                <li>认为任何参数都应该数据驱动，过度参数化会导致配置文件复杂难懂，需要在灵活性和复杂度之间找平衡。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>美术资产管线的契约化自动审计</td><td>数据驱动的视觉配置可作为审计契约，由自动化脚本检查合规性并生成质量报告。</td></tr>
+                <tr><td>游戏引擎表现层架构</td><td>配置数据是表现层数据链的起点，为上层导演协调提供可替换的参数舞台。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果 JSON 文件格式写错了，播放器应该直接报错退出，还是用一个默认特效替代？如何设计容错策略？</li>
+                <li>在多人协作时，美术频繁修改特效配置，如何通过 Git 管理这些 JSON 文件的冲突？可以用什么策略避免合并时覆盖别人的调整？</li>
+                <li>数据驱动的视觉系统如何验证“配置参数确实能找到对应的美术资源文件”？能否写一个预检脚本自动检查资源引用完整性？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="state-machine-director-coordination">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>动画状态机与效果导演的协调模式</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>在一场复杂的战斗演出中，每个角色都有自己的小剧本：比如一艘军舰，它可能有“待机”、“射击”、“被击中摇晃”、“沉默”几个动作，各自带着一套动画。这些动作之间的切换和规则，用“动画状态机”来管理就非常清晰——状态机就像一个严格的交通灯，规定只能从“待机”切到“射击”，射击结束后回到“待机”，不允许乱跳。但如果一场戏里有很多角色同时表演呢？比如 A 船发射鱼雷，鱼雷飞行，命中 B 船，B 船爆炸摇晃，同时屏幕飘出伤害数字。这就需要一个“总导演”——效果导演（Effect Director）。导演的工作不是亲自跳每个角色的舞，而是写一个“时间线剧本”：“0 秒时 A 船播放射击动画，0.5 秒后创建一个鱼雷并通知它的状态机开始飞行，1.2 秒鱼雷到达 B 船时，通知 B 船的状态机开始受击摇晃，同时触发爆炸粒子、HUD 伤害显示”。导演知道所有演员的剧本（状态机），但不改写它们，只是决定它们在何时被 cue。这样，单个角色的复杂度被封装在自己的状态机里，全局时序的复杂度被封装在导演里，两者各司其职，互不污染。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>状态机实现每个实体的行为模型，通过状态、转移和动作定义个体生命周期，保证局部正确性。</li>
+                <li>效果导演处理宏观时序和实体间同步，使用事件或定时器协调跨系统的交互，而无需侵入个体的状态逻辑。</li>
+                <li>这种模式是命令模式或中介者模式在游戏中的体现，将跨对象协调逻辑集中管理，避免分散的耦合和重复代码。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>effect_director.gd 脚本控制鱼雷攻击演出：攻击船播放射击动画 -&gt; 创建鱼雷并播放飞行动画 -&gt; 定时后通知目标船切换受击摇晃状态 -&gt; 激活爆炸粒子和 HUD 伤害显示。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误解认为效果导演可以取代动画状态机，或者用状态机加上条件判断就能处理复杂编排，实际上会导致高耦合。</li>
+                <li>忽视导演的时序与异常处理，如果某个角色对导演指令无响应（如状态机卡死），需要导演有降级策略。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>游戏引擎表现层架构</td><td>状态机与导演模式是引擎分层设计的关键，向上提供宏观协调能力，向下依赖数据驱动配置实现灵活编排。</td></tr>
+                <tr><td>战斗视觉配置的数据驱动播放</td><td>导演可读取视觉配置文件，使特效时序也可由非程序员调整，进一步增强灵活性。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果导演在协调过程中某个角色对 cue 没有响应（比如状态机卡死了），导演应该如何检测超时并进入降级演出？</li>
+                <li>多个导演同时存在（比如一个管主界面动画，一个管战斗特效），它们之间如何避免对同一个角色的状态机产生冲突指令？</li>
+                <li>导演模式如何与“子弹时间”或“慢动作”效果兼容？全局时间缩放是由导演控制还是状态机自行处理？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念看似分别属于 Git 工具、游戏视觉配置和表现层架构，但它们的内核一致：通过清晰的边界分离来管理复杂度。远端引用监控把“知道有变化”与“知道变化细节”分离，用最少权限完成判断；数据驱动配置把“如何表现”从“表现什么”中分离，让参数自由变化而不碰逻辑；导演模式把“个体动画逻辑”与“群体协调时序”分离，让每个部分只关心自己抽象层次的事。这种分层与分离的思维是软件工程中反复出现的主题，从 Git 协议到游戏引擎设计一以贯之。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">用最小的信息、最小的耦合、最小的职责重叠，来换取最大的灵活性和可维护性。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>怎样在一个 CI 流水线中优雅地结合 ls-remote 和 fetch，实现自动化更新策略？</li>
+            <li>数据驱动的视觉系统如何验证配置参数与资源文件的引用完整性？</li>
+            <li>多个导演同时存在时，它们之间如何避免对同一个角色的状态机产生冲突指令？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
