@@ -9,6 +9,7 @@ set -euo pipefail
 PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 CONFIG_FILE="${DLA_CONFIG_FILE:-$PROJECT_ROOT/config.json}"
 PYTHON_BIN="${DLA_PYTHON_BIN:-$(command -v python3)}"
+CAFFEINATE_BIN="/usr/bin/caffeinate"
 LOG_PREFIX="[daily-learning-agent]"
 
 log() {
@@ -26,7 +27,7 @@ log "checking config"
 "$PYTHON_BIN" "$PROJECT_ROOT/scripts/check_config.py" --config "$CONFIG_FILE" --strict
 
 log "running HTML generation and publish pipeline"
-"$PYTHON_BIN" "$PROJECT_ROOT/orchestrator/run_daily.py" \
+"$CAFFEINATE_BIN" -i "$PYTHON_BIN" "$PROJECT_ROOT/orchestrator/run_daily.py" \
     --config "$CONFIG_FILE" \
     --output-root "$PROJECT_ROOT" \
     --generation-only \
