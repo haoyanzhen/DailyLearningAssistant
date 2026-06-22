@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-06-23 学习笔记日报</title>
+    <meta name="description" content="从VFX模板化实践，到Git未提交变更的证据边界，再到关卡与数值的配置耦合，今日学习揭示了游戏开发从手工定制向可配置、可审计的工业化体系的跃迁。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260623-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-06-23</p>
+        <h1>从手工作坊到工业化配置：游戏开发的三重升级</h1>
+        <p>2026年6月23日，tiny-sea-war仓库中大量未提交的变更揭示出一条清晰的技术叙事线：从视觉特效资产的模板重构，到工作区证据的不确定性，再到关卡与战斗系统的参数耦合，我们正经历一次系统性的设计思维升级。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>从手工到配置：变与不变的分离艺术</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>视觉特效资源的模板抽象与参…</strong>
+                <small>VFX 模板化不是简单的“把图片放…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>Git 工作区未提交变更的…</strong>
+                <small>Git工作区的未提交变更就像草稿纸…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>关卡设计参数化与战斗数值系…</strong>
+                <small>当关卡参数、战斗公式、角色属性三者…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">今天的三个概念构成了一条从“具体实践”到“抽象理论”再到“系统架构”的递进式知识弧线。VFX模板化是最具体的工程操作，本质上是数据驱动思想的落地；Git工作区未提交变更的证据边界则从另一个维度审视一切——无论重构多么精妙，只要没有提交，它们就是缺乏时间戳和作者签名的证据断层；而关卡设计参数化与战斗数值系统的配置耦合将话题推向了数学与软件工程的交叉地带，追问当多个参数空间相互依赖时如何用显式的配置引用替代隐式的硬编码假设。三个概念虽然来自同一个仓库的同一次重构，但分别照亮了游戏开发中“资源管理”、“证据体系”和“数值架构”三个不同的知识房间。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["从手工到配置：变与不变的分离艺术"])
+  concept1["视觉特效资源的模板抽象与参数化替换"]
+  hub --&gt; concept1
+  concept2["Git 工作区未提交变更的证据边界与时间归属推断"]
+  hub --&gt; concept2
+  concept3["关卡设计参数化与战斗数值系统的配置耦合"]
+  hub --&gt; concept3
+  related1["战斗视觉配置的数据驱动播放"]
+  concept1 --&gt; related1
+  related2["自动化美术管线的资产契约校验机制"]
+  concept1 --&gt; related2
+  related3["数据驱动的调色板配置"]
+  concept1 --&gt; related3
+  concept2 --&gt; related2
+  related4["未提交变更的时间归属不确定性"]
+  concept2 --&gt; related4
+  related5["工作区未提交修改意外丢失的防范"]
+  concept2 --&gt; related5
+  related6["AI 行为声明式建模"]
+  concept3 --&gt; related6
+  related7["战斗数值公式的数据驱动配置"]
+  concept3 --&gt; related7
+  related8["契约校验与加工分离的流水线架构"]
+  concept3 --&gt; related8
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4,related5,related6,related7,related8 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="vfx-template-abstraction">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>视觉特效资源的模板抽象与参数化替换</h3>
+              <p>Visual Effects Template Abstraction and Parameterization</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">VFX 模板化不是简单的“把图片放进文件夹”，而是一种资源实例化模式——稳定代码（特效渲染器）与可变内容（参数配置）的分离，让美术迭代不再需要程序员的介入。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>分离变与不变：将特效的共性骨架（模板）与差异化细节（参数）解耦。</li>
+                <li>减少重复劳动：新增角色无需手绘整套新图，仅需修改参数文件。</li>
+                <li>美术自驱迭代：美术直接编辑参数，无需程序员介入，加速创意试错。</li>
+                <li>全局修改便捷：修改模板即可统一调整所有相关特效。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="vfx-template-abstraction" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="git-uncommitted-evidence-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>Git 工作区未提交变更的证据边界与时间归属推断</h3>
+              <p>Git Working Directory Uncommitted Changes Evidence Boundary and Time Attribution</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">Git工作区的未提交变更就像草稿纸上的铅笔字——存在，但缺乏时间戳和作者签名，提醒我们“可复现性”的承诺在未提交区间内是无效的。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>Git的证据体系仅覆盖已提交区域，工作区未提交变更处于证据沉默状态。</li>
+                <li>文件系统时间戳（mtime）易被覆盖或修改，不可作为可靠的时间证据。</li>
+                <li>在未提交状态下运行CI，产物不具有可复现性保障。</li>
+                <li>未提交重构可能导致多系统连锁不一致，增加团队协作风险。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="git-uncommitted-evidence-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="level-design-coupling">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 软件工程</span>
+                <span class="tag warm">★★★★★</span>
+              </div>
+              <h3>关卡设计参数化与战斗数值系统的配置耦合</h3>
+              <p>Level Design Parameterization and Combat Numerical Coupling</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">当关卡参数、战斗公式、角色属性三者通过配置文件互相引用时，耦合就从模糊的感觉变成了一张可静态检测的依赖图——这正是设计参数化带来的数学可验证性。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>关卡参数通过“敌人类型”和“敌人等级”引用战斗数值系统中的角色属性和公式系数。</li>
+                <li>参数化使得耦合显式化，改动一处可能触发全局影响，需要灵敏度分析。</li>
+                <li>可设计跨文件校验和耦合分析脚本，自动检测引用完整性和数值漂移。</li>
+                <li>数值策划需要理解耦合网络，避免“调一个旋钮导致另一个失控”。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="level-design-coupling" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="vfx-template-abstraction">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>视觉特效资源的模板抽象与参数化替换</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象你是一家蛋糕店的老板。一开始，每个客户的生日蛋糕都是主厨从头到尾手绘的——小明要一个带熊猫图案的，小红要一个带独角兽图案的。每接一个新订单，主厨就要重新画一整套图案。这样做质量确实高，但效率极低，而且不同蛋糕之间的风格很难保持一致。有一天，你决定换一种方法：先做好一些通用的“蛋糕模板”——比如“卡通动物模板”、“公主主题模板”、“太空冒险模板”——每个模板只定义了图案的“骨架”和“可调部分”，比如模板规定了“在正中间放一个圆形图案”，但图案的颜色、大小、甚至表情参数都可以通过填写一张配置表来调整。这样，小明要的熊猫蛋糕其实就是“卡通动物模板”配上参数“动物类型=熊猫，颜色=黑白，表情=憨笑”，小红要的独角兽蛋糕则是“卡通动物模板”配上另一组参数。新来的客户小刚想要一只蓝色小熊？不用主厨重新画，只需要改参数“颜色=蓝色”。这就是“模板抽象与参数化替换”的核心思想：把“稳定不变的部分”（模板骨架）和“经常变化的部分”（参数配置）分开，让变化发生时只需要修改后者。
+
+在游戏开发中，这个思想被应用到了视觉特效（VFX）上。今天 tiny-sea-war 仓库的工作区中，开发者删除了每个角色独立的 VFX 图片——比如“驱逐舰炮口闪光.png”、“战列舰炮口闪光.png”、“巡洋舰炮口闪光.png”各自为政——转而在 `assets/vfx/combat/character_templates/` 目录下建立一个统一的“炮口闪光模板”。这个模板本身定义了炮口闪光的基本形状和粒子运动轨迹，但它留下了几个“参数槽”：“颜色槽”可以填入不同的 RGB 值，“尺寸槽”可以填入不同的缩放因子，“粒子密度槽”可以填入不同的整数值。当游戏需要加载驱逐舰的炮口闪光时，系统会读取“模板 + 驱逐舰参数配置”，实时生成专属的特效实例。这带来的好处是多方面的：美术团队不再需要为每一个新角色手绘全套特效，只需调整参数文件；代码团队不需要为每一个新角色新增特效加载逻辑；当总设计师说“所有炮口闪光都再亮一点”时，修改模板即可全局生效。
+
+从计算机科学的角度看，这是“代码与数据分离”原则在美术资产领域的映射——你的特效渲染代码就像蛋糕店的烤箱，它只需要知道如何“烘烤”模板并填入参数，而不需要关心今天是熊猫还是独角兽。从软件工程的角度看，这是一次经典的“提取抽象”重构——团队从一系列具体的、定制的资产中识别出了共性骨架（模板），并将差异部分外化为可控的参数集合。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>代码与数据分离原则在美术资产的映射：渲染代码处理共性，参数数据表达差异。</li>
+                <li>提取抽象：识别具体资产中的共性骨架，形成模板，差异部分外化为参数。</li>
+                <li>模板是参数化函数：输入参数集合，输出具体特效实例。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设一家蛋糕店，最初每个蛋糕都是手绘。后来店主做了通用模板：卡通动物模板、公主主题模板等，每个模板有参数槽（颜色、大小、表情）。小明要熊猫蛋糕，只需选卡通动物模板并设置参数：动物类型=熊猫，颜色=黑白，表情=憨笑。这样新客户小刚要蓝色小熊，改颜色参数即可，无需重画。
+在tiny-sea-war中，三种战舰的炮口闪光原本各有12帧图片，共36张。模板化后，这些全部删除，建立一个cannon_flash_template目录，包含一个模板定义文件和各个角色的参数JSON。例如驱逐舰参数：{"color": "#FFD700", "scale": 0.6, "particle_count": 8}；战列舰参数：{"color": "#FF4500", "scale": 2.5, "particle_count": 30}。要新增导弹驱逐舰，只需复制驱逐舰参数并修改颜色为蓝白色，不再需要美术画新图。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>许多人以为“模板化”就是“把图片放进一个叫 templates 的文件夹里”，这完全误解了模板的本质。模板不是图片的“收纳盒”，而是一种“函数”——它接收参数作为输入，产出具体的视觉效果作为输出。如果只是把图片移到另一个目录，而没有建立参数驱动的生成机制，那就只是换了一个文件夹名字。</li>
+                <li>如果认为模板化后新增角色仍需美工手绘新图，那模板化就是失败的。真正实现时，新增角色只需修改参数配置文件。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>战斗视觉配置的数据驱动播放</td><td>与6月21日讲解的概念构成递进关系：今天是数据驱动在生产端的深化，从参数播放推进到参数驱动的模板实例化。</td></tr>
+                <tr><td>自动化美术管线的资产契约校验机制</td><td>直接触发了该概念的同步重构——契约校验脚本需要更新，以理解新的文件结构规则（模板存在性 + 参数 schema 合规性 + 生成实例的格式校验）。</td></tr>
+                <tr><td>数据驱动的调色板配置</td><td>与6月18日概念共享核心范式：把可变内容抽象为数据，以配置驱动视觉表现。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果模板系统决定在“运行时”动态合成 VFX（每帧根据参数计算），而不是在“管线中”预烘焙为图片序列，会带来什么性能权衡？什么时候应该选实时合成，什么时候应该选预烘焙？</li>
+                <li>当参数配置文件的格式随着项目演进而变化时（比如为模板新增了“粒子旋转速度”参数），如何保证旧的角色参数文件不会因为缺少新字段而崩溃？这涉及参数 schema 的向后兼容性管理。</li>
+                <li>如果美术想为某一个特定角色制作“完全定制”的特效，但模板系统中没有对应的参数槽，应该如何设计一个“逃生舱”机制——允许某些角色绕过模板使用手工制作的特效，而不破坏模板体系的整体性？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="git-uncommitted-evidence-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>Git 工作区未提交变更的证据边界与时间归属推断</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象你是一个侦探，被叫到一间房间里调查“这里有没有人动过桌上的文件”。你走进房间，看到桌上摊着一堆文件，有些文件上有铅笔划线和修改，但你完全不知道这些修改是什么时候写的、是谁写的、是昨天下午还是今天凌晨——因为没有监控摄像头，文件上也没有签名和日期。你能确认的只有一件事：“文件的内容与最后一次正式归档的状态不同”。这就是 Git 工作区里未提交变更的处境：Git 就像一个只负责保管“正式档案”的图书管理员，每次你把修改正式提交（commit）时，Git 会小心翼翼地给这份提交贴上时间戳、签上你的名字、并把它放入用 SHA-1 哈希值保护的历史链条中。但如果你只是改动了文件而没有提交，Git 对此的态度就是：“我知道文件变了，但我什么记录都不会留——这超出了我的职责范围。”
+
+今天 tiny-sea-war 仓库的整个 VFX 重构、关卡设计文档修改、AI 行为设计文档新增、美术管线脚本调整，全部处在这个“未提交”的灰色地带。对于 Git 而言，此刻的仓库状态既不是“旧角色 VFX 体系”（因为旧图片文件已被删除），也不是“新模板体系”（因为模板目录还未被跟踪），而是一个没有版本锚点的中间态——就像一本被撕掉了几页但还没有装订上新页的手稿。如果有人现在克隆这个仓库或触发 CI 构建，他们将获得一个残缺的快照：VFX 图片缺失但模板目录不存在，契约校验脚本的逻辑已更新但无法理解旧目录结构。更微妙的是，这些修改的时间归属完全无法确定——文件系统上的修改时间（mtime）可以被文件复制操作重置、可以在不同操作系统上行为不一致、甚至可以被人为修改。Git 自己的时间戳只绑定在提交对象上，而这里恰恰没有提交。
+
+这就是“Git 工作区未提交变更的证据边界”概念的核心：Git 的证据体系只覆盖“已提交”的区域，而在工作区的未提交区间内，Git 处于证据沉默状态。这种沉默在工程实践中带来了一个深刻的可靠性危机——如果自动化管线（比如 CI 中的契约校验脚本或资源打包脚本）在没有提交的状态下运行，它们产出的任何结果都不具有“可复现性”的保障。因为下次有人重新运行同样的 CI 任务时，可能有些未提交的修改已经被 stash 了、被别的开发者覆盖了、或者被仓库的 clean 操作删除了。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Git的元数据（时间戳、作者）绑定在commit对象上，工作区文件无此信息。</li>
+                <li>文件系统时间戳脆弱，可能被`git checkout`、`cp`、`git stash pop`等操作重置。</li>
+                <li>未提交变更无法纳入Git的哈希链，因此无法保证内容的完整性和可追溯性。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>想象你是一个侦探，被叫到一间房间里调查“这里有没有人动过桌上的文件”。你走进房间，看到桌上摊着一堆文件，有些文件上有铅笔划线和修改，但你完全不知道这些修改是什么时候写的、是谁写的、是昨天下午还是今天凌晨——因为没有监控摄像头，文件上也没有签名和日期。你能确认的只有一件事：“文件的内容与最后一次正式归档的状态不同”。这就是 Git 工作区里未提交变更的处境。
+在 tiny-sea-war 中，项目经理下午三点问负责人：“今天有没有新的设计文档提交？”负责人检查 Git 日志，发现今天没有任何提交，但本地工作区确实有 `15_battle_level_design.md`、`16_enemy_ai_behavior_design.md` 等新文件，以及修改过的脚本。问题是：这些文档是今天上午写的，还是昨晚加班写的，还是更早之前就开始但是没提交？文件系统 mtime 显示上午 11:23 创建，但如果文件是通过 `cp` 从别处复制来的，mtime 可能是源文件的时间（比如三天前）；如果是 `git stash pop` 恢复出来的，mtime 可能是恢复那一刻的时间。Git 在这个状态下能告诉你的只有：“嗨，工作区里有变化，我不关心它们什么时候来的。”</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>最常见的误区是混淆“文件系统时间戳”和“Git 时间戳”。许多人认为，只要在工作区用 `ls -l` 看一眼文件的“最后修改时间”，就能知道这个文件是什么时候被改的。但文件系统的 mtime 是一个极其脆弱的证据来源：当你把一个文件从 U 盘拷贝到电脑时，文件拷贝工具可能保留原始的 mtime（即 U 盘上文件的时间），也可以重置为当前时间——这取决于操作系统和拷贝工具的具体实现。更糟糕的是，Git 的某些操作（比如 `git checkout`）会把文件在工作区的内容替换为某个旧版本，但 mtime 会被设置为执行 checkout 那一刻的时间，而不是文件“原本被修改”的时间。</li>
+                <li>认为Git日志能记录工作区修改。Git日志只记录已提交的历史，而未提交的变更如同幽灵，随时可能消失。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>自动化美术管线的资产契约校验机制</td><td>如果校验在不一致的未提交快照上运行，其“通过”或“失败”判定都可能基于一个不完整或错误的资产状态，导致质量保证证据本身不可信。</td></tr>
+                <tr><td>未提交变更的时间归属不确定性</td><td>与6月20日概念构成同一知识脉络的加深，今天提供了“未提交重构导致的多系统连锁不一致”完整场景。</td></tr>
+                <tr><td>工作区未提交修改意外丢失的防范</td><td>呼应6月19日开放问题：如果这些VFX重构未经stash或commit就因文件系统损坏而丢失，将不可恢复。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果 CI 系统检测到工作区存在未提交修改，它应该直接拒绝构建（fail-fast），还是允许构建但用一个特殊的“dirty”标记来污染产物（比如构建出的游戏包在启动页显示“开发版本，证据残缺”）？这两种策略各自的适用场景是什么？</li>
+                <li>`git stash` 能够保存未提交的修改，但它会给保存的内容打上时间戳吗？如果 stash 之后过了三个月才 pop 出来，我们能否证明这个 stash 的内容是三个月前而非现在的？stash 的 reflog 能提供什么样的时间线索？</li>
+                <li>在多开发者共享同一台开发机（通过 worktree 或共享文件系统）的场景下，如何设计一个“修改人追溯机制”——比如在 prompt 中强制开发者在编辑前先设置环境变量声明身份，然后通过文件系统的扩展属性或编辑器 hook 来自动记录编辑者的标识符？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="level-design-coupling">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 软件工程</p>
+                <h3>关卡设计参数化与战斗数值系统的配置耦合</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象你正在为一台音响设计一个复杂的调音台。这个调音台有十几个旋钮：音量、低音、高音、回声、混响、延迟……每一个旋钮都独立调节声音的一个维度。一开始，你只是要求调音师在每次演出前手动把每个旋钮拧到合适的位置。但很快你就发现一个问题：演出场地的大小会影响音量的最佳设置——大场地需要更大的音量，但更大的音量会放大回声效果，导致混响过高。于是你陷入了一个两难的境地：如果你只拧大音量旋钮，回声就会失控；如果你为了控制回声而拧小混响，声音又会显得太干。不同旋钮之间不是独立的，它们之间存在微妙的耦合——动一个，另一个也会受影响。在游戏设计中，这个调音台就是“关卡设计参数”和“战斗数值系统”。
+
+今天 tiny-sea-war 的仓库中新增了 `15_battle_level_design.md` 这个关卡设计文档，同时修改了 `12_combat_formula_design.md`（战斗公式设计）和 `14_character_balance_design.md`（角色平衡性设计）。这三个文档的同步变化揭示了一个核心的设计问题：关卡不是孤立的“敌人数量和波次列表”，而是战斗数值系统的一个外部用户。具体来说，关卡定义了一组参数——这一关有多少波敌人、每一波敌人是什么类型、每一波敌人的等级是多少——这些参数会直接影响战斗公式的输入。比如，如果战斗公式是类似“伤害 = 攻击力 × (1 - 护甲 / (护甲 + 100))”的形式，而关卡参数指定了“第三波敌人是等级 5 的巡洋舰（护甲 80）”，那么这个关卡就直接“消费”了战斗公式中的护甲参数。反过来，如果数值策划想要调整“所有关卡的难度曲线”——比如让中期关卡的敌人护甲提升 20%——他就必须进入关卡配置文件，逐个修改每一波敌人的护甲倍率。
+
+这就是“参数耦合”：关卡参数空间和战斗数值参数空间不是两个独立的宇宙，而是由“敌人的类型”（映射到战斗数值中的角色属性）和“敌人的等级”（映射到战斗数值中的缩放系数）这两条绳索紧紧捆绑在一起。从数学角度看，这形成了一个多变量约束系统——你无法随意修改战斗公式中的某个系数，而不考虑它对所有现有关卡难度的影响。你也不能随意新增一个关卡波次，而不检查这个波次的敌人属性是否在角色平衡性设定的合理范围内。这就像一个巨大的联立方程组分：平衡性的边界条件、关卡难度曲线的数学定义、以及战斗公式的代数形式，三者必须同时被满足，任何一方的改动都会触发其他两方的重新求解。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>参数耦合是多变量约束系统：关卡难度、角色属性、战斗公式相互依赖。</li>
+                <li>参数化将隐式硬编码假设转为显式引用关系，可审计、可校验。</li>
+                <li>跨文件引用构成依赖图，任何改动都需评估对整个系统的影响。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>想象你正在为一台音响设计一个复杂的调音台。这个调音台有十几个旋钮：音量、低音、高音、回声、混响、延迟……每一个旋钮都独立调节声音的一个维度。但演出场地的大小会影响音量的最佳设置——大场地需要更大的音量，但更大的音量会放大回声效果，导致混响过高。不同旋钮之间不是独立的，它们之间存在微妙的耦合。
+在 tiny-sea-war 中，新增的关卡“钢铁风暴”配置文件通过 `type` 字段引用角色平衡性表，通过 `level` 字段消费等级-属性映射函数，通过 `difficulty_multiplier` 字段直接影响战斗公式的输出。如果数值策划修改了护甲公式，比如把 `护甲/(护甲+100)` 改为 `护甲/(护甲+150)`，整个第12关的体验就会剧变：战列舰减伤效果从约54.5%降为44.4%，玩家会感觉 Boss 变脆了。为此，好的工程实践是编写一个“耦合分析脚本”，解析所有关卡配置，提取“类型-等级”组合，反向检查角色平衡表，并生成一张“参数引用热力图”，显示哪些关卡的难度对哪些公式系数最敏感。这就是数学中的灵敏度分析在游戏工程中的落地。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>很多人以为“参数化”的目的就是让每一个参数都独立可调，这样策划就可以随心所欲。但参数化的真正价值恰恰相反：它不是为了消除耦合，而是为了显式地管理耦合。没有参数化之前，耦合是隐式的——它藏在代码的硬编码假设中，比如“第三关的敌人攻防大致是第二关的 1.2 倍”，这个程序员脑子里的假设既不可见，也不可检查。参数化之后，耦合变成了看得见摸得着的“引用关系”，如果映射表被修改，所有引用它的关卡都会自动变化——这才是参数化真正的威力，也是它的危险所在。</li>
+                <li>误以为修改战斗公式只影响战斗计算，忽略了它对关卡设计已定义难度的连锁影响。数值策划的一个公式调整，可能导致所有已设计关卡难度崩塌。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>AI 行为声明式建模</td><td>关卡配置中的“敌人类型”字段不仅引用角色属性表，还引用 AI 行为定义（如驱逐舰使用“迂回攻击”行为树），使得耦合网络又多了 AI 行为这一层。</td></tr>
+                <tr><td>战斗数值公式的数据驱动配置</td><td>与6月16日概念构成递进：今天讨论的是多数据源之间的耦合管理，而6月16日只是单数据源的独立管理。</td></tr>
+                <tr><td>契约校验与加工分离的流水线架构</td><td>共享“配置验证”思想——关卡配置本身应该有一份契约（schema），校验关卡 JSON 是否符合预期结构、引用的敌人类型 ID 是否存在、数值范围是否合理。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果一个关卡设计参数被修改（比如把第12关的难度倍率从 1.3 改为 1.5），如何自动推算出这一改动对“玩家通关时间”和“期望死亡次数”的影响？这需要构建一个什么样的战斗模拟模型？</li>
+                <li>当关卡参数、战斗公式、角色属性三者存放在三个独立的 JSON 文件中时，如何在不运行整个游戏的情况下，用静态分析工具检测出“关卡引用了不存在的角色类型”或“角色属性表中缺少某个等级的数据行”？这涉及 JSON Schema 的跨文件引用校验。</li>
+                <li>在大型 RPG 游戏中，关卡参数可能不只是“敌人血量和攻击力”，还涉及地形伤害、天气效果、全局 DEBUFF 等复杂因素。这些因素各自以什么形式与战斗公式耦合？能否设计一个统一的“环境修改器”接口，让所有关卡特效都通过同一种方式影响战斗数值系统？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">今天的三个概念构成了一条从“具体实践”到“抽象理论”再到“系统架构”的递进式知识弧线。VFX模板化是最具体的工程操作，本质上是数据驱动思想的落地；Git工作区未提交变更的证据边界则从另一个维度审视一切——无论重构多么精妙，只要没有提交，它们就是缺乏时间戳和作者签名的证据断层；而关卡设计参数化与战斗数值系统的配置耦合将话题推向了数学与软件工程的交叉地带，追问当多个参数空间相互依赖时如何用显式的配置引用替代隐式的硬编码假设。三个概念虽然来自同一个仓库的同一次重构，但分别照亮了游戏开发中“资源管理”、“证据体系”和“数值架构”三个不同的知识房间。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">参数化让耦合从隐式的、不可控的变成了显式的、可审计的，但耦合本身并没有消失。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何在运行时动态合成VFX与管线预烘焙之间做出选择，以平衡性能与灵活性？</li>
+            <li>如何用静态分析工具自动检测关卡参数与角色属性之间的引用完整性和一致性？</li>
+            <li>如何设计一个CI门禁，自动保存未提交变更的带时间戳快照，防止证据永久丢失？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
