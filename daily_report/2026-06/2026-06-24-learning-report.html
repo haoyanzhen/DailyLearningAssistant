@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-06-24 学习笔记日报</title>
+    <meta name="description" content="以AGENTS.md为认知入口，通过VFX模板抽象实践DRY原则，建立契约校验管线确保资产质量，构建立体工程架构。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260624-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-06-24</p>
+        <h1>架构治理：从认知入口到质量保障的立体架构</h1>
+        <p>今天，我们深入tiny-sea-war项目的架构治理，从AGENTS.md项目路书，到资源模板抽象，再到契约校验管线，学习如何为复杂系统建立认知、规范与质量保障。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>架构治理</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>代理可读性文档（AGENT…</strong>
+                <small>AGENTS.md是项目认知的统一…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>资源模板抽象与复用</strong>
+                <small>模板抽象是把重复制造消灭掉，一次修…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>契约校验与加工分离的管线架构</strong>
+                <small>验货的不加工，加工的不验货，各自精…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">这三个概念串起来，就是一套从“怎样让别人看懂项目”到“怎样让系统自己管好自己”的完整逻辑。`AGENTS.md` 代理可读性文档是这一切的“认知入口”，它通过结构化的文字，为进入项目的人或AI提供了一张清晰的地图，指明了模板、数据、代码和校验脚本都在哪里、怎么组织。`资源模板抽象与复用`则是这张地图上最核心的一种“施工方法”，它通过将重复的视觉特效抽象为按舰种共享的模板，实践了DRY原则，极大地降低了维护成本。而`契约校验与加工分离的管线架构`，是为这套新方法保驾护航的“自动化安检系统”，它确保了任何进入工程的资产都符合模板引用等规则，从源头消灭了潜在的混乱。三者协同，构成了一个从认知对齐到工程规范，再到质量保障的立体架构。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["架构治理"])
+  concept1["代理可读性文档（AGENTS.md）"]
+  hub --&gt; concept1
+  concept2["资源模板抽象与复用"]
+  hub --&gt; concept2
+  concept3["契约校验与加工分离的管线架构"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["版本演化与模式管理"]
+  concept1 --&gt; related1
+  related2["数据驱动架构"]
+  concept2 --&gt; related2
+  concept2 --&gt; concept3
+  concept2 --&gt; related1
+  concept3 --&gt; concept2
+  concept3 --&gt; related2
+  related3["模型与证据分离"]
+  concept3 --&gt; related3
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="agents-md">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 大语言模型</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>代理可读性文档（AGENTS.md）</h3>
+              <p>Agent-Readable Documentation (AGENTS.md)</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">AGENTS.md是项目认知的统一入口，为人和AI提供清晰地图。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>面向人和AI协作者的结构化项目指南，降低认知负荷</li>
+                <li>明确项目架构、文件组织和通用任务路径，如同项目API文档</li>
+                <li>与README.md区分：更聚焦于自动化任务执行者的信息需求</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="agents-md" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="vfx-template-abstraction">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>资源模板抽象与复用</h3>
+              <p>Resource Template Abstraction and Reuse</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">模板抽象是把重复制造消灭掉，一次修改，全体同步。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>通过提取共享模板消除重复资源，实践DRY原则</li>
+                <li>模板参数化适配不同角色，修改集中化，降低维护成本</li>
+                <li>一次修改原子化地更新所有引用，避免逐个文件修改的遗漏和错误</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="vfx-template-abstraction" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="contract-validation-pipeline">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>契约校验与加工分离的管线架构</h3>
+              <p>Pipeline Architecture with Contract Validation and Processing Separation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">验货的不加工，加工的不验货，各自精进互不拖累。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>校验和加工职责分离，各司其职，互不干扰</li>
+                <li>校验脚本像安检门，只检查不修改，确保资产符合契约</li>
+                <li>分离后故障定位清晰：材料问题还是工艺问题一目了然，提升系统稳健性</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="contract-validation-pipeline" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="agents-md">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 大语言模型</p>
+                <h3>代理可读性文档（AGENTS.md）</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>你可以把 AGENTS.md 想象成一份放在项目大门口的“访客指南”。它不是给经验丰富、已经在这个项目里工作了很久的老员工写的工作手册，而是专门为新来的、或者像AI代理这样的“临时访客”准备的。这份指南会用最清晰、结构化的语言，回答几个最关键的问题：“这个项目是干什么的？”、“最重要的文件都放在哪里？”、“如果你想做某个常见任务（比如修改一个角色的特效），应该从哪里开始？”。它不像代码的注释那样深入到每行代码的细节，而是站得更高，提供一张“项目全景地图”和几份“常用任务导航图”。它的核心价值在于，极大地降低了理解一个新项目的“认知负荷”——无论是人还是AI，都不需要从头到尾阅读所有代码才能知道应该去哪儿改一个功能的配置。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>结构化的元信息减少搜索和推理成本，让人和AI快速定位关键点</li>
+                <li>类似API文档：描述架构、依赖和编辑规则，而非具体功能</li>
+                <li>通过持续同步维护，保证“地图”永远准确，避免信息过时</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>像卢浮宫的参观指南，告诉AI“修改所有战列舰炮口特效”应直接到 assets/vfx/class/battleship/ 目录，而不是在整个文件系统中迷路。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为AGENTS.md就是README.md</li>
+                <li>认为AGENTS.md是为经验丰富的开发者编写的</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>资源模板抽象与复用</td><td>AGENTS.md清晰定义模板的存放位置和引用规则，降低模板被误用的风险</td></tr>
+                <tr><td>契约校验与加工分离的管线架构</td><td>AGENTS.md指明校验脚本的角色及校验依据，为管线提供上下文</td></tr>
+                <tr><td>版本演化与模式管理</td><td>AGENTS.md忠实记录项目从Phase 1到Phase 2的演化路径</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果我的项目里没有为代理写AGENTS.md，而是任由代理自己扫描整个代码库，会带来哪些具体的风险或效率问题？</li>
+                <li>AGENTS.md自身应该由谁来维护？当代码结构与它产生漂移时，我们如何设计一个自动化检查？</li>
+                <li>对于特别庞大的项目，如何设计一个遵循相同原则但分布式的“项目路书”体系？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="vfx-template-abstraction">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>资源模板抽象与复用</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象一家冰激凌店。最初，他们为每一款冰激凌都定制了一支独特的甜筒。巧克力味的有黑壳圆筒，草莓味的有粉色尖筒，抹茶味的有绿色格子筒……结果后厨堆满了各式各样的甜筒，占地方又难管理。有一天，聪明的店主决定：所有“经典系列”都用“标准华夫筒”，所有“豪华系列”都用“巧克力脆筒”。这样一来，后厨只需要准备两种甜筒模具，再往上加不同的冰激凌球和 toppings 就行了。这就是“模板抽象”。在游戏开发里，很多不同角色（船）的某个视觉特效（比如炮口开火时的火光），其实逻辑上是一样的。如果给每艘船都单独画一张“开火图”，就是第一种做法，费力且难改。而“模板抽象”就是第二种做法：按“舰种”这个标准进行抽象，所有“战列舰”共用一个“战列舰开火模板”，所有“驱逐舰”共用一个“驱逐舰开火模板”。这样，当你想让所有战列舰的开火效果更震撼时，只需要修改那一个模板文件，几十艘战列舰就同时升级了。这正是一次经典的“消除重复”的重构。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>抽象共性形成模板，消除冗余（Don't Repeat Yourself）</li>
+                <li>通过参数化让同一模板适配不同实例，保持灵活性</li>
+                <li>修改点集中，降耦合，实现原子级全量更新</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>乐高公司不用为每个设计开新模具，而是用基础砖块和特殊零件组合。VFX模板也是如此，一套战列舰炮口特效模板就像乐高基础砖，加不同参数就能适配不同船。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把“抽象”等同于“更复杂”或“为了省磁盘空间”</li>
+                <li>模板抽象就是简单压缩文件数量，忽略了维护成本的大幅降低</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>数据驱动架构</td><td>模板抽象是其在资源管理领域的具体实现，视觉呈现变成数据引用决定</td></tr>
+                <tr><td>契约校验与加工分离的管线架构</td><td>模板化后，校验重点转向验证模板引用路径的正确性</td></tr>
+                <tr><td>版本演化与模式管理</td><td>本次重构是Phase 1到Phase 2演化的关键步骤，为新增角色铺平道路</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果有一艘特殊的历史名舰，它的炮口焰确实独一无二，不适合任何现有模板，我们如何在保持“抽象”大原则的同时，为它设计一个优雅的“例外”而不破坏整个体系？</li>
+                <li>模板本身也会随时间演变。当battleship模板升级后，我们如何确保所有引用它的角色在游戏中的表现是我们想要的？是否需要一个自动化的回归测试流程？</li>
+                <li>如何量化评估一次“去冗余设计”所带来的价值？除了磁盘空间，还有哪些可度量的指标可以用来证明这次重构的成功？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="contract-validation-pipeline">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>契约校验与加工分离的管线架构</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象一下，你在机场过安检。安检员（check_character_asset_contract.py）的工作不是把你的行李打包得更漂亮，也不是帮你扔掉超标的液体，他只是拿着一套明确的规则（契约）进行检查：包的大小是否超标？有没有携带违禁品？每个都查，不合格的直接劝返，根本不让你进候机大厅。等你进了候机大厅，免税店的店员（postprocess_generated_character.py）才开始他的工作：帮你把在别处买的商品重新打包成方便带上飞机的包裹。他绝不会再去检查你的护照和签证，那不是他的职责。他们俩唯一的接口，就是过了安检后那张盖了章的登机牌。在软件工程里，这就是“契约校验”与“后处理加工”分离的管线架构。美术做好的资源在进入游戏这个“航班”之前，必须先过一道安检门（校验脚本），检查它是否符合我们定义好的“契约”——比如文件的尺寸对不对，postprocess_manifest.json里引用的模板(ID)是不是真的存在。只有全部通过的资源，才会交给后一环节。然后，专门的“加工”脚本才能安全地、放心地工作，将这些合格的“原材料”转化为游戏内可以高效加载的最终格式。这个分离的核心智慧，就是让每个环节的职责单一且明确，最大限度避免把错误带入系统深处。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>职责单一原则：校验和加工分属不同角色，低耦合</li>
+                <li>故障隔离：错误在早期被发现并阻断，避免后期雪崩</li>
+                <li>可审计性：校验日志明确记录通过/失败，形成可靠证据链</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>现代汽车生产线：每个活塞在安装前必须经过独立质检工位，不合格直接废弃，只有盖了“合格”章的才能流到装配机器人那里。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为校验和加工写在一个脚本里更方便</li>
+                <li>觉得混合脚本能提高效率，忽视长期维护的混乱</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>资源模板抽象与复用</td><td>模板化后，校验脚本重点检查模板引用路径是否正确，保障抽象体系的可靠性</td></tr>
+                <tr><td>数据驱动架构</td><td>校验脚本本身也遵循数据驱动，检查规则可外部化配置，规则演化不影响核心逻辑</td></tr>
+                <tr><td>模型与证据分离</td><td>校验是一个判断模型，其输出完全取决于输入证据；当证据出错时，模型给出否定判断</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>校验脚本的“规则”应该写死在其代码里，还是也应该像游戏数据一样写在外部JSON/YAML文件中？这种“元校验”的复杂度如何管理？</li>
+                <li>如果异构团队使用不同的操作系统，一个在Linux下运行的校验脚本，如何确保它对文件路径大小写的检查逻辑，能让使用macOS（不区分大小写）的美术同学也准确理解并规避问题？</li>
+                <li>当流水线变得很长时，每一步都可能失败。我们如何设计一个编排系统，能够清晰地追踪到是“校验步骤失败了（材料问题）”还是“加工步骤失败了（工艺问题）”，并提供清晰的失败原因和上下文？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">这三个概念串起来，就是一套从“怎样让别人看懂项目”到“怎样让系统自己管好自己”的完整逻辑。`AGENTS.md` 代理可读性文档是这一切的“认知入口”，它通过结构化的文字，为进入项目的人或AI提供了一张清晰的地图，指明了模板、数据、代码和校验脚本都在哪里、怎么组织。`资源模板抽象与复用`则是这张地图上最核心的一种“施工方法”，它通过将重复的视觉特效抽象为按舰种共享的模板，实践了DRY原则，极大地降低了维护成本。而`契约校验与加工分离的管线架构`，是为这套新方法保驾护航的“自动化安检系统”，它确保了任何进入工程的资产都符合模板引用等规则，从源头消灭了潜在的混乱。三者协同，构成了一个从认知对齐到工程规范，再到质量保障的立体架构。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">不要让“加工者”去判断原材料合不合格，设立独立的“契约校验”环节，才能让整个系统更稳健。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何设计自动化检查来校验AGENTS.md自身与代码结构的漂移？</li>
+            <li>如何量化评估“去冗余设计”的价值，除了磁盘空间还有哪些指标？</li>
+            <li>当校验脚本规则变得复杂时，如何管理“元校验”的复杂性？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
