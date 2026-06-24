@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-06-25 学习笔记日报</title>
+    <meta name="description" content="学习信息最小化原则、配置数据版本隔离与工作区证据边界，构建信息获取、组织与可信度保障的完整知识链。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260625-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-06-25</p>
+        <h1>2026-06-25 学习笔记日报</h1>
+        <p>从两个活跃仓库的线索中提炼出一条贯穿计算机科学和软件工程的主线：如何用最少的信息做出可靠的判断，以及如何为工程产出建立可信的证据链。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>信息边界与证据可靠性</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>信息最小化原则</strong>
+                <small>窗灯判断法：只看亮灯，不进门翻冰箱。</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>配置数据版本隔离</strong>
+                <small>给每个阶段分配专门的“数据格子”…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>工作区状态与证据边界</strong>
+                <small>暂存区是证据分水岭：线内提交有签名…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">今天三个概念围绕“信息边界与证据可靠性”这条主线展开：信息最小化原则告诉我们，在做判断时只获取刚好够用的那一点信号，不多拿、不深看；配置数据版本隔离把这个思想应用到数据组织层面，通过按阶段分文件来减少耦合和冲突窗口；工作区状态与证据边界则从版本控制的底层机制出发，揭示了未提交修改在时间归属上的证据真空。三者共同回答了同一个深层问题：在分布式协作和自动化工程中，如何让信息的获取足够克制、让信息的组织足够清晰、让信息的证据足够坚固。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["信息边界与证据可靠性"])
+  concept1["信息最小化原则"]
+  hub --&gt; concept1
+  concept2["配置数据版本隔离"]
+  hub --&gt; concept2
+  concept3["工作区状态与证据边界"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["信息边界与证据可靠性"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="info-minimization-principle">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>信息最小化原则</h3>
+              <p>Information Minimization Principle</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">窗灯判断法：只看亮灯，不进门翻冰箱。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>只获取刚好够用的信息，不做多余获取，节省资源并降低安全风险。</li>
+                <li>利用内容哈希（如 SHA-1）的性质：内容不变则哈希不变，一个哈希值即可可靠判定变更。</li>
+                <li>广泛适用于版本监控、AI 代理工具调用设计、网络协议等领域。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="info-minimization-principle" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="config-data-version-isolation">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>配置数据版本隔离</h3>
+              <p>Configuration Data Version Isolation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">给每个阶段分配专门的“数据格子”，而不是把所有人的衣服混在一个大箱子里。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>将不同阶段或版本的配置数据分文件存储，避免多人同时修改同一文件引发 Git 冲突。</li>
+                <li>各阶段数据独立演进，紧急修复时只改对应文件，不影响其他阶段，降低发布风险。</li>
+                <li>文件命名即版本标识，降低认知负担，并基于接口隔离原则让消费者只依赖自己需要的数据。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="config-data-version-isolation" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="worktree-state-evidence-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>工作区状态与证据边界</h3>
+              <p>Worktree State and Evidence Boundary</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">暂存区是证据分水岭：线内提交有签名和时间戳，线外修改只证明存在差异。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>Git 只给 commit 对象绑定时间戳、作者等审计元数据，工作区修改不在此范畴。</li>
+                <li>未提交修改处于证据真空，无法确定发生时间、作者和意图，只能作为待确认线索。</li>
+                <li>文件系统 mtime 不可靠，Git 基于内容哈希判断变化，但不负责时间追溯。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="worktree-state-evidence-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="info-minimization-principle">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学</p>
+                <h3>信息最小化原则</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>信息最小化原则是一个听起来很哲学、用起来很工程的思想。它的核心主张很简单：在做一件事的时候，只获取刚好够用的那点信息，不多拿、不深看。想象你要确认朋友是否在家——你只需要看窗户有没有亮灯，而不是掏出钥匙开门进去翻冰箱。窗灯这个信号就是“刚好够用的最少信息”。在计算机系统里，这个原则无处不在。比如今天的 public-library 仓库监控，它只执行 git ls-remote 命令，这个命令返回远端仓库每个分支的 SHA 哈希值——一个 40 字符的十六进制串。如果这个串跟上次记录的一样，就意味着仓库内容没变；如果不一样，就说明有更新。整个过程没有下载任何代码文件，没有接触仓库内部结构，仅仅凭一个哈希值就完成了“是否有变化”的判断。为什么一个哈希值就够？因为 Git 使用的 SHA-1 哈希算法有一个数学特性：内容相同则哈希一定相同，内容不同则哈希几乎一定不同。所以 SHA 不变就等于内容不变，这是一种数学上的可靠性保障。信息最小化的好处至少有三个方面：第一，省资源——不用传输整个仓库的数据，节省带宽和磁盘空间；第二，更快——只读一个指针比下载整个文件树快得多；第三，更安全——监控脚本即使被入侵，攻击者能拿到的也只是一个哈希值，而不是完整的源代码。这个原则可以推广到很多领域：网络监控里用 ping 检查主机是否在线，而不是去下载整个网页；AI 代理在决定是否需要读取一个文件之前，先用 head 命令看前几行；甚至你查天气时只看出门时段的气温，而不是把过去一周的完整气象数据都研究一遍。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>内容相同则哈希必定相同，哈希不变即内容不变，这是信息最小化判断的数学基础。</li>
+                <li>只取最小信号集，避免传输、存储和计算冗余，提升效率。</li>
+                <li>限制信息暴露面，即使监控端点被入侵，攻击者也仅能获取哈希值而非完整数据。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>图书馆管理员每天只需收到总馆发来的新书上架编号（SHA 值），就能判断是否有新书，而不用派人去总馆翻书架。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为“信息最小化”等于信息匮乏或偷懒——实际上它是根据任务目标精准匹配信息量，需要深入时仍应获取完整信息。</li>
+                <li>认为该原则在所有场景都适用——在需要全面审计或深入分析时，最少信息显然不够，应切换为全面信息策略。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>配置数据版本隔离</td><td>信息最小化原则在数据组织中的体现：按阶段分文件，让不同模块只接触自己所需的最少配置，减少耦合和冲突。</td></tr>
+                <tr><td>工作区状态与证据边界</td><td>信息最小化与证据边界形成对比：远端监控可通过最少的哈希值获得完整变更证据，而本地工作区未提交修改却缺乏最基础的时间元数据，凸显信息完整度的差异。</td></tr>
+                <tr><td>信息边界与证据可靠性</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>Git 的 SHA-1 哈希在理论上存在碰撞可能，虽然概率极低。如果我们用 git ls-remote 做监控，攻击者有没有可能构造一个碰撞来欺骗监控系统？这种威胁在实际工程中需要担忧吗？</li>
+                <li>在 LLM 代理的工具链设计中，如何具体实现信息最小化原则？能否设计一个“信息预算”机制，限制每次任务的总信息获取量？</li>
+                <li>信息最小化原则在哪些场景下会失效？比如当我们需要对系统做全面的安全审计时，“最少信息”显然不够——那么如何判断什么时候应该切换为“全面信息”策略？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="config-data-version-isolation">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>配置数据版本隔离</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>配置数据版本隔离是一个关于“怎么把数据文件摆放清楚”的工程策略。它的核心做法很简单：不同阶段、不同模块的数据，放在不同的文件里，而不是全部塞进一个巨大的全局配置。今天 tiny-sea-war 的工作区里新增了 phase2_ships.json、phase2_weapons.json、phase2_skills.json 等文件，而不是把所有舰船数据追加到已有的 ships.json 里。这就是版本隔离的典型实践。为什么这样做？想象一个巨大的 ships.json 文件，同时包含 Phase1 的初始舰船和 Phase2 的新增舰船。当 Phase1 的美术想要调整初始舰船的血量时，Phase2 的策划也正在往同一个文件里添加新船数据——Git 冲突就不可避免地发生了。更糟糕的是，Phase1 的调整可能是为了修复一个线上 bug，需要紧急发布，但它改动的是 Phase1 和 Phase2 共享的文件，这就把 Phase2 尚未完成测试的数据也卷入了发布流程，风险陡增。按阶段分文件后，Phase1 调整只改 phase1_ships.json，Phase2 新增只改 phase2_ships.json，两个文件独立存在，各自演进，互不踩脚。这种隔离策略的理论根基可以追溯到软件工程中的接口隔离原则：不同的消费者不应该被迫依赖它们不需要的数据。Phase1 的关卡加载器只需要知道 phase1_ships.json，它不应该被 Phase2 的数据定义所影响。同样，Phase2 的数据在独立文件中演进时，也不会意外破坏 Phase1 的完整性。更深一层看，版本隔离还降低了认知负担——任何一个开发者打开 phase2_ships.json，就知道这里面全是 Phase2 的舰船，而不是在几千行的全局配置里玩“猜猜哪条船属于哪个阶段”的寻宝游戏。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>分文件减少多人并发修改同一文件的冲突窗口，让各团队或各阶段的工作在物理文件层解耦。</li>
+                <li>紧急修复仅修改对应阶段文件，未测数据不卷入发布，降低回归风险。</li>
+                <li>通过文件名明确版本归属，降低认知负荷，便于工具和人员快速定位。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>三位室友合租衣柜，把所有衣物混放导致找件麻烦、搬家易拿错；房东给每人分配独立格子并贴标签，从此各自取用互不干扰，搬家直接清空自己的格子。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>担心分文件导致重复——实际上只隔离定义，依赖声明仍可单向引用，不存在数据冗余问题。</li>
+                <li>认为分文件会造成数据孤岛——只要保留单向依赖（新阶段引用老阶段），数据依然可以复用，不是彻底隔离。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>信息最小化原则</td><td>版本隔离是信息最小化在数据组织中的实践：每个阶段仅需关注自己的文件，相当于只获取刚好够用的配置信息。</td></tr>
+                <tr><td>工作区状态与证据边界</td><td>独立文件出现在工作区时，即使未提交，其命名已清晰传达了版本归属意图，为后续提交和审计提供了结构化线索。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果三个版本的数据有大量共同部分（比如基础属性定义），把共同部分抽成一个共享的“base”文件然后各版本文件做增量覆盖，会不会比完全分文件更合理？如何权衡共享与隔离？</li>
+                <li>版本隔离解决了文件级的冲突问题，但如果两个版本需要修改同一个底层系统（比如战斗公式），这种“逻辑冲突”是无法通过分文件来避免的——这时候应该用什么工程手段来管理？</li>
+                <li>在数据库设计中也有类似的“版本隔离”策略（比如每个大版本建独立的 schema 或表前缀），它与文件级的版本隔离有什么异同？各自的适用场景是什么？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="worktree-state-evidence-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>工作区状态与证据边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>工作区状态与证据边界，是一个关于“信任从哪里开始”的深层概念。Git 管理代码的核心机制是三棵树：工作区、暂存区、版本库。工作区就是你正在编辑的那些文件——可能是修改到一半的设计文档、新增了一半的美术资产清单。暂存区是你明确标记“这些改动我想要纳入下一次提交”的文件集合。版本库则是由一串 commit 对象连接起来的历史链。关键点在于：Git 的元数据——时间戳、作者、提交消息——只绑在 commit 对象上。一个文件从工作区进入暂存区，再变成一次 commit，才被赋予这些可审计的身份信息。在此之前，工作区里的修改对 Git 来说就是“当前内容和上一次 commit 不一样”，仅此而已。Git 可以精确地告诉你“改了哪些文件的哪些行”，但它无法告诉你这些修改发生在什么时候、是谁做的、为什么这样做。这就是证据边界：暂存区是一条分水岭，线内的内容有完整的时间戳和作者签名，可以作为审计证据；线外的工作区修改只能证明差异的存在，但时间归属天然模糊。今天 tiny-sea-war 仓库就是典型案例：工作区里有大量 Phase2 的美术资产、契约检查脚本、QA 报告——从文件结构看它们很可能是几天甚至几周的工作成果，但没有一条进入暂存区，因此我们无法断言“这些工作是在 6 月 25 日完成的”。它们可能在更早的日期被修改，也可能在之后的某天才被提交。这种证据真空在软件工程中意味着什么？意味着我们只能把这些变化标记为“待确认线索”，而不能作为既定事实用于推理或审计。更深一层看，这个问题不仅是 Git 的技术限制，它还涉及分布式协作的一个根本挑战：在没有中央权威记录的情况下，每一个修改的“身份”必须由修改者主动声明（通过 commit），否则它就是幽灵。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Git 的元数据（时间戳、作者）只附加在 commit 对象上，工作区内容不在其哈希链覆盖范围内。</li>
+                <li>文件系统 mtime 可被轻易修改或重置，且 Git 操作会批量更新 mtime，因此不可作为审计证据。</li>
+                <li>只有通过 commit 越过暂存区边界，修改才能获得可信的时间戳和作者签名，进入可追溯的历史。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>物理实验室里，研究员工作台上散乱的笔记和草稿没签时间，只有当数据誊写到公共日志并签名后，才获得可审计的身份；清洁工可能收走草稿，无人能证明那些发现存在过。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为文件系统的修改时间戳（mtime）能可靠推断修改发生时间——mtime 可伪造、可被 Git 操作覆盖，不可信。</li>
+                <li>认为 git status 能查出修改时间——它只能对比内容哈希，不提供任何时间信息。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>信息最小化原则</td><td>远端监控通过最少的 SHA 对比即获得完整的变更证据，而本地工作区即使检测到修改也缺乏时间等元数据，两端信息完整度形成鲜明反差。</td></tr>
+                <tr><td>配置数据版本隔离</td><td>版本隔离通过独立文件提供了结构化的意图线索，即使修改未提交，文件名也能暗示版本归属，为证据边界之外的内容提供部分上下文。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>Git 为什么不设计一个机制来自动记录工作区修改的时间戳？是技术上的困难（分布式系统的时钟同步问题），还是设计哲学上的取舍（Git 认为工作区是临时的、私有的，不应被纳入版本审计）？</li>
+                <li>在 CI/CD 流程中，我们通常用 git diff --exit-code 来检测工作区是否有未提交修改，并据此拒绝构建。这是否意味着 CI 系统替我们执行了“证据边界检查”？这种检查能完全替代人工提交纪律吗？</li>
+                <li>如果工作区的修改确实有价值但开发者忘记提交（比如离职了、机器坏了），我们能从操作系统的审计日志（如 Linux 的 auditd）中恢复出多少关于这些修改的元数据？这些数据在法律或合规审计中的效力如何？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">今天三个概念围绕“信息边界与证据可靠性”这条主线展开：信息最小化原则告诉我们，在做判断时只获取刚好够用的那一点信号，不多拿、不深看；配置数据版本隔离把这个思想应用到数据组织层面，通过按阶段分文件来减少耦合和冲突窗口；工作区状态与证据边界则从版本控制的底层机制出发，揭示了未提交修改在时间归属上的证据真空。三者共同回答了同一个深层问题：在分布式协作和自动化工程中，如何让信息的获取足够克制、让信息的组织足够清晰、让信息的证据足够坚固。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">如何用最少的信息做出可靠的判断，以及如何为工程产出建立可信的证据链。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>Git 的 SHA-1 哈希在理论上存在碰撞可能，攻击者有没有可能构造一个碰撞来欺骗监控系统？这种威胁在实际工程中需要担忧吗？</li>
+            <li>版本隔离解决了文件级的冲突问题，但如果两个版本需要修改同一个底层系统（比如战斗公式），这种“逻辑冲突”是无法通过分文件来避免的——这时候应该用什么工程手段来管理？</li>
+            <li>如果工作区的修改确实有价值但开发者忘记提交（比如离职了、机器坏了），我们能从操作系统的审计日志中恢复出多少关于这些修改的元数据？这些数据在法律或合规审计中的效力如何？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
