@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-06-26 学习笔记日报</title>
+    <meta name="description" content="从伤害视图分离到倍率参数化，再到资产批处理管线，展现了游戏开发中设计参数化、管线自动化与表现分离化的工程美学。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260626-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-06-26</p>
+        <h1>2026年6月26日学习笔记：参数化、自动化与分离的工程美学</h1>
+        <p>今日大部分仓库静默，只有 tiny-sea-war 仓库中三线协作，共同诠释现代游戏开发中“设计参数化→管线自动化→表现分离化”的递进链条。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>设计参数化、管线自动化、表现分离化</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>伤害数字的实时视图渲染与U…</strong>
+                <small>伤害数字的视图分离，就是把“算清账…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>战斗数值公式中的倍率参数化</strong>
+                <small>倍率参数化就是把伤害公式中的调节开…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>程序化角色资产批处理管线</strong>
+                <small>程序化资产批处理管线就是将“为每个…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">今日精选的三个概念，恰好构成了游戏开发中一条完整的价值流：从底层的数值计算，到中层的资产生产，再到上层的视觉反馈。C1“战斗数值公式中的倍率参数化”是设计师手中的精密调节旋钮，通过解耦公式中的耦合关系，让调整射程对伤害的影响时不会意外搅乱其他设计；C3“程序化角色资产批处理管线”则是工程师搭建的自动化传送带，确保当设计师需要为几十个角色批量更新资产时，不会陷入手工操作的地狱；C4“伤害数字的实时视图渲染与UI分离”是美术和程序之间的一个约定，它保证了无论底层的数值计算和资产生产如何高速迭代，玩家看到的视觉反馈总是清晰、独立且易于维护的。这一闭环如同一个交响乐团：倍率参数化是作曲家（设计者）修改乐谱的笔，批处理管线是制谱员高效印制分谱的印刷机，而视图分离则是确保每个乐手面前的谱架只显示他该看的那部分，互不干扰。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["设计参数化、管线自动化、表现分离化"])
+  concept1["伤害数字的实时视图渲染与UI分离"]
+  hub --&gt; concept1
+  concept2["战斗数值公式中的倍率参数化"]
+  hub --&gt; concept2
+  concept3["程序化角色资产批处理管线"]
+  hub --&gt; concept3
+  related1["弹丸速度的校正"]
+  concept1 --&gt; related1
+  related2["数据驱动设计中的配置-逻辑分离"]
+  concept1 --&gt; related2
+  concept2 --&gt; related1
+  related3["数据驱动设计中的配置-逻辑分离架构"]
+  concept2 --&gt; related3
+  concept3 --&gt; concept2
+  concept3 --&gt; related3
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="damage-view-separation">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>伤害数字的实时视图渲染与UI分离</h3>
+              <p>Real-time Damage Number View Rendering and UI Separation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">伤害数字的视图分离，就是把“算清账”和“秀出账”拆成两个独立的部分，算账的管好公式，作秀的管好表演，一个变时另一个不动如山。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>将伤害计算（模型层）与伤害显示（视图层）彻底分离，通过信号驱动视图更新</li>
+                <li>遵循“数据→视图单向依赖”原则，视图层只接收数据但不影响数据，保证计算逻辑安全</li>
+                <li>允许美术和程序员独立迭代，不相互干扰，显著提升系统可维护性</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="damage-view-separation" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="combat-multiplier-parameterization">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 计算机科学</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>战斗数值公式中的倍率参数化</h3>
+              <p>Multiplier Parameterization in Combat Formulas</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">倍率参数化就是把伤害公式中的调节开关从程序代码的深处挖出来，做成一个刻着名字的外置旋钮，让不懂代码的设计师也能安全地驾驭游戏的平衡。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>用外部参数替代硬编码系数，实现战斗公式的数值调节与代码逻辑解耦</li>
+                <li>将修改战斗公式的权力从程序员移交给数值策划，提高调参效率和安全性</li>
+                <li>参数化的本质是架构上的权力交接和治理模式升级，通过独立配置文件实现清晰的责任边界</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="combat-multiplier-parameterization" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="procedural-character-asset-pipeline">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>程序化角色资产批处理管线</h3>
+              <p>Procedural Character Asset Batch Pipeline</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">程序化资产批处理管线就是将“为每个角色重复操作100遍”的劳动，编写成一个能自我复制100遍并零误差执行的自动化脚本，把艺术家的创造力从流水线般的机械劳动中解放出来。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>将重复性手工操作脚本化，通过 Python 脚本自动完成资产生成、配置、校验等流程</li>
+                <li>管线实现了批量处理的高效性，如一次性导入 454 个文件，极大减少人工错误</li>
+                <li>脚本化流程是可传承的自动化资产，确保团队知识持久化，避免人员变动导致流程断裂</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="procedural-character-asset-pipeline" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="damage-view-separation">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学</p>
+                <h3>伤害数字的实时视图渲染与UI分离</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象一下，你的电脑既可以负责计算这个月的家庭账单（比如算一算你买菜总共花了多少钱），又需要负责把这个数字显示在屏幕上让你看到。如果这两件事混在一起，每次你想换一种字体来显示账单时，都可能会不小心改动账单的计算逻辑，导致最后算出来的数字是错的。这是一个很糟糕的设计。在 Tiny Sea War 这款游戏中，当一发炮弹击中敌舰时，游戏的核心逻辑会计算出一个伤害值，比如“-150”。这个计算过程非常严谨，涉及到攻击力、防御力和各种状态加成。而“伤害数字的实时视图渲染与UI分离”，就是要把这个“计算伤害值”的动作和“在屏幕上以飘字的形式画出伤害值”的动作，彻底拆分成两个独立的模块。计算伤害的模块（我们称之为模型层）只负责算出结果，然后发出一个信号：“嘿，我算好了，伤害是150！”至于这个150要怎么显示出来，它完全不关心。负责显示的模块（我们称之为视图层）则一直竖起耳朵听着。当它听到“伤害是150”这个信号后，就开始执行自己的一套动画：在敌人头顶上生成一个“-150”的文字，让它飘起来、变大、然后慢慢消失。这种分离的好处是惊人的。美术师想给伤害数字加上一个火焰特效吗？没问题，他只需要修改视图层的代码，完全不用担心会破坏伤害的计算公式。程序员想优化战斗公式的算法吗？大胆改，只要发出的信号格式不变，哪怕美术师把伤害数字改成一朵绽放的烟花，也不会出任何计算上的错误。这就是“数据→视图单向依赖”的核心魅力——信息只从一个方向流动，让复杂的系统变得简单可控。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>数据与视图单向依赖：视图层通过信号获取数据，但不修改数据，确保计算安全</li>
+                <li>职责分离：伤害计算逻辑独立于显示动画，各自演化互不干扰</li>
+                <li>可维护性：美术修改视图效果不会影响核心战斗系统，降低耦合风险</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在《王者荣耀》中，技能打中小兵跳出“-500”紫色数字，计算在服务器，客户端只负责接收指令并播放飘字动画，即使卡顿未显示也不影响伤害结算。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>常见误区：「分离后视图层不知道数据，很傻」。正解：视图层知道数据，但不能决策数据，像电子屏幕只显示股价不能决定交易。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>弹丸速度的校正</td><td>弹丸速度决定了从发射到命中的时间，进而直接控制“伤害数字出现”的时刻。速度的修正必须与视图层的表现保持时序一致，否则会出现炮弹还没碰到敌人，伤害数字已经提前跳出来的违和感，这是仿真层与表现层联动的典型问题。</td></tr>
+                <tr><td>数据驱动设计中的配置-逻辑分离</td><td>视图分离是配置与逻辑分离原则在UI层面的具体体现：配置与逻辑分离强调的是数据与外部的解耦，而视图分离则是在此基础上进一步将“表现”也解耦出去，形成了“数据-逻辑-视图”三层清晰的结构。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果一个伤害数字的飘字动画还没播放完，同一个敌人又受到了第二次伤害，视图层应该如何处理？是强行刷新、排队播放，还是合并显示？这背后涉及怎样的用户体验设计原则？</li>
+                <li>在多人联机游戏中，如果我的网络卡顿，导致我没有收到某个伤害的视图信号，等到网络恢复时，应该把之前错过的伤害数字一次性全部补播一遍吗？为什么大多数游戏选择不这么做，而只是同步血量？</li>
+                <li>在Godot游戏引擎中，除了用今天看到的这种“信号”来连接数据层和视图层，还有没有更复杂高效的机制来处理成百上千个伤害数字同时出现的情况？如何避免大量视图节点同时创建和销毁造成的性能卡顿？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="combat-multiplier-parameterization">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 计算机科学</p>
+                <h3>战斗数值公式中的倍率参数化</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>在游戏的战斗系统里，用代码写一个伤害计算公式，最简单的方式往往是这样的：“伤害 = 基础攻击力 * (1 + 射程 / 10)”。这个公式看起来没问题：你的攻击距离越远，造成的伤害就越高。但想象一下，游戏测试后，策划觉得“射程带来的伤害加成太高了，应该降低一半”。这时候，程序员就需要找到这段代码，把里面的“10”改成“20”。如果这个“10”被固定地写在了好几个不同的地方，程序员就得一个一个去找、去改，非常低效且容易出错。“倍率参数化”，就是不要把这个关键的调节数字（10）直接写死在代码里。我们换一种写法：“伤害 = 基础攻击力 * (1 + 射程 * 射程倍率)”。现在，“射程倍率”不再是一个代码内部的数字，而是一个独立的外部参数，它存放在一个专门的角色配置文件里。从数学视角看，这是在伤害公式中挖了一个“坑”，这个坑里我们可以放进任何一个我们想要的数字。以前是“射程”这个变量与“1/10”这个系数死死地捆绑在一起；现在我们把绑绳解开，插入了一个叫做“射程倍率”的乘法因子。设计师想调低射程的贡献？不用找程序员了，直接在配置文件里把“射程倍率”从0.1改成0.05就完成了。想调高？改成0.2就行。最重要的是，这次修改只影响“射程对伤害的贡献”这一个维度，不会意外地改变攻击力、攻速等其他任何东西。这就是参数化的核心价值：提供一个高灵敏度的、相互隔离的控制旋钮。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>参数解耦：将系数从代码中提取为外部配置，实现数值与逻辑的分离</li>
+                <li>权力移交：数值调整权从程序员移交给策划，降低沟通成本和修改风险</li>
+                <li>高灵敏度控制：通过参数隔离避免修改一个维度影响其他维度</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>弓箭手职业配置表设置距离伤害倍率0.2，枪炮师设置0.1，用同一套伤害计算代码实现不同职业特性。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>有人可能认为：“这不就是把一个数字从代码里搬到文件里吗？看起来没什么大不了的。”这是典型的低估。这个动作的本质是完成了一次“架构上的权力交接”——它将“修改战斗公式的权力”从“必须懂编程的程序员”手中，移交给了“只需要懂Excel的数值策划”。它建立了一个安全区，让最不稳定、最需要频繁调整的逻辑部分（数值）可以在不触碰最稳定、最需要安全保障的部分（代码）的情况下独立演化。这是一种治理模式的升级，而不是简单的数据搬家。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>弹丸速度的校正</td><td>倍率控制了伤害输出的数学系数，速度控制了伤害到达的物理时间。两者都是从固化的公式中提取出来的、可供策划独立调节的数值“把手”，是同一种设计哲学的两个应用场景。</td></tr>
+                <tr><td>数据驱动设计中的配置-逻辑分离架构</td><td>参数化是实现配置-逻辑分离的前提和核心手段，没有参数化，配置文件里就无数据可写，逻辑和数据的分离也就无从谈起。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果我把游戏中所有的关键变量都做成参数，导致一个角色的配置文件里出现了上百个可调数字，这反而会让数值策划在调参时崩溃。那么，如何判断哪些系数值得被参数化，哪些应该继续留在代码里保持“静默”？</li>
+                <li>参数之间不是完全孤立的，比如增加了射程倍率，可能就需要降低攻击速度倍率来保持平衡。有没有一种方法，可以在配置文件中定义这些参数之间的约束关系，比如“射程倍率 * 攻击速度倍率 &lt; 某个常数”，从而防止策划调出完全不平衡的组合？</li>
+                <li>在公式改动中，把 `(1 + range / some_factor)` 变成了 `(1 + range * range_factor / some_factor)`。从数学上，这样拆解会影响整个函数的凸性吗？这个变化对极端值（比如射程极小或极大时）的伤害表现会产生什么根本性的影响？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="procedural-character-asset-pipeline">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>程序化角色资产批处理管线</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>我们先从做蛋糕说起。你第一次做戚风蛋糕，可能分蛋、称面粉、打发蛋白、搅拌、进烤箱，全是你自己在一个碗一个盆里手工完成的。这很棒，你做成了一个美味的蛋糕。但如果明天你妹妹过生日，你需要做100个同样质量的杯子蛋糕，还用手工的方法？称面粉称到手抽筋，打发蛋白打到地老天荒，而且每个蛋糕最后的品相还不一样。游戏开发也是一样。一个游戏初期可能只有三五个英雄角色，美术师可以手动为每个角色设置模型、贴图、动画、技能特效和UI头像。这就像手工做几个蛋糕，完全没问题。但当游戏进入新阶段，需要一次性加入二十个、三十个新角色时，如果还是手工操作，就会变成一场灾难：流程繁琐、容易出错、耗时漫长。今天Tiny Sea War仓库里的“程序化角色资产批处理管线”，正是为了应对这种情况而生的“蛋糕工厂”。它由一系列的Python脚本构成，比如 `build_phase2_roster_data.py` 和 `build_procedural_animation_master.py`。这些脚本就像是工厂里的自动化机器。美术师只需要把“原料”——也就是最原始的美术设计稿、基础模型、动画片段等——按照约定的格式放到指定的文件夹里。然后，按下开关，这些脚本就会自动运行，一口气完成全部工作：为每个角色生成配置文件、复制和重命名文件、生成质量验收报告、打包成游戏可用的最终资产。这个过程的核心思想是：“手工操作脚本化”。我们不再亲自去点击鼠标、拖拽文件，而是把我们希望执行的操作步骤，用脚本语言精确地描述了一遍。机器忠实地、不知疲倦地、零误差地去重复执行这成千上万步操作。这次提交一口气导入了454个文件，覆盖了多个角色的完整资产树，这就是管线带来的惊人效率。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>手工操作脚本化：将重复步骤写成脚本，减少人工错误</li>
+                <li>批处理规模化：一次运行处理大量资产，提升效率和一致性</li>
+                <li>可传承自动化资产：脚本是团队知识，新成员可通过阅读脚本快速理解流程</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>新游戏“水果忍者大战僵尸”需要引入三个忍者角色，通过Excel定义资源路径，运行脚本自动创建文件夹、拷贝文件、生成JSON，一杯咖啡的时间完成所有枯燥工作，且零错误。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>一个典型误区是认为：“写这些批处理脚本也是一次性工作，还不如我手动拖文件快。”这个想法只在角色数量极少时才成立。如果角色从5个增加到50个，脚本写一次的时间成本是固定的，而手工操作的痛苦程度和出错机率会随着角色数量线性增加。更重要的是，脚本是“可追溯的知识”——新来的美术师通过读脚本，能立刻精确地知道资产管线的每一步是怎么走的；而手工操作的“知识”只存在于老员工的脑子里，一旦他离职，整个流程就可能崩溃。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>战斗数值公式中的倍率参数化</td><td>当批处理管线为角色生成配置文件后，设计师就可以利用参数化手段，通过修改这些 JSON 文件来独立调整角色平衡，而无需接触核心代码，形成闭环。</td></tr>
+                <tr><td>数据驱动设计中的配置-逻辑分离架构</td><td>管线产出的配置文件必须严格遵循约定的 schema，否则逻辑层无法解析，因此管线的可靠性直接决定了数据驱动架构能否落地，它是配置-逻辑分离的上游工程保障。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果批处理脚本在运行到一半时报错了，比如处理第15个角色时因为源文件损坏而停止，我们应该从头重新运行整个脚本，还是从第15个角色的步骤继续运行？这背后涉及“脚本的幂等性”设计，该如何实现？</li>
+                <li>管线能够自动生成QA报告，这非常棒。但能不能更进一步，把这些报告做成阻止流程向前推进的“硬门禁”？比如，脚本发现某个角色的动画帧数不足30帧，就直接在报告里标记为“不合格”并拒绝将它打包进最终的游戏资产中？</li>
+                <li>当艺术素材的来源本身也在不断迭代更新时（比如美术修改了一个共享的基础动画模板），管线如何保证所有引用了这个模板的派生角色资产都能被自动检测并重新生成，以保持一致？这涉及到资产间的依赖管理与增量构建。</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">今日精选的三个概念，恰好构成了游戏开发中一条完整的价值流：从底层的数值计算，到中层的资产生产，再到上层的视觉反馈。C1“战斗数值公式中的倍率参数化”是设计师手中的精密调节旋钮，通过解耦公式中的耦合关系，让调整射程对伤害的影响时不会意外搅乱其他设计；C3“程序化角色资产批处理管线”则是工程师搭建的自动化传送带，确保当设计师需要为几十个角色批量更新资产时，不会陷入手工操作的地狱；C4“伤害数字的实时视图渲染与UI分离”是美术和程序之间的一个约定，它保证了无论底层的数值计算和资产生产如何高速迭代，玩家看到的视觉反馈总是清晰、独立且易于维护的。这一闭环如同一个交响乐团：倍率参数化是作曲家（设计者）修改乐谱的笔，批处理管线是制谱员高效印制分谱的印刷机，而视图分离则是确保每个乐手面前的谱架只显示他该看的那部分，互不干扰。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">“设计参数化→管线自动化→表现分离化”是现代游戏开发的工程美学。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>多个伤害数字飘字动画重叠时，视图层如何优雅处理并发显示？</li>
+            <li>如何确定哪些系数值得被参数化，以避免配置爆炸？</li>
+            <li>批处理脚本失败时如何实现断点续传，确保管线健壮性？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
