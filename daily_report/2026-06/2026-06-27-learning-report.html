@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-06-27 学习笔记日报</title>
+    <meta name="description" content="从调色板数据驱动、效果导演可扩展集成到管线硬门禁，实践数据驱动与契约设计来管理变化、控制风险。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260627-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-06-27</p>
+        <h1>变化管理三部曲：数据、控制与质量门禁</h1>
+        <p>当系统变复杂、变更变频繁时，如何用数据驱动和契约化设计来管理变化、控制风险？今日三条技术线给出了答案。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>变化管理：数据驱动与契约化设计</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>调色板驱动的着色器天气系统</strong>
+                <small>着色器是咖啡机，调色板是配方手册—…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>效果导演系统的可扩展集成模式</strong>
+                <small>导演只喊‘爆炸起，摩托入画’，烟火…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>管线硬门禁与资产合格判定</strong>
+                <small>机场安检不看头等舱还是经济舱，只认…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">这三个概念构成了一份‘变化管理说明书’。调色板系统用数据层隔离视觉变化，降低表现试验的成本；效果导演系统用控制层协调变化，让效果扩展不互相踩脚；硬门禁系统用质量层拦截有害变化，阻止缺陷在下游扩散。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["变化管理：数据驱动与契约化设计"])
+  concept1["调色板驱动的着色器天气系统"]
+  hub --&gt; concept1
+  concept2["效果导演系统的可扩展集成模式"]
+  hub --&gt; concept2
+  concept3["管线硬门禁与资产合格判定"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  related1["隐匿机制"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; related1
+  related2["程序化角色资产批处理管线"]
+  concept3 --&gt; related2
+  related3["管线工具的幂等性"]
+  concept3 --&gt; related3
+  related4["资产契约与审核文档"]
+  concept3 --&gt; related4
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="palette-driven-weather-shader">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>调色板驱动的着色器天气系统</h3>
+              <p>Palette-Driven Shader Weather System</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">着色器是咖啡机，调色板是配方手册——换天气不动机器，只改参数。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>着色器逻辑与外观数据分离：算法在代码，颜色在JSON，互不干扰。</li>
+                <li>美术安全迭代：直接修改调色板文件，无需接触渲染代码，降低协作成本。</li>
+                <li>同一着色器服务多天气：避免为每种天气重写Shader，集中管理视觉参数，易于扩展和审计。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="palette-driven-weather-shader" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="effects-director-extensible-integration">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>效果导演系统的可扩展集成模式</h3>
+              <p>Effects Director Extensible Integration Pattern</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">导演只喊‘爆炸起，摩托入画’，烟火组和特技组互不干涉，新增戏份只需加演员、改剧本。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>导演模式：各效果模块（演员）互不直接通信，统一由导演调度，降低耦合。</li>
+                <li>开闭原则：新增效果只需添加新演员脚本并在导演中加入调度指令，无需修改现有特效代码。</li>
+                <li>控制与渲染分离：导演只负责时机与顺序，具体渲染由各视图类完成，避免上帝类膨胀。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="effects-director-extensible-integration" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="pipeline-hard-gate-asset-qualification">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>管线硬门禁与资产合格判定</h3>
+              <p>Pipeline Hard Gate and Asset Qualification</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">机场安检不看头等舱还是经济舱，只认扫描图像和规则手册——不合规的资产绝对不能登机。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>硬门禁：事前阻断，不通过契约检查的资产无法进入下一工序，避免错误扩散。</li>
+                <li>契约检查：定义明确的资产标准（帧数、Alpha通道、尺寸等），由自动化脚本逐项验证。</li>
+                <li>前置修复：将错误冻结点前置，降低返工成本，提升团队纪律和资产质量。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="pipeline-hard-gate-asset-qualification" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="palette-driven-weather-shader">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学</p>
+                <h3>调色板驱动的着色器天气系统</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>该系统将着色器逻辑与外观数据分离。着色器代码（如.gdshader文件）负责定义如何混合颜色、扭曲纹理、改变反射强度等算法，但不写死具体数值。所有色彩、泡沫密度、雾气透明度等外观参数存放在JSON调色板文件中。运行时根据当前天气状态选取对应参数注入着色器，实时改变画面。配套的天气资产清单文件则记录所有贴图路径，彻底去除硬编码。这使美术或策划可直接修改JSON调整视觉效果，无需程序员介入，且同一着色器可服务多种天气，避免了Shader膨胀。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>着色器仅定义渲染算法，不包含具体颜色值。</li>
+                <li>JSON文件充当‘视觉配方’，存储不同天气的参数集合。</li>
+                <li>天气系统运行时，控制器根据天气状态选择调色板，将参数注入着色器统一缓冲区。</li>
+                <li>美术通过版本控制修改JSON文件，CI可自动校验格式，保障安全迭代。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>海面着色器ocean_surface.gdshader根据weather_type参数动态加载ocean_palettes.json中对应的调色板。例如‘clear_sky’调色板将海水主色设为湛蓝、泡沫稀疏，切换为‘storm’后参数自动变为暗灰、高泡沫密度。美术若要微调暴风雨浪尖白光，只需修改JSON中storm.foam_tip_rgb字段。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误区：一个Shader只能画一种海。实际上参数化Shader可通过外部数据切换多种视觉效果。</li>
+                <li>误区：913行JSON是‘重’资产。其实它是高度结构化的视觉状态枚举，易于维护，且避免了大量重复Shader代码。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>效果导演系统</td><td>天气效果的切换由效果导演系统统一调度，导演在合适时机通知着色器更换调色板，实现表现与控制分离。</td></tr>
+                <tr><td>隐匿机制</td><td>当舰船进入隐匿状态，效果导演会同时修改着色器参数（如降低反射），将逻辑状态平顺传递到视觉层。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>在实时渲染中频繁切换调色板会对GPU性能造成哪些压力？有没有批处理或Uniform Buffer优化策略？</li>
+                <li>当调色板JSON文件膨胀到数千行后，如何设计自动化的格式校验脚本，防止美术手误写错字段？</li>
+                <li>能否把调色板的思想推广到角色皮肤、炮弹尾迹甚至UI主题上，形成一套贯穿全游戏的‘主题数据层’？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="effects-director-extensible-integration">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>效果导演系统的可扩展集成模式</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>效果导演系统作为战斗表现层的总协调者，决定何时、以何种顺序和参数调用专门的渲染模块。它采用中介者模式：拖尾效果不知道爆炸效果何时出现，一切通过导演调度。当需要新增一种效果，只需编写一个新的视图脚本（演员），并在导演逻辑中添加一句调度命令，已有的特效代码完全不动。删除或修改效果也仅涉及导演和对应的演员，不会波及全局。这种设计遵循开闭原则（对扩展开放，对修改关闭），显著降低了变化成本，并允许导演层统一管理实例池，避免重复创建视图节点。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>定义导演控制器，监听战斗事件。</li>
+                <li>每个特效封装为独立视图类，暴露统一接口（如播放、中断、回收）。</li>
+                <li>导演根据事件类型和上下文选择相应的视图，传递参数并触发播放。</li>
+                <li>新增效果时，只需实现新的视图类，并在导演的事件处理器中添加对应分支，不影响已有逻辑。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>当舰船开炮，battle_effect_director.gd收到事件后调用shell_flight_view.gd并传入弹种参数。未来要加入‘穿甲弹’无拖尾但有高速残影，只需新增armor_pierce_view.gd，并在导演里为穿甲弹类型添加分派，不用改动拖尾或爆炸逻辑。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误区：导演系统就是大量if-else或switch-case直接画特效。实际应封装独立视图类，导演只调度，不亲自渲染。</li>
+                <li>误区：导演模式增加性能开销。合理设计可通过导演管理对象池，反而避免重复实例化，优化性能。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>调色板驱动的着色器天气系统</td><td>天气视觉的切换也由导演调度，导演在适当时机告诉着色器加载哪套调色板，并编排过渡节奏。</td></tr>
+                <tr><td>隐匿机制</td><td>舰船隐匿时，导演同时发出指令：切换弹丸视觉模型、降低海面反射参数，作为隐匿效果在表现层的唯一入口，保证多视图一致性。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果导演脚本本身持续膨胀，有什么设计手段可以防止它变成维护者不敢触碰的上帝类？</li>
+                <li>导演模式与发布-订阅消息总线模式相比，在游戏特效管理中各有什么优势和劣势？</li>
+                <li>如何在导演系统中添加特效优先级和中断逻辑，例如‘击败Boss的高潮特效’可以打断当前所有普通特效，优先级恢复后如何继续？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="pipeline-hard-gate-asset-qualification">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>管线硬门禁与资产合格判定</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>硬门禁是资产管线关键节点上的强制拦截阀。它不是生成资产，而是用预先定义的契约逐项检查输入资产是否合格。与仅生成报告的软门禁不同，硬门禁在发现不合格时立即终止流程，防止问题资产流入打包、编译等下游环节。门禁的严格程度需平衡：太松形同虚设，太严则频繁卡死。因此契约必须清晰，检查脚本需具备高幂等性和低误报率。例如，脚本不再只检查‘文件是否存在’，而是检查‘这个文件作为游戏资产真的能用吗’（语义级检查）。这好比工厂流水线上的全自动质检机，只有盖了合格章的产品才能装车。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>定义资产契约文档，明确各项检查标准（尺寸、帧数、透明区域等）。</li>
+                <li>在管线关键节点部署检查脚本，逐项比对资产与契约。</li>
+                <li>任何一项不合格立即返回非零退出码，阻断后续步骤。</li>
+                <li>CI系统监控脚本退出码，不合格时标记构建失败，通知相关人员。</li>
+                <li>契约演进时，同步更新检查脚本和审计文档，保持门禁有效性。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>check_character_asset_contract.py检查克利夫兰角色的动画资产。脚本读取角色契约文件，规定主精灵表尺寸必须为256x256、含4帧、透明区域不超过20%。若宽度不是256像素，输出‘FAIL: character clv master sheet width != 256’并返回非零退出码，CI系统立即拦截构建，通知美术修正。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误区：自动化QA报告等于质量闸门。实际上报告只事后通报，硬门禁则事前阻断，纪律更强。</li>
+                <li>误区：硬门禁会拖慢开发。其实错误资产流入下游的返工成本远大于门禁检查，门禁是前置修复的投资。</li>
+                <li>误区：硬门禁只需一次性脚本。实际上门禁需随契约演进持续加固，否则其自身会成为流程最弱一环。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>程序化角色资产批处理管线</td><td>硬门禁部署在批处理管线末端，对自动生成的精灵表进行契约检查，确保只有合格品进入打包。</td></tr>
+                <tr><td>管线工具的幂等性</td><td>硬门禁的可靠运行依赖检查脚本的高度幂等性——多次重跑必须给出相同结论，否则门禁失去公信力。</td></tr>
+                <tr><td>资产契约与审核文档</td><td>资产契约定义了合格标准，硬门禁负责执行；契约演进时门禁规则同步更新，配套审计文档需相应修订，维持C7资产溯源链的一致性。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何设定硬门禁检查的‘致命-警告-忽略’分级，避免把一个小警告变成整个管线阻塞事件？</li>
+                <li>在紧急情况下（如必须快速发布热修复），硬门禁的白名单或管理员绕过机制应该怎样设计，才既灵活又不破坏其权威性？</li>
+                <li>如果资产契约本身很复杂，门禁脚本的检查逻辑越来越膨胀，怎样设计可复用的检查组件库，让门禁也能像效果演员一样可扩展而避免变成巨型脚本？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">这三个概念构成了一份‘变化管理说明书’。调色板系统用数据层隔离视觉变化，降低表现试验的成本；效果导演系统用控制层协调变化，让效果扩展不互相踩脚；硬门禁系统用质量层拦截有害变化，阻止缺陷在下游扩散。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">把不同天气的海面表现写成JSON调色板，同一个着色器程序就能像换衣服一样在晴天与风暴之间切换，美术调色不再需要程序员出手。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>在实时渲染中频繁切换调色板会对GPU性能造成哪些压力？有没有批处理或Uniform Buffer优化策略？</li>
+            <li>如何设定硬门禁检查的‘致命-警告-忽略’分级，避免把一个小警告变成整个管线阻塞事件？</li>
+            <li>如果导演脚本本身持续膨胀，有什么设计手段可以防止它变成维护者不敢触碰的上帝类？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
