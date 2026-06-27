@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-06-28 学习笔记日报</title>
+    <meta name="description" content="着色器天气、弹道扩散与项目状态文档，共同阐释游戏开发中表现、规则与治理的协同落地。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260628-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-06-28</p>
+        <h1>2026年6月28日 学习笔记日报</h1>
+        <p>从着色器驱动的天气效果到弹道扩散的命中判定，再到项目状态文档的协作可见性，今日的探索围绕随机性、视觉表现与工程治理在游戏项目中的落地展开。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>随机性、视觉表现与工程治理的合奏</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>着色器驱动的2D天气效果</strong>
+                <small>游戏里的雨雪不是一张GIF，而是着…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>弹道扩散与命中判定</strong>
+                <small>随机不是魔法，而是可调的参数：弹道…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>项目状态文档作为协作可见性…</strong>
+                <small>项目文档不只是说明书，更是协作的可…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">这三个概念分别聚焦于游戏开发的“表现”、“规则”与“治理”三个层面。着色器驱动的天气效果解决了“如何让战场环境生动起来”的表现问题；弹道扩散与命中判定解决了“如何用数学规则模拟真实感”的数值问题；项目状态文档解决了“如何让多角色协作不迷失”的治理问题。它们之间的桥梁也很牢固：效果导演连接了表现与规则（它调度扩散判定的结果并触发对应的天气特效），而项目状态文档则记录了前两者构建的系统的完成度与分工，降低了所有参与者（包括人类和 AI 代理）理解这个日益复杂系统的认知成本。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["随机性、视觉表现与工程治理的合奏"])
+  concept1["着色器驱动的2D天气效果"]
+  hub --&gt; concept1
+  concept2["弹道扩散与命中判定"]
+  hub --&gt; concept2
+  concept3["项目状态文档作为协作可见性工具"]
+  hub --&gt; concept3
+  related1["效果导演的调度与分层渲染"]
+  concept1 --&gt; related1
+  related2["环境资源管线"]
+  concept1 --&gt; related2
+  related3["武器数值表与战斗公式的配置耦合"]
+  concept2 --&gt; related3
+  concept2 --&gt; related1
+  related4["文档编号重映射与信息架构维护"]
+  concept3 --&gt; related4
+  concept3 --&gt; related2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="shader-driven-2d-weather-effects">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>着色器驱动的2D天气效果</h3>
+              <p>Shader-Driven 2D Weather Effects</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">游戏里的雨雪不是一张GIF，而是着色器在GPU上为每一个像素即时计算的结果——这种“像素级处理器”的思路，让天气效果可以响应战场事件而动态改变。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>着色器是运行在GPU上的程序，为屏幕上的每一个像素单独计算颜色，能并行处理数百万像素。</li>
+                <li>天气着色器通过外部参数（雪密度、雨强度、闪电频率）实时生成动态效果，无需预存大量图片。</li>
+                <li>着色器不仅适用于3D模型，在2D游戏中同样强大，可以凭空“算”出一场暴风雪或闪电。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="shader-driven-2d-weather-effects" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="ballistic-dispersion-and-hit-detection">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 计算机科学</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>弹道扩散与命中判定</h3>
+              <p>Ballistic Dispersion and Hit Detection</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">随机不是魔法，而是可调的参数：弹道扩散机制的本质，是把数学上的概率分布装进武器配置表里，让数值策划像拧音量旋钮一样，精确控制每门炮的命中期望。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>将命中判定从简单的是非题转变为连续的物理过程，通过生成随机偏移模拟炮击散布。</li>
+                <li>偏移量服从概率分布（如二维正态分布或均匀圆盘），可精确调控扩散范围。</li>
+                <li>武器配置表中的扩散参数（如标准差或角度）成为数值策划调整武器手感的直接旋钮。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="ballistic-dispersion-and-hit-detection" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="project-status-document-as-collaboration-visibility-tool">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>项目状态文档作为协作可见性工具</h3>
+              <p>Project Status Document as Collaboration Visibility Tool</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">项目文档不只是说明书，更是协作的可见性契约：一份精心维护的进度状态文档，能让新加入的开发者或LLM代理在几分钟内掌握项目全貌，其价值不亚于一行关键代码。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>项目状态文档是团队协作的“共享白板”，公开显示各模块的进度、稳定性和负责人。</li>
+                <li>它解决了信息不对称问题，让新加入的开发者或AI代理能快速了解项目全貌，避免盲目摸索。</li>
+                <li>类似丰田安灯系统，实时传递项目状态，降低“代码撞车”和重复劳动的风险。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="project-status-document-as-collaboration-visibility-tool" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="shader-driven-2d-weather-effects">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学</p>
+                <h3>着色器驱动的2D天气效果</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>着色器是一小段运行在显卡（GPU）上的程序，它的设计思想是“为屏幕上的每一个像素，根据其位置、时间和外部参数，单独计算它应该显示什么颜色”。想象一下，你不是在画一整张下雨的GIF动画，而是写了一段数学规则：比如，对于屏幕上任意一点(x,y)，如果它在当前时刻t的某个随机序列中，就把它染成雨滴的灰色，否则就保持透明。GPU的厉害之处在于，它能同时对数百万个像素执行这段程序，瞬间生成一帧完整的暴雨画面。今天引入的 weather_overlay.gdshader 就是这样一段规则，它把雪的密度、雨的强度、闪电频率作为外部旋钮，运行时只需转动旋钮，画面就会实时变化，而不需要准备无数张固定的图片。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>并行计算：GPU同时处理数百万像素，每像素独立计算颜色，实现高效的视觉生成。</li>
+                <li>参数驱动：天气效果通过外部变量（如密度、强度、频率）控制，运行时动态调整。</li>
+                <li>数学规则替代素材：用数学函数生成图案，避免大量预渲染图片，降低存储和加载成本。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设游戏里有一场海战，玩家开炮击中敌船。效果导演检测到命中事件，就告诉天气着色器：“临时提高闪电频率到每秒3次，持续2秒”。天气着色器程序中的“闪电频率”变量立刻从平常的0.1变为3，屏幕上闪电特效瞬间增多，配合爆炸画面，营造更震撼的视觉冲击。2秒后，导演再通知它恢复默认值。这一切切换只需更改一个数字，不需要加载任何新图片。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为着色器只能用于3D场景，实际上任何最终显示在屏幕上的像素，无论来自2D精灵还是UI文字，都可以通过着色器处理。</li>
+                <li>认为着色器就是复杂的3D渲染工具，忽视了它在2D游戏中凭空生成动态效果（如雨、雪、波纹）的能力。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>效果导演的调度与分层渲染</td><td>效果导演根据战斗事件（如炮击命中）触发和控制天气着色器的参数变化，导演是指挥，着色器是执行者，两者配合实现动态天气响应。</td></tr>
+                <tr><td>环境资源管线</td><td>天气着色器运行时需要的雪、雨粒子纹理图，由环境资源管线（process_land_art.py）从美术源文件自动化加工并注册，确保合规素材及时供给。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果一场大规模海战中有数百门炮同时开火，每个开火都要求天气效果有微小变化，效果导演如何避免对天气着色器的频繁指令造成性能瓶颈？是否需要一个“指令队列”来合并相近的请求？</li>
+                <li>着色器程序是如何被编译和加载到GPU上的？这个加载过程的耗时在游戏启动的哪一帧发生，如何避免造成启动时的卡顿？</li>
+                <li>在编写着色器时，如何调试它的逻辑？普通的代码可以逐行打印，但着色器是并行运行在数百万个像素上的，有没有视觉化的调试工具能让我单独看到某个像素是如何一步一步算出最终颜色的？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="ballistic-dispersion-and-hit-detection">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 计算机科学</p>
+                <h3>弹道扩散与命中判定</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>在早期的很多游戏里，炮弹“命中”是一个简单的是非题：系统根据你的射程和敌人体积算一个命中率，然后扔一个虚拟骰子，中了就扣血，没中就无事发生。弹道扩散机制则让这个过程变得更加连续和物理化。它的核心思想是：每一次开炮，炮弹都会有一个“理论上的完美命中点”，但现实中，炮管震动、风力、炮弹制造误差等会让它在目标周围随机散布。在计算机里，这就变成了一个在二维平面上生成随机偏移的过程。这个偏移量通常服从某种概率分布，比如二维正态分布（像飞镖靶，靠近靶心的概率大）或均匀圆盘分布（在某个半径内随处可能）。偏移量的大小由武器配置表中的一个扩散参数（例如标准差σ）控制。这会深刻影响游戏体验：一个高扩散的武器虽然可能“蒙中”远处的敌人，但更大概率是差之毫厘，会给玩家带来一种“期待与赌博”的刺激感，而一个低扩散的激光武器则是指哪打哪的可靠感。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>将命中抽象为理想命中点加随机偏移，偏移由概率分布模型生成。</li>
+                <li>扩散参数（如标准差、角度）外置到配置文件，实现数值与逻辑分离，方便策划调整。</li>
+                <li>偏移结果直接驱动视觉效果（弹道轨迹、爆炸位置），让随机过程可观察、可反馈。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设某武器的JSON中有 `dispersion_angle_deg` 字段，值为5度。战斗计算时，程序先算出炮口到目标的直线（理想弹道），然后以炮口为顶点，生成一个顶角为5度的圆锥体，让炮弹实际的飞行方向在这个圆锥内随机选取一个方向。距离越远，这个5度角造成的实际落点偏差距离就越大。程序生成一个随机方向后，发射炮弹的3D模型就沿这条新的轨迹飞行，并最终在偏移后的点爆炸。如果这个点的爆炸范围碰到了敌船的碰撞体，就算“命中”。这就把抽象的“命中率”变成了一个可被玩家观察到轨迹和落点的物理过程。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为“扩散”等同于完全随机的乱飘，实际上它是基于可控概率分布的，99.7%的落点会集中在3倍标准差范围内。</li>
+                <li>认为扩散只是为了增加不确定性，忽略了它可以通过参数精确平衡武器手感，赋予不同武器鲜明的个性。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>武器数值表与战斗公式的配置耦合</td><td>扩散参数（如标准差或角度）与伤害倍率等数值一同写入武器JSON配置文件，共同构成武器的完整数值画像，是数值策划进行游戏平衡的直接界面。</td></tr>
+                <tr><td>效果导演的调度与分层渲染</td><td>扩散计算的结果——即实际命中点和是否命中——由效果导演接收并分发：命中时触发爆炸特效和伤害数字，未命中时触发水花特效，甚至联动天气效果增加戏剧性。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>除了二维正态分布，还有哪些概率分布适合模拟不同类型的武器散射？比如，用高斯和均匀分布混合来模拟“大部分较准但偶有离谱脱靶”的加特林机枪。</li>
+                <li>如果游戏需要实现“弹道回放”功能，而扩散是基于随机数的，如何在不记录整个战斗每帧状态的情况下，仅通过一个随机种子完美复现整场战斗中所有炮弹的随机偏移？</li>
+                <li>在计算扩散偏移时，是先随机一个角度再随机一个距离好，还是在XY轴上分别做随机偏移好？这两种方法生成的落点分布有什么不同，哪种更接近真实弹道学？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="project-status-document-as-collaboration-visibility-tool">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>项目状态文档作为协作可见性工具</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象你和一群朋友合作拼一幅几千块的拼图，但是拼图的参考图只有几个人看过，其他人都是盲拼。这时候，如果有一块白板，上面实时写着“东边的天空部分已完成80%”“西边城堡部分缺少中间几块红色的”“南边草地还没开始”，效率会不会高很多？ `00_project_status.md` 就是这块白板，它是一个放在项目最显眼位置的“进度可见性契约”。它不执行代码，不画UI，但它解决了协作中最致命的问题之一：信息不对称。它用最直白的语言告诉任何新加入的伙伴（无论对方是人还是一个AI编程助手）：“你现在进入这个项目，哪些部分已经稳了可以放心依靠？哪些还是工地需要绕着走？谁正在负责哪一块？”这极大地降低了理解整个系统所需的脑力成本——软件工程里称之为“认知负载”。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>显式化隐藏信息：将团队成员默认知道但未记录的知识（如模块稳定性、负责人、进度）以文档形式公开。</li>
+                <li>降低认知负载：提供项目全景地图，帮助新成员快速定位可依赖的模块和风险区域，减少盲目探索。</li>
+                <li>作为协作契约：通过约定格式和更新规范，确保信息准确，成为团队共享的“数字安灯”。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>你今天被分配了一个任务——为游戏添加“海盗船幽灵”的新单位。你不知道从何下手。打开 `00_project_status.md`，你看到： `[STABLE]` 基础战斗框架已完成；`[IN PROGRESS]` 天气效果系统（负责人：Alice，预计下周一合并主分支）；`[TO DO]` 镜像/隐身效果系统。于是你立刻知道：复制一个基础单位模板是可行的；新单位的技能最好先别依赖天气特效，因为它还在变；如果幽灵船需要隐身技能，你得自己从头搭一个框架，或者等。仅此一眼，你就避免了数小时的盲目摸索和潜在的返工。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为状态文档是写给领导看的官僚报告，实际上它的核心读者是开发者（包括未来的自己），是团队降低信息熵的工具。</li>
+                <li>认为只有大型项目才需要状态文档，其实任何多人协作或长期维护的项目都可以从中受益，避免知识遗失。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>文档编号重映射与信息架构维护</td><td>状态文档提供宏观的“我们做到了哪里”，而编号系统（如33_ → 34_）提供微观的“具体设计在哪里”，两者结合形成完整的项目信息骨架。</td></tr>
+                <tr><td>环境资源管线</td><td>状态文档明确记录了管线（如 process_land_art.py）的完成度与验证状态，帮助团队判断是否可以将美术素材大批量、信任地投入自动化加工流程。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何防止项目状态文档变成“僵尸文档”——也就是写了之后再也无人更新，最终传递错误信息？能否设计一个CI脚本，定期扫描代码仓库的结构性变化（如新文件夹、新服务），并自动提醒相关开发者更新状态文档？</li>
+                <li>对于一个大型项目，是否应该为每个子模块都设一个局部的状态文档，形成一个层次化的状态报告体系？如何设计它们之间的汇总和冲突解决机制？</li>
+                <li>状态文档的记录粒度应该如何把握？太粗了没用，太细了又会变成难以维护的流水账。有没有什么好的经验法则或模板，能帮助我们一开始就定下一个合适的尺度？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">这三个概念分别聚焦于游戏开发的“表现”、“规则”与“治理”三个层面。着色器驱动的天气效果解决了“如何让战场环境生动起来”的表现问题；弹道扩散与命中判定解决了“如何用数学规则模拟真实感”的数值问题；项目状态文档解决了“如何让多角色协作不迷失”的治理问题。它们之间的桥梁也很牢固：效果导演连接了表现与规则（它调度扩散判定的结果并触发对应的天气特效），而项目状态文档则记录了前两者构建的系统的完成度与分工，降低了所有参与者（包括人类和 AI 代理）理解这个日益复杂系统的认知成本。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">随机不是魔法，而是可调的参数：弹道扩散机制的本质，是把数学上的概率分布（如正态分布）装进武器配置表里，让数值策划像拧音量旋钮一样，精确控制每门炮的命中期望。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何设计一个指令队列来合并天气着色器的频繁请求，避免性能瓶颈？</li>
+            <li>如何通过一个随机种子完美复现整场战斗中所有炮弹的随机偏移？</li>
+            <li>如何防止项目状态文档变成无人更新的“僵尸文档”，并设计自动化提醒机制？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
