@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-06-29 学习笔记日报</title>
+    <meta name="description" content="今日深入理解表现层与逻辑层分离、领域服务拆分和导航图烘焙，用纵、横、抽象三层边界管理系统复杂性。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260629-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-06-29</p>
+        <h1>清晰的边界：从纵向分离到空间抽象</h1>
+        <p>我们从纵、横、抽象三个维度，学习如何用代码边界隔离变更影响，让系统在变大的同时依然小巧、独立、可测试。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>边界管理</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>表现层-逻辑层分离</strong>
+                <small>厨师从来不需要知道今天餐厅的背景音…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>领域服务拆分</strong>
+                <small>每个服务都应该“为了同一个原因而改…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>导航图烘焙</strong>
+                <small>像烤面包：用离线算力和时间，把生地…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念之间存在着自然的递进关系。表现层-逻辑层分离是最基础的分层原则，它确保显示逻辑和业务逻辑各自独立演化——地形视图（表现层）可以随时换一套渲染风格，而地形查询服务（逻辑层）完全不受影响。但逻辑层本身如果继续膨胀，同样会失控，于是领域服务拆分应运而生：把逻辑层内部按业务概念切成独立服务，每个服务只封装一个明确定义的职责。而导航图烘焙则展示了另一种边界——从连续空间到离散图结构的抽象边界——它把复杂的地理信息压缩成运行时可高效查询的数据结构。三者协同的结果是：系统在变大的同时，每个部分依然小巧、独立、可测试。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["边界管理"])
+  concept1["表现层-逻辑层分离"]
+  hub --&gt; concept1
+  concept2["领域服务拆分"]
+  hub --&gt; concept2
+  concept3["导航图烘焙"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["边界管理"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="presentation-logic-separation">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>表现层-逻辑层分离</h3>
+              <p>Presentation-Logic Separation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">厨师从来不需要知道今天餐厅的背景音乐是什么，服务员也从来不需要知道这道菜的盐放了几克。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>逻辑层绝不依赖表现层，表现层可以安全地引用逻辑层；依赖方向一旦反过来，分层就形同虚设。</li>
+                <li>分离后UI修改（如血条颜色）不会破坏战斗公式，战斗公式调整也不会导致界面错乱。</li>
+                <li>分层不是简单的文件夹划分，而是按“依赖方向”和“变更原因”划分的职责边界。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="presentation-logic-separation" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="domain-service-splitting">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>领域服务拆分</h3>
+              <p>Domain Service Splitting</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">每个服务都应该“为了同一个原因而改变”——水雷服务只懂水雷，设施服务只问设施。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>防止“上帝类”膨胀：将所有战斗逻辑塞进一个 GameManager 会导致耦合和变量名冲突，拆分后每个服务独立变化。</li>
+                <li>服务边界由内聚性决定：一个服务内部所有代码应“为了同一个原因而改变”，水雷服务只懂水雷，设施服务只问设施。</li>
+                <li>通过清晰接口通信：服务间通过事件订阅或方法调用协作，但绝不会直接修改对方内部状态。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="domain-service-splitting" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="navigation-baking">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>导航图烘焙</h3>
+              <p>Navigation Map Baking</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">像烤面包：用离线算力和时间，把生地图变成可直接使用的导航网络。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>离线预计算：在关卡加载时或构建阶段，把连续地形转化为离散的节点-边图，标注通行代价，避免实时地形分析。</li>
+                <li>运行时高效查询：导航路线规划器在已烘焙的图上运行 A* 或 Dijkstra 算法，每帧都能瞬间给出最优路径。</li>
+                <li>支持动态更新：当地形因战斗变化（炸桥、布雷）时，可局部重烘焙受影响区域，而不必重建整张图。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="navigation-baking" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="presentation-logic-separation">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>表现层-逻辑层分离</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象你在餐厅吃饭。厨房里的厨师负责做菜——用什么火候、放多少盐、先炒什么后焖什么，这是“逻辑层”；服务员负责端菜上桌、摆盘装饰、向客人介绍菜品，这是“表现层”。厨师从来不需要知道今天餐厅的背景音乐是什么，服务员也从来不需要知道这道菜的盐放了几克。这个分工看似简单，但在写程序的时候，很多人会习惯性地把“算账”和“作秀”搅在一起。表现层-逻辑层分离这条原则的精髓就是：任何一段代码，你在写的时候都应该能清晰回答——我这是在干“厨师”的活，还是在干“服务员”的活？如果是厨师的活，就不要碰盘子和桌布；如果是服务员的活，就不要去调火候。这样做的好处是双向的：当你想把菜做得更美味时，不用担心摆盘会乱；当你想换一套更漂亮的餐具时，菜的味道不会变。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>职责分离：表现层只负责渲染、布局、动画等视觉呈现，逻辑层只负责数据计算、规则判定、状态管理。</li>
+                <li>单向依赖：逻辑层绝不能 import 或引用任何表现层的类、组件或资源；表现层可以安全地引用逻辑层。</li>
+                <li>变更绝缘：当需求只涉及视觉调整时，仅修改表现层；当业务规则变动时，仅修改逻辑层，双方互不传染。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在沿海地形战斗中，地形查询服务（逻辑层）提供 get_terrain_cost(x, y) 方法返回通行代价系数。地形视图（表现层）调用该方法后，自行决定用深绿还是浅绿、什么纹理来显示——策划要求改变浅水区颜色时，只需修改视图的调色配置，逻辑层一行代码都不用动。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为建两个文件夹 view 和 logic 就算分层了——真正的分层要靠依赖方向保证，不是目录结构。</li>
+                <li>认为分层会让代码变多、开发变慢——初期确实需要多写接口，但进入维护期后改动范围被明确隔离，排查时间大幅缩短。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>领域服务拆分</td><td>表现层-逻辑层分离为逻辑层内部的横向拆分提供了前提：逻辑层中的领域服务（地形查询、设施管理等）只通过干净接口向表现层提供数据，表现层不直接操作领域对象。</td></tr>
+                <tr><td>导航图烘焙</td><td>表现层只负责将导航数据（节点-边图）可视化为地图高亮或路径线，不参与导航图的生成与校验；逻辑层的导航路线规划器专注图搜索，不关心如何渲染路径。两者通过清晰的数据通道保持同步。</td></tr>
+                <tr><td>边界管理</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何判断一段代码应该放在表现层还是逻辑层？比如“根据通行代价决定用深绿还是浅绿来显示地图格子”，这个颜色映射逻辑算表现层还是逻辑层？有没有一个清晰的判断标准？</li>
+                <li>如果表现层需要一些简单的计算（比如根据两个服务返回的数据做一个简单的合并显示），这些计算应该放在哪里？是放在表现层里，还是应该新建一个“表示逻辑服务”？</li>
+                <li>在 Godot 引擎中，场景节点天然混合了表现和逻辑（一个 Sprite 节点既有显示属性又有脚本属性），这时候应该如何实践表现层-逻辑层分离？是要避免在 Sprite 的脚本里写业务逻辑吗？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="domain-service-splitting">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>领域服务拆分</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象一个大公司刚起步的时候，只有三五个员工，所有事情都由老板一个人拍板。当公司发展到五十个人的时候，就必须拆分部门：销售部只管拉客户、财务部只管钱、售后部只管修产品。每个部门有自己的职责边界，部门之间通过明确的流程来协作。领域服务拆分就是这个“分部门”的过程在程序世界中的映射。在一款游戏里，如果所有的战斗逻辑都塞在一个叫做 GameManager 的巨大类里，它同时管设施的血量、水雷的爆炸范围、导航图的通行代价、天气对命中率的影响，这个类很快就会变成没人敢碰的“上帝类”。领域服务拆分要做的，就是把这些内聚的职责识别出来，各自独立成一个小而精的服务：水雷服务只懂水雷、设施服务只问设施、地形查询服务只管地形。它们之间通过清晰的接口通信——比如设施服务向外暴露“设施受损”事件，战斗系统只需订阅这个事件即可，完全不需要知道设施内部是怎么判断受损的。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>单一职责：每个服务只封装一个明确的业务概念，如“水雷”、“设施”、“地形查询”，避免概念混杂。</li>
+                <li>接口隔离：服务对外暴露最小化的 API，内部细节完全隐藏，其他服务不能绕过接口操作数据。</li>
+                <li>变更局部化：当业务需求变化时，只影响相应的那个服务，其余服务零改动或仅需重新连接接口。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在今天的提交中，mine_service.gd 负责布设水雷、检测舰船进入范围、引爆伤害；facility_service.gd 负责设施状态切换。当策划要求“海雾天气下水雷可见范围减半”时，只需修改水雷服务一个文件，设施服务完全不受波及——即使两个服务共享同一个变量名 timer，也互不干扰。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为领域服务拆分就是“把大文件拆成小文件”，拆得越细越好——但若拆出的两个服务需要频繁通信才能完成一个基本操作，说明它们本就不该分开。</li>
+                <li>认为拆分后系统会变慢，因为多了很多间接调用——实际上现代游戏引擎中函数调用开销远小于代码混乱带来的维护成本，而且合理拆分更容易做针对性性能优化。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>表现层-逻辑层分离</td><td>表现层-逻辑层分离奠定了纵向分层基础，领域服务拆分则是逻辑层内部的横向切分，两者共同构成二维模块化矩阵：纵向上表现层不碰逻辑，横向上每个领域服务互不侵入。</td></tr>
+                <tr><td>导航图烘焙</td><td>导航图烘焙产出的导航数据由地形查询服务加载和暴露，导航路线规划器通过该服务获取通行代价，而不是直接读取导航图文件，保持了各个领域服务的边界清晰。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何判断两个功能应该放在同一个服务里还是拆成两个独立的服务？有没有一些量化的判断标准，比如“如果A和B共享超过X%的数据结构就应该合并”？</li>
+                <li>当两个领域服务需要频繁协作时（比如水雷引爆后需要通知设施服务更新设施状态），应该怎么设计它们之间的通信方式？是事件发布-订阅模式，还是直接方法调用？各自的优缺点是什么？</li>
+                <li>在 Godot 这种以场景树为核心的引擎中，领域服务应该如何组织？是把每个服务做成一个独立的节点挂在场景树上，还是做成单例（autoload）？这两种方式对测试便利性的影响有什么不同？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="navigation-baking">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学</p>
+                <h3>导航图烘焙</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>导航图烘焙这个名字听起来很高深，但它的核心思想其实和手机导航软件是一模一样的。当你打开高德地图搜索从家到学校的路线时，手机并没有真的去分析每一条小巷、每一个路口——它只是在你看到的那张漂亮地图背后，悄悄把道路抽象成了一张由点和线组成的网络：每个路口是一个“节点”，每条路是一段“边”，每段路上标注了通行时间（权重）。然后手机在这个网络上跑一个最短路径算法。导航图烘焙要做的第一件事，就是“把漂亮的地图变成可计算的网络”。在一个游戏里，地图是连续的，但计算机不能每帧都去分析无穷多个坐标点，所以需要把连续地图离散化：用一个个“可达区域”作为节点，用区域之间的连接关系作为边，并给每条边标上通行代价。这个转化过程就叫“烘焙”——就像把生面团放进烤箱，出来的是可以直接吃的面包。烘焙的本质是预计算：用离线的算力和时间，换来运行时极快的查询速度。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>连续→离散：通过采样或区域划分，将无限坐标的地图空间转化为有限的节点集合，每个节点代表一片可达区域。</li>
+                <li>预计算与存储：在离线阶段生成节点邻接表和边的权重，打包为运行时直接加载的数据结构，避免每帧解析地形。</li>
+                <li>图搜索应用：运行时使用标准图搜索算法（A*、Dijkstra）在预构建的导航图上计算最短路径，兼顾速度和精度。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在沿海地形战斗中，导航通道（代价0.5）、浅水区（代价1.5）、礁石区（不可通过）。烘焙脚本读取 terrain_definitions.json 将区域采样为节点，邻接边权重为通行代价。玩家下令移动时，导航路线规划器在图上运行 A* 搜索，自动绕开礁石、优先走导航通道，即使直线距离更短。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为游戏角色寻路真的是“一步一步试探着走”——实际上几乎所有现代游戏都使用预计算导航结构，角色只是沿着预先规划的路线移动。</li>
+                <li>以为烘焙是一次性的，做完就不用管了——当地形动态变化（桥梁炸毁、雷区布设）时，必须局部更新导航图，否则角色会按旧路径走入死路。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>表现层-逻辑层分离</td><td>导航图烘焙的产出是纯数据，表现层只负责将这些数据可视化为高亮路径或颜色标记，不参与生成逻辑；逻辑层的导航路线规划器专注图搜索，不改动视觉表现。</td></tr>
+                <tr><td>领域服务拆分</td><td>导航图数据由地形查询服务加载并暴露查询接口，导航路线规划器通过地形查询服务获取通行代价，而不直接读取文件，保持了服务间清晰的边界。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果游戏运行过程中地形发生了变化（比如一座桥被炸毁、一片区域被水雷封锁），烘焙好的导航图应该怎么更新？是重新烘焙整张图，还是局部修补？局部修补时如何保证修补后的图仍然连通且路径最优？</li>
+                <li>A* 算法和 Dijkstra 算法在导航图上有什么区别？在什么情况下 A* 比 Dijkstra 快很多，在什么情况下两者的表现几乎一样？启发函数的设计对 A* 的效率有多大影响？</li>
+                <li>导航图的节点粒度应该如何选择？如果节点太密，烘焙和搜索都太慢；如果节点太稀，路径会不精确，角色可能会撞上障碍物的边角。有没有一种方法能根据地形复杂度自适应地调整节点密度？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念之间存在着自然的递进关系。表现层-逻辑层分离是最基础的分层原则，它确保显示逻辑和业务逻辑各自独立演化——地形视图（表现层）可以随时换一套渲染风格，而地形查询服务（逻辑层）完全不受影响。但逻辑层本身如果继续膨胀，同样会失控，于是领域服务拆分应运而生：把逻辑层内部按业务概念切成独立服务，每个服务只封装一个明确定义的职责。而导航图烘焙则展示了另一种边界——从连续空间到离散图结构的抽象边界——它把复杂的地理信息压缩成运行时可高效查询的数据结构。三者协同的结果是：系统在变大的同时，每个部分依然小巧、独立、可测试。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">导航图烘焙是一种“用离线算力换运行时速度”的预计算策略：把连续地图转化为可高效搜索的节点-边网络，让角色在瞬间完成路径规划。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何判断一段代码应该放在表现层还是逻辑层？比如颜色映射逻辑算表现层还是逻辑层？</li>
+            <li>当两个领域服务需要频繁协作时（如水雷引爆后通知设施服务），应该如何设计通信方式？事件发布-订阅与直接方法调用各自的优缺点是什么？</li>
+            <li>如果地形在运行时发生变化（如桥梁被炸毁），烘焙好的导航图应该如何局部更新才能保证路径仍连通且最优？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
