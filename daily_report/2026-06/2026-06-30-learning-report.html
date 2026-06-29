@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-06-30 学习笔记日报</title>
+    <meta name="description" content="数据驱动实验配置、伤害实时统计与鱼雷散布模型，构建可量化、可复现的战斗平衡验证闭环。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260630-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-06-30</p>
+        <h1>从配置到统计再到模型：构建数据驱动的战斗平衡闭环</h1>
+        <p>今天我们从 tiny-sea-war 仓库的提交中提炼出三个层层递进的概念：实验配置的数据驱动设计、伤害统计与分析管道、以及鱼雷弹道散布模型，共同构成一套科学的平衡验证体系。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>数据驱动的战斗平衡</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>实验配置的数据驱动设计</strong>
+                <small>把实验方案写成 JSON，模拟运行…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>伤害统计与分析管道</strong>
+                <small>伤害统计管道就是把‘感觉上不太平衡…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>鱼雷弹道散布模型</strong>
+                <small>鱼雷散布不是简单加和，而是独立误差…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">这三个概念形成一条清晰的数据链路：实验配置文件通过模拟运行器催生大量战斗，每场战斗产生的伤害事件被统计管道汇聚成结构化的指标，而这些战斗中的鱼雷行为又由散布模型中的误差参数决定。反过来，统计管道产出的命中率、期望伤害等数据，又直接指导着散布参数的调优，并反馈到实验配置的下一轮变更。这种配置—执行—观测—决策的闭环，不依赖任何主观直觉，为游戏平衡调优提供了坚实的工程基础。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["数据驱动的战斗平衡"])
+  concept1["实验配置的数据驱动设计"]
+  hub --&gt; concept1
+  concept2["伤害统计与分析管道"]
+  hub --&gt; concept2
+  concept3["鱼雷弹道散布模型"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["数据驱动的战斗平衡"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="experiment-config-data-driven">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>实验配置的数据驱动设计</h3>
+              <p>Data-driven Design of Experiment Configuration</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">把实验方案写成 JSON，模拟运行器就是可复用的反应釜。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>实验配置与执行引擎解耦，策划只需修改 JSON，无需懂代码。</li>
+                <li>遵循策略与机制分离原则，使得批量实验和对比变得简单。</li>
+                <li>只将需要在实验中独立变化的变量参数化，避免过度暴露内部细节。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="experiment-config-data-driven" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="damage-statistics-pipeline">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>伤害统计与分析管道</h3>
+              <p>Damage Statistics and Analysis Pipeline</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">伤害统计管道就是把‘感觉上不太平衡’变为‘平均胜率偏离了 10%’的精确数据记录员。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>采用观察者模式，战斗逻辑通过事件信号通知统计模块，实现解耦。</li>
+                <li>利用在线聚合算法实时计算平均值、方差等，无需存储所有数据。</li>
+                <li>能够按伤害来源分类，提供细粒度的统计指标，支撑平衡决策。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="damage-statistics-pipeline" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="torpedo-spread-model">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 物理</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>鱼雷弹道散布模型</h3>
+              <p>Torpedo Ballistic Dispersion Model</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">鱼雷散布不是简单加和，而是独立误差的方差叠加——就像射箭时手抖和风偏共同决定落点。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>将总散布分解为基座误差、发射误差等多个独立误差源，每个用高斯分布描述。</li>
+                <li>利用方差叠加原理（独立误差源的总方差等于各方差之和）模拟随机偏移。</li>
+                <li>提供独立的参数旋钮（如瞄准精度、航行稳定性），使策划能直观调整手感并量化效果。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="torpedo-spread-model" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="experiment-config-data-driven">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>实验配置的数据驱动设计</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>当一个游戏需要反复测试‘鱼雷散布增大 10% 后胜率会变多少’这种问题时，如果把测试场景硬写在代码里，每次改条件都要改脚本、重新编译，风险高、效率低。实验配置的数据驱动设计，就是把实验的条件——用什么地图、双方 AI 参数、鱼雷散布值等——全部写进结构化的 JSON 文件中，然后让一个通用的模拟运行器去读取这些文件、执行实验。这样一来，改变实验条件就变成了编辑文本文件，而不是改动程序逻辑。背后的核心原则是‘策略与机制分离’：策略是你想测什么（在 JSON 里），机制是怎么执行测试（在运行器里）。这种分离也让批量化实验成为可能——可以一口气加载多个 JSON，自动跑完所有实验并生成对比报告。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>策略与机制分离：JSON 定义实验策略，运行器实现执行机制。</li>
+                <li>数据驱动：通过结构化配置文件驱动通用引擎，实现参数化实验。</li>
+                <li>封装与抽象：只暴露必要的可调维度，隐藏内部实现细节。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在 tiny-sea-war 的 data/simulations/experiments/ 目录下有三个 JSON 文件，如 3v3_open_sea.json。当策划想测试把某一方的鱼雷散布误差从 1.5° 降低到 1.0° 后胜率如何变化，只需打开这个 JSON 找到 torpedo_spread_error 字段改成 1.0 保存并重新运行模拟。整个过程不需要打开任何 .gd 文件或了解加载细节。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为‘把所有可调参数都放进配置文件就是好的数据驱动’。实际上，只有那些在不同实验场景中确实需要独立变化的变量才适合参数化，否则会让配置文件臃肿并破坏封装。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>伤害统计与分析管道</td><td>统计管道产出的命中率、期望伤害等数据反馈给实验配置，指导下一轮参数变更。</td></tr>
+                <tr><td>鱼雷弹道散布模型</td><td>散布参数作为独立的可调维度存储在 JSON 配置中，实现配置与模拟引擎的解耦。</td></tr>
+                <tr><td>数据驱动的战斗平衡</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果实验配置 JSON 需要新增一个实验维度（比如‘洋流影响’），但旧版模拟运行器不认识新字段，怎样才能平稳过渡而不破坏已有的模拟脚本？这涉及配置的向前兼容策略。</li>
+                <li>当实验配置文件从几个增长到几百个，如何设计文件命名规范和目录结构，才能让策划快速找到‘我要的那个实验’？可以借鉴图数据库的标签索引思路。</li>
+                <li>能否让 CI 系统在每次修改 JSON 配置文件时，自动触发一个小规模模拟并产出报告，让策划在提交前就能看到参数变更的预期影响？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="damage-statistics-pipeline">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>伤害统计与分析管道</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>在游戏战斗系统中，每一次开火命中都会产生一个伤害数字。如果只把伤害数字显示在屏幕上然后立刻遗忘，我们就永远无法回答‘这个兵种的平均伤害是多少’‘哪种武器对战斗的贡献最大’这类问题。伤害统计与分析管道，就是专门负责抓住每一笔伤害事件，并实时计算平均伤害、最高伤害、总伤害等统计量的一套模块。它像一根水管，战斗系统是上游的‘用水端’，统计模块在下游‘接水’——上游每产生一滴水，下游就接住并汇入自己的池子，随时可以报出当前水深。技术上，它采用观察者模式：战斗逻辑在造成伤害时发出事件信号，统计管道监听这些信号，独立完成自己的计算，全程不需要战斗核心去‘通知’或‘帮助’它。这让统计管道可以像一个外挂的行车记录仪，随时装上或卸下，不影响战斗本身的运行。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>事件驱动与观察者模式：战斗逻辑发出伤害事件，统计模块独立计算。</li>
+                <li>在线聚合：使用少量中间变量实时更新统计量，避免存储海量原始数据。</li>
+                <li>分类统计：按伤害来源细粒度统计，为平衡分析提供维度。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设在一场 3v3 的海战中，我方驱逐舰发射了三枚鱼雷，分别造成 200、180、0（脱靶）点伤害，同时主炮累计造成 90 点伤害。伤害统计管道内部维护了 sum=200+180+0+90=470, count=4, max=200。它还能进一步将伤害按来源分类，比如鱼雷伤害总和 380，主炮伤害 90，于是可以回答：‘这一局鱼雷占总伤害的 80.8%’。这些数据随后会被模拟运行器收集，作为平衡报告的关键指标。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为统计模块必须保存每一次伤害的详细记录才能算出统计量。其实，对于平均值、方差这类常用统计量，可以通过‘在线算法’（如 Welford 方法）只用少量中间变量就实现实时更新，完全不需要存储海量原始数据。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>实验配置的数据驱动设计</td><td>实验配置通过模拟运行器催生大量战斗，每场战斗的伤害统计被汇总，形成最终的平衡性报告。</td></tr>
+                <tr><td>鱼雷弹道散布模型</td><td>鱼雷命中率、期望伤害等关键指标直接来源于统计管道，为散布模型的调优提供定量反馈。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>在线聚合算法（如 Welford 方法）如何在不保存所有数据的情况下精确计算方差？背后的递推公式和数值稳定性如何保证？</li>
+                <li>如果多个统计模块同时监听同一个伤害事件，它们的更新顺序会不会影响统计结果的一致性？如何在 Godot 的信号机制下保证事件处理的确定性？</li>
+                <li>如何扩展这个管道，让它不仅统计总量，还能绘制出‘每 10 秒的 DPS 曲线’和‘伤害来源热力图’，从而为更细粒度的平衡决策提供支持？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="torpedo-spread-model">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 物理</p>
+                <h3>鱼雷弹道散布模型</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>真实的鱼雷发射出去后，并不会笔直地飞向准星指向的那个点，而是会受各种干扰影响，形成一个散布椭圆。在游戏里，我们不可能模拟完整流体力学，但可以用一个聪明的简化：把总散布拆成几个独立误差源的叠加。比如，鱼雷发射基座本身有微小的对准误差（基座晃动），鱼雷在水中航行时还会受到随机扰动（流场、机械振动）。每个误差源我们都用一个概率分布来描述——通常假设是钟形的高斯分布，用标准差来衡量它的‘不靠谱’程度。数学上，如果这些误差源彼此独立，那么总散布所对应的随机变量就是这几个独立随机变量之和，其方差就等于各自方差的和，标准差则是平方和开根。这样一来，游戏设计师就可以拥有两个独立旋钮：一个调‘瞄准精度’，一个调‘航行稳定性’，单独拧哪个都会改变鱼雷命中率，但改变的物理直觉和视觉表现却不同。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>将物理不确定性建模为独立随机变量的叠加。</li>
+                <li>独立随机变量之和的方差等于方差之和：Var(X+Y) = Var(X) + Var(Y)。</li>
+                <li>通过控制每个误差源的标准差，实现物理可信且可调的散布行为。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>设想在 tiny-sea-war 的武器配置中，一枚鱼雷的 base_dispersion 定义为标准差 σ_base = 0.6°，launch_error 为 σ_launch = 0.4°。在模拟战斗的每一炮中，系统用伪随机数生成器分别生成两个独立随机值 e1 和 e2，都服从均值为 0、标准差为对应值的高斯分布。最终的鱼雷发射角 = 理想瞄准角 + e1 + e2。这样一来，策划如果想单纯提高瞄准稳定性，只需把 base_dispersion 从 0.6 改成 0.4，而保持 launch_error 不变，那么鱼雷命中率的变化可以通过批量模拟立即量化，而不是靠人眼去看几百次射击动画。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>直觉上以为误差叠加就是简单地把误差幅度相加，比如 0.5° + 0.3° = 0.8°。但独立误差的叠加遵循方差相加规则：标准差是平方和的平方根，比直接相加小。如果误用加法，会导致游戏里散布过宽，鱼雷命中率急剧下降。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>实验配置的数据驱动设计</td><td>散布参数作为可调维度存储在 JSON 配置文件中，策划无需接触模拟引擎代码即可调整。</td></tr>
+                <tr><td>伤害统计与分析管道</td><td>伤害统计管道记录命中/脱靶事件，计算命中率和期望伤害，为散布模型的调优提供定量反馈。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果误差分布不服从高斯分布，而是均匀分布或有偏分布，叠加后的总分布会变成什么形状？如何用卷积和中心极限定理来预测和验证？</li>
+                <li>如何测试游戏中的伪随机数生成器产生的高斯分布是否真的‘足够正态’？可以引入 Q-Q 图和统计假设检验的方法。</li>
+                <li>在批量对比实验中，怎样保证多次运行中使用相同的随机种子来重现完全一致的散布序列，从而实现严格的对照实验？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">这三个概念形成一条清晰的数据链路：实验配置文件通过模拟运行器催生大量战斗，每场战斗产生的伤害事件被统计管道汇聚成结构化的指标，而这些战斗中的鱼雷行为又由散布模型中的误差参数决定。反过来，统计管道产出的命中率、期望伤害等数据，又直接指导着散布参数的调优，并反馈到实验配置的下一轮变更。这种配置—执行—观测—决策的闭环，不依赖任何主观直觉，为游戏平衡调优提供了坚实的工程基础。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">将‘调数值靠猜’变成了‘改参数→跑模拟→看统计→再调参’的科学流程。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何设计实验配置的向前兼容策略，使得新增实验维度时不影响旧版模拟？</li>
+            <li>在线聚合算法的数值稳定性如何保证，以及在 Godot 信号架构下如何避免“漏信号”？</li>
+            <li>如果误差分布不服从高斯分布，叠加后的总分布会变成什么形状？如何验证？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
