@@ -2,6 +2,12 @@
   "months": [
     {
       "year": "2026",
+      "month": "07",
+      "title": "2026年7月教学记录",
+      "path": "./knowledge_log/2026-07-knowledge-log.md"
+    },
+    {
+      "year": "2026",
       "month": "06",
       "title": "2026年6月教学记录",
       "path": "./knowledge_log/2026-06-knowledge-log.md"

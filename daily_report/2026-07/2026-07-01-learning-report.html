@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-07-01 学习笔记日报</title>
+    <meta name="description" content="从确定性复制到炮火散布建模，再到战斗公式凸性约束，揭示可控随机性的三层递进原理。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260701-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-07-01</p>
+        <h1>种子·散布·凸性——随机世界的三层阶梯</h1>
+        <p>今日知识主线串联起从可复现随机、逼真散布到数学安全的三层理解，对应数值模拟系统的可控性、真实性与稳定性。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>可控随机性的三层递进</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>数值模拟中的确定性复制</strong>
+                <small>同一个种子，就能产生完全相同的随机…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>炮火散布的随机建模</strong>
+                <small>炮火散布不是均匀乱飞，而是服从正态…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>战斗公式参数化的凸性约束</strong>
+                <small>数值模拟的任务就是在参数空间中提前…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念构成层次分明的知识塔：PRNG确定性复制提供可复现的随机源，炮火散布服务将随机数映射为物理直觉的空间偏差，凸性约束确保随机偏移进入战斗公式后系统仍保持数学稳定。数据流：PRNG→散布服务→战斗公式，贯穿“任何随机都不能失控”的工程哲学。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["可控随机性的三层递进"])
+  concept1["数值模拟中的确定性复制"]
+  hub --&gt; concept1
+  concept2["炮火散布的随机建模"]
+  hub --&gt; concept2
+  concept3["战斗公式参数化的凸性约束"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["可控随机性的三层递进"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="deterministic-replication">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 计算机科学</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>数值模拟中的确定性复制</h3>
+              <p>Deterministic Replication in Numerical Simulation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">同一个种子，就能产生完全相同的随机数序列，一个不差。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>计算机伪随机数源于确定性的数学递推，种子相同则整个序列完全一致。</li>
+                <li>确定性复制是批量模拟实验、自动化测试和战斗回放的基石。</li>
+                <li>可复现的随机是刻意设计的功能，而非缺陷，它让模拟结果可以精确比对。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="deterministic-replication" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="stochastic-artillery-dispersion">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 物理 / 计算机科学交叉</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>炮火散布的随机建模</h3>
+              <p>Stochastic Modeling of Artillery Dispersion</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">炮火散布不是均匀乱飞，而是服从正态分布的“钟形”模式。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>炮弹落点通常服从二维正态分布，呈现中心密集、越外越稀的钟形模式，而非均匀圆盘。</li>
+                <li>Box-Muller变换将计算机产生的均匀随机数映射为标准正态分布，是散布服务的核心算法。</li>
+                <li>散布服务作为独立领域服务封装了分布选择，未来可无缝切换到混合分布，调用方无需修改。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="stochastic-artillery-dispersion" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="convexity-constraint-formula">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>战斗公式参数化的凸性约束</h3>
+              <p>Convexity Constraints in Parameterized Combat Formulas</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">数值模拟的任务就是在参数空间中提前发现这些危险区域，防止公式崩溃。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>给公式引入新参数可能改变函数的凸性，导致在极端参数处伤害急剧放大或抑制。</li>
+                <li>Hessian矩阵的特征值可以定量判断参数空间中哪些方向的弯曲最剧烈。</li>
+                <li>通过数值模拟批量扫描参数空间，是提前发现危险凸性区域、防止公式崩溃的关键手段。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="convexity-constraint-formula" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="deterministic-replication">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 计算机科学</p>
+                <h3>数值模拟中的确定性复制</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象你和朋友约定好：每次掷骰子前都把骰子放在桌面上“6点朝上、2点朝前”的同一位置，用同样的力度和角度掷出。如果动作真能完全一致，每次掷出的点数序列也会完全一样。这就是“确定性复制”的核心——只要初始条件一致，整个过程就会重复。计算机里的随机数也是这样工作的。它并非真正的随机，而是按照固定的数学公式递推：用当前“状态”算出下一个“状态”，再提取一个看起来乱糟糟的数字。最初的“状态”就是种子。同一个种子，就能产生完全相同的随机数序列。在tiny-sea-war项目中，新增的模拟运行器simulation_runner.gd在每场模拟开始前，用指定种子重置随机数生成器，而后所有炮弹散布、AI决策、伤害波动等需要随机的地方都从该生成器顺序取值。这样，用种子42运行100场战斗，三天后用同样种子再运行100场，结果精确到每一个炮弹落点坐标都相同——这是批量对照实验和自动化测试能够成立的基础。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>伪随机数生成器（PRNG）由递推公式定义：状态ₙ₊₁ = f(状态ₙ)，输出 = g(状态ₙ)，种子决定初始状态₀。</li>
+                <li>因为计算机是确定性机器，没有真正的熵源输入时，PRNG的输出完全由种子决定。</li>
+                <li>模拟框架通过依赖注入共享同一个PRNG实例，确保所有随机调用来自同一序列，杜绝随机源污染。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设你想测试“在射程100米处，散布偏移对伤害的影响”。将种子设为20260701，运行模拟运行器10000次，记录平均伤害为85.3。修复代码后，用同一种子再跑10000次，若平均伤害仍精确为85.3，说明修复未改变数值系统；若变为84.1，则需检查副作用。这种精确比对只有确定性复制才能提供。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为“随机”就是完全不可预测、每次都不一样。但计算机伪随机序列在数学上完全确定，拿到种子就等于拿到了“剧本”。</li>
+                <li>认为可复现的随机是弱点，实际上它是为科学实验和软件测试刻意保留的特性，与物理真随机的不可预测性用途不同。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>炮火散布的随机建模</td><td>散布服务调用共享的PRNG获取随机偏移量，同一种子保证每次射击的偏移序列完全一致，使随机的散布也能被精确复现。</td></tr>
+                <tr><td>战斗公式参数化的凸性约束</td><td>确定性复制使批量参数扫描成为可能：在不同种子下运行，但每个参数组合内部保持可复现，从而可靠绘制伤害热力图，识别凸性危险区。</td></tr>
+                <tr><td>可控随机性的三层递进</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>Godot引擎的RandomNumberGenerator底层使用哪种伪随机算法？它的周期多长，会不会在极端情况下出现序列重复？</li>
+                <li>如果模拟运行器中的某个服务不小心创建了自己的Random实例而没有使用共享实例，会出现什么现象？如何通过代码审查或静态分析防止这种“随机源污染”？</li>
+                <li>除了游戏模拟，确定性复制还在哪些领域有重要应用？金融风控模型、气候模拟、药物临床试验中如何利用这个原理？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="stochastic-artillery-dispersion">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 物理 / 计算机科学交叉</p>
+                <h3>炮火散布的随机建模</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>设想你闭眼往正前方扔100个沙包，多数沙包会密集落在前方某区域，越远离中心沙包越少。用数学描述这一现象最自然的工具就是正态分布——钟形曲线。炮火散布随机建模要回答的核心问题是：一发炮弹开火后，实际落点应偏离瞄准点多远、往哪个方向偏？这个偏离量不是固定值，而是从概率分布中抽取的。最常用的选择是二维正态分布：在瞄准点周围，落点概率密度形成旋转对称的钟形，中心最密，向外渐稀。但计算机只能产生均匀随机数，需要数学变换将其变成钟形。经典的方法是Box-Muller变换：取两个均匀随机数，通过对数和三角函数运算，得到两个服从标准正态分布的随机数。在tiny-sea-war项目中，新引入的gun_dispersion_service.gd封装了这一过程——接收基础瞄准点和散布参数（如标准差），内部调用PRNG和变换算法，返回随机偏移后的弹着点。战斗逻辑层只需“请求一个偏移后落点”，而不关心偏移是用正态分布还是混合分布生成的，体现了领域服务封装的优雅。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>二维正态分布的概率密度函数在笛卡尔坐标下为 f(x,y) = (1/(2πσ²)) exp(-(x²+y²)/(2σ²))，具有旋转对称性。</li>
+                <li>Box-Muller变换：设U₁, U₂ ~ Uniform(0,1)，则 Z₁ = sqrt(-2 ln U₁)·cos(2πU₂)，Z₂ = sqrt(-2 ln U₁)·sin(2πU₂) 独立服从标准正态分布。</li>
+                <li>散布服务通过依赖注入获取PRNG实例，将均匀随机数转换为空间偏移，固定种子时偏移序列完全可复现。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设舰炮的散布标准差在1000米射程处为30米。一发瞄准敌舰正中央的炮弹，有约68%的概率落在半径30米的圆内，约95%的概率落在半径60米的圆内。若想让远距离射击体验“不靠谱但偶尔蒙中”，可调大标准差；近战致命则收缩标准差。这些参数存储在combat_settings.json中，散布服务读取后计算偏移。日后若发现纯正态分布缺乏惊喜，只需修改服务内部的分布选择（如90%精确模式+10%扰动模式），战斗逻辑层代码一字不改。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为炮弹散布就是“在瞄准点周围画一个圆，落点均匀分布”。均匀圆盘模型不符合物理直觉，真实炮弹应密集聚集在中心。</li>
+                <li>以为在极坐标下对角度均匀采样、距离正态采样就能得到二维正态分布。这会破坏旋转对称性，产生矩形落点模式，正确做法是在笛卡尔坐标系中分别对x和y采样。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>数值模拟中的确定性复制</td><td>散布服务从共享的随机数生成器中取数，经过Box-Muller等变换映射为空间偏移，固定种子下每一炮的偏移序列完全可复现。</td></tr>
+                <tr><td>战斗公式参数化的凸性约束</td><td>散布产生的弹着偏移会改变“等效射程”或命中判定，进而影响战斗公式的伤害输出，散布参数与公式中的射程倍率参数可能产生交互效应。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>Box-Muller变换的数学推导是怎样的？为什么两个均匀随机数经过对数和三角函数运算后就能变成正态分布？有没有更快的替代算法？</li>
+                <li>除了正态分布，还有哪些概率分布适合模拟武器散射？瑞利分布、韦布尔分布、或混合分布各自有什么物理意义上的优势？</li>
+                <li>如何在固定种子的N次采样中验证“落点真的服从正态分布”？Kolmogorov-Smirnov检验和Q-Q图的原理是什么，在测试契约中如何应用？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="convexity-constraint-formula">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学</p>
+                <h3>战斗公式参数化的凸性约束</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>先看一个简单的伤害公式：伤害 = 100 × (1 + 射程 ÷ 500)。射程增加时伤害匀速增长，图像是一条笔直的斜线——线性函数，它“不弯”。若数值策划觉得“不同武器对射程的敏感度应不同”，引入参数α变为 伤害 = 100 × (1 + α × 射程 ÷ 500)。看起来只多了个可调旋钮，但当α很大时，射程的增加被急剧放大：本来每米加0.2伤害，α=3时变成加0.6，可能导致某些远距离武器异常致命。这就是“凸性变化”。凸性描述函数曲线的“弯曲方向”：向上弯（凸函数）意味着极端变化越来越快，向下弯（凹函数）则越来越慢。参数化可能让原线性函数在某个方向变凸，产生爆炸性结果。tiny-sea-war在6月30日修改combat_formulas.json及相关文档，很可能调整了类似参数，而模拟运行器的价值就在于系统性探索参数空间边界，避免数值崩溃。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>线性函数 f(x)=ax+b 的二阶导数为0，没有弯曲；引入参数α后，g(x,α)=a(α)x+b(α)，对x仍线性，但在(x,α)二维空间中Hessian矩阵可能出现非零特征值，表明存在弯曲。</li>
+                <li>凸函数的二阶导数≥0，凹函数≤0；在参数空间中，Hessian矩阵特征值的正负和大小标识了各方向弯曲方向和剧烈程度。</li>
+                <li>当多个参数存在交互时，极端值处的联合效应可能远大于单个参数效应的简单叠加，需要网格扫描才能暴露。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>考虑简化的伤害公式 D = 100 × (1 + r × β / 500)，其中 r 为射程（0~2000米），β 为新倍率参数（0.1~3.0）。当 β=1 时，r=2000 伤害为500；β=3 时伤害变为1300。表面看仅是3倍关系，但若关注“每新增1米射程的伤害增益”，β=1 时每米增益0.2，β=3 时每米增益0.6——在2000米处，0.6×2000=1200 的增益量已超过基础伤害。数值策划若未考虑这种放大效应，可能设计出“射程极长但基础伤害很低”的武器，在高β值下突然神装。数值模拟通过绘制“伤害热力图”，让所有危险参数组合一目了然。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为“加一个参数只是多了一个旋钮，函数行为不会发生本质变化”，但参数化可能改变凸性和单调性等结构特征。</li>
+                <li>以为“只要每个参数单独调好，放在一起就没问题”，实际上参数间常有交互效应，可能导致超线性放大。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>数值模拟中的确定性复制</td><td>确定性复制使批量参数扫描可靠：不同参数组合下使用不同种子，但每个组合内部保持可复现，从而准确绘制伤害随参数变化的曲线。</td></tr>
+                <tr><td>炮火散布的随机建模</td><td>散布偏移直接影响等效射程或命中判定，与公式中的射程倍率参数共同决定伤害，二者的交互是凸性分析的重点对象。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何计算一个二元函数在某点的Hessian矩阵？特征值的正负如何决定函数的凸性？</li>
+                <li>在实际数值策划中，有没有比手动扫描参数空间更系统的方法来确保公式在边界处不崩溃？比如基于凸优化的KKT条件约束参数范围？</li>
+                <li>如果战斗公式不是简单的多项式，而是包含分段函数、条件判断或取整操作，它的“凸性”该如何定义和分析？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念构成层次分明的知识塔：PRNG确定性复制提供可复现的随机源，炮火散布服务将随机数映射为物理直觉的空间偏差，凸性约束确保随机偏移进入战斗公式后系统仍保持数学稳定。数据流：PRNG→散布服务→战斗公式，贯穿“任何随机都不能失控”的工程哲学。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">计算机里的“随机”其实是确定的数学递推，同一个种子保证同一个序列——这就是模拟实验能够精确复现的根本原因。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>Godot引擎的RandomNumberGenerator底层使用哪种伪随机算法？其周期多长？</li>
+            <li>如何通过Kolmogorov-Smirnov检验验证固定种子下的炮弹落点真的服从正态分布？</li>
+            <li>如何计算二元战斗公式的Hessian矩阵，并用特征值划定参数的安全边界？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
