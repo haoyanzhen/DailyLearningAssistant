@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-07-03 学习笔记日报</title>
+    <meta name="description" content="今天从回合制战棋游戏的AI设计变更中，提炼出三条升级概念：ODA架构让AI分步思考，权重模型让战术直觉可计算，仿真闭环用实验证明谁更强。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260703-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-07-03</p>
+        <h1>看得清·想得明·做得对·测得准——游戏 AI 系统升级路径</h1>
+        <p>从一款回合制战棋游戏的设计变更线索中，我们抽出一条清晰的 AI 系统升级路径：从让 AI “看得清、想得明”，到“做得对、测得准”。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>游戏 AI 系统升级</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>观察-决策-执行（ODA）…</strong>
+                <small>ODA 循环：观察 → 决策 →…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>基于权重的启发式 AI 量…</strong>
+                <small>权重打分表——把战术直觉变成可计算…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>仿真闭环实验与无偏聚合器</strong>
+                <small>仿真闭环 + 无偏聚合 = 用成千…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">ODA 架构定义了 AI 思考的骨架，而量化模型就是这个骨架上的肌肉，赋予每个决策具体的力量数值。为了让这些肌肉在实战中既不扭曲也不偏颇，仿真闭环实验和它的无偏聚合器就像是裁判和统计官，只记录事实、不干涉过程。特别地，量化模型需要领域服务提供干净的战场信息作为输入，而仿真闭环的输出又会反哺到平衡性分析中，形成“设计→验证→再设计”的完整回路。贯穿始终的，是软件工程中对职责清晰、数据契约和统计中立性的反复强调，这让整个系统既有智能的灵动，也有工程的可靠。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["游戏 AI 系统升级"])
+  concept1["观察-决策-执行（ODA）架构"]
+  hub --&gt; concept1
+  concept2["基于权重的启发式 AI 量化模型"]
+  hub --&gt; concept2
+  concept3["仿真闭环实验与无偏聚合器"]
+  hub --&gt; concept3
+  related1["领域服务"]
+  concept1 --&gt; related1
+  concept1 --&gt; concept2
+  concept2 --&gt; concept1
+  related2["领域服务 / 分层测试体系"]
+  concept2 --&gt; related2
+  related3["游戏平衡性量化分析"]
+  concept3 --&gt; related3
+  related4["数据管道 / 确定性复制"]
+  concept3 --&gt; related4
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="oda-architecture">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 游戏AI</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>观察-决策-执行（ODA）架构</h3>
+              <p>Observation-Decision-Execution (ODA) Architecture</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">ODA 循环：观察 → 决策 → 执行，让 AI 像专业棋手一样思考。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>将 AI 行为拆解为观察、决策、执行三个独立步骤</li>
+                <li>每一步均可独立设计与测试，降低整体复杂性</li>
+                <li>循环进行，使 AI 在动态战场上做出连贯合理的行为</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="oda-architecture" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="heuristic-weighted-quantification-model">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 游戏AI</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>基于权重的启发式 AI 量化模型</h3>
+              <p>Heuristic Weighted AI Quantification Model</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">权重打分表——把战术直觉变成可计算的数值，调一个权值，AI 的性格就完全变了。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>将决策因素量化为可计算的分数，乘以权重后求和得到行动总分</li>
+                <li>调整权重即可改变 AI 的行为风格，从激进到保守</li>
+                <li>不同量纲的因素必须归一化，否则权重分配会失效</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="heuristic-weighted-quantification-model" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="simulation-closed-loop-unbiased-aggregator">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>仿真闭环实验与无偏聚合器</h3>
+              <p>Simulation Closed-loop Experiment and Unbiased Aggregator</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">仿真闭环 + 无偏聚合 = 用成千上万次自动对战兑现统计中立，让平衡不再是拍脑袋。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>在相同条件下自动重复对战成千上万次，消除偶然性</li>
+                <li>无偏聚合器只负责统计，不参与模拟或篡改数据，确保中立</li>
+                <li>闭环设计保证每次实验起点一致，使结论具有可比性</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="simulation-closed-loop-unbiased-aggregator" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="oda-architecture">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 游戏AI</p>
+                <h3>观察-决策-执行（ODA）架构</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>观察-决策-执行架构，简称 ODA，是一种让程序像人一样分三步走处理问题的方法。第一步是观察，像侦察兵一样收集周围的信息：哪里有敌人、地形怎么走、雷区在哪儿。第二步是决策，像指挥官一样根据情报算出各种行动的优劣，选出一个最好的。第三步是执行，真正把指令发给角色，让它移动、攻击或者使用技能。这三个步骤循环进行，每回合都走一遍，就能让 AI 在变化不断的战场上做出连贯、合理的行为。它最大的好处是把复杂的智能任务拆成了可以独立设计和测试的小块，让开发者不至于面对一团乱麻。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>将智能行为分解为顺序进行的感知、评估和行动三个阶段</li>
+                <li>每个阶段有明确的输入输出，便于模块化开发和测试</li>
+                <li>通过循环迭代，每次决策都基于最新的观察结果，适应动态环境</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在回合制战棋中，一个 AI 单位处于森林边缘。观察阶段获取三个敌方单位信息；决策阶段使用加权公式打分，比较攻击掩体后敌人与攻击皮薄敌人；最终选择风险较低的目标并移动攻击。这就是 ODA 循环的一场具体演出。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误认为 ODA 循环必须严格串行，实际在高帧率游戏中三步可能交叠或并行</li>
+                <li>误以为观察能获取全部精确信息，真实游戏中 AI 视野受限，决策需处理不确定性</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>领域服务</td><td>ODA 架构的决策阶段需要调用领域服务来获取准确的战术数据，因此领域服务的职责拆分会直接决定决策模块的清晰程度。</td></tr>
+                <tr><td>基于权重的启发式 AI 量化模型</td><td>当决策阶段采用基于权重的启发式量化模型时，ODA 循环的中间环节就变成了一个可调参数的数学评分器。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>在不完全信息环境下，如何设计观察层的“模糊感知”来模拟战争迷雾？</li>
+                <li>如果决策阶段出现两个分数接近的候选行动，应该如何打破平局以避免 AI 表现得犹豫不决？</li>
+                <li>如何利用 ODA 架构将人类玩家的复盘分析自动转化为 AI 的决策规则？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="heuristic-weighted-quantification-model">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 游戏AI</p>
+                <h3>基于权重的启发式 AI 量化模型</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>这是一种让 AI 做选择时像打分表的思考方式。设计者先挑出几个影响决策的关键因素，比如“这一击能打掉多少血”、“打完我会不会挨打”、“需不需要跨过雷区”。然后给每个因素设置一个权重，表示它有多重要。AI 面对每个可能的行动时，都按同样的公式算出一个总分：分数 = 伤害值×权重1 + 安全程度×权重2 + 距离惩罚×权重3 ……最后选总分最高的行动。这叫启发式，因为它并不保证是完美的最优解，而是一种凭经验总结出的“好办法”；叫量化，是因为所有模糊的判断都被转化成了可比较的数字。开发者只需要调整权重，就能让 AI 变得激进、保守或是狡猾。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>建立基于关键因素和权重的线性/非线性评分模型</li>
+                <li>通过调整权重来模拟不同的决策偏好，实现可控的智能行为</li>
+                <li>归一化处理保证不同量级特征公平参与计算，避免某因素主导决策</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>AI 步兵单位有两个选择：远程射击伤害30但安全，冲锋可造成80伤害但下回合会被集火。量化模型分别计算伤害值、生存降级、阵型加成，按权重0.5/0.3/0.2打分：远程得分75，冲锋得分40，于是AI稳健地选择远程攻击。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为权重越大越好，其实关键在于归一化和范围一致，否则高数值因素会淹没低数值因素</li>
+                <li>以为打分公式是死板的，实际上它可以包含非线性的条件分支（如紧急保命触发）</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>观察-决策-执行（ODA）架构</td><td>量化模型恰好嵌在 ODA 架构的决策阶段，负责将观察到的战场数据换算成每个候选行动的得分。</td></tr>
+                <tr><td>领域服务 / 分层测试体系</td><td>权重计算依赖领域服务提供明确定义且有边界的数据，而分层测试体系需要对不同权重组合下的 AI 行为进行回归验证。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何自动搜索出一组使 AI 胜率达到最高的最优权重，而不是手动反复试错？</li>
+                <li>当战场局势变化剧烈时，怎样让 AI 动态调整权重以适应不同的作战阶段？</li>
+                <li>能否为每个 AI 单位设定个性权重，从而营造出不同指挥官风格的对战体验？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="simulation-closed-loop-unbiased-aggregator">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>仿真闭环实验与无偏聚合器</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>仿真闭环实验，就是在一套严格的规则下，让两支 AI 控制的队伍不断自动对战，成百上千次，然后把每次战斗的胜负、伤亡、耗时等数据记录下来。关键在于闭环：每次实验的起点是同一组配置（阵容、地图、规则），中间模拟过程完全自动化，终点是聚合成一份统计报告。这就像药物试验，必须用相同剂量、相同条件反复测试，才能排除偶然性。而无偏聚合器则是专门负责“收作业”的角色，它的唯一职责是把一大堆战斗记录汇总成平均数、胜率、标准差这类统计量，绝不插手模拟本身，也不偷改数据。这样一来，我们才敢说：“A 阵容胜率 62%，B 阵容 38%，这是纯粹由阵容和战术差异造成的，而不是因为统计的人作弊。”</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>设定固定初始条件，通过大批量自动化模拟得到统计样本</li>
+                <li>使用独立于模拟过程的聚合器计算统计量，避免数据污染</li>
+                <li>通过 side swap 等交叉验证手段消除固有偏差，提高结论可信度</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>项目中的 harbor 3v3 模拟及 side swap 对比：原版胜率55%，交换双方位置后原版方胜率降至48%，揭示出原先优势部分源自地图朝向。聚合器汇总数百场战斗，修正地形偏差后得到真实实力对比。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为仿真闭环等同于“多跑几遍平均一下”，但如果聚合器对异常局过滤或判定标准随意放宽，结果就会被污染</li>
+                <li>误以为聚合器应该参与决策，比如动态调整天平，那样就失去了无偏性，变成在线平衡而非统计验证</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>游戏平衡性量化分析</td><td>仿真闭环的结果是平衡性分析的直接素材，只有通过大规模模拟累积的统计量，才能将“队伍强度”从感觉变为可比较的数字。</td></tr>
+                <tr><td>数据管道 / 确定性复制</td><td>数据管道是仿真闭环的前置环节，若角色配置数据出错，仿真结果无效；而前一天学的确定性复制（种子锁）为仿真提供可复现的技术前提。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何确定一个仿真达到“统计显著”所需要的最少重复次数，而不会浪费计算资源或过早下结论？</li>
+                <li>如果在聚合阶段发现异常大幅波动的单场战斗，应当全盘保留、剔除并记录，还是单独分析？</li>
+                <li>能否把仿真闭环从离线批量运行升级为持续集成的一部分，让每次配置改动都自动触发模拟并生成报告？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">ODA 架构定义了 AI 思考的骨架，而量化模型就是这个骨架上的肌肉，赋予每个决策具体的力量数值。为了让这些肌肉在实战中既不扭曲也不偏颇，仿真闭环实验和它的无偏聚合器就像是裁判和统计官，只记录事实、不干涉过程。特别地，量化模型需要领域服务提供干净的战场信息作为输入，而仿真闭环的输出又会反哺到平衡性分析中，形成“设计→验证→再设计”的完整回路。贯穿始终的，是软件工程中对职责清晰、数据契约和统计中立性的反复强调，这让整个系统既有智能的灵动，也有工程的可靠。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">用证据而不是感觉来回答“谁更强”——这是仿真闭环带给游戏平衡的真正飞跃。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>在不完全信息环境下，如何设计观察层的“模糊感知”来模拟战争迷雾？</li>
+            <li>如何自动搜索出一组使 AI 胜率达到最高的最优权重，而不是手动反复试错？</li>
+            <li>如何确定一个仿真达到“统计显著”所需要的最少重复次数，而不会浪费计算资源或过早下结论？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
