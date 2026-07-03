@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-07-04 学习笔记日报</title>
+    <meta name="description" content="今日深入游戏AI的观察层信息结构、难度档位参数化和平局打破策略，构筑可解释行为的铁三角。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260704-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-07-04</p>
+        <h1>AI的眼睛与大脑：观察层、难度参数与平局打破</h1>
+        <p>聚焦沿岸战斗AI的感知与决策细节，从观察层的结构化情报到难度参数的性格旋钮，再到平局打破的战术风格，完整勾勒出现代战术AI的精细管道。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>AI决策的感知、参数与平滑</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>观察层信息结构</strong>
+                <small>观察层不只是转交数据，它把最原始的…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>难度档位参数化</strong>
+                <small>让 AI 变难的最好方式不是偷偷给…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>定量决策模型中的平局打破策略</strong>
+                <small>当几个选项得分几乎一样时，AI 如…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">观察层信息结构为决策模型提供了经过提炼和语义转换的战场视图，是 AI 认知世界的起点；难度档位参数化则在这条认知管道上安装了一系列可调节的旋钮，让同样的代码呈现出截然不同的行为模式；而平局打破策略则是决策模型与真实行动之间的最后一道细腻滤镜，它让参数变化带来的行为过渡变得平滑而合理。三者之间是层层递进又互相咬合的关系：没有清晰的观察层，参数化难度就只能停留在加减血量的粗糙境地；缺少精妙的平局打破，再精致的参数化也可能在临界点上产生让人出戏的行为跳变。它们共同构成一个可解释、可调校、可演进的 AI 行为铁三角。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["AI决策的感知、参数与平滑"])
+  concept1["观察层信息结构"]
+  hub --&gt; concept1
+  concept2["难度档位参数化"]
+  hub --&gt; concept2
+  concept3["定量决策模型中的平局打破策略"]
+  hub --&gt; concept3
+  concept1 --&gt; concept3
+  concept1 --&gt; concept2
+  related1["可观察性设计"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept3
+  concept2 --&gt; concept1
+  related2["仿真闭环系统"]
+  concept2 --&gt; related2
+  concept3 --&gt; concept3
+  concept3 --&gt; concept2
+  concept3 --&gt; related2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="observation-layer">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 游戏AI</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>观察层信息结构</h3>
+              <p>Observation Layer Information Structure</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">观察层不只是转交数据，它把最原始的坐标和血量翻译成了“敌军正在港口入口集结形成夹击之势”这样的战术情报，是 AI 摆脱上帝视角的第一步。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>观察层对原始战场信息进行筛选、组合和语义翻译，输出结构化战术情报。</li>
+                <li>独立模块化设计，便于调节和升级，实现从全知到迷雾的连续感知谱。</li>
+                <li>通过控制感知范围和噪声程度，为难度档位参数化提供“视力调节”的深度。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="observation-layer" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="difficulty-parameterization">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 游戏AI</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>难度档位参数化</h3>
+              <p>Difficulty Tier Parameterization</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">让 AI 变难的最好方式不是偷偷给它加伤害，而是扭动它的“性格旋钮”——调高冒险倾向、降低防御意识，用同一套逻辑创造出步步惊心的压迫感。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>不改变AI基本逻辑，而是调整决策模型中的参数（进攻欲望、防御意识等）。</li>
+                <li>难度变化可预测、可解释，数值策划可在数据层面打磨。</li>
+                <li>与观察层联动，实现多维度的难度调节。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="difficulty-parameterization" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="tie-breaking-strategy">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 游戏AI</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>定量决策模型中的平局打破策略</h3>
+              <p>Tie-breaking Strategy in Quantitative Decision Models</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">当几个选项得分几乎一样时，AI 如何选择体现的是它被赋予的内在倾向，这种平局打破策略正是让同一个决策模型在不同难度下展现出截然不同战斗风格的秘诀。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>在得分接近时，避免行为跳变，通过倾向项或阈值实现平滑决策。</li>
+                <li>将难度档位的“性格参数”注入平局选择，让AI在模糊地带展现不同风格。</li>
+                <li>保证决策稳定性，防止参数临界区的乒乓效应。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="tie-breaking-strategy" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="observation-layer">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 游戏AI</p>
+                <h3>观察层信息结构</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象你正指挥一场海战，游戏界面上同时闪动着几十条信息：每个单位的位置、航速、血量、弹药。如果把这些原始的混乱数据直接甩给 AI 的决策模块，它就像被塞进一间同时播放十部电影的房间——什么也看不清。观察层要做的，就是在这堆数据与决策大脑之间建造一间“情报分析室”。它专门负责筛选、组合和翻译：把三个敌方单位的坐标归纳为“南侧出现局部优势敌军”，把礁石和浅滩的位置标记为“可用的掩体”或“危险的暴露区域”。这样一来，决策模型看到一个简洁清晰的战略简图，而不是无数碎数字。今天工程中新增的 `ai_observation.gd`，正是把这间分析室从散落在各处的代码中独立成模块，让 AI 的“视力”既可以自由调节，也方便日后检查和升级。这就是 AI 感知世界的第一道智慧之门。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>数据筛选：从海量原始数据中过滤出与决策相关的单位信息。</li>
+                <li>语义抽象：将坐标、速度等几何数据转化为“暴露程度”、“压力指数”等战术含义。</li>
+                <li>可配置性：通过调节内部规则和噪声，实现对感知精度的控制。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在沿岸攻防战中，观察层可能会生成这样一份情报摘要：“我舰位于港口入口，(33, 57) 礁石后方提供掩护；探测到敌鱼雷艇两艘，正在浅滩外侧低速移动，因水深限制未进入鱼雷有效射界；另东北方向出现敌方驱逐舰信号，判断将在约15秒后构成夹击态势。” 这份摘要已经把所有几何和安全信息翻译成了战术含义，决策模型可以直接据此决定是伏击、撤离还是请求支援。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>常见的误解是以为观察层只是一个负责把游戏数据打包传给决策模块的“快递员”。实际上，快递员不会拆开包裹重新整理。观察层真正的价值在于它内部的“翻译”和“抽象”：把几何坐标转化为“暴露程度”，把敌方单位数量的变化转化为“压力指数”。这需要理解游戏规则和战术语境，是典型的“语义提取”，而不是简单的数据拷贝。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>定量决策模型</td><td>观察层是其直接上游，决定了决策模型看到的世界是什么样的，是 AI 智能行为可靠性的根基。</td></tr>
+                <tr><td>难度档位参数化</td><td>通过调节观察层的感知范围和噪声程度，可以优雅地实现难度档位参数化中的“视力调节”，比单纯加减数值更有深度。</td></tr>
+                <tr><td>可观察性设计</td><td>独立的观察层本身就是一种可观察性设计，让开发者能够清楚地记录“AI 在某时刻看到了什么”，为后续的调试和行为复盘提供了可靠的信息窗口。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何衡量观察层信息失真度对最终决策质量的影响？能否通过仿真对比半知观察层和全知观察层的胜率差异来定量分析？</li>
+                <li>如果战场单位数量极大，观察层如何智能地过滤掉不重要的信息，避免“信息过载”，像人类玩家那样拥有天然的“注意力焦点”？</li>
+                <li>能否让观察层产生类似人类的“误判”，比如把两艘距离很近的敌舰误认为一艘大舰，从而创造出更有趣的战术意外？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="difficulty-parameterization">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 游戏AI</p>
+                <h3>难度档位参数化</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>很多游戏在调节难度时，用的是一种“粗暴而真诚”的办法：给敌人直接加 50% 的血量，或者让它们的子弹伤害翻倍。这就像让人和拳击手比赛时，给拳击手戴上更厚的拳套，却告诉他你要变得更凶猛——这不合理。难度档位参数化则走了一条更精细的路：不改变 AI 的基本逻辑，而是调整它决策模型中一系列被称为“性格旋钮”的参数。例如，一个旋钮控制“进攻欲望”，另一个控制“防御意识”，还有一个控制“冒险倾向”。在低难度下，我们把进攻欲望调低、防御意识调高，AI 就会倾向于集结舰队固守，只在我方明显失误时才谨慎出击。在高难度下，我们扭动旋钮，提高进攻欲望和冒险倾向，同一个 AI 就可能分出多路舰队，主动利用浅滩抄后路，甚至故意露出一艘船引诱你进入雷区。今天新增的 `ai_profiles.json` 和配套测试，正是用一组设计好的参数文件来驱动这种“换脑不换身”的难度切换。这种方法的好处是：难度变化可预测、可解释，而且数值策划可以在数据层面慢慢打磨，而不是让程序员反复重写 AI 的脑回路。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>参数化决策权重：将决策模型的权重从常量变为可配置变量。</li>
+                <li>性格旋钮映射：每个参数对应明确的行为倾向（进攻、防御、冒险）。</li>
+                <li>仿真验证：通过批量对战测试不同参数组合的效果。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在沿岸战斗关卡中，简单难度（温和档）的参数可能设置为：防御权重 0.8、进攻权重 0.2、冒险倾向 0.1、感知误差 0。那么 AI 会像一个拘谨的指挥官，时刻保持舰队阵型，只在绝对有把握时才开火。困难难度（疯狂档）的参数则可能是：防御权重 0.2、进攻权重 0.8、冒险倾向 0.85、感知误差 0（但可以通过观察层注入感知噪声）。此时 AI 像一个不要命的将军，舰艇四散出击，甚至连自己弱点都不顾，反复试探压迫你的操作极限。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>常有人认为一旦把 AI 行为参数化，AI 就会变得像个难以预测的数学黑箱，调了一个权重不知道其他行为会怎么连带变化。其实，设计良好的参数化模型恰恰是让黑箱变透明的工程实践。因为每个参数都有明确的含义（“这是防守倾向”、“这是冒险值”），开发者可以直接预测参数变化的方向性效果，并且通过仿真批量测试来精确了解参数空间中的行为分布。它不仅没有让 AI 变得更神秘，反而让它变成了一个可控的科学实验场。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>定量决策模型</td><td>难度档位参数化直接作用于定量决策模型，通过修改其权重来改变行动的得分排序，是同一种模型在不同“人格”下的表现变换器。</td></tr>
+                <tr><td>观察层信息结构</td><td>可以和观察层信息结构联动，不只在决策层改变倾向，还能在感知层调低观察精度或引入假情报，创造出更真实的高难度压迫体验。</td></tr>
+                <tr><td>仿真闭环系统</td><td>在仿真闭环验证中，不同档位的 AI 可以批量对战，用聚合器统计各档位的胜率、平均伤害等指标，帮助数值策划找到让每一档都“有挑战但不绝望”的最佳参数区间。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果参数空间很庞大（比如有十几个可调权重），如何避免手动试错调参的“维度灾难”？能否用贝叶斯优化等自动调参方法在仿真中高效搜索？</li>
+                <li>如何检验一组参数产生的 AI 行为既符合难度定位，又不出现反直觉的举动（比如因进攻权重过高而将运输船拿来当肉盾）？</li>
+                <li>能否让玩家在游戏过程中“无形中”训练出自己的专属难度档位，使 AI 像对手一样适应玩家的风格，既不一直碾压也不刻意放水？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="tie-breaking-strategy">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 游戏AI</p>
+                <h3>定量决策模型中的平局打破策略</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>假设你已经让 AI 建立了一张精细的打分表：进攻选项 A 得 82 分，防守选项 B 得 80 分，毫无疑问选 A。那么，如果 A 和 B 都恰好得了 80 分呢？或者 A 得 80.1 分，B 得 80 分，微小的优势真的足以做出截然不同的选择吗？在真正的战术 AI 中，从一组连续得分到最终唯一的行动指令，中间必须经过一个优雅的“映射器”。这个映射器就是平局打破策略。简单粗暴的办法是，谁分高选谁，平局随机挑一个。但这会导致当参数轻微变化、分数交替时，AI 的行动突然从全军撤退蹦到自杀式冲锋，行为出现让人出戏的“跳变”。一个成熟的平局打破策略会引入“倾向项”：比如给防守选项加一个微小的安全偏移量，或者在分数差距小于某个阈值时，强制让 AI 根据当前难度档位的“冒险倾向”来选择。这样做的好处是：决策行为随参数的变化是连续的、平滑的，而不是在临界点上抽风。此外，它还把 AI 的“性格”注入了决策的最后环节：同样的分数分布，激进性格的 AI 会主动打破平局选择冒险，而谨慎性格的 AI 则在模糊地带选择以守为攻。这恰恰应了昨天那个极好的问题：“两个候选行动分数接近时，该怎么打破平局？”今天材料中难度档位的设计，暗示了答案就在参数化的倾向策略里。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>安全偏移量：为保守选项临时增加偏移值，使等效得分倾斜。</li>
+                <li>阈值与倾向：当分差小于阈值时，根据难度档位的冒险倾向选择。</li>
+                <li>行为平滑：确保参数连续变化时，行为不会出现突变。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在沿岸战斗里，假设 AI 护卫舰面临两个选择：“全速冲入港口进行雷击”得分 85，“保持在礁石后掩护主力”得分 84，差距极小。如果难度档位的“稳重倾向”参数很高，那么平局打破策略会给“掩护”选项临时加一个 +3 的偏移值，最终等效得分 87 &gt; 85，AI 选择稳妥。反之，如果当前是“疯狂”档位，冒险倾向参数很高，“冲锋”选项可能得到额外的 +5 偏移，AI 选择放手一搏。这样，一个参数决定了模糊地带的走向，让行为充满了可定制的戏剧性。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>很多人以为决策的优劣全在看打分，打分高了行动自然就好。但工程实践中，最脆弱的地方往往不是打分模型本身，而是那个“得分→行动”的映射环节。如果这个环节设计粗糙，即使打分模型精准无比，AI 也可能在参数略微变化时出现行为来回翻转的“乒乓效应”。正确的认知是：平局打破策略是决策稳定性的压舱石，它保证了 AI 行为的变化是渐变的面貌，而不是断崖式的突变，让玩家感觉 AI 的行为有逻辑可循。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>定量决策模型</td><td>平局打破策略是定量决策模型将其连续得分转化为最终离散行动的最后映射步骤，它的设计质量直接决定了 AI 在参数临界区的行为稳定性。</td></tr>
+                <tr><td>难度档位参数化</td><td>该策略的倾向参数自然可以融入难度档位参数化系统，让同一 AI 在相同战术态势下，只因难度档位不同就展现出迥异的模糊选择风格。</td></tr>
+                <tr><td>仿真闭环系统</td><td>在仿真闭环系统中，可以通过分析大量对战数据来识别平局发生的频率，以及不同打破策略对胜率和战斗时长的影响，从而反向验证策略的合理性与趣味性。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何设计一个在数学上避免“循环偏好”的平局打破规则？例如，当 A 与 B 接近时选 A，B 与 C 接近时选 B，但可能存在另一种接近关系导致 A 优于 C 而又劣于 C 的矛盾，如何彻底杜绝？</li>
+                <li>如果允许在分数接近时引入受控的随机噪声来打破平局，如何量化这个噪声的强度才能既让 AI 行为不那么机械，又不让玩家觉得它是在乱玩？</li>
+                <li>能否从高水平玩家的对战复盘中学习他们的平局打破模式，用机器学习提取出人类在模糊态势下的微倾向，并将其参数化写入 AI？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">观察层信息结构为决策模型提供了经过提炼和语义转换的战场视图，是 AI 认知世界的起点；难度档位参数化则在这条认知管道上安装了一系列可调节的旋钮，让同样的代码呈现出截然不同的行为模式；而平局打破策略则是决策模型与真实行动之间的最后一道细腻滤镜，它让参数变化带来的行为过渡变得平滑而合理。三者之间是层层递进又互相咬合的关系：没有清晰的观察层，参数化难度就只能停留在加减血量的粗糙境地；缺少精妙的平局打破，再精致的参数化也可能在临界点上产生让人出戏的行为跳变。它们共同构成一个可解释、可调校、可演进的 AI 行为铁三角。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">让 AI 变难的最好方式不是偷偷给它加伤害，而是扭动它的“性格旋钮”——调高冒险倾向、降低防御意识，用同一套逻辑创造出步步惊心的压迫感。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何衡量观察层信息失真度对最终决策质量的影响？能否通过仿真对比半知观察层和全知观察层的胜率差异来定量分析？</li>
+            <li>能否让玩家在游戏过程中“无形中”训练出自己的专属难度档位，使 AI 像对手一样适应玩家的风格，既不一直碾压也不刻意放水？</li>
+            <li>如果允许在分数接近时引入受控的随机噪声来打破平局，如何量化这个噪声的强度才能既让 AI 行为不那么机械，又不让玩家觉得它是在乱玩？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
