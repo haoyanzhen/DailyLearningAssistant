@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-07-06 学习笔记日报</title>
+    <meta name="description" content="从伪随机数生成器的周期特性到统计功效分析，再到打破平局的传递性约束，构筑仿真决策的可靠基石。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260706-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-07-06</p>
+        <h1>仿真三基石：可复现、可信赖、可解释</h1>
+        <p>今日从随机底座、统计验证到决策逻辑，探索游戏AI仿真优化的三大承诺。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>今日知识主线</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>伪随机数生成器的算法选择与…</strong>
+                <small>选对伪随机算法，就是给仿真上一把永…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>仿真实验的统计功效与最小样…</strong>
+                <small>功效分析不是锦上添花，而是仿真实验…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>打破平局的传递性约束与无环…</strong>
+                <small>给决策上把锁：任何打破平局的规则…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">伪随机数生成器提供确定性复制的算法基础，统计功效分析为每一次仿真实验设定合理的样本容量，而传递性约束则为决策层的平局打破筑起逻辑堤坝。三者之间环环相扣：仿真需要周期足够长、质量足够好的随机源，才能让功效计算不虚；决策需要传递性保证，才能让基于仿真的调参结论不被畸形的偏好循环拖入歧途。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["今日知识主线"])
+  concept1["伪随机数生成器的算法选择与周期特性"]
+  hub --&gt; concept1
+  concept2["仿真实验的统计功效与最小样本量确定"]
+  hub --&gt; concept2
+  concept3["打破平局的传递性约束与无环偏好关系"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  concept2 --&gt; concept1
+  related1["贝叶斯优化与仿真迭代"]
+  concept2 --&gt; related1
+  related2["定量决策模型中的平局打破策略"]
+  concept3 --&gt; related2
+  concept3 --&gt; concept1
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="pseudo-random-generator-cycle">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 计算机科学</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>伪随机数生成器的算法选择与周期特性</h3>
+              <p>Pseudorandom Number Generator Algorithm and Cycle Characteristics</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">选对伪随机算法，就是给仿真上一把永不重复的剧本锁。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>种子是钥匙，算法是锁芯，决定序列的周期与质量。</li>
+                <li>短周期算法会导致仿真后期循环早期模式，破坏独立性。</li>
+                <li>梅森旋转周期极长（2^19937-1），适合大规模仿真。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="pseudo-random-generator-cycle" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="statistical-power-sample-size">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>仿真实验的统计功效与最小样本量确定</h3>
+              <p>Statistical Power and Minimum Sample Size Determination for Simulation Experiments</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">功效分析不是锦上添花，而是仿真实验的预算规划师。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>功效是当真实差异存在时，实验能检测到它的概率（1-β）。</li>
+                <li>设定α、β和期望效应量，即可计算出最少仿真局数N。</li>
+                <li>只看p值不看样本量和效应量，易陷入假阳性或假阴性陷阱。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="statistical-power-sample-size" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="transitivity-constraint-tie-breaking">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 计算机科学 / 游戏AI</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>打破平局的传递性约束与无环偏好关系</h3>
+              <p>Transitivity Constraint in Tie-breaking and Acyclic Preference Relations</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">给决策上把锁：任何打破平局的规则，都必须能排成一条直线。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>非传递性偏好导致AI决策循环，行为逻辑混乱。</li>
+                <li>打破平局规则必须构成严格全序，满足传递性。</li>
+                <li>固定全局属性序列（如射程&gt;血量&gt;ID）可保证无环。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="transitivity-constraint-tie-breaking" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="pseudo-random-generator-cycle">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 计算机科学</p>
+                <h3>伪随机数生成器的算法选择与周期特性</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>你电脑里的骰子其实是一本很厚很厚的“随机假面舞会名单”。它从一个种子出发，用数学公式算出下一个数字，再下一个，直到名单尽头才循环。不同算法就像不同版本的名册：有的只有一页，很快重复；有的厚到宇宙灭亡都用不完。游戏里，我们为什么关心它？因为如果你想重现一场精彩的AI决斗，必须用同一份名册。如果算法太短，仿真跑到半路序列就开始循环，相当于后半程在重演前半程，得出的胜率就是假的。好的算法（如梅森旋转）周期高达2的19937次方减1，即使在数千局仿真中也不会露出循环尾巴。选择和实现PRNG时，还要注意多线程里的“共享骰子”陷阱，否则一个线程乱翻名单，另一个线程的复现就崩了。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>伪随机数基于数学递推公式生成，给定种子即产生确定序列。</li>
+                <li>周期指序列不重复的长度，超过周期则循环。</li>
+                <li>多线程需独立随机数流，避免共享状态破坏复现。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设我们想重现一场海战仿真的1000局。如果用周期只有2^32≈43亿的线性同余发生器，每局消耗几万个随机数，在几万局内就可能回到起点，导致仿真后期不自觉地重复早期序列。换成周期为2^19937-1的梅森旋转，即使每秒用掉百亿个随机数，到宇宙热寂也不会循环。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>只要固定种子，用任何一个随机函数都能完美复现。实际上不同算法序列不同，简单算法周期短、低位有规律。</li>
+                <li>早期rand()等简单算法在大量采样后会露出非随机性，破坏仿真结果。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>仿真实验的统计功效与最小样本量确定</td><td>统计功效分析要求仿真样本独立且分布稳定，若随机源出现短周期偏差，效应量计算将失效。</td></tr>
+                <tr><td>打破平局的传递性约束与无环偏好关系</td><td>当用固定序列表作为次级标准时，这个序列可能依赖PRNG生成，理解周期能防止意外循环。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何用统计检验（如卡方检验、TestU01套件）评估一个PRNG的均匀性和独立性？</li>
+                <li>在多线程仿真中，如何安全地给每个线程分配独立的随机数流而不破坏整体确定性？</li>
+                <li>除了梅森旋转，xoshiro系列等现代PRNG在何种场景下更有优势？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="statistical-power-sample-size">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 软件工程</p>
+                <h3>仿真实验的统计功效与最小样本量确定</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>做一次仿真就像抛硬币检验公平性。你抛10次，得到7次正面，能不能说硬币不公平？不能，因为即便完全公平，10次中出现7次以上的概率也不太小。统计功效就是当硬币确实不公平时，你能拍胸脯发现它的可能性。要提高功效，就得增加抛硬币的次数。在游戏AI仿真中，我们要比较两套阵容的胜率，假设真实胜率差异只有5%（比如55%比50%），如果我们跑的局数太少，随机波动会淹没这个微小差异，结论就是“看运气”。功效分析会根据你愿意接受的错误概率（α=0.05）和希望达到的发现能力（1-β=0.8），计算出最少需要的仿真局数N。这样，你就不用盲目跑1000局，也不会因为只跑了100局就匆匆下结论说A不比B强。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>假设检验存在两类错误：α（假阳性）和β（假阴性），功效=1-β。</li>
+                <li>通过效应量指标（如Cohen's h），结合检验类型计算所需样本量。</li>
+                <li>自适应序贯实验可在仿真运行中动态判断是否达到显著，避免固定样本量的浪费。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>你想验证新配方的咖啡是否更提神，自己喝两天新咖啡，两天旧咖啡，结果新咖啡两天精神抖擞，旧咖啡一天打盹。这样的实验别人会笑你样本太少。统计功效就是那个懂行朋友，告诉你：“想证明新配方有效，至少需要连续测试30天，每天随机喝一种，再记录精力分数。”游戏AI仿真也一样，功效分析帮你敲定这个“至少多少次”的精确数字。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>只要p值小于0.05，就证明结论可靠。实际上小样本下p&lt;0.05也可能是假阳性。</li>
+                <li>阴性结果不说明无差异，可能只是样本量不足导致功效太低。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>伪随机数生成器的算法选择与周期特性</td><td>若发生器有偏差，功效分析所依赖的独立同分布假设就会松动。</td></tr>
+                <tr><td>贝叶斯优化与仿真迭代</td><td>优化器在每次迭代中依赖仿真结果的统计可靠性，样本量不足会导致优化被噪声误导。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何在实际仿真中使用自适应序贯实验在运行中动态判断是否已经达到统计显著？</li>
+                <li>效应量该如何从历史数据或先验知识中合理估计？</li>
+                <li>当比较多个AI阵容时，如何控制多重比较中的总错误率（Family-wise error rate）？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="transitivity-constraint-tie-breaking">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 计算机科学 / 游戏AI</p>
+                <h3>打破平局的传递性约束与无环偏好关系</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>当AI面对多个评分一样好的选项时，需要用次级规则来打破平局。这些规则就像一场多轮投票。如果投票机制设计得不好，可能出现“A比B好，B比C好，C却又比A好”的鬼打墙——这在数学上叫非传递性偏好，本质是一个有向循环。一旦决策逻辑里藏了这种循环，AI会在几个选项间反复横跳，或者做出看似不可理喻的行动。要避开这个陷阱，所有打破平局的次级规则必须构成一个严格全序关系，满足传递性：若A优于B，B优于C，则A必优于C。常见的保险做法是用一个固定的全局属性序列（如射程&gt;血量&gt;ID）建立一个树状比较，确保最终落在一个无环的链条上。传递性约束不仅是逻辑洁癖，更是保证AI行为一致、可解释的数学基石。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>传递性：若A&gt;B且B&gt;C则A&gt;C，保证偏好无循环。</li>
+                <li>多标准平局打破可能隐含循环，需用严格全序结构。</li>
+                <li>若引入随机噪声打破平局，强度必须小到不破坏固有的传递性顺序。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>剪刀石头布就是一个经典的非传递性循环。如果AI在选择攻击目标时，距离相同，就用“血量少优先级高”打破平局，但血量相同又用“速度慢优先”，而速度相同又用“伤害高优先”……你可能在无意中组装出一个剪刀石头布式的循环：目标A血量少，B速度慢，C伤害高，且A的速度比B快，B的伤害比C低，而C的血量比A少，最终绕成一团。这时AI会像钟摆一样来回摇摆。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>只要给每个选项打分，分数最高的胜出，就一定不会循环。实际上，若打分采用动态变量或反馈，仍可能引入循环。</li>
+                <li>用排名、对手上一次行动等非传递性标准打破平局，会悄然钻进循环。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>定量决策模型中的平局打破策略</td><td>为各种性格底牌套上逻辑紧箍咒，确保无论何种规则都经传递性检查。</td></tr>
+                <tr><td>伪随机数生成器的算法选择与周期特性</td><td>当用实体ID或固定序列作为次级标准时，序列生成依赖PRNG，理解周期可防止隐藏循环。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何用有向图模型检测多准则决策规则中是否存在偏好循环？</li>
+                <li>在学习型AI的微偏好模型中，如何通过正则化或结构强制保证偏好传递性？</li>
+                <li>多准则决策方法（如ELECTRE）是如何用“优于”关系和阈值在保持传递性的同时处理模糊选项的？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">伪随机数生成器提供确定性复制的算法基础，统计功效分析为每一次仿真实验设定合理的样本容量，而传递性约束则为决策层的平局打破筑起逻辑堤坝。三者之间环环相扣：仿真需要周期足够长、质量足够好的随机源，才能让功效计算不虚；决策需要传递性保证，才能让基于仿真的调参结论不被畸形的偏好循环拖入歧途。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">可复现的随机底座 → 统计可信的仿真结论 → 逻辑自洽的决策行为。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何用统计检验评估一个PRNG的均匀性和独立性？</li>
+            <li>如何在仿真运行时使用自适应序贯实验动态判断是否达到显著？</li>
+            <li>如何用有向图模型检测多准则决策规则中是否存在偏好循环？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
