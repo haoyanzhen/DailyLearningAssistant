@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-07-08 学习笔记日报</title>
+    <meta name="description" content="探索受控随机噪声的量化尺度，用自适应序贯实验动态验证效果，并借助贝叶斯优化自动搜索高维参数最优解。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260708-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-07-08</p>
+        <h1>从人性噪声到自动调参：让仿真聪明地指导AI</h1>
+        <p>今天我们从给AI注入恰到好处的随机抖动开始，走过动态实验判别，最终进入贝叶斯优化的自动参数搜索，完成一条让AI既自然又强大的完整知识链。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>仿真驱动的AI行为优化</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>受控随机噪声的量化与感知公…</strong>
+                <small>给AI的准星加0.3度随机偏移，它…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>自适应序贯实验设计与在线显…</strong>
+                <small>实验跑到一半发现效果已经很明显，不…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>贝叶斯优化与高维参数自动调参</strong>
+                <small>贝叶斯优化像一个会总结经验的老手…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">受控随机噪声是AI行为的人性化外衣，自适应序贯实验是验证这层外衣是否合身的动态裁判，贝叶斯优化则是为AI量体裁衣的自动裁缝。噪声强度、停止边界、采集函数这些概念来自不同领域，却在同一个仿真优化循环中紧密协作：自适应停止规则能为贝叶斯优化的每一轮评估省钱，而贝叶斯优化又能把噪声参数和AI权重一起纳入搜索空间，找到手感最舒服的平衡点。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["仿真驱动的AI行为优化"])
+  concept1["受控随机噪声的量化与感知公平界限"]
+  hub --&gt; concept1
+  concept2["自适应序贯实验设计与在线显著性决策"]
+  hub --&gt; concept2
+  concept3["贝叶斯优化与高维参数自动调参"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["仿真驱动的AI行为优化"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept3
+  concept2 --&gt; concept1
+  concept3 --&gt; concept2
+  concept3 --&gt; concept1
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="controlled-random-noise">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 游戏AI</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>受控随机噪声的量化与感知公平界限</h3>
+              <p>Controlled Random Noise &amp; Perceived Fairness</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">给AI的准星加0.3度随机偏移，它就从外挂枪神变成像真人的对手。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>通过截断的高斯分布等数学模型，给AI的决策分数加入可控的随机偏移，避免行为完全重复。</li>
+                <li>噪声强度与上下边界需要经过玩家测试标定，找到“看起来自然”与“感觉在瞎打”之间的感知临界点。</li>
+                <li>注入噪声的位置（评分后加噪或直接偏移行动）会影响AI行为的可预测性与公平感。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="controlled-random-noise" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="adaptive-sequential-experiment">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>自适应序贯实验设计与在线显著性决策</h3>
+              <p>Adaptive Sequential Experiment &amp; Online Significance Decision</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">实验跑到一半发现效果已经很明显，不用硬扛到底，提前设计的停止规则让你可以放心喊停。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>在实验开始前设计好检查节点和对应的统计边界，每次达到检查节点就评估证据是否足够提前停止。</li>
+                <li>通过alpha消耗函数将总体的假阳性风险分配到各次检查中，确保无论怎么看停，整体错误率仍控制在预设水平（如5%）。</li>
+                <li>常用边界包括Pocock边界（每次检查标准很严）和O'Brien-Fleming边界（初期极严，后期放宽），适应不同实验需求。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="adaptive-sequential-experiment" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="bayesian-optimization">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 游戏AI / 数学</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>贝叶斯优化与高维参数自动调参</h3>
+              <p>Bayesian Optimization &amp; High-Dimensional Auto-Tuning</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">贝叶斯优化像一个会总结经验的老手，每次试验都挑最有希望的方向，用尽可能少的仿真次数找到最优的AI性格配置。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>使用高斯过程作为代理模型，基于已评估的点推测整个参数空间的性能曲面及不确定性。</li>
+                <li>采集函数（如Expected Improvement）平衡探索与利用，智能地选择下一个最值得评估的参数组合。</li>
+                <li>特别适合每次评估都很昂贵（如需要大量仿真）的调参任务，能在几十到上百轮内逼近全局最优。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="bayesian-optimization" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="controlled-random-noise">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 游戏AI</p>
+                <h3>受控随机噪声的量化与感知公平界限</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>AI做决策时如果总是选择分数最高的选项，会显得非常机械，就像每次都使用完全相同的套路。为了让行为更接近人类，可以在决策过程中加入一点随机抖动——就像投篮时手会微微晃动一样。但晃动不能太大，否则就成了乱扔。受控随机噪声的量化，就是给这个“晃动”定一个数学规则：使用什么样的分布（比如截断的高斯钟形曲线，保证噪声不会超出离谱的范围），从哪里注入（在算完分数后加上噪声，还是直接在行动选择时随机偏移），以及噪声的平均强度和上下边界。感知公平界限则是从玩家体验出发，找到那个“看起来自然”和“感觉在瞎打”之间的临界点——通常需要通过大量玩家测试来标定合理的阈值，确保AI既不死板，又不会因为不可预测的乱来破坏游戏的公平感。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>用截断正态分布等限定分布的随机数对候选动作的评估值进行扰动，使高分选项具有概率化的优先权，但避免极端偏移。</li>
+                <li>噪声强度（标准差）和截断边界（如±5分）是待标定的关键参数，需通过玩家研究或自适应序贯实验确定感知公平区间。</li>
+                <li>注入方式：在生成最终分数后叠加噪声，或直接对行动参数进行随机偏移，影响行为自然度与可控性。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一个海战AI需要在分数同为85分的两艘舰船之间选择攻击目标。没有噪声时永远选代码中排在前面的那艘；引入均值为0、标准差为2.5的截断高斯噪声（幅度限制在±5分），AI会偶尔选择另一艘，玩家只觉得AI“有不同的战术侧重”，而不察觉随机性。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为只要加随机数就能让AI显得人性化，越多越好——实际上不加控制的纯随机会产生不合理动作，强化机械感。</li>
+                <li>忽略任务场景对噪声分布的敏感性，以为一套固定参数可以适用所有游戏类型和AI角色。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>自适应序贯实验设计</td><td>可以用自适应序贯实验快速判断不同噪声设定在胜率或主观评分上是否存在显著差异，避免盲目主观判断。</td></tr>
+                <tr><td>贝叶斯优化</td><td>噪声强度（标准差、截断边界）可以作为待优化参数加入贝叶斯优化的搜索空间，让优化器自动找出最佳‘手感’配置。</td></tr>
+                <tr><td>仿真驱动的AI行为优化</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何设计玩家主观测试来标定噪声感知公平的临界区间，而不是只靠开发者的直觉？</li>
+                <li>在不同类型的游戏（回合制策略 vs 实时射击）中，噪声注入的合理位置和分布形态会有何不同？</li>
+                <li>能否将噪声强度与AI的信心水平挂钩，在AI不确定时增加噪声、确定时减少噪声，让行为更拟人？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="adaptive-sequential-experiment">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 软件工程</p>
+                <h3>自适应序贯实验设计与在线显著性决策</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>通常情况下，做实验需要事先计算好最少需要多少样本，然后跑完这个数量再检验结果。但有时候效果特别明显，可能只跑到一半就已经很有说服力了，继续跑完就是浪费资源；反过来，如果根本看不出效果，硬撑到底也是白费功夫。自适应序贯实验就是把“每次跑一批、看看效果、决定是否继续”这个过程规范化。它设计一套提前商量好的检查节点（比如每收集100场数据），以及配套的统计边界。就像一个医生在药物试验中定期检查疗效，如果药物明显有效或者明显有害，就提前叫停。关键是用alpha消耗函数把总体的‘假阳性风险’分配到各次检查中，保证无论怎么看停、看多少次，最终的整体错误率仍然控制在5%左右。常用的边界有Pocock边界（每次检查标准很严）和O’Brien-Fleming边界（初期很严，后期慢慢放宽），这使得在线的显著性决策成为可信的科学判断，而非凭感觉喊停。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>将整个实验划分为若干阶段，在每个阶段结束时计算检验统计量，并与预设的停止边界比较，若超过边界则提前终止。</li>
+                <li>通过alpha消耗函数（如Lan–DeMets方法）将0.05的总体α分配到各次期中分析，保证多重检验的总体第一类错误控制。</li>
+                <li>停止边界的选择（对称或非对称）影响实验的早期停止概率和最终所需样本量，需结合效应量预期和资源限制选择。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>对比两套AI配置的胜率，计划跑1000场，但使用O'Brien-Fleming边界在300场时进行一次检查。如果此检查点统计量超过3.5，可以提前终止。实际中A配置在300场时胜率已达70%，计算发现差异足够显著，于是实验提前结束，既省下700场仿真时间，又保证整体第一类错误仍为0.05。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为多次检查数据必然导致假阳性率膨胀，只有固定样本量才科学——实际上通过消耗函数和严格边界，整体错误率完全可控。</li>
+                <li>在实验中途看到p值小于0.05就草率停止，忽略了未预先规划的停止会大幅增加错误风险。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>贝叶斯优化</td><td>自适应停止规则可以在贝叶斯优化的每一轮评估中应用，用更少的仿真次数判断新参数组合是否优于当前最佳，从而加速高维搜索。</td></tr>
+                <tr><td>受控随机噪声</td><td>评估不同噪声参数对玩家感知的影响时，自适应序贯实验能快速锁定存在显著差异的噪声区间，避免海量无意义比较。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>在效应量完全未知的情况下，如何设计自适应序贯实验的检查时机和最大样本量上限？</li>
+                <li>当仿真结果不是简单的胜率差异，而是多维度指标时，如何定义对应的多元停止边界？</li>
+                <li>如何在CI流水线中实现自适应仿真引擎的断点续跑和状态保存机制，以便随时暂停和恢复期中分析？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="bayesian-optimization">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 游戏AI / 数学</p>
+                <h3>贝叶斯优化与高维参数自动调参</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>当你需要调整AI的十几个旋钮（攻击倾向、防御权重、资源采集偏好、扩张激进程度等等）来让胜率最大化时，人工逐个尝试就像在黑暗的房间里大海捞针。贝叶斯优化提供了一盏智能探照灯：它不直接知道整个参数空间的地形图，但每测试一组参数就像在黑暗中点亮一个位置，然后通过一种叫高斯过程的数学模型，推测整个地形的形状——包括哪里可能是山峰，哪里是山谷，以及自己对地形的猜测有多少不确定性。基于这个推测，它用采集函数挑出下一个‘最值得探索’的点：可能是至今猜测最高的区域（利用），也可能是非常模糊、完全不知道的区域（探索）。这种平衡探索与利用的策略让贝叶斯优化在评估次数很少时就能逼近全局最优，特别适合每一次评估都很昂贵（比如需要跑大量仿真）的调参任务。面对维度灾难，虽然极高维空间仍然困难，但在十几个可调权重的范围内，它能让自动调参从梦想变成现实。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>构建高斯过程代理模型：根据已评估的点拟合均值函数和不确定性（方差），形成对目标函数分布的估计。</li>
+                <li>利用采集函数（如Expected Improvement）量化每个候选点的潜在提升期望，选择最大化该函数的点作为下一个评估位置。</li>
+                <li>迭代更新模型，逐步收敛到全局最优区域，适用于连续或混合参数空间，并可与自适应停止策略结合降低单次评估成本。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>优化新兵种的6个AI性格参数。若每个参数取5个水平，网格搜索需测试5^6=15625种组合，每种跑1000场仿真不可行。采用贝叶斯优化：先随机测试20组，之后每次根据采集函数选下一组最有希望的参数。仅200轮评估就找到胜率接近最优的组合，并且顺带将武器散射噪声强度作为第7个参数加入搜索，同时优化了AI能力与行为自然度。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为贝叶斯优化完全不需要人工干预，也不受维度限制——实际当参数数量远超几十个时，高斯过程的推测仍会变得困难，且核函数选择需要领域知识。</li>
+                <li>低估了初始随机采样对优化效果的影响，忽略前期探索不足可能导致陷入局部最优。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>自适应序贯实验设计</td><td>自适应停止规则可应用于贝叶斯优化的每一轮评估，用动态停止取代固定仿真次数，大幅降低优化循环的总计算成本。</td></tr>
+                <tr><td>受控随机噪声</td><td>受控随机噪声的强度可以被纳入贝叶斯优化的搜索空间作为一个额外维度，让优化器同时寻优AI能力与行为自然度。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>在不同的采集函数（Expected Improvement、Upper Confidence Bound、Probability of Improvement）之间，如何根据优化目标的风险偏好选择最合适的策略？</li>
+                <li>当参数空间包含离散选项（如技能升级顺序）与连续参数混合时，如何扩展标准的贝叶斯优化框架？</li>
+                <li>能否结合多保真度仿真（低精度快速仿真与高精度完整仿真）进一步加速贝叶斯优化，让代理模型学会在不同精度间迁移知识？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">受控随机噪声是AI行为的人性化外衣，自适应序贯实验是验证这层外衣是否合身的动态裁判，贝叶斯优化则是为AI量体裁衣的自动裁缝。噪声强度、停止边界、采集函数这些概念来自不同领域，却在同一个仿真优化循环中紧密协作：自适应停止规则能为贝叶斯优化的每一轮评估省钱，而贝叶斯优化又能把噪声参数和AI权重一起纳入搜索空间，找到手感最舒服的平衡点。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">受控的随机不是更随机，而是用数学边界让人工智能的‘人性’不失控。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何设计玩家主观测试来标定噪声感知公平的临界区间？</li>
+            <li>在效应量完全未知的情况下，如何设计自适应序贯实验的检查时机和最大样本量上限？</li>
+            <li>能否结合多保真度仿真进一步加速贝叶斯优化，让代理模型学会在不同精度间迁移知识？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
