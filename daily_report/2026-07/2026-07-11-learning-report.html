@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-07-11 学习笔记日报</title>
+    <meta name="description" content="数据契约、仿真聚合器与TTK分析共同奠定战斗平衡的量化基础，形成从接口约定到蒙特卡洛验证的工程闭环。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260711-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-07-11</p>
+        <h1>2026-07-11 学习笔记日报</h1>
+        <p>2026年7月11日，tiny-sea-war项目围绕战斗平衡，确立了数据契约、仿真聚合器与TTK分析三层体系，将主观感觉转化为可重复验证的工程实践。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>战斗平衡量化基础</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>数据契约与系统边界</strong>
+                <small>数据契约不是一份普普通通的JSON…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>仿真聚合器</strong>
+                <small>仿真聚合器将“跑了100局战斗”这…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>TTK 平衡分析</strong>
+                <small>TTK平衡分析本质上是蒙特卡洛方法…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">今天讲解的三个概念——数据契约与系统边界、仿真聚合器、TTK平衡分析——共同构成了一条从“如何让数据变得可信任”到“如何用数据验证设计直觉”的完整链路。数据契约确保了游戏运行时、地图工具和AI模块之间讲的是同一种语言，消除了因接口随意导致的隐性故障；仿真聚合器将单次战斗的孤立结果提炼为具有统计意义的全局指标，使结论不再被个别极端场次干扰；TTK平衡分析则站在聚合器的肩膀上，把设计者脑中模糊的平衡感换算为可对比的击杀时间分布，为决策提供硬数字。即使今天的分析管线尚未引入自适应停止、贝叶斯优化等高级方法，这套基础设施已经为未来的智能化平衡铺平了最坚实的路面。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["战斗平衡量化基础"])
+  concept1["数据契约与系统边界"]
+  hub --&gt; concept1
+  concept2["仿真聚合器"]
+  hub --&gt; concept2
+  concept3["TTK 平衡分析"]
+  hub --&gt; concept3
+  related1["导航定义契约"]
+  concept1 --&gt; related1
+  related2["资产管线"]
+  concept1 --&gt; related2
+  related3["仿真工具链（GDScript生成与Python分析）"]
+  concept1 --&gt; related3
+  related4["伤害统计模型"]
+  concept2 --&gt; related4
+  related5["TTK平衡分析"]
+  concept2 --&gt; related5
+  related6["战斗记录与回放数据结构"]
+  concept2 --&gt; related6
+  concept3 --&gt; concept2
+  related7["数值平衡中的度量定义"]
+  concept3 --&gt; related7
+  related8["仿真与蒙特卡洛方法"]
+  concept3 --&gt; related8
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4,related5,related6,related7,related8 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="data-contract-system-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>数据契约与系统边界</h3>
+              <p>Data Contract and System Boundary</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">数据契约不是一份普普通通的JSON文件，而是团队之间关于“接口稳定、内容可变”的正式约定，它让游戏功能像积木一样可以独立插拔和演化。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>数据契约是双方关于数据格式和接口的正式约定，减少沟通成本和隐性耦合。</li>
+                <li>通过JSON等结构化文件建立清晰的系统边界，让设计师与程序员独立工作。</li>
+                <li>契约支持自动验证和工具链衔接，奠定可扩展的协作基础。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="data-contract-system-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="simulation-aggregator">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 计算机科学</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>仿真聚合器</h3>
+              <p>Simulation Aggregator</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">仿真聚合器将“跑了100局战斗”这种原始劳动转化为均值和方差等统计量，是数值平衡工作中不可或缺的翻译层，防止直觉被个别极端场次欺骗。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>仿真聚合器将多次战斗的原始数据提炼为均值、方差、分位数等统计量。</li>
+                <li>帮助开发者避免被个别极端场次误导，提供整体趋势和稳定性判断。</li>
+                <li>为后续高级分析（如TTK平衡、自适应停止）提供标准化的数据输入。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="simulation-aggregator" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="ttk-balance-analysis">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 计算机科学 (蒙特卡洛方法, 数值平衡)</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>TTK 平衡分析</h3>
+              <p>TTK Balance Analysis</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">TTK平衡分析本质上是蒙特卡洛方法在游戏设计中的直白应用——通过大量随机仿真来逼近一个难以直接求解的期望，让“这把武器太强了”这种抱怨有了数学回应的可能。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>TTK（击杀所需时间）是衡量战斗平衡的核心指标，受命中率、暴击等随机因素影响。</li>
+                <li>通过蒙特卡洛仿真反复模拟战斗，用样本分布逼近真实平衡情况。</li>
+                <li>分析结果以均值、分位数等统计量呈现，为设计决策提供客观依据。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="ttk-balance-analysis" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="data-contract-system-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>数据契约与系统边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象一下，几个团队合作建造一栋大楼，电工、水管工和木工之间需要事先约定好管道和电线的位置与尺寸，否则墙一砌上就会乱套。在软件开发中，这种“事先约定”就叫做数据契约。对于tiny-sea-war的项目来说，关卡设计师负责设计地图中哪里可以走、哪里是障碍，这些信息被填入一份格式严格规定的JSON文件里；游戏引擎的程序员则不需要读懂设计师的心思，只需要按照这份契约编写一段代码，自动把JSON里的内容变成游戏世界里的可走区域。这样，设计师改地形布局时完全不用碰程序代码，程序员也无需担心设计师某天心血来潮改变文件格式导致游戏崩溃。双方之间清晰的界限，就是系统边界。它让变化被关在各自的区域里，不会像多米诺骨牌一样牵扯整个项目。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>约定数据格式：定义明确的字段、类型和规则，确保所有合作方理解一致。</li>
+                <li>独立实现与消费：各模块按约定独立开发，互不依赖内部实现细节。</li>
+                <li>自动验证与集成：通过工具校验契约，保证不同工具间数据兼容，降低集成风险。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在tiny-sea-war中，`navigation_definitions.json`定义了每个地图的导航图节点ID、连接关系以及每条边的通行代价。一个Python地图烘焙工具负责输出这份JSON契约，而游戏运行时的GDScript导航模块只依赖契约中约定的字段进行寻路。这样一来，即使某一天团队决定改用C++重写地图烘焙工具，只要输出的JSON结构不变，游戏端一行代码都不需要改。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>很多人以为“把数据放在JSON文件里”就是数据驱动，其实如果JSON的结构随意变更、没有文档约束，它仍然是一种隐性耦合。</li>
+                <li>真正的数据契约必须包含约定好的字段名、数据类型和取值规则，并且所有使用方都遵守这一约定，否则一份看似无害的JSON反而会成为最隐蔽的bug来源。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>导航定义契约</td><td>数据契约直接定义了导航定义契约的格式要求，后者是前者在地图导航场景下的具体实例，两者如同模具与成品的关系。</td></tr>
+                <tr><td>资产管线</td><td>当资产管线通过清单文件注册地图图片时，依赖地形数据契约来确保每个地图的视觉资源与逻辑地形能够准确对应，避免出现“图是海岛，地形是沙漠”的错位。</td></tr>
+                <tr><td>仿真工具链（GDScript生成与Python分析）</td><td>仿真工具链也是通过类似的数据契约连接，形成解耦的多语言协作管道，使数据不被格式漂移破坏。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何自动验证一份JSON文件是否完全遵守了数据契约？常用的Schema校验工具（如JSON Schema）是如何工作的？</li>
+                <li>当数据契约需要升级版本时（比如新增必要字段），怎样在不破坏旧版本兼容性的前提下平稳迁移？可以了解向后兼容策略和特性开关的实践。</li>
+                <li>数据契约的思想能否用在AI决策模型的配置上，让策划通过JSON直接调整AI在不同地图下的行为参数而不必修改代码？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="simulation-aggregator">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 计算机科学</p>
+                <h3>仿真聚合器</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>假设你组织了一场投篮比赛，每位选手投100次篮，你记下每一次是否命中。结束后，如果你只盯着每一位朋友的某几次特别运气好或特别糟的投篮，你可能会误判他的真实水平。一个更好的办法是请一位“统计裁判”，他把每位选手的投篮命中数、连续命中最长记录、得分稳定性等指标汇总成一个清晰的表格，让你一眼就能看出谁更稳定、谁波动更大。在tiny-sea-war的战斗仿真里，这位统计裁判就是仿真聚合器。它收集很多次自动战斗的原始记录——比如每次攻击的伤害值、击杀所花费的时间——然后计算出平均击杀时间、方差、中位数等统计量。这样，开发者就不需要翻看成千上万条战斗日志，而是拿到一张简洁的“成绩单”，用来判断不同单位配置是否平衡。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>收集原始数据：从仿真运行中获取每场战斗的详细事件记录。</li>
+                <li>统计计算：对关键指标（如TTK）计算均值、方差、分位数等。</li>
+                <li>输出报告：生成结构化的统计结果，供分析脚本或人工决策使用。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在tiny-sea-war的TTK分析工具链中，`simulation_aggregator.gd`从`damage_statistics.gd`获取每场战斗的详细伤害记录，然后批量运行同一配置下的多场仿真，最后输出类似这样的结果：“轻巡洋舰vs驱逐舰，平均TTK=14.2秒，标准差=3.6秒，90%分位=19.1秒”。Python分析脚本再基于这些聚合数据绘制分布图，一目了然地看出不同舰种的击杀时间差异。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>很多人以为聚合器就是简单的“求平均”，但真正可靠的聚合器还必须处理异常值和分布形状。例如，如果一个单位在10%的场次中因为触发暴击而瞬间秒杀对手，平均值可能看起来还行，但实际上游戏的体验已经变得很差。</li>
+                <li>好的聚合器会额外给出分位数（如中位数、90%分位），帮助发现这种“平均正常，但极端情况频繁”的陷阱。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>伤害统计模型</td><td>仿真聚合器直接依赖伤害统计模型提供的底层事件流，就像统计裁判需要每一球的详细记录才能计算命中率和稳定性。</td></tr>
+                <tr><td>TTK平衡分析</td><td>仿真聚合器的输出被TTK平衡分析直接消费，后者基于均值、方差等统计量判断不同单位配置下的平衡性，完成从原始战斗到设计结论的最后一步跳跃。</td></tr>
+                <tr><td>战斗记录与回放数据结构</td><td>仿真聚合器与战斗记录配合，不仅提供统计汇总，还能让开发者在发现异常时回溯具体的战斗回放，查明是什么事件导致了极端TTK。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当某几场战斗因为AI决策陷入僵局而时长极长时，聚合器应当剔除这些异常值还是保留？如何量化判断一个数据点是“异常”？</li>
+                <li>除了均值和方差，还有哪些稳健统计量（如中位数绝对偏差、切尾均值）更适合描述TTK分布？它们各自适合哪些数据形态？</li>
+                <li>仿真聚合器如何扩展为支持多维输出（如同时跟踪TTK、资源消耗比率、生存率）并在未来与多元停止边界联动？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="ttk-balance-analysis">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 计算机科学 (蒙特卡洛方法, 数值平衡)</p>
+                <h3>TTK 平衡分析</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>TTK（Time-to-Kill）就是“击杀所需时间”，在射击游戏里指从开第一枪到敌人倒下的秒数，在策略游戏里指一个单位在战斗中从满血存活到被摧毁的期望时长。TTK平衡分析要回答一个问题：游戏里不同武器、不同兵种之间的击杀时间是否合理？如果一把刀的TTK是0.5秒，另一把剑的TTK是3秒，那么用剑的玩家几乎不可能赢，游戏就会失衡。但是TTK并非一成不变的常量，它受到命中率、暴击、护甲减免等诸多随机因素影响，每场战斗的TTK都像一个随机抽出来的数字。因此，直接求解一个理论的期望TTK往往非常复杂。tiny-sea-war团队选择了一条务实的道路：让程序自动模拟成千上万场战斗，记录每一场的TTK，然后用这些样本的统计特征（均值、分布形状）来近似真实平衡情况。这背后的数学思想叫做蒙特卡洛方法——当难以直接算出精确概率时，就用大量随机实验的统计结果来逼近答案。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>定义TTK指标：确定衡量击杀时间的计算方法和影响因素。</li>
+                <li>大规模仿真：利用伪随机数生成器进行成千上万次独立战斗模拟。</li>
+                <li>统计分析：对模拟得到的TTK样本计算均值、分位数、分布形状，评判平衡性。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在tiny-sea-war中，开发者可以修改一艘船的护甲值和火炮散布参数，然后运行TTK分析。仿真工具链会基于新参数自动打上千场战斗，得出新配置下该船与各对手的平均TTK及90%分位数。如果数据显示，新的护甲值让这艘船面对所有对手的TTK普遍翻倍，并远超设计文档规定的“生存时长上限”，那这次改动就必须回炉。整个过程不需要任何一局手动测试。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>很多人以为TTK越短游戏就越“爽”，或者TTK必须完全相等才叫平衡。实际上，TTK的设计目标取决于游戏类型和节奏意图。例如，坦克类单位理应拥有更长的TTK，而刺客类单位应当具备短TTK但伴随高风险。</li>
+                <li>TTK平衡分析的目的不是把所有单位强行拉成一样的击杀时间，而是检验实际TTK分布是否忠实地反映了设计师预设的角色定位和克制关系。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>仿真聚合器</td><td>TTK平衡分析直接建立在仿真聚合器的肩膀上，后者提供的均值、方差、分位数是TTK判断的核心依据。</td></tr>
+                <tr><td>数值平衡中的度量定义</td><td>TTK作为度量，把数值平衡中的度量定义从纸面公式变成了可实证的统计量，验证设计者构想的攻防映射是否在实际随机环境中成立。</td></tr>
+                <tr><td>仿真与蒙特卡洛方法</td><td>仿真与蒙特卡洛方法为TTK分析提供了思想基础——通过独立重复实验逼近真实期望，与聚合器的统计功能配合，形成从模拟到结论的完整证据链。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>除了平均TTK，是否应该引入生存曲线（Kaplan-Meier曲线）来表现在不同时间点单位仍存活的概率，从而发现“前期必死”之类的体验问题？</li>
+                <li>TTK平衡分析如何考虑玩家操作技术的影响？是否可以通过不同行为模型（如激进型、保守型AI）分别仿真来刻画操作差异对TTK的扰动？</li>
+                <li>当需要同时平衡多个指标（如TTK、资源消耗率、胜率）时，TTK分析如何与多目标优化结合起来，避免调好TTK却毁了经济系统？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">今天讲解的三个概念——数据契约与系统边界、仿真聚合器、TTK平衡分析——共同构成了一条从“如何让数据变得可信任”到“如何用数据验证设计直觉”的完整链路。数据契约确保了游戏运行时、地图工具和AI模块之间讲的是同一种语言，消除了因接口随意导致的隐性故障；仿真聚合器将单次战斗的孤立结果提炼为具有统计意义的全局指标，使结论不再被个别极端场次干扰；TTK平衡分析则站在聚合器的肩膀上，把设计者脑中模糊的平衡感换算为可对比的击杀时间分布，为决策提供硬数字。即使今天的分析管线尚未引入自适应停止、贝叶斯优化等高级方法，这套基础设施已经为未来的智能化平衡铺平了最坚实的路面。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">TTK平衡分析本质上是蒙特卡洛方法在游戏设计中的直白应用——通过大量随机仿真来逼近一个难以直接求解的期望，让“这把武器太强了”这种抱怨有了数学回应的可能。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何自动验证一份JSON文件是否完全遵守了数据契约？常用的JSON Schema校验工具如何工作？</li>
+            <li>当某几场战斗因为AI决策陷入僵局而时长极长时，仿真聚合器应当剔除这些异常值还是保留？如何量化判断数据点异常？</li>
+            <li>除了平均TTK，是否应该引入生存曲线（Kaplan-Meier曲线）来表现在不同时间点单位仍存活的概率，从而发现“前期必死”之类的体验问题？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
