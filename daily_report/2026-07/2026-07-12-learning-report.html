@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-07-12 学习笔记日报</title>
+    <meta name="description" content="通过代码“考古”发现导航系统重构，从惯性避让、轨迹恢复到请求调度，层层递进解析游戏AI导航的完整链条。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260712-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-07-12</p>
+        <h1>导航系统的重构考古之旅：从惯性反应到智能调度</h1>
+        <p>今天的知识探索是一次有趣的“考古之旅”。我们并没有看到已经敲定的代码，而是拿到了一张施工现场的抓拍照片——有一个游戏仓库里堆满了还没提交的大量修改。通过分析这些文件的名字和修改的规模，我们像侦探一样拼凑出了一个可能的图景：开发者正在对游戏里的舰船导航系统进行一次深刻的重构。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>游戏AI导航系统重构与分层设计</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>惯性导航与紧急避让</strong>
+                <small>游戏里的惯性导航就像一个夜盲症患者…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>轨迹规划与路线恢复</strong>
+                <small>轨迹规划是“定计划”，路线恢复是“…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>导航请求调度模式</strong>
+                <small>导航请求调度者（Broker）模式…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">今天从“待确认”的代码线索中，我们提炼出了一个层层递进的知识体系，就像一个俄罗斯套娃。最核心的挑战是“如何移动”：惯性导航与紧急避让解决了单艘舰船在紧急情况下的瞬时反应问题，它是“本能”。但如果本能触发了，船跑偏了怎么办？这就需要“轨迹规划与路线恢复”这个更宏观的“计划”能力，来确保长期目标不丢失。而“导航请求调度模式”则站在了更高维度，它是一个“指挥官”，负责协调所有需要找路的单位，防止它们互相争抢资源或命令冲突。这三者环环相扣，从单体的应急反应，到全局的路径逻辑，再到高层级的任务协调，共同构成了一个完整而健壮的游戏AI导航系统，非常精彩地展示了如何将一个复杂的工程问题分层、解耦并优雅地解决。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["游戏AI导航系统重构与分层设计"])
+  concept1["惯性导航与紧急避让"]
+  hub --&gt; concept1
+  concept2["轨迹规划与路线恢复"]
+  hub --&gt; concept2
+  concept3["导航请求调度模式"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  related1["AI行为设计与沿海性能优化"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept3
+  related2["性能回归测试"]
+  concept2 --&gt; related2
+  related3["领域驱动设计在游戏中的落地"]
+  concept3 --&gt; related3
+  related4["AI行为设计"]
+  concept3 --&gt; related4
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="inertial-navigation-avoidance">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>惯性导航与紧急避让</h3>
+              <p>Inertial Navigation and Emergency Avoidance</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">游戏里的惯性导航就像一个夜盲症患者在熟悉的家里走路：不依赖眼睛看全局，只凭自己的感觉和身体记忆（速度和加速度），在不碰到家具（障碍物）的前提下，从卧室走到客厅。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>惯性导航基于自身运动感知（加速度、速度）推算位置，不依赖外部参照物。</li>
+                <li>紧急避让是在预测到碰撞风险时触发的快速局部闪避动作，响应远快于全局路径规划。</li>
+                <li>惯性导航在短时间内误差可接受，但长时间会累积很大误差；适用于紧急反应场景。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="inertial-navigation-avoidance" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="trajectory-planning-recovery">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>轨迹规划与路线恢复</h3>
+              <p>Trajectory Planning and Route Recovery</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">轨迹规划是“定计划”，路线恢复是“回正轨”；一个好的导航系统就像一个称职的导游，即使你因为拍照（紧急避让）跑丢了，他也能快速重新找到你，把你无缝带回原定的参观路线。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>轨迹规划将空间路径转化为带时间和速度的动态剧本，不仅指定位置还指定何时到达。</li>
+                <li>路线恢复是偏离原计划后的容错机制，智能区分局部重规划与全局重规划。</li>
+                <li>局部重规划通常只需找到最近切入点重回原轨迹，避免丢弃全局优化结果。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="trajectory-planning-recovery" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="navigation-request-scheduler">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>导航请求调度模式</h3>
+              <p>Navigation Request Scheduler Pattern</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">导航请求调度者（Broker）模式的核心思想是“中间人”：所有想要移动的单位都不直接操作导航系统，而是向一个中间的调度员提交申请，由它来决定先处理谁的请求、谁的需要耐心等待，从而避免系统陷入混乱。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>引入Broker中介角色，解耦移动指令的发出者和执行者，避免直接冲突。</li>
+                <li>根据优先级和规则动态调度请求，处理过期、合并和优先级反转等复杂情况。</li>
+                <li>体现领域驱动设计思想，通过统一请求接口定义导航域的契约边界。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="navigation-request-scheduler" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="inertial-navigation-avoidance">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学</p>
+                <h3>惯性导航与紧急避让</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象一下你正在闭着眼睛走一条长长的走廊。你怎么知道自己走了多远？你可能靠的是感觉脚下的步数和步幅，这就是“惯性导航”的核心思想——不依赖外部参照物（比如墙上的画），只通过感知自身的运动（加速度、速度）来推算位置。在游戏里，一艘船虽然可以看到全局地图，但“惯性导航”思路一般用于需要快速、低成本的局部情况。比如，当船快要撞到突然出现的礁石时，它来不及重新计算一整条从地图这头到那头的完整路径，而是会基于自己当前的速度和方向，立即算出一个小范围的转弯来紧急避险。“紧急避让”就是这个计算的触发条件，当预测到几秒后会发生碰撞，就立刻执行这个基于自身运动状态的闪避动作。整个过程就像你走路快撞到人了，身体会下意识地侧一下身，而不是停下来重新规划走哪条路。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>通过积分加速度得到速度，再积分速度得到位置，这是惯性导航的基本递推关系；短时内误差可控，但随时间积累会漂移。</li>
+                <li>紧急避让基于当前速度向量与障碍物距离的实时碰撞预测，快速生成局部转向指令，实现毫秒级反应。</li>
+                <li>惯性导航系统不需要外部传感器或全局地图，适合无先验信息的局部避障，成本低、响应快。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>想象一艘玩家操作的快艇，它正沿着海岸线高速航行。突然，前方一块原本在水下的暗礁因为海浪退去而露出水面。如果此时船要让全局路径规划器重新计算一条新路线，可能0.1秒后它就已经撞上了。而惯性导航模块只需要0.01秒，它发现“当前速度向量”和“与暗礁的距离”存在碰撞风险，立刻触发紧急避让，计算出“满舵右转90度”的指令，让快艇瞬间侧身，擦着礁石避开。避让完成后，它才通知上层：“我紧急避险了，帮我重新规划一下接下来的路。”</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>一个常见的误区是认为“惯性导航”就是在瞎走。其实不然，它是一个严谨的数学过程。它通过持续测量加速度，并对时间进行积分来获得速度和位置。虽然时间长了他会积累很大的误差（就像你蒙眼走路肯定走不直），但在短时间内的紧急避让场景下，这个误差是可接受的，而它的快速响应优势是全局路径规划无法比拟的。它不是“乱走”，而是基于物理模型的“即时估算”。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>轨迹规划与路线恢复</td><td>紧急避让完成后，舰船偏离了原有航线，因此必须依赖“轨迹规划与路线恢复”模块，才能重新回到正轨，向最终目标前进。</td></tr>
+                <tr><td>AI行为设计与沿海性能优化</td><td>在复杂的沿海地形中，紧急避让可能被频繁触发，这会严重影响游戏性能。因此，需要“AI行为设计与沿海性能优化”来从策略层面减少不必要的紧急情况，比如提前减速，从而降低计算压力。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>惯性导航系统是如何对加速度数据进行“积分”来算出位置的？为什么这个积分过程会随着时间积累巨大的误差？</li>
+                <li>紧急避让时计算出的闪避轨迹，怎样保证它本身是安全的，不会为了躲避一个礁石而撞上另一艘船？</li>
+                <li>在游戏开发中，针对AI的紧急避让，有哪些常用的简化物理模型（如自行车模型）可以兼顾真实感和计算效率？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="trajectory-planning-recovery">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学</p>
+                <h3>轨迹规划与路线恢复</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>如果说“惯性导航”是临场反应，那么“轨迹规划”就是深思熟虑的旅行计划。先问一个问题：一条“路线”和一条“轨迹”有什么不同？路线就像是“从北京到上海，走京沪高速”，它只告诉你经过哪些路。而轨迹则更像是你导航仪上那个随着时间移动的小点，它会精确告诉你：“3分钟后，你应该以120km/h的速度到达天津的某个位置，7分钟后应该到达河北”。轨迹规划就是把一条由点组成的路径，变成一个带上时间和速度的动态剧本。而“路线恢复”是这个计划的容错机制：当你因为尿急（执行了紧急避让）在天津提前下了服务区，偏离了原计划，导航仪就会自动帮你重新计算一条从服务区重新接入京沪高速的路线，确保你最终还是能到上海。在游戏里，一艘船因为躲避攻击而绕了个大圈，“路线恢复”模块就会立刻算出：是让它直接朝下一个导航点直线冲过去，还是绕回原来的理想线路上来。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>轨迹规划需要将路径参数化为时间函数，通过曲线插值和运动约束生成平滑、可执行的时空轨迹。</li>
+                <li>路线恢复通过评估当前状态与原始轨迹的偏移，决定采用局部修补（寻找切入原轨迹的最近点）或全局重规划。</li>
+                <li>局部路线恢复的核心是高效寻找偏离后最合适的重入点，避免完全丢弃已优化的全局路径，节约计算资源。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设游戏里一艘战舰接到指令：“绕到敌方基地后方”。路线规划器先画出从当前位置，绕过前线礁石群的大圈路径。轨迹规划器为这条路径分配速度和预估时间。在航行途中，战舰遭遇敌方潜艇伏击，触发了“惯性导航与紧急避让”，猛地向左漂移了很长一段距离。现在它位置偏了，速度也慢了。“路线恢复”模块启动，它判断出：虽然位置偏了，但绕行的大方向没变。于是它没有全盘否定原计划，而是在战舰当前位置和原路线的下一个关键拐点之间，重新规划了一条切入路线，让战舰平滑地、经济地重新回到原定的大圈上，继续执行包抄任务。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>一个普遍的误区是认为路线恢复就是简单地重新计算一条到终点的新路径。但这样可能会造成非常大的浪费。真正的“路线恢复”可能更聪明：它会评估是需要“局部重规划”（绕一小段路回到原轨迹的某个点）还是需要“全局重规划”（情况太离谱，原计划完全失效）。很多时候，只需要找个最近的“切口”重新贴回原轨迹即可，因为原轨迹通常已经是全局最优的了。简单的重新规划等于丢掉了之前所有的优化结果。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>导航请求调度模式</td><td>“轨迹规划”的规划能力，最终是通过“导航请求调度者”以“请求”的形式被调用的，它自己不需要关心是谁下达了移动指令。</td></tr>
+                <tr><td>性能回归测试</td><td>要实现“路线恢复”中的“局部重规划”，需要一套判断标准，这就引出了“性能回归测试”的必要性——必须保证任何情况下恢复路线的计算量都是可控的，不会造成卡顿。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>有哪些具体的算法可以实现“局部路线恢复”？比如如何高效地找到偏离后最合适的“切入点”？</li>
+                <li>在动态的游戏世界里，如果环境在恢复过程中发生了变化（比如原路线上的桥被炸断了），路线恢复模块如何与动态避障系统交互？</li>
+                <li>如何设计测试用例，来覆盖所有可能的“偏离-恢复”场景，比如小范围偏移、大范围被吹飞、甚至初始轨迹完全错误等情况？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="navigation-request-scheduler">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>导航请求调度模式</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>现在我们把游戏想得更复杂些。一艘船可能有很多个理由要移动：玩家的键盘指令让它前进，战斗AI觉得它应该冲锋，避险系统要求它赶紧后退，行为树又觉得无聊了想巡逻一下。如果每个系统都直接去指挥引擎，那引擎非得疯掉不可——前一瞬间还在左满舵，下一瞬间又要全速倒车。“导航请求调度模式”引入了一个“中间接单员”，我们叫它Broker（经纪人）。所有想移动的指令，不管是玩家、AI还是系统，都只能向这位经纪人提交一个“导航请求”：“报告，我要到一个坐标去，事由是进攻，优先权高”。Broker手里会拿着来自各方的所有请求，它会根据一套规则（比如玩家的命令优先，或者战斗中的死亡威胁优先）来决定此时此刻到底执行哪个，拒绝哪些，以及合并哪些相同方向的请求。这样一来，底层的轨迹规划器就只需要专心解决“收到一个清晰的目标后怎么走”的问题，而不用管派系纷争。这极大地降低了系统的复杂度。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>使用中介者模式，所有移动请求统一提交给Broker，由Broker进行优先级判断和冲突解决，避免模块间的直接耦合。</li>
+                <li>调度策略需考虑请求过期、优先级反转和请求合并等复杂场景，保证系统实时性和公平性。</li>
+                <li>通过定义统一的请求接口作为领域契约，实现导航限界上下文的隔离，遵循领域驱动设计原则，使外部系统无需了解导航内部实现。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在一场海战中，玩家的旗舰（受玩家WASD键盘控制）正带领舰队前进。突然，敌机来袭。此时，Broker收到了三组请求：1）来自玩家键盘的“向前移动”请求（优先级极高）；2）来自防空AI的“护卫舰向左位移组成防空阵型”请求（优先级高）；3）来自位置最靠前的那艘驱逐舰自身的“危险！向后规避！”请求（优先级最高）。Broker进行决策：首先，立即批准驱逐舰的规避请求，生死攸关；然后，因为它后撤了，原定的向左移动路径上有了空档，Broker批准并微调了防空舰的路径；最后，玩家的旗舰移动请求不受影响，继续执行。整个过程瞬息完成，没有一个模块直接告诉另一个模块该怎么做，一切指令都经由Broker这个“大脑”来协调，井井有条。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>最常见的误解是把它当成一个简单的“先进先出”的排队系统。但现实中它要复杂得多，“优先级”不是唯一的标准。一个好的Broker还必须能处理“请求过期”（AI想去追的敌人已经死了，该请求作废）、“优先级反转”（一个低优先级的巡逻船正好挡在了高优先级主力的路上，必须让它移开）以及“请求合并”（多艘船都要去地图同一个点集结，可以共享部分路径计算结果）。它不是一个简单的队列，而是一个智能的、持续评估的动态调度中心。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>领域驱动设计在游戏中的落地</td><td>“导航请求调度者”是“领域驱动设计在游戏中的落地”的一个绝佳范例，它将“导航”作为一个独立的“限界上下文”，任何外部系统都必须通过请求接口与它对话。</td></tr>
+                <tr><td>AI行为设计</td><td>所有由“AI行为设计”（比如进攻或巡逻）产生的移动意图，都必须以请求的形式提交给本站，所以AI的设计直接决定了请求的种类和优先级，进而影响调度策略。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何设计一个请求调度策略，使其既能保证关键任务的低延迟，又能防止低优先级任务被“饿死”（永远得不到执行）？</li>
+                <li>当一个错误的调度决策导致游戏内出现逻辑死锁（比如两艘船互相礼让和等待，都不动了）时，Broker该如何检测并打破这个死锁？</li>
+                <li>如何对导航请求调度者的性能进行测试？比如模拟峰值情况下同时涌入上万个导航请求，系统的吞吐量和决策延迟还能保持稳定吗？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">今天从“待确认”的代码线索中，我们提炼出了一个层层递进的知识体系，就像一个俄罗斯套娃。最核心的挑战是“如何移动”：惯性导航与紧急避让解决了单艘舰船在紧急情况下的瞬时反应问题，它是“本能”。但如果本能触发了，船跑偏了怎么办？这就需要“轨迹规划与路线恢复”这个更宏观的“计划”能力，来确保长期目标不丢失。而“导航请求调度模式”则站在了更高维度，它是一个“指挥官”，负责协调所有需要找路的单位，防止它们互相争抢资源或命令冲突。这三者环环相扣，从单体的应急反应，到全局的路径逻辑，再到高层级的任务协调，共同构成了一个完整而健壮的游戏AI导航系统，非常精彩地展示了如何将一个复杂的工程问题分层、解耦并优雅地解决。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">这三者环环相扣，从单体的应急反应，到全局的路径逻辑，再到高层级的任务协调，共同构成了一个完整而健壮的游戏AI导航系统。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>惯性导航系统是如何对加速度数据进行“积分”来算出位置的？为什么这个积分过程会随着时间积累巨大的误差？</li>
+            <li>在动态的游戏世界里，如果环境在恢复过程中发生了变化（比如原路线上的桥被炸断了），路线恢复模块如何与动态避障系统交互？</li>
+            <li>如何设计一个请求调度策略，使其既能保证关键任务的低延迟，又能防止低优先级任务被“饿死”？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
