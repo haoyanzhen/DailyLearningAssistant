@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-07-13 学习笔记日报</title>
+    <meta name="description" content="从系统外部的仓库变更轻量感知，到产品内容的数据驱动设计，再到内部导航调度解耦，三层契约边界逐步揭示了软件工程中职责分离与复杂度控制的精髓。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260713-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-07-13</p>
+        <h1>边界与契约：从远端感知到调度解耦</h1>
+        <p>从最轻巧的远端引用检测，到游戏内容的数据驱动设计，再到导航请求的调度解耦，三层边界由外而内，展示了通过明确契约来控制复杂度的工程方法。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>边界与契约</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>远端引用驱动的轻量变更检测</strong>
+                <small>像查还书登记簿一样，只比较指针 S…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>关卡目标的数据驱动设计</strong>
+                <small>数据文件是策划与程序之间的安全边界…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>导航请求调度与解耦</strong>
+                <small>Broker 就像机场塔台，把混乱…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">远端引用检测是开发流程中最外层的感知边界，让团队以最低成本掌握项目动态；数据驱动设计则在策划和程序员之间划下一道安全边界，通过标准化的数据文件影响游戏；导航请求调度则在代码内部，用 Broker 在请求方和执行方之间建立起正式的契约。三者共同印证了一个道理：好的架构不是把代码写死，而是画出清晰的边界，让每一部分各司其职，互不干扰。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["边界与契约"])
+  concept1["远端引用驱动的轻量变更检测"]
+  hub --&gt; concept1
+  concept2["关卡目标的数据驱动设计"]
+  hub --&gt; concept2
+  concept3["导航请求调度与解耦"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["边界与契约"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="lightweight-change-detection">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>远端引用驱动的轻量变更检测</h3>
+              <p>Lightweight Change Detection via Remote References</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">像查还书登记簿一样，只比较指针 SHA 就能知道仓库有无新提交。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>通过 git ls-remote 获取分支引用 SHA，无需下载代码文件。</li>
+                <li>对比新旧 SHA 即可发现变更，适合大规模仓库的定期巡检。</li>
+                <li>注意 force push 也会导致 SHA 变化，需要进一步区分方向。</li>
+                <li>极低的网络和计算开销，是“最小可行操作”的工程实践。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="lightweight-change-detection" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="data-driven-level-design">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>关卡目标的数据驱动设计</h3>
+              <p>Data-Driven Level Design</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">数据文件是策划与程序之间的安全边界，只要契约不破，就不会互相阻塞。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>将关卡数值（敌人数量、胜利条件等）存入独立的 JSON/XML 文件。</li>
+                <li>代码只负责读取并执行数据文件中的规则，不包含可变内容。</li>
+                <li>设计师只需遵循数据契约（字段名和格式），就能自由调整或创建关卡。</li>
+                <li>必须内置格式校验，防止因数据错误导致运行时崩溃。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="data-driven-level-design" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="navigation-request-broker">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>导航请求调度与解耦</h3>
+              <p>Navigation Request Scheduling and Decoupling</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">Broker 就像机场塔台，把混乱的飞行请求变成有序的起飞序列。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>引入 Broker（中间人）作为导航请求的统一入口。</li>
+                <li>AI 只提交目标点给 Broker，由 Broker 决定处理顺序和分配计算资源。</li>
+                <li>将意图（想去哪）和执行（路径计算）解耦，降低模块依赖。</li>
+                <li>Broker 可集中进行冲突检测、优先级管理和死锁恢复。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="navigation-request-broker" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="lightweight-change-detection">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>远端引用驱动的轻量变更检测</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象你要监控几十个代码仓库，看它们有没有新提交。如果把每个仓库都完整下载下来检查，会耗费大量时间和带宽。Git提供了一个非常聪明的办法：每个分支本质上只是一个叫‘引用’的指针，它指向某次具体提交的唯一编号（SHA）。我们用 git ls-remote 命令，只获取这些指针的最新指向，而不下载任何代码文件。只要把上次记录的指针值和现在的值一比较，如果不同，就说明有新的提交发生了。这就像图书馆只需要查一下还书登记簿上的最后一次登记时间，就知道有没有书被还回来，完全不用跑进书库一本本翻。这种检测只消耗极少量的网络和计算资源，非常适合定期巡检大量仓库。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Git 分支是引用（ref），指向特定提交的 SHA-1 哈希值。</li>
+                <li>git ls-remote 命令只查询远程仓库的头指针值，不传输对象。</li>
+                <li>本地缓存上次的 SHA，每次对比，不同则代表有新的提交到达。</li>
+                <li>因为不涉及文件数据传输，所以非常轻量快速。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设你负责维护一个小工具库 public-library，你想在它发生变更时自动收到通知。上一次检查时，你记录了其主分支的引用指 SHA 为 abc123。今天你再运行 git ls-remote origin refs/heads/main，得到 def456。因为两个值不同，你就能确定仓库有了新的提交，然后可以触发后续的通知或构建步骤，整个过程没有下载任何一行代码。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为必须用 git pull 或 git clone 才能知道远程更新，实际上只比较引用指针就够了。</li>
+                <li>认为检测失败就是网络问题，其实也可能是仓库被 force push 回退，导致 SHA 改变但并非新提交。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>关卡目标的数据驱动设计</td><td>都体现了用最小代价掌握状态的工程思维：一个通过引用 SHA 感知外部仓库变化，一个通过数据文件管理内部内容状态。</td></tr>
+                <tr><td>导航请求调度与解耦</td><td>都利用了中间层来隔离变化：检测通过引用指针隔离下载操作，调度通过 Broker 隔离路径计算。</td></tr>
+                <tr><td>边界与契约</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果需要同时监控多个分支和Tag，如何设计一个既能扩展又不冗余的检测脚本？</li>
+                <li>当检测到变更后，怎么决定是触发一个花费较高的完整构建，还是只做增量测试？</li>
+                <li>除了定期轮询，能否配合 Git 的 Webhook 机制把检测变成实时推送，从而进一步降低延迟？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="data-driven-level-design">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>关卡目标的数据驱动设计</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>在开发游戏时，如果每一关的敌人数量、胜利条件、奖励内容都直接写在代码里，那策划每调一个数值都得叫程序员来改，非常低效且容易出错。数据驱动设计的做法，是把这些能变化的内容抽出来，存放在独立的、结构化的数据文件里，比如JSON、XML或者表格。代码只负责读取这些文件，按照里面定义的规则去驱动游戏运行。这样，策划或者关卡设计师只要掌握文件格式的约定，就能自己动手调整关卡，甚至创建全新的关卡，完全不需要懂编程。这套约定就是‘数据契约’：数据文件必须遵循事先说好的结构和字段名称，程序才会正确理解它。如果谁不小心写错了格式，程序也能在最开始就发现并报错，而不是游戏崩溃后才发现问题。这种做法把‘创作内容的自由’与‘运行逻辑的稳定性’清晰地分开了。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>将可变参数抽象为结构化数据，存放在外部配置文件中。</li>
+                <li>定义数据契约（Schema），规定字段名称、类型和必需性。</li>
+                <li>代码解析文件时进行契约校验，通过后才加载到运行时对象。</li>
+                <li>业务逻辑只依赖运行时对象，与文件格式解耦。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>设想一个塔防游戏的第二关需要玩家在5分钟内防守住基地，并且最终基地血量大于0才算胜利。你不用把这关的内容写死在代码里，而是准备一个关卡配置JSON：{"level": 2, "duration": 300, "win_condition": "base_health &gt; 0"}。游戏加载这个JSON后，读取duration字段来显示倒计时，读取win_condition字段来判断是否胜利。当策划想把时间改成240秒，他只需要改动这个JSON文件，完全不用惊动程序员。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为只要把数据放进文件就算数据驱动，但如果缺少契约和校验，错误的数据会导致系统直接崩溃。</li>
+                <li>认为数据只能描述静态数值，实际上还可以描述简单的逻辑规则，如条件触发。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>远端引用驱动的轻量变更检测</td><td>都利用最小代价掌握状态：一个通过引用 SHA 感知仓库变化，一个通过数据文件管理内容变化，避免侵入性修改。</td></tr>
+                <tr><td>导航请求调度与解耦</td><td>都通过明确的契约（数据格式 vs 请求格式）来分离关注点，使不同角色可以独立工作而不相互影响。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当数据契约需要升级，比如增加一个‘随机天气’字段时，旧关卡文件缺这个字段，怎么设计服务才能保证它们依然正常打开？</li>
+                <li>有什么自动化工具可以校验JSON文件是否符合预先定义的Schema，在数据进入游戏之前就发现错误？</li>
+                <li>如何让数据驱动不仅仅支持数值和文本，还能描述简单的关卡逻辑分支，比如‘如果击杀数超过10，则出现额外援军’？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="navigation-request-broker">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>导航请求调度与解耦</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>在复杂的游戏或者机器人系统里，常有很多个单位同时需要移动。如果每个单位的AI都自己直接去调用路径规划算法，就会出现很多问题：一来，两个单位可能算出互相冲突的路径，比如同时挤进同一个狭窄过道；二来，每个调用路径规划的模块都得知道路径规划器内部的工作方式，导致修改其中一方就会牵连另一方，系统变得僵硬而脆弱。导航请求调度与解耦的方案是引入一个中间人，叫做Broker。AI们只需要向Broker提交一个请求，说‘我想从这里走到那里’，Broker会根据所有请求的优先级、先后顺序，以及当前地图的动态情况，统一决定先处理谁、怎么处理，然后再分发给底层的轨迹规划器去计算具体路径，最后把结果返回给各个AI。这样一来，请求方根本不知道也不必知道路径是怎么算的，轨迹规划器也不用关心请求是谁发来的，它们之间因为Broker而被彻底解耦。同时，Broker还可以在集中调度时轻松发现死锁迹象，比如两艘船互相等待对方让路，然后主动打破僵局。这种‘意图’与‘执行’之间的分离，是控制复杂系统复杂度最核心的手段之一。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>定义标准化的导航请求结构（包含起点、终点、优先级等）。</li>
+                <li>Broker 维护请求队列，根据优先级和调度策略依次处理。</li>
+                <li>请求方与路径规划器之间不直接通信，全部通过 Broker 解耦。</li>
+                <li>Broker 可对请求进行批处理、冲突检测和死锁恢复，提升整体效率。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假想一个即时战略游戏里，玩家框选20个单位要穿越一片复杂的建筑区移动到地图另一端。每个单位的AI层只需要生成一条‘移动到目标坐标’的请求，统一丢给Broker。Broker在收到这20个请求后，可以识别出它们都是往同一个大方向行动，于是优先为靠前排的几个单位计算路径并分配时序，同时让后排单位等待一个合适的时间窗再出发，从而自动形成有序的队伍，避免互相拥堵和原地打转。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为 Broker 只是一个简单的先进先出队列，但实际上需要支持优先级、超时、抢占等高级调度策略。</li>
+                <li>认为增加 Broker 会降低效率，但集中调度往往能通过批处理和缓存常用路径段来提升总体性能。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>关卡目标的数据驱动设计</td><td>都采用契约模式分离职责：数据契约分离内容与逻辑，请求契约分离意图与执行。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>假如一个高优先级的请求在等待时，一个低优先级的请求长期占用航道，调度器怎样通过‘优先级继承’来解决这种优先级反转问题？</li>
+                <li>如何为Broker设计健康监控和自恢复机制，当某个路径规划器频繁失败或响应超时，调度器可以自动降级或重试，而不是让整个系统崩溃？</li>
+                <li>在动态变化剧烈的游戏环境中，调度器怎样在已经发出的路径上检测‘过时信息’，并主动通知AI重新提交请求？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">远端引用检测是开发流程中最外层的感知边界，让团队以最低成本掌握项目动态；数据驱动设计则在策划和程序员之间划下一道安全边界，通过标准化的数据文件影响游戏；导航请求调度则在代码内部，用 Broker 在请求方和执行方之间建立起正式的契约。三者共同印证了一个道理：好的架构不是把代码写死，而是画出清晰的边界，让每一部分各司其职，互不干扰。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">用最小代价掌握状态，用数据契约分离职责，用中间人解耦意图与执行。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何设计一个既能扩展又不冗余的远端变更检测脚本？</li>
+            <li>数据契约升级时，怎样保证旧关卡文件依然能正常使用？</li>
+            <li>导航调度器如何通过优先级继承解决优先级反转问题？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
