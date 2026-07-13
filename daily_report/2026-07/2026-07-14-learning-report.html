@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-07-14 学习笔记日报</title>
+    <meta name="description" content="从持久化解耦到存档点设计，再到自动化测试，搭建健壮可验证的持久化层。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260714-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-07-14</p>
+        <h1>建造游戏存档的可信工程</h1>
+        <p>把存档视为独立服务，设计清晰的接口，并用自动化测试为每一次保存与加载盖上质量印章。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>持久化工程三部曲：解耦、设计与验证</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>持久化层与业务流程的解耦</strong>
+                <small>解耦的本质是通过清晰、稳定的接口通…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>游戏状态持久化与存档点设计</strong>
+                <small>存档不只是变量转文件，而是维护运行…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>自动化回归测试与状态验证</strong>
+                <small>测试不能证明没有Bug，但能为绝不…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">今天选择的三个概念——持久化层与业务流程的解耦、游戏状态持久化与存档点设计、自动化回归测试与状态验证——构成了一个从思想到实现再到验证的完整工程链条。解耦是起点，它教会我们把“保存”这件事从游戏主逻辑中抽出来，变成独立的模块；持久化设计是落地的做法，它规定了保存什么、怎么保存、何时保存；自动化测试则是持久的守护，用可重复运行的测试用例定义了什么是“正确的保存与加载”。三个概念互相依赖：没有解耦就做不到独立测试，没有可靠的持久化模块测试就无从写起，而测试又反过来约束持久化模块必须遵守清晰的行为契约。这种层层递进的工程思维，不仅适用于游戏存档，也适用于任何需要“记住状态”的软件系统——从手机App的草稿保存，到云文档的自动备份，本质都是相同的结构。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["持久化工程三部曲：解耦、设计与验证"])
+  concept1["持久化层与业务流程的解耦"]
+  hub --&gt; concept1
+  concept2["游戏状态持久化与存档点设计"]
+  hub --&gt; concept2
+  concept3["自动化回归测试与状态验证"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["持久化工程三部曲：解耦、设计与验证"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept2
+  concept3 --&gt; concept1
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="persistence-decoupling">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>持久化层与业务流程的解耦</h3>
+              <p>Decoupling Persistence from Business Logic</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">解耦的本质是通过清晰、稳定的接口通信，彼此不依赖对方的内部实现。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>关注点分离：游戏流程只触发保存，具体保存逻辑交给独立模块。</li>
+                <li>稳定接口：持久化模块暴露 save()、load()、clear() 等方法，隐藏内部实现。</li>
+                <li>独立测试：存档管家可单独测试，无需启动整个游戏。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="persistence-decoupling" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="game-state-persistence">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>游戏状态持久化与存档点设计</h3>
+              <p>Game State Persistence and Save Point Design</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">存档不只是变量转文件，而是维护运行时对象图的完整切片，并保证恢复后引用和状态一致。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>保存什么：找出决定游戏进度的状态变量，而非画面或声音等可重新生成的信息。</li>
+                <li>怎么保存：将对象图序列化为可靠格式（如JSON、二进制），并维护引用一致性。</li>
+                <li>何时保存：精确插入保存操作到游戏生命周期的安全窗口，避免状态不完整时存盘。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="game-state-persistence" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="automated-regression-testing">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>自动化回归测试与状态验证</h3>
+              <p>Automated Regression Testing and State Verification</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">测试不能证明没有Bug，但能为绝不能错的关键路径建立防护网。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>回归测试：验证新代码是否破坏了已有功能的核心行为。</li>
+                <li>行为契约：用测试用例固化保存/加载的期望行为，作为可执行的标准。</li>
+                <li>自动化：每次提交代码前自动运行，快速反馈，降低人为疏忽的风险。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="automated-regression-testing" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="persistence-decoupling">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>持久化层与业务流程的解耦</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>解耦这个词听起来有点学术，但它想表达的道理其实很简单：把两件可以独立完成的事情分开来做，不要把它们搅在一起。在游戏里，一件事是“判断什么时候该存盘”（比如玩家打完一关、点击保存按钮、或者游戏即将退出），另一件事是“具体怎么存盘”（比如把得分、位置、道具数量转换成文件写到磁盘上）。如果把这两件事写在同一段代码里，就像把菜谱和炒菜过程写在同一页纸上——当你只想改一下炒菜的火候时，却不得不整页重写，还容易把菜谱里记录的用料克数给弄乱。解耦的做法是：让负责游戏流程的代码只关心“触发保存”这件事，把“怎么存”全部委托给一个专门的“存档管家”模块。这样做有两个好处：第一，修改存档格式时，不需要动游戏流程的代码，避免把正在跑的游戏逻辑搞坏；第二，这个存档管家可以被单独测试，你可以反复喂给它各种状态，看它保存了再加载回来是不是一模一样，而不需要启动整个游戏。在编程术语里，这叫做“关注点分离”，就像家里电路和管道分开走，各司其职，互不干扰。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>分离意图和执行：游戏流程发出“保存命令”，持久化模块负责实现。</li>
+                <li>定义契约接口：例如 save(state)、load()、clear()，不暴露文件路径或格式。</li>
+                <li>降低耦合：修改存档格式或存储介质时，不影响业务流程代码。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>想象航海游戏存盘后发现存档损坏，因为新增了未知道具导致保存代码崩溃。解耦后，存档管家只负责序列化所有状态对象，遇到未知道具按默认规则处理，不会崩溃。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为代码分到两个文件就是解耦——真正的解耦需要接口隔离，不依赖内部实现。</li>
+                <li>认为解耦会降低性能——实际上清晰的边界有助于优化和测试，长期收益大于微小开销。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>游戏状态持久化与存档点设计</td><td>解耦为持久化模块的设计提供了独立的空间，使我们能专注于保存什么、怎么保存、何时保存。</td></tr>
+                <tr><td>自动化回归测试与状态验证</td><td>解耦后的持久化模块可以被独立编写自动化测试，验证其行为的正确性。</td></tr>
+                <tr><td>持久化工程三部曲：解耦、设计与验证</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果持久化模块的接口需要升级（比如增加一个 savePartial 方法），应该如何在不破坏现有游戏流程代码的情况下完成过渡？</li>
+                <li>在设计解耦接口时，如何决定哪些操作应该同步执行、哪些应该异步执行？为什么存档操作往往选择异步？</li>
+                <li>除了持久化，游戏中还有哪些常见的逻辑可以应用这种“剥离副作用”的解耦思想？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="game-state-persistence">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>游戏状态持久化与存档点设计</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>游戏状态持久化，通俗地讲，就是把游戏当前的一切——你的人物等级、背包里的东西、任务做到哪一步、地图上哪些门已经打开——像拍一张“状态快照”一样保存下来，下次打开游戏时能够从这张快照完全恢复。存档点设计，就是决定这些快照在什么时机、以什么方式被拍下。比如在《超级马里奥》里，每吃完一面旗子就是一个存档点；在开放世界游戏中，你可以随时手动保存，系统也会在关键转折点自动保存。一个可靠的持久化系统需要解决三个问题：第一，保存什么——即找到那些真正决定游戏进度的“状态变量”，而不是保存画面或声音这种可以重新生成的东西；第二，怎么保存——通常是把状态对象变成一串可以写入文件的数据（叫序列化），比如转换成JSON、二进制或者专用格式；第三，怎么恢复——也就是读取文件后，按照同样的规则把数据变回游戏里的角色、物品和关卡状态。如果这三个步骤中有任何一环出错，就可能出现“存档丢失”“读取后卡在墙壁里”或者“道具数量莫名其妙翻倍”的闹剧。今天的提交里，开发者专门为游戏新增了一个 progress_save_store.gd 模块，这就是那台“相机”，负责把所有需要记住的东西拍下来、存进相册、并且能在任何时候完美还原。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>识别状态变量：区分可重算数据（如渲染结果）与必须持久化的进度数据。</li>
+                <li>序列化对象图：将对象及引用关系转换为线性数据，解决循环引用和身份唯一性。</li>
+                <li>安全存盘时机：在状态一致时（如关卡结束或暂停）进行快照，避免中间态损坏。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>宠物养成游戏中，宠物戴着帽子，存档时不能只记帽子编号123，因为下次读取时帽子可能被删除。应存储装备的完整属性副本或唯一标识符，确保引用完整性。同时增加自动安全存档，防止“死亡存档”陷阱。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为持久化就是简单地把变量存成文件——忽略了对象间的引用关系和生命周期。</li>
+                <li>认为存档文件格式越紧凑越好——但可读性和向后兼容性往往更重要。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>持久化层与业务流程的解耦</td><td>持久化设计需要以解耦为前提，才能独立定义保存内容和时机。</td></tr>
+                <tr><td>自动化回归测试与状态验证</td><td>自动化测试通过模拟保存和加载来验证持久化设计的正确性。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果需要支持“存档向后兼容”——即老版本的存档在新版本游戏中也能读取——序列化格式应该如何设计才能平滑演进？</li>
+                <li>在多人游戏中，玩家的状态是分散在多台服务器上的，如何设计一个分布式持久化系统，既保证数据不丢失，又能在毫秒级完成读取？</li>
+                <li>除了游戏档案，我们日常使用的软件（如浏览器标签页恢复、IDE未保存文件缓存）中，哪些也用到了状态快照的思想？它们与游戏存档有何异同？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="automated-regression-testing">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>自动化回归测试与状态验证</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>自动化回归测试就是让机器替我们反复检查“以前做对的事，现在有没有被新的修改搞坏”。在游戏里，你改了一个小功能——比如调整了攻击力计算公式——结果却不小心让存档系统把一个整数保存成了字符串，导致下次读档时游戏崩溃。这种“修了东墙倒了西墙”的事每天都在发生。回归测试就是为系统的关键行为编写一套“考题”，每次修改代码后自动跑一遍这些考题，如果全部通过，就说明没有破坏现有的功能。对持久化模块来说，这套考题会包含：“把一套完整的游戏状态保存再读取，前后应该完全一致”、“保存一个空状态再读取，不应该崩溃”、“故意给一个损坏的存档文件，应该返回清晰的错误而不是静默吞掉”。这些考题定义了一个存档系统“正确行为”的边界，相当于一份可自动执行的合同。今天的提交里，开发者专门写了 progress_save_store_test.gd，这就是那份合同。它为持久化模块建立了行为规范，任何人在修改这个模块时，测试都会立即告诉ta：“你的修改改变了原来约定好的行为，请检查”。这种由测试守护的设计，让未来的改动不再依赖个人的记忆和小心，而是靠机器铁面无私的检查。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>定义预期行为：用代码描述保存、加载的错误处理及正常流程的期望结果。</li>
+                <li>自动执行与比对：将模块输入测试数据，对比输出与预期，发现任何不一致。</li>
+                <li>持续集成：测试集成到开发流程，每次修改代码都自动运行，确保质量内建。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>《暗黑破坏神2》某次更新后，读档时佣兵装备会复制。如果当时有自动化测试检查“保存-加载后装备数量不变”，这个经济毁灭Bug会立即被发现。现如今的持久化测试会覆盖：完整状态恢复一致性、空状态处理、损坏文件防御、覆盖语义等。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为测试就是证明程序没有Bug——测试只能证明已知场景未失效，无法穷举所有可能性。</li>
+                <li>觉得写测试拖慢开发速度——前期投入换取后期大量调试时间的节省，并提升修改代码的信心。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>游戏状态持久化与存档点设计</td><td>自动化测试直接验证持久化模块的实现是否满足设计契约。</td></tr>
+                <tr><td>持久化层与业务流程的解耦</td><td>解耦使得我们可以独立测试持久化模块，而不需要启动整个游戏环境。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>对于存档这种涉及文件I/O的操作，如何在测试中避免频繁读写真实磁盘？可以引入怎样的“测试替身”来模拟文件系统？</li>
+                <li>如果持久化模块未来要支持加密保存或云端同步，测试用例应该如何扩展以覆盖这些新特性，同时不破坏原有的验证逻辑？</li>
+                <li>自动化测试除了验证功能正确性，是否也能用于衡量存档系统的性能——比如保存和加载一个包含大量物品的状态需要多快才不被玩家感知？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">今天选择的三个概念——持久化层与业务流程的解耦、游戏状态持久化与存档点设计、自动化回归测试与状态验证——构成了一个从思想到实现再到验证的完整工程链条。解耦是起点，它教会我们把“保存”这件事从游戏主逻辑中抽出来，变成独立的模块；持久化设计是落地的做法，它规定了保存什么、怎么保存、何时保存；自动化测试则是持久的守护，用可重复运行的测试用例定义了什么是“正确的保存与加载”。三个概念互相依赖：没有解耦就做不到独立测试，没有可靠的持久化模块测试就无从写起，而测试又反过来约束持久化模块必须遵守清晰的行为契约。这种层层递进的工程思维，不仅适用于游戏存档，也适用于任何需要“记住状态”的软件系统——从手机App的草稿保存，到云文档的自动备份，本质都是相同的结构。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">自动化测试不只是找Bug，它更像一份“正确的存储应该长这样”的说明书，让每次修改都自动检查是否符合约定。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何设计存档向后兼容的序列化格式，让老存档在新版本游戏中仍然可用？</li>
+            <li>在多人游戏中，如何设计分布式持久化系统既保证数据不丢又在毫秒级完成读取？</li>
+            <li>日常软件中的浏览器标签页恢复、IDE未保存文件缓存，与游戏存档的状态快照思想有何异同？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
