@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-07-15 学习笔记日报</title>
+    <meta name="description" content="从Git三区证据层级到工程记录的待确认与已确认区分，再到最小权限的远端变更监控，完成工程证据的认知升级。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260715-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-07-15</p>
+        <h1>证据层级：从草稿纸到门禁系统的认知升级</h1>
+        <p>今天我们不谈新功能，只论证据——在工程记录的世界里，没有提交的修改如同沙滩上的字迹，只有穿越暂存区、凝固在历史中的 SHA，才拥有合同般的效力。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>证据层级与工程可靠性</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>Git 工作区、暂存区与提…</strong>
+                <small>没有commit的记录，就等于不存…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>待确认变更线索与已确认提交…</strong>
+                <small>明确标注‘待确认’与‘已确认’是一…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>基于远端 Git 引用指针…</strong>
+                <small>只问门口灯亮没亮，不需要进门。</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念组成了一个从局部到系统的认知链条。Git的三区模型是地基，告诉我们工作区修改只是不稳定的信号；在此基础上，区分待确认线索与已确认事实成为一种工程纪律，防止将未经审计的变化误当作交付；而基于远端引用指针的监控则把这种纪律放大到跨仓库协作，用只读指针代替全量下载，践行了最小知识原则。理解这条链条，就能更清醒地评估一个项目的真实进展，也能设计出边界更清晰的自动化系统。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["证据层级与工程可靠性"])
+  concept1["Git 工作区、暂存区与提交历史的证据层级差异"]
+  hub --&gt; concept1
+  concept2["待确认变更线索与已确认提交事实的区分原则"]
+  hub --&gt; concept2
+  concept3["基于远端 Git 引用指针的最小权限变更监控"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["证据层级与工程可靠性"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="git-evidence-hierarchy">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>Git 工作区、暂存区与提交历史的证据层级差异</h3>
+              <p>Git Evidence Hierarchy: Workspace, Staging Area, Commit History</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">没有commit的记录，就等于不存在。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>工作区是临时的草稿纸，随时修改但无记录可循；暂存区是预备登记区，标记了打算提交的意图；提交历史是永久档案，每次提交都被加密保护并可审计。</li>
+                <li>只有通过 git commit 进入提交历史的内容，才构成可靠的工程事实，其他区域的状态均属于不稳定的信号。</li>
+                <li>在工程记录中，工作区的改动只能作为线索，提交记录才是事实，混淆二者会导致虚假进度。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="git-evidence-hierarchy" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="distinguishing-clues-facts">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>待确认变更线索与已确认提交事实的区分原则</h3>
+              <p>Distinguishing Unconfirmed Clues from Confirmed Commit Facts</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">明确标注‘待确认’与‘已确认’是一种纪律。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>工作区中未提交的修改只是变更线索，必须加注“待确认”，不能直接视为已完成的工作。</li>
+                <li>只有通过 git commit 进入历史的修改才是已确认的事实，可以作为项目进度和决策的依据。</li>
+                <li>在日报、周报等工程记录中，明确区分线索与事实是一种纪律，可以防止未完成的变更伪装成竣工，提升项目透明度。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="distinguishing-clues-facts" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="remote-ref-monitoring">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>基于远端 Git 引用指针的最小权限变更监控</h3>
+              <p>Minimal-Privilege Change Monitoring via Remote Git References</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">只问门口灯亮没亮，不需要进门。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>通过 git ls-remote 命令获取远端仓库的分支指针所指向的提交 SHA，与本地保存的 SHA 比较即可判断是否发生了新提交。</li>
+                <li>监控过程不克隆仓库、不下载文件内容，只需读取引用元数据，践行了最小权限和最小知识原则。</li>
+                <li>这种监控能准确感知“是否有新提交”，但无法区分提交的具体内容，因此需要认清其能力边界，不做过度的推断。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="remote-ref-monitoring" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="git-evidence-hierarchy">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>Git 工作区、暂存区与提交历史的证据层级差异</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>你可以把Git想象成一个有三个抽屉的柜子。第一个抽屉叫工作区，里面放着你正在涂涂改改的草稿纸，修改随时可以发生，但别人完全看不到，也找不到任何记录——就像在纸上用铅笔乱画，擦了就没了。第二个抽屉叫暂存区，相当于你把几张觉得重要的草稿纸用回形针别起来，告诉Git“这些改动我打算记下来”，但它还没正式登记。第三个抽屉叫提交历史，就是把那片别好的纸装订成册，盖上日期章和签名，永远保存在档案柜里。从证据的角度看，草稿纸只能说明“某人可能在某时动了笔”，但无法作为可靠的工程记录；装订成册的档案才是板上钉钉的事实。今天tiny-sea-war仓库的未提交修改就属于草稿纸状态——我们能推测开发者在调游戏流程、在写测试，但不能说这些工作已经完成并交付。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Git 将版本控制分为三个独立区域：工作区（Working Directory）、暂存区（Staging Area / Index）和提交历史（Commit History），每个区域对应不同的文件状态和持久化程度。</li>
+                <li>工作区的修改是易失的，不纳入版本管理；暂存区通过 git add 将修改标记为预备提交；提交历史通过 git commit 将暂存内容固化，生成唯一的 SHA-1 哈希，形成不可篡改的证据。</li>
+                <li>从证据强度看：工作区 &lt; 暂存区 &lt; 提交历史；只有提交历史中的内容才是可追溯、可审计的工程交付。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一位开发者修改了游戏流程文件 game_flow.gd，新增了暂停菜单状态，但忘记执行 git add 和 commit。第二天代码库中并无该功能，不幸的是临时文件被清理，工作全部丢失。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为文件内容改变了就等于工作完成，忽略了提交的必要性。</li>
+                <li>认为 git status 显示 modified 就代表当天有可交付的产出，实际上修改可能是几天前遗留的，或仅是格式调整。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>待确认变更线索与已确认提交事实的区分原则</td><td>直接支撑该原则：正因为工作区修改不是可审计事实，所以必须将工作区的变动归类为待确认线索，而不应直接当作已确认的进度。</td></tr>
+                <tr><td>基于远端 Git 引用指针的最小权限变更监控</td><td>为监控机制提供基础：远端监控只能检测已提交的引用指针变化，不会也无法感知工作区的任何动静，这恰好遵循了证据层级的约束。</td></tr>
+                <tr><td>证据层级与工程可靠性</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>git stash 操作在证据层级中属于什么？它是否可以算作一种“半暂存”机制？</li>
+                <li>如果某次提交使用了 git commit --amend 修改了最近提交的内容，原有的证据链是否被破坏？如何通过 reflog 找回？</li>
+                <li>在团队协作中，如何利用 Git 的 pre-commit 钩子强制要求提交前运行测试，从而提升每次提交的可靠性？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="distinguishing-clues-facts">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>待确认变更线索与已确认提交事实的区分原则</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>理解了Git三区的证据层级之后，我们就可以把这一思想应用到日常工作记录中。当我们在写工作汇总或项目复盘时，必须清晰地区分“线索”和“事实”。工作区中未提交的修改，就像犯罪现场的脚印——它提示可能有活动发生，但你不能直接把它当成结案证据。只有经过git add和git commit，文件进入提交历史，才算有了“监控录像”般的事实。今天tiny-sea-war仓库的两个未提交文件就是典型线索：game_flow.gd改了19行，我们可以推断开发者可能在调整游戏流程；scene_presentation_test.gd新增54行，暗示场景展示测试在开发中。但这些推断前面必须加上“待确认”三个字，因为明天这些修改可能被完全推翻，也可能只是随手实验后就被丢弃。相反，public-library仓库的远端监控所检测到的ref指针变化，则是基于已提交SHA的确定事实，值得被正式记录。这种区分不仅是严谨，更是一种工程伦理：我们提供给他人做决策的信息，必须标注清楚是推测还是确认。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>任何未进入提交历史的代码变动，都只能作为“待确认线索”，因为它们随时可能被丢弃或推翻。</li>
+                <li>已提交的变更构成了“已确认事实”，它们拥有时间戳、作者和不可篡改的哈希链，可以作为工程决策的基础。</li>
+                <li>通过在工作记录中明确标注信息状态，可以防止将推测误当作进度，避免错误决策，同时培养团队的工程严谨性。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一位新入职的工程师在日报中写“完成了敌方AI的行为树重构”，但代码库中并无相关提交——他只是在本地分支上写了个半成品。主管在会议上宣布后遭到质疑，最终尴尬修正。此后团队在日报模板中增设“证据状态”栏，强制区分。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为 git status 有输出就代表有可报告的工作量，实际上这些输出可能是无意义的实验残留或自动格式化改动。</li>
+                <li>在汇报时，把未提交的本地修改混入已完成工作，营造出虚假的进展感，最终导致项目状态失真。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>Git 工作区、暂存区与提交历史的证据层级差异</td><td>建立在三区证据层级之上：该模型告诉我们工作区不可靠，因此必须将其标记为线索；暂存区是意图，提交才是事实。</td></tr>
+                <tr><td>基于远端 Git 引用指针的最小权限变更监控</td><td>监控机制仅接收已确认的提交事实（指针变化），而我们在记录工作进展时，也应只将监控可感知的远端指针变化视为已确认，本地工作区变动均属待确认。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>持续集成系统如何区分“正在构建中的提交”和“已发布到生产环境的版本”？这一区分如何帮助实现蓝绿部署？</li>
+                <li>在多仓库协作的项目中，如果一个仓库依赖于另一个仓库的未合并特性分支，什么是最小风险的协作方式？是否可以约定一个“草案提交”的标记规范？</li>
+                <li>除了Git状态，还有哪些文件元数据（如最后修改时间、编辑器交换文件）容易让人误判已完成工作？如何建立检查清单来规避？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="remote-ref-monitoring">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>基于远端 Git 引用指针的最小权限变更监控</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>现在我们把目光从本地仓库投向远程协作。假如你需要监控上百个Git仓库有没有新代码提交，你肯定不会一个个克隆下来——那会占用海量的硬盘和带宽。有一种极简的办法：用git ls-remote命令，只问远端仓库一件事——“你的分支指针现在指向哪个提交哈希？”如果这个哈希值和上次记录的不同，就说明有新提交发生了；如果一样，就什么也不用做。这就像你不需要去敲邻居的门看他是否在家，只需要看一眼门口的灯亮没亮就足够了。今天的public-library仓库就采用了这种监控机制，它不下载任何代码，不接触文件内容，不依赖本地工作区，仅仅通过读取引用指针的元数据，就完成了变更感知。这种设计体现了“最小权限”和“最小知识”的思想：监控方与仓库之间只需要约定“指针当前值”这个最小接口，系统边界因此变得清晰而安全。当然，它也有明确的认知边界：只能知道指针动了，却不能区分这是一次常规合并还是一次紧急修复，更无法知道改了哪些文件。这种“准确的有限性”恰恰是一种值得学习的设计哲学——知道自己的能力边界，比用猜测填满空白更可靠。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Git远端仓库通过引用（refs）指向具体的提交对象，分支、标签等引用本质上是一个指向提交 SHA 的指针。</li>
+                <li>git ls-remote 可以获取这些引用的当前值，无需克隆仓库，仅依赖远程仓库的读取权限，极大地减少了网络和存储开销。</li>
+                <li>监控逻辑仅需比对当前指针 SHA 与之前记录的 SHA，若不同则标记变更事件，不涉及任何内容解析，天然保证了安全隔离和最小耦合。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>public-library 仓库的监控脚本每次执行 git ls-remote origin，获取 main 分支的 SHA，与上次记录的 def456 比较发现变为 abc123，于是记录“main分支指针已变化”，但不执行任何 clone 或 fetch 操作，资源消耗极低。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为“远端指针变化就代表有代码更新”，实际上强制推送或回滚也可能导致指针变化，而实际内容可能并未向前演进。</li>
+                <li>期望这种监控能告知“改了什么文件”，但它仅提供引用指针的变化，不具备任何文件级别的感知能力。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>Git 工作区、暂存区与提交历史的证据层级差异</td><td>监控只检测已提交的 SHA 变化，完全忽略工作区的不确定状态，是对证据层级思想的最佳实践：只依赖提交历史这一最高强度的证据。</td></tr>
+                <tr><td>待确认变更线索与已确认提交事实的区分原则</td><td>监控接收的是已确认的提交事实（指针移动），而在工作记录中也应当将远端指针变化视为已确认的变更信号，本地工作区修改则属于待确认线索。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果远端仓库使用 Git tag 而非分支来标记发布版本，如何调整监控策略来感知新版本发布？</li>
+                <li>与 Webhook 推送模式相比，轮询远端引用指针在延迟性、可靠性、资源消耗上各有什么优劣？在什么场景下该选择哪种方案？</li>
+                <li>如何设计一个基于区块链或数字签名的审计日志，来防止监控端记录的被篡改，从而在监管环境中形成不可否认的变更时间线？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念组成了一个从局部到系统的认知链条。Git的三区模型是地基，告诉我们工作区修改只是不稳定的信号；在此基础上，区分待确认线索与已确认事实成为一种工程纪律，防止将未经审计的变化误当作交付；而基于远端引用指针的监控则把这种纪律放大到跨仓库协作，用只读指针代替全量下载，践行了最小知识原则。理解这条链条，就能更清醒地评估一个项目的真实进展，也能设计出边界更清晰的自动化系统。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">从草稿纸到合同书、再到门禁系统的认知升级。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>git stash 操作在证据层级中属于什么？它是否可以算作一种“半暂存”机制？</li>
+            <li>在多仓库协作的项目中，如果一个仓库依赖于另一个仓库的未合并特性分支，什么是最小风险的协作方式？是否可以约定一个“草案提交”的标记规范？</li>
+            <li>如何设计一个基于区块链或数字签名的审计日志，来防止监控端记录的被篡改，从而在监管环境中形成不可否认的变更时间线？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
