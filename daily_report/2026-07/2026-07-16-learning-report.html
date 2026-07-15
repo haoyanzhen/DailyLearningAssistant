@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-07-16 学习笔记日报</title>
+    <meta name="description" content="今天学习数据与逻辑解耦的实践：场景展示测试、地形数据契约校验、配置注册表隔离，构建可维护的游戏工程。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260716-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-07-16</p>
+        <h1>数据驱动 · 抽象解耦 · 测试兜底</h1>
+        <p>从场景测试验证视觉表现，到地形数据契约式建模，再到配置注册表边界分离，三个概念串起游戏开发中数据与逻辑解耦的实践链条。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>数据与逻辑的解耦艺术</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>场景展示测试的模式</strong>
+                <small>场景展示测试把游戏画面的正确性变成…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>地形数据的契约式建模与验证</strong>
+                <small>地形数据的契约式建模用‘定义 +…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>游戏流程控制与配置注册表的…</strong>
+                <small>配置注册表在游戏流程和数据文件之间…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">场景展示测试是入门级概念，让初学者理解为何画面的正确性也需要自动化保护；地形数据的契约式建模在此基础上引入了‘契约’和‘管道’的理念，说明如何用程序保证成千上万行地图数据的合法性；而配置注册表的边界分离则是更深入的架构设计，展示了如何通过间接层让游戏流程免受数据格式变化的影响。三个概念难度依次递进，但它们环环相扣：没有高质量的数据契约，注册表就缺乏可信的输入；没有注册表解耦，场景测试也会被数据细节污染；而场景测试又是检验前两者最终效果的直接窗口。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["数据与逻辑的解耦艺术"])
+  concept1["场景展示测试的模式"]
+  hub --&gt; concept1
+  concept2["地形数据的契约式建模与验证"]
+  hub --&gt; concept2
+  concept3["游戏流程控制与配置注册表的边界分离"]
+  hub --&gt; concept3
+  related1["Godot引擎的UID机制"]
+  concept1 --&gt; related1
+  concept1 --&gt; concept3
+  related2["JSON数据模式的一致性校验"]
+  concept2 --&gt; related2
+  related3["关卡数据驱动设计"]
+  concept2 --&gt; related3
+  concept2 --&gt; concept3
+  concept3 --&gt; concept2
+  related4["远端Git引用指针的最小权限监控"]
+  concept3 --&gt; related4
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="scene-display-test-pattern">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>场景展示测试的模式</h3>
+              <p>Scene Display Test Pattern</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">场景展示测试把游戏画面的正确性变成了可自动重复的检查，像视觉层面的单元测试，让设计师和程序员不再靠‘人眼跑一遍’来保证UI和特效的呈现。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>不依赖截图对比，而是检查节点属性（可见性、文本、动画状态）来验证视觉正确性。</li>
+                <li>像单元测试一样自动化，可集成到CI中，每次代码改动后自动运行。</li>
+                <li>将直觉判断转化为客观证据，降低回归风险，提高视觉质量的稳定性。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="scene-display-test-pattern" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="terrain-data-contract-modeling-validation">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>地形数据的契约式建模与验证</h3>
+              <p>Contract-based Terrain Data Modeling &amp; Validation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">地形数据的契约式建模用‘定义 + 自动校验 + 消费’的管道，将地图数据的质量保障从人工审查变成了可执行的规则，一条错误的坐标类型尚未进入游戏就会被拦截。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>为地形数据定义严格的数据契约（字段类型、长度、约束），形成规范化的数据定义。</li>
+                <li>编写校验脚本，在资源导入或提交前自动检查，将错误拦截在开发早期。</li>
+                <li>构建“定义—校验—消费”的数据管道，保证只有通过校验的数据才能进入游戏运行时。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="terrain-data-contract-modeling-validation" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="game-flow-config-registry-separation">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>游戏流程控制与配置注册表的边界分离</h3>
+              <p>Separation of Game Flow Control and Config Registry</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">配置注册表在游戏流程和数据文件之间插入了一层抽象，让流程代码只依赖稳定的查询接口，有效隔离了数据格式变化对核心逻辑的冲击。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>游戏流程通过配置注册表的抽象接口获取数据，不直接依赖文件格式或全局变量。</li>
+                <li>注册表封装数据查找和转换细节，数据格式变化只影响注册表内部实现。</li>
+                <li>遵循依赖倒置原则，让核心逻辑保持稳定，数据层可以独立演变，降低维护成本。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="game-flow-config-registry-separation" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="scene-display-test-pattern">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>场景展示测试的模式</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>游戏不只有后台逻辑，还有直接呈现在玩家眼前的画面、文字、血条、按钮、动画效果。这些视觉元素是否出现在正确的位置、是否在正确的时机显示或隐藏，同样会严重影响游戏体验。场景展示测试就是专门为这些‘画面是否正确’而写的自动化检查。它不像常规逻辑测试那样只检查数值和状态，而是会加载一个完整的游戏场景，运行一段脚本，然后查看场景中各个节点的属性——比如某个精灵是否可见、某个UI标签的文本是否正确、动画是否播放到了指定帧。这相当于雇了一个永不疲倦的质检员，每次代码改动后都自动打开游戏界面看一遍，确保画面没坏。它的底层原理并不复杂：游戏引擎中一切可见元素都是对象，测试框架可以像检查普通变量一样检查这些对象的属性。场景展示测试的本质就是把‘看着没问题’的直觉，转化为‘属性值符合预期’的客观证据。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>加载完整游戏场景并运行脚本，检查场景中节点的属性（如可见性、文本、动画状态），而不是进行像素级截图对比。</li>
+                <li>利用游戏引擎的对象模型，将视觉验证转化为可自动化执行的断言，消除环境差异带来的不稳定。</li>
+                <li>将视觉正确性验证前置到开发流程中，与逻辑测试一样纳入持续集成，缩短反馈周期。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>func test_battle_ui_shows_damage_text():
+    var scene = load_battle_scene("test_map")
+    simulate_hit(enemy_ship, damage=50)
+    await next_frame()
+    assert_true(damage_text_label.visible)
+    assert_equal(damage_text_label.text, "-50")</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>很多人以为场景展示测试就是截图对比，认为只要把当前画面和一张参考图片进行像素级比对就算完成测试。实际上，截图对比在游戏中极不稳定——分辨率变化、驱动差异、操作系统渲染差异都会导致大量误报。真正的场景展示测试通常检查的是节点的属性树、对象的可见性、文本内容、动画状态等逻辑化信息，而不是像素本身。它验证的是‘意图’而非‘像素’，因此更加稳定和易于维护。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>Godot引擎的UID机制</td><td>场景展示测试需要加载场景中引用的脚本和资源，Godot引擎通过UID机制保证资源在移动或重命名后引用依然有效，因此稳定的UID是场景测试可靠运行的基础。</td></tr>
+                <tr><td>配置注册表的边界分离</td><td>场景展示测试的输入数据（如关卡配置、地形定义）如果通过配置注册表获取，测试本身便不用硬编码文件路径，从而与配置注册表的边界分离形成呼应。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>除了检查节点可见性和文本内容，还有哪些优雅的方法可以验证动画播放和粒子特效的正确性？</li>
+                <li>在持续集成服务器上没有图形界面时，如何运行场景展示测试？Godot的‘无头’模式是如何实现的？</li>
+                <li>场景展示测试与集成测试的边界在哪里？什么时候应该继承整条游戏流水线，什么时候应该只测试场景局部？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="terrain-data-contract-modeling-validation">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>地形数据的契约式建模与验证</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>在游戏项目中，地形数据往往千变万化——岛屿形状、水深区域、生成点位置，这些都需要以数据文件（如JSON）的形式交给引擎读取。但手工编辑大量数据难免出错：字段名拼错、类型不对、坐标数组长度不匹配，任何一个低级错误都可能导致游戏崩溃或表现异常。‘契约式建模’指的是为这些数据预先设定一份严格的‘合同’（契约），明确规定每个字段是必填还是可选、它的类型是字符串还是数字、数组至少有多少个元素、不同地形块之间有什么关联约束。有了这份合同，就能编写独立的校验工具，让它像一位严苛的审计员，在数据进入游戏之前自动逐条检查，一旦发现违约立即告警。在tiny-sea-war中，地形定义文件terrain_definitions.json、校验脚本validate_terrain_definition.py和生成点构建工具build_custom_battle_spawn_slots.py恰好构成了一条‘定义—校验—消费’的数据管道，把数据建模、质量控制和运行时消费三个环节串联成一个闭环。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>为数据定义严格的规范契约（字段、类型、关系约束），使数据格式成为一种可引用、可检查的约定。</li>
+                <li>通过校验工具在数据使用前进行自动检查，利用规则引擎将传统的人工审查转化为机器可执行的过程，大幅提高错误发现的及时性。</li>
+                <li>形成‘定义—校验—消费’的管道架构，确保只有通过验证的数据才能被下游消费，从而在数据源头控制质量。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>{
+  "id": "island_01",
+  "name": "珊瑚礁",
+  "vertices": [[100, 200], [150, 250], [120, 300], [80, 280]],
+  "type": "obstacle",
+  "spawnable": false
+}
+校验规则：
+1. name字段必须存在且为长度大于0的字符串。
+2. vertices数组长度必须在3到100之间。
+3. 如果type为“obstacle”，则spawnable必须为false。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>常见误区是认为通过校验就等于地图‘合理’。事实上，自动校验只能检查语法和结构层面的约束（如字段类型、数组长度），无法判断游戏体验层面的平衡性。比如校验程序可以确保两个生成点之间的距离是一个合法的正数，但它无法知道这个距离是否会让玩家感到不公平或者出生点过于拥挤。因此，契约式建模是质量的必要保障，但不是充分保障。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>JSON数据模式的一致性校验</td><td>地形数据的契约式建模离不开JSON数据模式的一致性校验，后者是实现前者的具体技术手段，将口头约定固化为可自动执行的约束。</td></tr>
+                <tr><td>关卡数据驱动设计</td><td>校验通过的地形数据会被生成点槽位工具消费，体现了数据管道的生产-消费关系，而生成点配置正是关卡数据驱动设计的一环。</td></tr>
+                <tr><td>配置注册表的边界分离</td><td>游戏流程通过配置注册表访问地形数据，而不是直接读取JSON，这意味着契约的变更只要注册表适配即可，流程代码无需感知，边界分离进一步保护了核心逻辑。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当数据契约需要升级（如新增字段）时，如何实现向前兼容，让旧版地图数据依然可用？</li>
+                <li>JSON Schema如何描述更复杂的跨字段约束，例如‘如果某岛type=base，则必须提供supply_points字段’？</li>
+                <li>在高频更新数据的项目中，校验步骤如何集成到Git的pre-commit钩子中，实现全自动的‘提交即校验’？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="game-flow-config-registry-separation">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>游戏流程控制与配置注册表的边界分离</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>在游戏代码中，‘游戏流程控制’指的是决定游戏从标题画面到战斗结束每一步应该做什么的逻辑，比如‘开始战斗 → 生成舰船 → 等待玩家指令 → 结算伤害 → 检查胜负条件’。‘配置注册表’则是一个集中管理所有配置数据的模块，它不参与游戏规则的决策，只负责回答‘指定地图的出生点有哪些’‘某个道具的攻击力是多少’这类数据查询。边界分离的思想是：流程代码永远通过注册表提供的抽象接口获取数据，而不是自己翻找JSON文件或直接访问全局变量。这样做的好处是，当地形定义、道具数值、UI布局等频繁变动的数据层发生格式变化时，只需要修改注册表内部的实现，所有依赖它的流程代码完全不受影响。这就像政府部门的‘窗口服务’——你去办业务只和窗口工作人员打交道，而不需要知道背后档案室换了什么管理系统。在tiny-sea-war中，game_flow.gd（应用流程）和config_registry.gd（基础设施）分属不同目录、承担不同职责，正是这种分层架构的体现。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>引入配置注册表作为抽象层，隐藏数据存储细节，提供统一的查询接口。</li>
+                <li>游戏流程仅依赖注册表提供的稳定接口，与具体的数据实现解耦，实现控制与配置的分离。</li>
+                <li>当数据源或格式变化时，只需修改注册表内部实现，不影响流程代码，从而保护核心业务逻辑的稳定。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>var spawn_slots = ConfigRegistry.get_spawn_points(map_id)
+for slot in spawn_slots:
+    spawn_ship(slot.position, slot.faction)
+
+// 注册表内部实现
+func get_spawn_points(map_id):
+    var terrain_data = load_json("terrain_%s.json" % map_id)
+    return SpawnBuilder.build(terrain_data)
+
+// 未来如果地形存储从JSON迁移到二进制格式，只需修改load_json这一行接口，game_flow.gd完全不必触动。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>有人认为在数据很简单、项目很小的时候引入注册表层是过度设计，徒增复杂度。但实际上，游戏的数据量往往以肉眼可见的速度膨胀，一旦到了十几张地图、上百种道具时，那些直接访问JSON的流程代码就会变成难以维护的‘意大利面条’。所以这不是多此一举，而是对预期变化的前瞻性投资。当然，注册表自身的设计也需要克制，避免退化为一个包罗万象的‘上帝对象’。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>地形数据的契约式建模与验证</td><td>配置注册表为游戏流程暴露的数据，其源头正是经过契约式建模和校验的地形数据，数据契约保证了注册表拿到的数据是可靠的。</td></tr>
+                <tr><td>远端Git引用指针的最小权限监控</td><td>配置注册表的设计原则与远端Git引用指针的最小权限监控异曲同工：两者都只暴露调用方所需的最小信息，前者只给接口，后者只给SHA，避免了信息溢出和耦合。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当配置注册表需要处理大量数据时，如何设计内部缓存和延迟加载策略，避免在游戏启动时一次性加载全部地图数据？</li>
+                <li>如何定义注册表接口的测试契约，确保注册表实现变更后，游戏流程依然获得一致的行为？</li>
+                <li>在多分支并行开发中，如果配置注册表接口需要同时变更，如何通过接口版本化来避免不同功能模块的集成冲突？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">场景展示测试是入门级概念，让初学者理解为何画面的正确性也需要自动化保护；地形数据的契约式建模在此基础上引入了‘契约’和‘管道’的理念，说明如何用程序保证成千上万行地图数据的合法性；而配置注册表的边界分离则是更深入的架构设计，展示了如何通过间接层让游戏流程免受数据格式变化的影响。三个概念难度依次递进，但它们环环相扣：没有高质量的数据契约，注册表就缺乏可信的输入；没有注册表解耦，场景测试也会被数据细节污染；而场景测试又是检验前两者最终效果的直接窗口。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">让数据遵守可自动校验的契约，让游戏流程不直接依赖数据格式，让视觉逻辑进入自动化测试的射程。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>在持续集成服务器上没有图形界面时，如何运行场景展示测试？Godot的‘无头’模式是如何实现的？</li>
+            <li>当数据契约需要升级时，如何实现向前兼容，让旧版地图数据依然可用？</li>
+            <li>在多分支并行开发中，如果配置注册表接口需要同时变更，如何通过接口版本化来避免不同功能模块的集成冲突？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
