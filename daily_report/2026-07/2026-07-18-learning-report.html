@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-07-18 学习笔记日报</title>
+    <meta name="description" content="今日串联文档模块化拆分、数据与领域分工、蒙特卡洛胜率验证三条线索，构筑从设计知识管理到平衡性自动审计的工程演化链。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260718-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-07-18</p>
+        <h1>2026年7月18日 学习日报：设计知识的工程化演化</h1>
+        <p>三条工作线索看似独立，实则构成一条精密的演化链——从文档拆分到数据契约，再到统计验证，逐步把游戏设计质量从手工作坊推向自动化工程。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>设计文档体系重构与平衡性自动化验证</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>设计文档的模块化拆分与单一…</strong>
+                <small>单一大文档就像把所有家当塞进一个纸…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>数据模式文档与领域设计文档…</strong>
+                <small>数据模式是身份证——定义你是谁；领…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>基于蒙特卡洛模拟的关卡胜率…</strong>
+                <small>别再用“我觉得这关挺简单”来赌玩家…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">今天讲解的三个概念正好覆盖了这条演化链上的三个关键节点。设计文档的模块化拆分是最基础的一步——它用“单一职责”的原则把1200行的大文档拆成多个专题文档，让设计知识从一团乱麻变成分类清晰的抽屉。在此基础上，数据模式文档与领域设计文档的分工进一步明确了“文档应该写什么”：数据模式回答“数据长什么样”，领域设计回答“数据怎么用”，二者合在一起构成了关卡数据的完整契约。有了这个契约之后，蒙特卡洛模拟的关卡胜率批量验证就找到了用武之地——它为每个关卡自动跑上千局模拟战斗，用统计数字告诉你这个关卡是否满足契约中隐含的平衡性要求。三个概念从文档组织到数据建模再到统计验证，难度逐步爬升，但逻辑环环相扣，共同服务于“把游戏设计质量工程化”这个更大的目标。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["设计文档体系重构与平衡性自动化验证"])
+  concept1["设计文档的模块化拆分与单一大文档的反模式"]
+  hub --&gt; concept1
+  concept2["数据模式文档与领域设计文档的分工"]
+  hub --&gt; concept2
+  concept3["基于蒙特卡洛模拟的关卡胜率批量验证"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["设计文档体系重构与平衡性自动化验证"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="modular-doc-splitting">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>设计文档的模块化拆分与单一大文档的反模式</h3>
+              <p>Modular Document Splitting vs. Monolithic Document Anti-pattern</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">单一大文档就像把所有家当塞进一个纸箱，找双袜子都得翻个底朝天；模块化拆分就是换成分类明确的小箱子，按需取用，各不相扰。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>单一大文档反模式带来高昂的认知负担和修改风险，所有设计决策混在一起，查找和修改都像在杂物间里翻找袜子。</li>
+                <li>模块化拆分遵循单一职责原则，将不同关注点（如战斗数据、AI行为、艺术管线）分配到独立文档中。</li>
+                <li>拆分后每个文档的修改影响范围被限制，降低了维护成本，并且为后续的LLM Agent审计提供了结构化的基础。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="modular-doc-splitting" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="data-vs-domain-docs">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>数据模式文档与领域设计文档的分工</h3>
+              <p>Separation of Data Schema Docs and Domain Design Docs</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">数据模式是身份证——定义你是谁；领域设计是驾照——定义你能干什么。二者分开，各走各路，互不干扰。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>数据模式文档像身份证，描述数据结构的静态属性（字段名、类型、取值范围），变化频率低、影响范围广。</li>
+                <li>领域设计文档像驾照，描述数据在具体业务场景中的使用规则（如伤害计算、状态效果），变化频率高、影响范围相对窄。</li>
+                <li>分开维护避免了修改业务规则时意外破坏底层数据结构，且让两类读者（程序员和设计师）都能高效获取所需信息。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="data-vs-domain-docs" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="monte-carlo-win-rate-validation">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 计算机科学</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>基于蒙特卡洛模拟的关卡胜率批量验证</h3>
+              <p>Batch Validation of Level Win Rates via Monte Carlo Simulation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">别再用“我觉得这关挺简单”来赌玩家的体验——让AI替你打一千局，让数据说话。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>蒙特卡洛方法通过大量随机实验逼近难以解析计算的真值，用频率估计概率。</li>
+                <li>批量验证配置为每个关卡定义仿真参数（AI行为、随机种子、实验次数），自动并行运行，输出胜率报告。</li>
+                <li>将难度评估从主观直觉转化为可重复的统计数据，实现关卡平衡性的自动化质量门控。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="monte-carlo-win-rate-validation" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="modular-doc-splitting">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>设计文档的模块化拆分与单一大文档的反模式</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象你搬家时把所有东西——衣服、锅碗瓢盆、书、电脑——全部塞进一个巨大的纸箱。搬进去的时候觉得省事，但到了新家想找一双袜子，你不得不把整个箱子翻个底朝天。更糟糕的是，如果你想换一件衣服，可能不小心就把旁边的盘子碰碎了。这就是“单一大文档反模式”的本质：把所有设计决策写在一个上千行的文档里，表面上看是“集中管理”，实际上每一次查找、每一次修改都要承担巨大的认知负担和连带风险。模块化拆分就是把那个大箱子换成几个分类明确的小箱子——衣服一个箱、厨具一个箱、书一个箱。在软件工程里，这条原则叫“单一职责”，意思是每个模块（或文档）只承担一类设计决策。当天tiny-sea-war仓库的提交63053d84就做了这样一件事：把一个1200行的数据模式设计文档拆成了6个独立的数据模式文档、2个领域设计文档和1个艺术资产管线文档。这不是简单的文件切割，而是把“战斗数据长什么样”“环境数据怎么存”“AI行为用什么参数”这些不同的问题分到不同的文档里回答。这样做的好处是立竿见影的：当你要修改AI行为相关的设计时，你只需要打开AI数据模式那一个文档，不用担心不小心改坏了战斗系统的定义；当新同事加入项目想了解环境系统时，他直接看环境数据模式文档就好，不用在1200行的文本里大海捞针。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>关注点分离：每个文档只负责一类设计决策，避免信息混杂带来的认知噪声。</li>
+                <li>单一职责原则：一个文档应该只有一条修改它的理由，当修改只涉及某一领域时，影响范围被限定在对应的文档内。</li>
+                <li>可维护性提升：拆分后，针对特定系统的修改不再需要阅读大量无关内容，降低引入连带错误的风险。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一位老程序员接手一个游戏项目，发现整个设计文档放在一个8000行的 game_design.md 里。修改火焰伤害公式花了两天，还因为没注意到远处引用而导致关卡难度崩溃。后来拆成30多个专题文档，修改时间缩短到两小时，再也不出现连锁事故。当天的提交63053d84就是将1200行的 data_model_design.md 拆成9个专精文件，原理如出一辙。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为文档拆分只是文件整理问题，跟设计质量无关。实际上它直接决定了设计知识的可见性和可维护性。</li>
+                <li>以为拆分得越细越好——过度拆分会让文档之间的关系变得隐晦，反而增加理解成本。好的拆分是在“单一职责”和“信息内聚”之间找到平衡。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>数据模式文档与领域设计文档的分工</td><td>模块化拆分是分工的前提——只有先把大文档拆开，才能进一步区分哪些文档讲数据定义、哪些文档讲业务规则。</td></tr>
+                <tr><td>基于蒙特卡洛模拟的关卡胜率批量验证</td><td>模块化文档降低了LLM Agent审计时的信息噪声，并让关卡契约（数据模式 + 难度规范）清晰可读，为仿真验证提供结构化入口。</td></tr>
+                <tr><td>设计文档体系重构与平衡性自动化验证</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何判断一个文档应该拆分到什么粒度？有没有可量化的标准，比如行数上限或职责数量上限？</li>
+                <li>拆分后的多个文档之间如何管理交叉引用？当一个设计决策涉及多个文档时，如何保证一致性不被破坏？</li>
+                <li>在团队协作中，不同的文档应该由谁负责维护？文档的所有权和代码的所有权应该如何对应？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="data-vs-domain-docs">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>数据模式文档与领域设计文档的分工</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>上一个概念我们讲了把大文档拆成小文档，但拆分之后还有一个关键问题：小文档之间应该怎么分工？当天提交63053d84给出的答案是——把文档分成“数据模式文档”和“领域设计文档”两大类。用生活中的例子来理解这种分工：你的身份证和你的驾照都是“关于你”的证件，但它们的分工完全不同。身份证定义的是“你是谁”——姓名、出生日期、身份证号，这些是你作为一个人最基本的属性，不随场景变化。驾照定义的则是“你能干什么”——准驾车型、有效期限、扣分记录，这些是你作为驾驶员的业务能力，跟开车这个具体领域绑定。在游戏设计中，数据模式文档就是身份证：它定义战斗数据有哪些字段（比如伤害值、攻击范围、冷却时间），每个字段是什么类型（整数、浮点数、字符串），是否有默认值和取值范围。这些定义只关心“数据长什么样”，不关心“数据怎么用”。领域设计文档则是驾照：它定义在具体的业务场景里这些数据如何参与规则运算——比如“当玩家血量低于20%时触发濒死保护”或者“火焰伤害对护甲类型为‘重甲’的目标减少30%效果”。这些规则关心的是“数据怎么用”，而且只在一个特定领域内有效。为什么要把它们分开？因为“数据长什么样”变化频率低、影响范围广，属于底层约束；而“数据怎么用”变化频率高、影响范围相对窄，属于上层规则。混在一起的结果就是：策划想调整一下濒死保护的触发阈值，却不得不在一大堆字段定义里翻找，还可能不小心改错了数据模式的定义，导致整个战斗系统崩溃。分开之后，改业务规则就只看领域设计文档，改数据结构就只看数据模式文档，各走各的路，互不干扰。这正是软件工程里“关注点分离”原则在设计文档管理中的具体应用——当天新增的combat_data_schema.md等6个数据模式文档和2个领域设计文档，就是这种分工的落地实践。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>关注点分离：将“数据是什么”和“数据怎么用”解耦，使修改不会跨层传播。</li>
+                <li>变化频率隔离：数据模式变更影响所有依赖者，应低频修改；领域规则变更只影响特定业务，可高频迭代。</li>
+                <li>契约式沟通：数据模式文档成为设计师与程序员的共同语言，明确配置边界，降低沟通成本。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一家餐厅老板把所有东西写在一个本子上：采购清单、菜品做法、员工排班混在一起。厨师想查鱼香肉丝的做法翻了20页，采购员在记牛肉时还涂掉了麻婆豆腐的配方，导致当天豆腐做成了清水煮豆腐。后来老板换成三个本子：食材本、菜谱本、排班本，各司其职，再也没出过乱子。当天的 combat_data_schema.md 定义武器字段（伤害、范围、冷却），combat_rules.md 定义“火焰伤害对冰冻目标1.5倍加成”，就像菜谱本和食材本的分工。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为数据模式文档已经描述了字段含义，就不需要领域设计文档。实际上两者回答不同问题：结构 vs. 规则，混在一起会增加修改风险。</li>
+                <li>以为数据模式文档只给程序员看，设计师不需要关心。事实上它是双方沟通的基础契约，设计师需要知道能配置哪些参数。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>设计文档的模块化拆分与单一大文档的反模式</td><td>模块化拆分是前提，分工是拆分后的自然演进——给拆开的小文档分配不同职责，使结构更清晰。</td></tr>
+                <tr><td>基于蒙特卡洛模拟的关卡胜率批量验证</td><td>数据模式文档提供了仿真系统加载关卡数据所需的字段和类型说明书，领域设计文档中的难度规范则定义了胜率验证的通过标准。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果数据模式文档和领域设计文档之间出现矛盾——比如数据模式定义了damage字段但领域设计引用了不存在的damage_bonus字段——应该如何自动检测这种不一致？</li>
+                <li>当游戏版本的演化导致数据模式发生重大变更时，如何同步更新所有引用该字段的领域设计文档，避免文档债累积？</li>
+                <li>数据模式文档是否应该作为代码生成的源头——比如用工具从数据模式文档自动生成JSON Schema或TypeScript类型定义，实现文档与代码的单点真理？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="monte-carlo-win-rate-validation">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 计算机科学</p>
+                <h3>基于蒙特卡洛模拟的关卡胜率批量验证</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>先从一个最简单的例子来理解蒙特卡洛方法的核心思想。假如你有一枚硬币，想知道它正面向上的概率是不是50%，但你没办法用数学公式直接算出来（因为硬币可能不均匀）。你会怎么做？最朴素的办法就是——抛100次，数一数正面出现了多少次，用正面的次数除以100来估计概率。抛得越多，你的估计就越接近真实值。这就是蒙特卡洛方法的灵魂：当一个问题的答案很难用公式精确推导时，就用大量随机实验来逼近它。现在把这个思路搬到游戏关卡设计上来。你设计了T05号教程关卡，想知道它的难度是否合适——玩家打这关的胜率大概是多少？你不能让真人玩家打上千遍来统计（太慢太贵），也没办法用公式精确计算（因为战斗系统里有太多随机因素：暴击概率、AI的随机走位、炮弹散布的随机偏差）。蒙特卡洛模拟的解法是：写一个程序让两个AI自动对战，反复打这个关卡1000次，每次的随机因素（谁先开火、暴击是否触发、炮弹偏多少）都由随机数生成器决定。跑完之后统计AI控制的“玩家方”赢了多少次，用赢的次数除以1000，就得到了这个关卡的预估胜率。如果胜率在20%左右，说明关卡有一定挑战性但不过分难；如果胜率不到1%，说明关卡太难了需要调整；如果胜率超过90%，说明太简单了。当天tiny-sea-war仓库的提交c580bdb2做的就是这件事的高级版本——它不只是为一个关卡跑蒙特卡洛模拟，而是为4个新增的教程关卡（T05到T08）各配了一套仿真实验配置文件。每个配置文件指定了：用哪个关卡数据、AI使用什么行为模型、随机种子怎么设置、跑多少次实验（从文件名level_t05_win_rate_20.json可以看出目标是跑出20%附近的胜率）。这4个配置文件构成了一套“批量验证流水线”——不需要设计师手工打每一关来感受难度，仿真系统会自动并行跑完所有实验，最后输出每个关卡的胜率报告。这种做法的工程价值有两个层面。第一，它把“这关是不是太难了”从主观感觉变成了客观数字，让不同设计师之间可以用数据而不是直觉来讨论平衡性。第二，它把验证从一次性的手工操作变成了可重复的自动化流程——每次关卡数据被修改后，重新跑一遍仿真就能立刻知道胜率变化了多少，相当于给关卡数据加了一套自动化的“质量门控”。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>大数定律：在独立同分布的重复实验中，样本均值收敛于期望值，因此大量实验的胜率趋近真实胜率。</li>
+                <li>随机因素的模拟：通过随机数生成器复现战斗中的不确定事件（暴击、散布、AI决策），使仿真逼近真实对局分布。</li>
+                <li>批量自动化：借助配置文件实现多关卡、多条件的并行仿真，将平衡性验证从手工操作提升为常规流水线。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>桌游设计师老王自己试玩5次赢了3次，以为胜率60%，发布后玩家抱怨太难。朋友实测50局只赢8局，真实胜率16%。老王的错误在于：自身水平过高且样本太小。如果有蒙特卡洛模拟系统让AI自动对战1000局，就能在发布前看到冷酷的16%并砍掉Boss血量。当天的 level_t05_win_rate_20.json 等配置文件正是为T05~T08关卡预设的仿真实验，让AI按指定条件跑200局，自动检查胜率是否接近20%的目标。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为蒙特卡洛模拟就是多跑几次取平均，忽略了独立同分布的前提和置信区间的重要性——跑100次和10000次得到的胜率点估计相同，但精度可能天差地别。</li>
+                <li>认为蒙特卡洛模拟能发现所有问题——它只能验证数值平衡，不能判断关卡是否“好玩”或具有战术深度，模拟是辅助工具而非设计决策的替代品。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>设计文档的模块化拆分与单一大文档的反模式</td><td>模块化文档为仿真实验配置提供了清晰的关卡数据结构定义，使仿真系统能准确加载和解析关卡参数。</td></tr>
+                <tr><td>数据模式文档与领域设计文档的分工</td><td>数据模式文档定义仿真输入的数据格式，领域设计文档中的平衡性规则（如目标胜率区间）则成为仿真结果的判定依据。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何确定蒙特卡洛模拟需要的实验次数？如果200次实验后胜率是20%，这个数字的置信区间有多宽？如何计算最小样本量以保证统计推断的可靠性？</li>
+                <li>如果关卡使用了新的机制（比如动态天气影响命中率），而仿真系统的AI行为模型没有更新，模拟结果还会准确吗？如何保证仿真模型与现实游戏逻辑的一致性？</li>
+                <li>当批量验证发现某个关卡胜率严重偏离目标（比如T07的胜率只有2%），仿真系统如何自动给出调整建议？能否用贝叶斯优化直接搜索应该调整哪个参数以及调整多少？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">今天讲解的三个概念正好覆盖了这条演化链上的三个关键节点。设计文档的模块化拆分是最基础的一步——它用“单一职责”的原则把1200行的大文档拆成多个专题文档，让设计知识从一团乱麻变成分类清晰的抽屉。在此基础上，数据模式文档与领域设计文档的分工进一步明确了“文档应该写什么”：数据模式回答“数据长什么样”，领域设计回答“数据怎么用”，二者合在一起构成了关卡数据的完整契约。有了这个契约之后，蒙特卡洛模拟的关卡胜率批量验证就找到了用武之地——它为每个关卡自动跑上千局模拟战斗，用统计数字告诉你这个关卡是否满足契约中隐含的平衡性要求。三个概念从文档组织到数据建模再到统计验证，难度逐步爬升，但逻辑环环相扣，共同服务于“把游戏设计质量工程化”这个更大的目标。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">从“用文档描述设计”走向“用可审计的结构化文档约束系统行为，再通过Agent自动化把关”。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何判断一个文档应该拆分到什么粒度？有没有可量化的标准，比如行数上限或职责数量上限？</li>
+            <li>如果数据模式文档和领域设计文档之间出现矛盾，应该如何自动检测这种不一致？</li>
+            <li>如何确定蒙特卡洛模拟需要的实验次数？如果200次实验后胜率是20%，这个数字的置信区间有多宽？如何计算最小样本量以保证统计推断的可靠性？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
