@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-07-19 学习笔记日报</title>
+    <meta name="description" content="从文件名契约到关卡类型扩展，再到目标服务解耦，三层架构实践让数据、模型与行为全栈协同。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260719-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-07-19</p>
+        <h1>S型关卡引入：从数据到行为的全栈协同变更</h1>
+        <p>今天的工作聚焦于 S 型关卡的引入，从命名契约、类型层到领域服务，展示了一条清晰的软件工程线索。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>全栈协同变更：命名、模型、职责三层…</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>自动化模拟实验的命名契约与…</strong>
+                <small>实验文件名不是随便起的，它本身就是…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>关卡数据类型扩展与分类增强</strong>
+                <small>增加 S 型关卡不仅要加关卡数据…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>关卡目标服务的领域建模与解耦</strong>
+                <small>把“何时触发检查”和“检查什么规则…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">自动化模拟实验的命名契约用文件名编码元数据，使文件系统成为可查询的低成本数据库，支撑了批量模拟与自动核查。关卡数据类型扩展则在领域模型层面接纳S型关卡，要求保持前向兼容，同时触发注册、验证与文档的连锁更新。关卡目标服务的领域建模与解耦进一步将业务规则从流程编排中剥离，让领域服务成为可独立测试、独立演化的逻辑体。三个概念层层递进：命名契约给出了数据接入的规则，类型扩展定义了领域对象的结构弹性，服务解耦则划定了行为演化的安全半径，共同构成一次可控的、可追溯的全栈变更实践。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["全栈协同变更：命名、模型、职责三层递进"])
+  concept1["自动化模拟实验的命名契约与数据可追溯性"]
+  hub --&gt; concept1
+  concept2["关卡数据类型扩展与分类增强"]
+  hub --&gt; concept2
+  concept3["关卡目标服务的领域建模与解耦"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["全栈协同变更：命名、模型、职责三层递进"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="naming-contract-and-data-traceability">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>自动化模拟实验的命名契约与数据可追溯性</h3>
+              <p>Naming Contract and Data Traceability for Automated Simulations</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">实验文件名不是随便起的，它本身就是一份元数据清单，遵循命名契约能让自动化工具不打开文件就知道里面是什么实验。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>文件名包含关卡类型、编号、实验种类、运行次数等元数据</li>
+                <li>遵循约定优于配置，文件系统成为可查询的信息库</li>
+                <li>脚本通过文件名模式匹配快速发现实验，自动核对完整性</li>
+                <li>为批量模拟实验提供数据可追溯性，避免手动解析内容</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="naming-contract-and-data-traceability" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="level-data-type-extension">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>关卡数据类型扩展与分类增强</h3>
+              <p>Level Data Type Extension and Classification Enhancement</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">增加 S 型关卡不仅要加关卡数据，还需同步更新数据模式、配置注册表和模拟实验，任何一环漏掉都会让新关卡“隐形”。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>S 型关卡作为 T 型（教程）关卡的特化子类，需保持前向兼容</li>
+                <li>数据模式文档、配置注册表、模拟实验需同步更新</li>
+                <li>通过类型注册和策略派发避免大量条件分支</li>
+                <li>考虑开放封闭原则，新数据多带字段旧代码可忽略</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="level-data-type-extension" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="objective-service-domain-decoupling">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>关卡目标服务的领域建模与解耦</h3>
+              <p>Domain Modeling and Decoupling of Level Objective Service</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">把“何时触发检查”和“检查什么规则”分到不同模块，修改关卡目标逻辑时只需动领域服务，战斗流程不受牵连。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>battle_session.gd 负责战斗流程编排，不处理业务规则</li>
+                <li>level_objective_service.gd 封装关卡目标增强的判断逻辑</li>
+                <li>领域服务可独立测试、独立演化，降低修改风险</li>
+                <li>体现领域驱动设计中应用服务与领域服务的分离</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="objective-service-domain-decoupling" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="naming-contract-and-data-traceability">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>自动化模拟实验的命名契约与数据可追溯性</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>当你需要为很多关卡跑自动模拟实验时，会产生一堆结果文件。如果文件名只是随便取的数字编号，每次想找“S型第2关跑了多少轮的胜率实验”都得打开文件看内容，非常麻烦。命名契约就是把实验的关键信息——比如关卡类型、关卡编号、实验种类、运行次数——直接写进文件名，按照固定的格式。这样一来，脚本用简单的文件搜索就能知道有哪些实验，核对有没有漏掉的实验也不需要打开任何一个 JSON，就像快递单上把收件人、地址、物品类型全印在外面，分拣机扫一眼就能分类。这种做法背后的原则叫“约定优于配置”，它把文件系统变成了一个不用数据库就能查询的小型信息库，让数据本身自带说明，方便自动化工具追溯每一次实验。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>确定关键维度：关卡类型、编号、实验类型、运行次数</li>
+                <li>设计固定格式的文件名模板，用分隔符拼接维度</li>
+                <li>代码通过模式匹配发现文件，而非解析文件内容</li>
+                <li>自动化检查缺失实验，保证完整性</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>文件 data/simulations/experiments/level_s02_win_rate_20.json 中，level 代表关卡级实验，s02 是 S 型第 2 关，win_rate 表示胜率实验，20 是运行次数。任何 CI 脚本可以用 ls data/simulations/experiments/level_s02_* | wc -l 来检查 S02 的实验文件是否齐全，而不需要打开 JSON。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为文件名随便取就行，反正自己记得住。但批量处理或自动化时，随意取名会导致无法定位。</li>
+                <li>以为通过文件内容解析一样方便，忽略了模式匹配在批量操作和效率上的优势。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>关卡数据类型扩展与分类增强</td><td>新增加的 S 型关卡需要配套的胜率实验文件，命名契约中的类型标识符让工具能自动筛选出所有 S 型实验。</td></tr>
+                <tr><td>关卡目标服务的领域建模与解耦</td><td>模拟实验验证新规则时，实验文件的命名同样依赖该契约，保证数据可追溯。</td></tr>
+                <tr><td>全栈协同变更：命名、模型、职责三层递进</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当未来实验维度增多，比如需要涵盖难度等级、AI 策略版本、地图种子等，文件名会变得很长，这时应该继续用文件名还是迁移到文件内部元数据？</li>
+                <li>如何在 CI 流程中利用命名契约编写检查脚本，防止合并请求时漏掉必要的模拟实验文件？</li>
+                <li>如果有人在手动创建文件时不小心打错命名格式，有没有自动校验工具能在提交前就拦住？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="level-data-type-extension">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>关卡数据类型扩展与分类增强</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>在已有的关卡家族里，已经存在 T 型（教程）关卡，今天又引入了 S 型关卡，这其实是在做“分类的扩展”。用生活中的比喻就是，你原来只卖蛋糕和面包，现在要加卖素蛋糕。素蛋糕属于蛋糕的一种，它继承蛋糕的基本属性（比如原料、尺寸），但又多了一些素食特有的约束（不用蛋奶）。在程序里，这就叫“泛化-特化”关系：关卡是泛化的基本类型，S 型关卡是它的一个特化子类型。做这件事要小心，因为已有的系统是按照老的分类设计的，解析关卡的代码默认字段就是过去那些。加入 S 型可能带着新字段，如果系统没有准备扩展点，旧代码读新数据就会崩溃。因此，这种扩展必须考虑“前向兼容”：新数据要多带字段，旧代码读到时最多忽略而不报错；同时数据模式文档也要同步更新，让人和程序都知道多了什么。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>在关卡分类体系中增加 S 型子类，继承通用属性，添加特有字段</li>
+                <li>更新数据模式文档记录新字段和类型</li>
+                <li>在配置注册表中声明新关卡实例</li>
+                <li>生成模拟实验文件，验证新关卡平衡性</li>
+                <li>确保旧代码读取新数据时忽略未知字段而不报错（前向兼容）</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>formal_level_01.json 增加了 78 行，可能包含 S 型关卡特有的字段，比如 enemy_wave_pattern: 'swarm'，而 T 型关卡没有这个字段。配置注册表 config_registry.gd 新增了 S 型关卡的声明，告诉系统“现在有 S02、S03 这些关卡了”。模拟实验目录下也出现了 level_s02_win_rate_20.json，用于验证新关卡的平衡性。整个变更连成了一条从数据定义到注册到验证的完整链路。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为加新类型就是加几个 if-else 判断，导致代码分支爆炸，每次新增类型都要修改大量地方。</li>
+                <li>忽略前向兼容性，旧代码遇到新字段崩溃，没有预留扩展点或做好忽略逻辑。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>自动化模拟实验的命名契约与数据可追溯性</td><td>新增的 S 型关卡必须向配置注册表声明自己的元数据，否则游戏流程无法发现和加载它；每种新关卡类型都需要对应的模拟实验文件，命名契约中的类型标识符保证了自动化工具能按类型筛选实验结果。</td></tr>
+                <tr><td>关卡目标服务的领域建模与解耦</td><td>S 型关卡可能引入新的目标增强规则，领域服务需要根据关卡类型分发不同的判断逻辑。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何在设计关卡数据模式时预留扩展点，使得未来再增加关卡类型时不必改动解析旧数据的代码？</li>
+                <li>如果某个关卡类型后来被废弃，应该如何在注册表中标记而不删除已有历史数据，并阻止该类型被新代码误用？</li>
+                <li>类型扩展如何与游戏引擎中的序列化/反序列化库配合，让 JSON 中的新字段自动映射到对象属性？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="objective-service-domain-decoupling">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>关卡目标服务的领域建模与解耦</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>游戏里一场战斗的流程很复杂：开始战斗、敌人一波一波出现、玩家消灭敌人、触发增援、最终胜利或失败。如果把这些“流程步骤”和“什么时候算增援、增援什么敌人”的规则全写在一个大文件里，一旦策划想调整增援条件，程序员就得在几千行代码里小心翼翼地修改，很容易动到无关的流程代码，引得 bug 四起。领域建模与解耦的做法是把这两类事情分开：battle_session.gd 只负责战斗的总体步调，它在合适的时刻会问一句“现在要不要触发增援？”，但具体怎么判断增援条件、增援什么敌人，它一概不管。这些细致的规则被封装在 level_objective_service.gd 这个专门的服务里。这样修改增援规则时，只需要更换那个服务里的逻辑，战斗流程代码纹丝不动。这种分工就是领域驱动设计中“应用服务”与“领域服务”的经典分界：应用层只管流程编排，领域层负责核心业务规则。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>识别业务规则与流程编排的不同职责</li>
+                <li>将业务规则抽取到领域服务，只暴露询问接口</li>
+                <li>应用服务在关键步骤调用领域服务，根据返回值决定下一步动作</li>
+                <li>领域服务独立于应用服务，可以单独单元测试</li>
+                <li>当规则变更时，只需修改领域服务内部逻辑，应用服务不受影响</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设 S 型关卡的目标增强条件是“当前波次敌人数少于 3 个时，发射信号激活导航陷阱”。这条规则在 level_objective_service.gd 中以一个方法形式存在，比如 should_reinforce(current_enemy_count, wave_stage)。battle_session.gd 在每帧更新时会调用这个方法，如果返回 true，它就执行增援流程。当未来规则改为“若玩家处于护盾充能状态则延迟增援”，只需修改 level_objective_service.gd 中的判断逻辑，battle_session.gd 不用动。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为把逻辑拆成多个文件是过度设计，全写在一个地方更直观。但短期直观换来的长期痛苦是规则变动时难以定位和测试。</li>
+                <li>没有清晰判断什么逻辑应该放在应用层还是领域层，导致边界模糊，应用层混入业务规则，领域层又沾染流程控制。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>自动化模拟实验的命名契约与数据可追溯性</td><td>由于领域服务与应用层分离，level_objective_runtime_test 可以直接构造服务对象进行单元测试，无需启动完整的战斗模拟环境，测试用例的文件命名同样遵循契约。</td></tr>
+                <tr><td>关卡数据类型扩展与分类增强</td><td>新类型关卡可能引入新规则，领域服务需要处理不同关卡的差异化逻辑，类型扩展推动了领域服务的策略分发。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何判断一个逻辑应该放在应用层做编排，还是应该下沉到领域层作为核心规则？有没有清晰的判断标准？</li>
+                <li>如果领域服务需要访问外部系统，比如查询玩家数据库中的历史战绩，这种依赖应该如何注入，以避免领域层与基础设施耦合？</li>
+                <li>当领域服务变得越来越复杂，如何防止它变成一个包含所有关卡逻辑的“上帝对象”，维护起来依然困难？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">自动化模拟实验的命名契约用文件名编码元数据，使文件系统成为可查询的低成本数据库，支撑了批量模拟与自动核查。关卡数据类型扩展则在领域模型层面接纳S型关卡，要求保持前向兼容，同时触发注册、验证与文档的连锁更新。关卡目标服务的领域建模与解耦进一步将业务规则从流程编排中剥离，让领域服务成为可独立测试、独立演化的逻辑体。三个概念层层递进：命名契约给出了数据接入的规则，类型扩展定义了领域对象的结构弹性，服务解耦则划定了行为演化的安全半径，共同构成一次可控的、可追溯的全栈变更实践。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">把“何时触发检查”和“检查什么规则”分到不同模块，修改关卡目标逻辑时只需动领域服务，战斗流程不受牵连。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>当未来实验维度增多，文件名会变得很长，这时应该继续用文件名还是迁移到文件内部元数据？</li>
+            <li>如果某个关卡类型后来被废弃，应该如何在注册表中标记而不删除历史数据，并阻止该类型被新代码误用？</li>
+            <li>当领域服务变得越来越复杂，如何防止它变成一个包含所有关卡逻辑的“上帝对象”？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
