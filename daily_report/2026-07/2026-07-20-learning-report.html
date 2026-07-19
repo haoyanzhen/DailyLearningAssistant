@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-07-20 学习笔记日报</title>
+    <meta name="description" content="今日重现七个仓库零提交的静默场景，从提交事实、工作区线索到工具链缺失，揭示工程可靠性的真实边界不在代码而在环境契约。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260720-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-07-20</p>
+        <h1>工程信息的确认层级：从固化事实到不可知状态</h1>
+        <p>一个全域静默的工作日，七个仓库无新提交，却因一条缺失的命令暴露出工程可靠性的真正边界。从提交的确定性到工作区的模糊线索，再到工具链崩坏导致的完全不可知，今天的内容将信息确认程度拉成一条清晰的线索。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>工程可靠性的隐形契约</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>提交事实与工作区未确认线索…</strong>
+                <small>提交才是唯一可以精确归属时间的工程…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>工作区状态审计与工具链环境…</strong>
+                <small>自动化审计脚本就像安防系统，通信模…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>Git LFS 的工作机制…</strong>
+                <small>Git LFS 的透明指针系统就像…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">概念一“提交事实与工作区未确认线索的层级差异”是所有讨论的基础：Git 提交是分布式共识下的永久记录，而工作区修改更像桌面上的草稿，既没有时间锚点，也没有可审计的历史性。概念二“工作区状态审计与工具链环境完整性”指出，当我们试图通过自动化脚本收集这些工作区线索时，脚本的可靠性完全依赖于运行环境中所有必需工具的完好存在。概念三“Git LFS 的工作机制及其对仓库操作的影响”则落到这起失败的技术根因上——LFS 通过指针代替大文件，用 smudge/clean 过滤器实现透明转换，这会隐式调用 git-lfs 命令，一旦命令缺失，整个状态读取流程都会崩断。三者合在一起说明了一个道理：从提交到线索，从线索到可审计性，每一步都建立在一系列环境假设之上，而这些假设一旦被打破，工程可靠性就会从确定退化为未知。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["工程可靠性的隐形契约"])
+  concept1["提交事实与工作区未确认线索的层级差异"]
+  hub --&gt; concept1
+  concept2["工作区状态审计与工具链环境完整性"]
+  hub --&gt; concept2
+  concept3["Git LFS 的工作机制及其对仓库操作的影响"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["工程可靠性的隐形契约"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="submission-vs-workspace-clues">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>提交事实与工作区未确认线索的层级差异</h3>
+              <p>Commit Facts vs Unconfirmed Workspace Clues</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">提交才是唯一可以精确归属时间的工程事实，工作区修改只是桌面上的便签纸。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>提交是分布式、不可变的正式档案，具有准确时间锚点</li>
+                <li>工作区未确认变更只是“可能发生过什么”的模糊证据</li>
+                <li>自动化流程和审计只能依赖提交记录，不能将工作区状态视为确定成果</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="submission-vs-workspace-clues" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="workspace-audit-toolchain-integrity">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>工作区状态审计与工具链环境完整性</h3>
+              <p>Workspace Auditing and Toolchain Integrity</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">自动化审计脚本就像安防系统，通信模块断了，安防探头本身也就成了摆设。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>自动化脚本的可靠性取决于完整工具链，不仅包括 Git，还有过滤器、钩子等外部程序</li>
+                <li>Git LFS 缺失会导致 `git status` 等基础命令直接报错退出，使工作区状态变得完全不可知</li>
+                <li>监控探头本身坏了，状态从“干净/混乱”退化为“黑盒”，必须将运行环境作为可靠性的一部分</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="workspace-audit-toolchain-integrity" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="git-lfs-mechanism-impact">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>Git LFS 的工作机制及其对仓库操作的影响</h3>
+              <p>How Git LFS Works and Its Impact on Repository Operations</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">Git LFS 的透明指针系统就像用铭牌代替工具存放在中央仓库，管理员不在时，你手拿铭牌却拿不到工具，也无法知道工具在哪儿。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>Git LFS 将大文件替换为指针文件存储，真正的内容由 LFS 服务器管理</li>
+                <li>通过 smudge/clean 过滤器透明转换指针与文件，但该过滤器硬性依赖 git-lfs 命令</li>
+                <li>git-lfs 缺失会导致 git status 等命令直接报错，使整个仓库操作瘫痪</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="git-lfs-mechanism-impact" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="submission-vs-workspace-clues">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>提交事实与工作区未确认线索的层级差异</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>在 Git 管理的项目里，所有文件的变化不是平起平坐的，它们站在不同的“证据台”上。已经被 `git commit` 命令存档并且推送到远端的提交，就像一本盖了章、签了日期的正式档案——它们被永久记录在版本历史里，任何人随时可以翻回去看。而那些只停留在工作区里、还没有 `git add` 甚至还没有保存的文件修改，更像是桌面上散落的便签纸：你知道想法可能变了，但它没有签名、没有时间戳，也没有进入正式档案。两者的根本区别在于，提交事实是分布式的、不可变的、有时间锚点的，因此可以作为工程交付和审计的硬证据；工作区里的未确认线索则只能告诉你“这里可能发生过什么”，却无法精确说出“在什么时间点、由谁、出于什么原因”形成的。当天 tiny-sea-war 仓库的报告正好展示了这种张力：窗口期内确实没有新提交，但工作区里却可能存在变更，而这些变更的时间归属无法靠 Git 元数据确定，它们可能是几天前就留下的遗留工作。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Git 的提交对象（commit）通过 SHA-1 哈希绑定内容、作者、时间戳和父提交，形成不可篡改的有向无环历史</li>
+                <li>工作区（working tree）是文件系统的当前状态，不包含版本元数据；只有通过 index 暂存并提交后，才会生成新的提交对象</li>
+                <li>`git status` 等命令通过比较 HEAD、index 和工作区的差异，报告了“可能的变更”，但这些变更没有独立的时间证明</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>下班前你修改了 main.c 但没有提交。第二天站会上，正确的工程回答是“我昨天完成了两个提交”，而不是“我改了文件”，因为只有提交才是板上钉钉的事实，工作区修改随时可能丢失且无历史记录。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为“保存了文件”或“git add 了”就已经算完成了工作；实际上只有带时间戳的提交才是可追溯的交付单元</li>
+                <li>错误地将工作区状态等同于已完成的任务，而忽略其可能丢失或未被审查的风险</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>工作区状态审计与工具链环境完整性</td><td>自动化脚本收集工作区线索时，依赖完整工具链；若工具缺失，连线索都不可得——这直接放大了工作区信息的脆弱性。</td></tr>
+                <tr><td>Git LFS 的工作机制及其对仓库操作的影响</td><td>Git LFS 缺失导致 `git status` 失败，就是工作区线索采集被工具链中断的具体表现，让本已模糊的线索退化为完全不可知。</td></tr>
+                <tr><td>工程可靠性的隐形契约</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果工作区修改了但未提交，能否通过操作系统的文件最后修改时间大致推测变更时刻？这种推测在工程上有多大可信度？</li>
+                <li>git stash 暂存起来的修改算哪一层级的证据？它们能代替提交作为阶段性交付吗？</li>
+                <li>持续集成流水线检测到工作区有未提交修改时，应当拒绝构建、发出警告还是直接忽略？不同策略分别适合什么场景？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="workspace-audit-toolchain-integrity">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>工作区状态审计与工具链环境完整性</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>在工程实践中，我们经常写一些自动化脚本来代替人工检查：比如每天下班前运行 `git status --porcelain`，看看有没有哪个目录下遗留了未提交的修改，以便第二天梳理工作。这类脚本能否正常运行，完全取决于它赖以生存的“工具链”是否完整。工具链就是一系列命令行程序和相关配置文件的总和，除了 Git 本身，还可能包括各种过滤器、钩子脚本、编译器、代码格式化工具等。如果一个仓库启用了 Git LFS，那么 Git 内部的某些操作就会悄悄去调用 `git-lfs` 这个命令。如果运行环境里没有安装 `git-lfs`，那么不仅是 `git lfs` 子命令会失败，连 `git status`、`git diff` 这些最常用的命令都会在遇到 LFS 管理的文件时报错退出。后果非常严重：你本想自动化地看清楚工作区是干净还是混乱，结果连看的机会都没有，脚本只给你留下一条冷冰冰的错误信息：“git-lfs: command not found”。仓库的工作区状态从“干净/混乱”退化成了“完全不可知”，相当于监控探头本身坏了。因此，任何依赖外部工具的自动化流程，都需要把“运行环境是否满足所有隐含契约”当作可靠性的一部分来管理，而不能只检查软件代码本身是否正确。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Git 的过滤器（filter）机制在 checkout、status、diff 等操作时自动调用配置的外部程序；若程序不存在，Git 会中止并报错</li>
+                <li>自动化审计流程通常假设底层命令能正常返回结果，但缺少依赖时连错误信息的语义都无法区分（是“无修改”还是“无法检查”？）</li>
+                <li>环境完整性属于“运行契约”：代码逻辑正确不代表可执行，必须确保所有隐式调用路径的有效性</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>你写了一个脚本 `check_status.sh` 每天运行 `git status --porcelain` 来检查未提交修改。项目引入 Git LFS 后，你在本地安装了 git-lfs 一切正常。当脚本被部署到一台没有 git-lfs 的新服务器时，第二天只得到一行错误 “git-lfs: command not found”，完全不知道工作区是干净还是混乱。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为只要 Git 安装了，所有 git 命令就能无条件成功；忽略了 Git 会隐式调用外部过滤器（如 LFS 过滤器）</li>
+                <li>误以为 Git LFS 只是一个可选插件，缺失时顶多看不到文件内容；实际上它会导致基础命令失败，整个状态检查中断</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>提交事实与工作区未确认线索的层级差异</td><td>工作区线索是一种有价值但未确认的信息，而本概念指出其采集本身也依赖工具链，工具链一断，线索直接消失。</td></tr>
+                <tr><td>Git LFS 的工作机制及其对仓库操作的影响</td><td>本概念描述的工具链完整性缺失导致状态不可知，其直接的技术原因就是 Git LFS 的 smudge/clean 过滤器需要 git-lfs 命令，而该命令缺失即导致 Git 操作中断。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何设计一个环境自检脚本（pre-flight check），在真正执行状态审计之前主动验证所有必需的命令是否可用？</li>
+                <li>Git 本身有没有提供一种模式，让它在缺失 git-lfs 时可以优雅降级，比如只跳过 LFS 文件而不是整个命令失败？</li>
+                <li>在容器化部署中，如何通过 Dockerfile 和版本锁定文件保证工具链的一致性与完整性，从而避免“在我机器上能跑”的问题？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="git-lfs-mechanism-impact">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>Git LFS 的工作机制及其对仓库操作的影响</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>Git 最初是为管理代码而生，当仓库里出现几百兆甚至几吉字节的图像、模型或音视频文件时，每一次 clone 和 fetch 都会变得痛苦不堪。Git LFS（大文件存储）通过一个巧妙的思想解决了这个问题：它不让 Git 直接追踪大文件本身，而是用一个小文本指针文件代替。这个指针文件里记录的是一个独一无二的 ID（OID）和文件大小等信息，真正的大文件内容则被上传到专门的 LFS 对象存储服务器。当你执行 `git checkout` 切换到一个版本时，LFS 的 `smudge` 过滤器会被自动调用，它读取指针文件里的 ID，从缓存或服务器下载真正的大文件，并把它放回工作区——你看到的就是正常图片。反过来，当你 `git add` 大文件并准备提交时，`clean` 过滤器同样会自动运行，把本地的大文件换成指针，再交给 Git 暂存区。整个过程对开发者是透明的，看起来大文件仿佛和其他源码一样被管理。然而，这种透明性的背后暗藏着一个硬性依赖：`smudge` 和 `clean` 过滤器本质上就是外部程序 `git-lfs` 在工作。如果运行环境中缺失 `git-lfs` 这个可执行文件，过滤器就无法启动。于是，`git status` 在扫描到被 LFS 管理的文件时，会尝试调用 `smudge` 过滤器去比对指针与实际文件的差异，结果发现命令不存在，直接报错退出。这就是 tiny-sea-war 仓库今天遇到的现象：一条 `git-lfs: command not found` 不仅让 `git lfs` 子命令失败，也让最基本的 `git status` 操作都完全中断，整个工作区状态变成了无法读取的谜团。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>指针文件存储在 Git 仓库中，内容结构包含 OID、大小等元数据；真正的大文件由 LFS 服务器存储和提供</li>
+                <li>Git 通过配置文件（.gitattributes 和 Git 的 filter 配置）定义 smudge/clean 过滤器，在 checkout 和 commit 时自动调用 `git-lfs` 作为外部过滤程序</li>
+                <li>当 `git-lfs` 可执行文件缺失时，过滤器调用失败，Git 将错误视为不可恢复并终止当前命令，导致 `git status` 等操作中断</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一个游戏项目用 Git LFS 管理 3GB 的角色模型。新开发者 clone 后看到 Assets 目录下只有 130 字节的指针文件，未安装 git-lfs。运行 `git status` 想查看状态，却只得到 “git-lfs: command not found”，完全不知道哪些资源被修改过。安装 git-lfs 后才恢复正常。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为 Git LFS 只是可选插件，缺失时顶多把指针内容显示出来；实际上它会直接导致常用命令报错并终止</li>
+                <li>未意识到 smudge/clean 过滤器在 `git status`、`git diff` 甚至部分 merge 中都会触发，错误不只是“看不到内容”，而是“整个操作无法完成”</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>提交事实与工作区未确认线索的层级差异</td><td>Git LFS 的指针机制与公共库远端引用指针监控思路相似：都用间接引用（指针文件或分支 SHA）替代完整内容，以极小成本获取关键信号，但代价是丢失细节并引入对外部系统的依赖。</td></tr>
+                <tr><td>工作区状态审计与工具链环境完整性</td><td>工具链完整性缺失导致状态不可知，其直接技术通道就是 LFS 过滤器对 git-lfs 命令的硬性绑定——本概念解释了为何一条缺失的命令能瘫痪整套 Git 状态读取。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>Git LFS 指针文件中保存的 OID（对象 ID）是如何计算的？它如何保证同一个文件内容总是生成同一个指针，从而避免版本混乱？</li>
+                <li>如果 LFS 对象存储服务器临时不可用，本地是否有缓存机制让开发者继续看到之前 checkout 过的大文件？能否支持完全的离线工作？</li>
+                <li>除了 Git LFS，还有 git-annex 和 Git Media 等方案，它们解决大文件管理时的设计取舍有什么不同？各自适用于哪些场景？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">概念一“提交事实与工作区未确认线索的层级差异”是所有讨论的基础：Git 提交是分布式共识下的永久记录，而工作区修改更像桌面上的草稿，既没有时间锚点，也没有可审计的历史性。概念二“工作区状态审计与工具链环境完整性”指出，当我们试图通过自动化脚本收集这些工作区线索时，脚本的可靠性完全依赖于运行环境中所有必需工具的完好存在。概念三“Git LFS 的工作机制及其对仓库操作的影响”则落到这起失败的技术根因上——LFS 通过指针代替大文件，用 smudge/clean 过滤器实现透明转换，这会隐式调用 git-lfs 命令，一旦命令缺失，整个状态读取流程都会崩断。三者合在一起说明了一个道理：从提交到线索，从线索到可审计性，每一步都建立在一系列环境假设之上，而这些假设一旦被打破，工程可靠性就会从确定退化为未知。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">提交历史是分布式版本系统中唯一可以精确归属时间的确定事实，工作区未提交变更只是可能发生的线索，不能直接等同于已完成的工作。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何设计环境自检脚本，在审计前预验证所有必需命令？</li>
+            <li>Git 能否在缺失 git-lfs 时优雅降级，而非直接报错？</li>
+            <li>容器化部署中如何锁定工具链版本以避免环境不一致？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
