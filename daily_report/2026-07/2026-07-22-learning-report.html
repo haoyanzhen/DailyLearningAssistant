@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-07-22 学习笔记日报</title>
+    <meta name="description" content="从自动化宽屏适配到接触印相质检，再到 Git 多工作区并行开发，探索资源管线与版本控制的协同。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260722-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-07-22</p>
+        <h1>生成—审查—归属：资源管线的工程证据链条</h1>
+        <p>今天，开发者未完成 Git 提交的工作区文件揭露了一条从资源生成到视觉审查的完整探索路径。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>生成—审查—归属的工程证据链条</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>QA 自动化与可视化接触印相</strong>
+                <small>接触印相让错误一目了然，就像给资源…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>多分辨率游戏资源管线</strong>
+                <small>多分辨率管线不是简单拉伸，而是重新…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>Git worktree…</strong>
+                <small>每个 worktree 都是一张独…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念共同描绘了一个“生成—审查—归属”的工程证据链条。多分辨率资源管线是流水线的发动机，负责自动生产不同屏幕比例的素材；接触印相则是流水线上的质检员，用一张拼图快速完成视觉审查；而 Git worktree 多工作区状态归属解释了为什么这些成果还停留在“未确认线索”层面——它们被困在一个尚未提交的主工作区里，需要开发者做出抉择才能进入版本控制的历史。三者一起提醒我们：自动化工具链和可视化检查让效率飞升，但只有清晰的版本管理，才能让这些半成品从草稿变成可追溯的事实。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["生成—审查—归属的工程证据链条"])
+  concept1["QA 自动化与可视化接触印相"]
+  hub --&gt; concept1
+  concept2["多分辨率游戏资源管线"]
+  hub --&gt; concept2
+  concept3["Git worktree 多工作区状态归属"]
+  hub --&gt; concept3
+  related1["多分辨率资源管线"]
+  concept1 --&gt; related1
+  related2["工作区未提交变更"]
+  concept1 --&gt; related2
+  related3["工具链完整性"]
+  concept1 --&gt; related3
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept2 --&gt; related3
+  concept3 --&gt; related2
+  concept3 --&gt; concept2
+  concept3 --&gt; related3
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="contact-sheet-qa">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>QA 自动化与可视化接触印相</h3>
+              <p>QA Automation &amp; Visual Contact Sheet</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">接触印相让错误一目了然，就像给资源做了一张全家福。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>将批量生成的游戏资源缩略图拼合为一张大图，实现快速视觉审查。</li>
+                <li>可保存为基准用于回归测试，结合图像对比自动发现差异。</li>
+                <li>本质是压缩大量视觉检查工作的工程手段，降低认知成本。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="contact-sheet-qa" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="multi-resolution-pipeline">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>多分辨率游戏资源管线</h3>
+              <p>Multi-resolution Game Asset Pipeline</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">多分辨率管线不是简单拉伸，而是重新定制每一寸画面和数据。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>自动化流水线，结合脚本、配置和命令行工具，进行裁剪、缩放、重新排版。</li>
+                <li>需要同时处理视觉资源和数据配置（如导航网格、刷怪点）。</li>
+                <li>产生不同屏幕比例的素材，并包含自动化质检环节。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="multi-resolution-pipeline" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="git-worktree-status">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>Git worktree 多工作区状态归属</h3>
+              <p>Git Worktree Multi-workspace Status</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">每个 worktree 都是一张独立的稿纸，墨迹只属于它自己。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>允许多个独立的工作目录，每个目录对应不同的分支，互不干扰。</li>
+                <li>未提交的改动只存在于各自的工作区，不会自动同步到其他工作树。</li>
+                <li>在多工作区环境中，需要逐一审计每个 worktree 的状态，避免遗漏未保存的实验。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="git-worktree-status" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="contact-sheet-qa">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>QA 自动化与可视化接触印相</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>接触印相这个词来自传统摄影：把一整卷胶卷的底片并排印在一张相纸上，形成一张全是小图的“汇总单”，摄影师不用一张张放大，就能快速选出哪张拍得好。游戏开发里借用这个思路，用脚本把一批新生成的地图、角色或界面资源的缩略图拼成一张大图，开发者只要扫一眼，就能发现有没有图片全黑、错位、拉伸变形等低级错误。这张大图还可以保存下来，作为未来版本回归测试的参考——下次再生成一批资源，用图像对比工具就能自动发现差异。它本质上是一种把大量视觉检查工作压缩成单一视觉通道的工程手段，让人或程序能以最低的认知成本完成质检。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>缩略图排列：将多张图片等比例缩小后按网格排列。</li>
+                <li>视觉通道汇聚：人眼可一次性扫描多张小图，检测异常。</li>
+                <li>基准对比：保存为标准图像，后续通过像素级对比实现自动化回归。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>想象你是一个摄影师，刚从海边拍完十卷胶卷回来。如果每一张都要洗成 10 寸照片，你得花一下午才能看完。聪明的做法是把整卷胶卷一次性印在一张 8×10 英寸的接触印相纸上，每张底片变成拇指大的小图，一眼就能看出哪些拍糊了、哪些闭眼了。游戏贴图生成也一样，build_coastal_maps_16x9.py 生成了几十张海岸地图，开发者运行另一个脚本，把这些地图缩小排列成一张 coastal_maps_16x9_contact_sheet.png，就像拿到一张地图全家福，有没有哪张颜色古怪或内容残缺，马上就能揪出来。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为接触印相只是简单拼图，没有技术含量。</li>
+                <li>忽略其在持续集成中作为视觉回归测试基准的价值。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>多分辨率资源管线</td><td>接触印相是资源管线的终点质检环节，对管线产出做视觉确认。</td></tr>
+                <tr><td>工作区未提交变更</td><td>未提交的接触印相文件属于工作区变更，证明视觉检查尚未固化为提交历史。</td></tr>
+                <tr><td>工具链完整性</td><td>生成接触印相的脚本依赖图像处理库，缺失会导致质检失败。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果游戏资源成百上千，接触印相图也非常大，如何用脚本自动识别其中的异常区域，而不需要人眼盯着看？</li>
+                <li>接触印相与更精确的屏幕截图对比测试（如 Selenium 或 Godot 的截图功能）有什么区别，各自适合哪种检查场景？</li>
+                <li>如何把接触印相图纳入 Git 仓库，并结合 CI 流水线在每次构建后自动生成并回归对比？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="multi-resolution-pipeline">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学</p>
+                <h3>多分辨率游戏资源管线</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>不同玩家的屏幕比例不一样，有的是老式的 4:3 方屏，有的是常见的 16:9 宽屏，还有超宽的 21:9。为了让同一款游戏在这些屏幕上看起来都好，不能只是简单地把画面拉伸压扁，那样会让人物变胖变瘦。真正专业的方法是按照每种比例重新生成一套游戏素材，包括背景图、地图图层、UI 布局，甚至地形数据。多分辨率资源管线就是一条自动化的“素材加工流水线”：你把原始高分辨率素材和配置清单放进去，它经过裁剪、缩放、重新排版等操作，输出一系列适配不同屏幕的合格产物。这中间通常由 Python 脚本、命令行工具和专门的配置文件串联，可以一键运行，避免手工一个个改图的机械劳动。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>源资产输入：原始高分辨率素材和配置清单。</li>
+                <li>自动化处理：裁剪、缩放、重新排版，生成目标分辨率资源。</li>
+                <li>数据联动：更新导航网格、刷怪点等逻辑数据。</li>
+                <li>质量审查：生成接触印相进行视觉检查。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设你是一家服装厂的设计师，要为不同身高的模特做展示服装。你不能只把同一件上衣照原样拉长，而是需要针对高个子模特重新裁剪布料、调整口袋位置，让比例协调。游戏资源也一样：16:9 的海岸地图，不能只是把 4:3 的地图压扁，那样舰船和岛屿都会变形。build_coastal_maps_16x9.py 这个脚本就像一条专用生产线，读取原始海岸地图的高清分层源文件，按照 16:9 的比例重新裁剪地平线、调整沙滩宽度、摆放岩石，最后生成一张视觉上自然、布局上正确的宽屏地图。process_coastal_map_art.py 则专门处理贴图细节。所有脚本配合起来，一批数百张地图就能在几分钟内自动完成转型，不用美工熬夜一张张改。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为图片缩放就是资源适配的全部。</li>
+                <li>忽略需要同步更新数据配置，导致单位走到图外、技能范围错乱等问题。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>QA 自动化与可视化接触印相</td><td>资源管线的产出通过接触印相进行批量视觉审查。</td></tr>
+                <tr><td>Git worktree 多工作区状态归属</td><td>管线的脚本和配置处于未提交状态，是开发中的原型，尚未纳入版本历史。</td></tr>
+                <tr><td>工具链完整性</td><td>如果生成脚本依赖的系统工具缺失，管线就会中断，需要优雅降级处理。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>在进行多分辨率适配时，如何决定是采用“关键区域裁剪”还是“内容感知缩放”，才能既保证重要区域不丢失，又不出现不自然的拉伸？</li>
+                <li>当需要适配的分辨率种类增多时，如何管理管线配置文件，避免脚本和配置发生混乱？</li>
+                <li>管线的一次运行可能生成数百个文件，怎样设计自动化测试来验证每个文件的正确性，而不是只靠一张接触印相图？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="git-worktree-status">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>Git worktree 多工作区状态归属</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>平时我们习惯了在同一个文件夹里用 git switch 切换分支，但这样有个麻烦：切换分支时，工作区里没保存的改动要么得 stash 暂存起来，要么就得提交，否则切不过去。Git worktree 解决的就是这个问题——它允许你把同一个仓库的不同分支，分别检出到硬盘上不同的文件夹里，就像给每个分支单独开一个“工作台”。你可以在文件夹 A 里改第一版的功能，同时在文件夹 B 里修另一个紧急 bug，两个工作台互不干扰，也不需要暂时保存草稿。但是，每个工作台都有自己的工作区和暂存区，它们的状态是独立的：在 A 里 git status 看到未提交的修改，在 B 里可能完全干净。当天报告提到“主 worktree 存在未提交变更”，正是因为开发者最初克隆仓库的那个主工作目录里还躺着没提交的宽屏适配草稿，而其他 worktree 可能干干净净，或者在做别的实验。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>共享对象库：多个 worktree 共享同一个 .git 对象数据库。</li>
+                <li>独立索引：每个 worktree 有自己的 HEAD、索引和工作目录。</li>
+                <li>并行开发：允许同时在不同分支上工作，无需频繁切换或暂存。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>设想你是一个写小说的作者，正在同时写三部曲。最笨的办法是把三本书放在同一个稿子里，每次写一本就要把其他内容挪开。后来你学聪明了，在书桌上铺三张独立的稿纸，每张稿纸只写一本书，想写哪本就挪到面前。Git worktree 就是这样：你给仓库的 main 分支、feature-wide 分支、experiment-ai 分支各自分配一个单独的文件夹，每个文件夹就是一张独立的稿纸，它们共享同一个故事背景库（Git 对象库），但各自上面的墨迹（工作区和暂存区）都是私有的。早上在 main 文件夹里画了几笔宽屏地图的草图，没保存，就跑去 experiment-ai 文件夹调了调 AI 参数，再回到 main 文件夹，草图还在，因为它只属于那张稿纸。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为 worktree 是完全独立的仓库副本，占用大量空间。</li>
+                <li>错误地直接删除 worktree 文件夹，未使用 git worktree remove 命令注销。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>工作区未提交变更</td><td>主 worktree 的未提交变更构成了待确认线索，需要最终决定是否提交。</td></tr>
+                <tr><td>多分辨率游戏资源管线</td><td>宽屏适配的草稿文件存在于主 worktree 的工作区，是管线开发的中间产物。</td></tr>
+                <tr><td>工具链完整性</td><td>如果某个 worktree 缺少 git-lfs，该工作区的二进制文件状态会不可信。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>Git worktree 的具体工作流程是什么？如何用 git worktree add 创建一个新的工作树，并用 git worktree list 查看所有活动的工作树？</li>
+                <li>当多个 worktree 检出同一个分支时，会出现什么冲突，Git 会如何禁止或警告？</li>
+                <li>在持续集成中，如何利用 worktree 实现多个构建任务的并行执行，同时保证它们的环境独立？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念共同描绘了一个“生成—审查—归属”的工程证据链条。多分辨率资源管线是流水线的发动机，负责自动生产不同屏幕比例的素材；接触印相则是流水线上的质检员，用一张拼图快速完成视觉审查；而 Git worktree 多工作区状态归属解释了为什么这些成果还停留在“未确认线索”层面——它们被困在一个尚未提交的主工作区里，需要开发者做出抉择才能进入版本控制的历史。三者一起提醒我们：自动化工具链和可视化检查让效率飞升，但只有清晰的版本管理，才能让这些半成品从草稿变成可追溯的事实。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">自动化工具链和可视化检查让效率飞升，但只有清晰的版本管理，才能让这些半成品从草稿变成可追溯的事实。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何用脚本自动识别接触印相图中的异常区域，而不需要人眼盯着看？</li>
+            <li>在进行多分辨率适配时，如何决定采用“关键区域裁剪”还是“内容感知缩放”？</li>
+            <li>Git worktree 的具体工作流程是什么？如何创建和管理多个工作树？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>

@@ -3,6 +3,96 @@
   "year_month": "2026-07",
   "threads": [
     {
+      "id": "2026-07-22-qa-af2b205b98",
+      "question": "接触印相与更精确的屏幕截图对比测试（如 Selenium 或 Godot 的截图功能）有什么区别，各自适合哪种检查场景？",
+      "source_date": "2026-07-22",
+      "source_concept": "QA 自动化与可视化接触印相",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-07-22T06:04:22.640518+08:00",
+      "updated_at": "2026-07-22T06:04:22.640518+08:00"
+    },
+    {
+      "id": "2026-07-22-qa-840294635d",
+      "question": "如何把接触印相图纳入 Git 仓库，并结合 CI 流水线在每次构建后自动生成并回归对比？",
+      "source_date": "2026-07-22",
+      "source_concept": "QA 自动化与可视化接触印相",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-07-22T06:04:22.640518+08:00",
+      "updated_at": "2026-07-22T06:04:22.640518+08:00"
+    },
+    {
+      "id": "2026-07-22-qa-771af4d387",
+      "question": "如果游戏资源成百上千，接触印相图也非常大，如何用脚本自动识别其中的异常区域，而不需要人眼盯着看？",
+      "source_date": "2026-07-22",
+      "source_concept": "QA 自动化与可视化接触印相",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-07-22T06:04:22.640518+08:00",
+      "updated_at": "2026-07-22T06:04:22.640518+08:00"
+    },
+    {
+      "id": "2026-07-22-git-worktree-9c3f3eda3f",
+      "question": "在持续集成中，如何利用 worktree 实现多个构建任务的并行执行，同时保证它们的环境独立？",
+      "source_date": "2026-07-22",
+      "source_concept": "Git worktree 多工作区状态归属",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-07-22T06:04:22.640518+08:00",
+      "updated_at": "2026-07-22T06:04:22.640518+08:00"
+    },
+    {
+      "id": "2026-07-22-git-worktree-72260c606f",
+      "question": "当多个 worktree 检出同一个分支时，会出现什么冲突，Git 会如何禁止或警告？",
+      "source_date": "2026-07-22",
+      "source_concept": "Git worktree 多工作区状态归属",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-07-22T06:04:22.640518+08:00",
+      "updated_at": "2026-07-22T06:04:22.640518+08:00"
+    },
+    {
+      "id": "2026-07-22-git-worktree-37d054cfd7",
+      "question": "Git worktree 的具体工作流程是什么？如何用 git worktree add 创建一个新的工作树，并用 git worktree list 查看所有活动的工作树？",
+      "source_date": "2026-07-22",
+      "source_concept": "Git worktree 多工作区状态归属",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-07-22T06:04:22.640518+08:00",
+      "updated_at": "2026-07-22T06:04:22.640518+08:00"
+    },
+    {
+      "id": "2026-07-22-concept-f8f553d525",
+      "question": "在进行多分辨率适配时，如何决定是采用“关键区域裁剪”还是“内容感知缩放”，才能既保证重要区域不丢失，又不出现不自然的拉伸？",
+      "source_date": "2026-07-22",
+      "source_concept": "多分辨率游戏资源管线",
+      "domain": "计算机科学",
+      "status": "open",
+      "created_at": "2026-07-22T06:04:22.640518+08:00",
+      "updated_at": "2026-07-22T06:04:22.640518+08:00"
+    },
+    {
+      "id": "2026-07-22-concept-be8b05b307",
+      "question": "当需要适配的分辨率种类增多时，如何管理管线配置文件，避免脚本和配置发生混乱？",
+      "source_date": "2026-07-22",
+      "source_concept": "多分辨率游戏资源管线",
+      "domain": "计算机科学",
+      "status": "open",
+      "created_at": "2026-07-22T06:04:22.640518+08:00",
+      "updated_at": "2026-07-22T06:04:22.640518+08:00"
+    },
+    {
+      "id": "2026-07-22-concept-6a8baa3d8e",
+      "question": "管线的一次运行可能生成数百个文件，怎样设计自动化测试来验证每个文件的正确性，而不是只靠一张接触印相图？",
+      "source_date": "2026-07-22",
+      "source_concept": "多分辨率游戏资源管线",
+      "domain": "计算机科学",
+      "status": "open",
+      "created_at": "2026-07-22T06:04:22.640518+08:00",
+      "updated_at": "2026-07-22T06:04:22.640518+08:00"
+    },
+    {
       "id": "2026-07-21-concept-eec5f27875",
       "question": "能否写一个脚本在提交前自动检查文件名是否符合契约，把错误挡在仓库之外？",
       "source_date": "2026-07-21",
