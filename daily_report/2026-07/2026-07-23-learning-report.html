@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-07-23 学习笔记日报</title>
+    <meta name="description" content="通过资源清单解耦代码与资源，分离导航数据与算法，引入序贯停止节省模拟计算。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260723-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-07-23</p>
+        <h1>用解耦与自动化，降低软件系统演进的摩擦</h1>
+        <p>今天三个概念从资源清单到序贯停止，层层深入，展示了如何通过清晰的边界和自动化手段来降低游戏开发中的摩擦与浪费。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>解耦与自动化</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>资源清单作为文件接口契约</strong>
+                <small>资源清单是游戏工程里的物料单，让美…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>导航数据与路径规划算法分离</strong>
+                <small>把导航数据和寻路算法分开，就像把地…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>固定样本量模拟与序贯停止</strong>
+                <small>固定样本量是闭着眼睛跑完全程，序贯…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">这三个概念虽然分属不同领域，却有一条共同的暗线：把“数据”和“逻辑”解耦，并用自动化的方式验证或执行。资源清单让游戏代码不关心资源文件位置；导航分离让地图和寻路算法各自独立修改；序贯停止是在统计层面让模拟程序学会“见好就收”。它们分别对应资源管线升级、导航逻辑重构和平衡性迭代这三条主线工作。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["解耦与自动化"])
+  concept1["资源清单作为文件接口契约"]
+  hub --&gt; concept1
+  concept2["导航数据与路径规划算法分离"]
+  hub --&gt; concept2
+  concept3["固定样本量模拟与序贯停止"]
+  hub --&gt; concept3
+  related1["运行时/源资源分离"]
+  concept1 --&gt; related1
+  related2["工具链扩展与工作流自动化"]
+  concept1 --&gt; related2
+  related3["领域服务解耦"]
+  concept2 --&gt; related3
+  related4["战斗会话状态管理"]
+  concept2 --&gt; related4
+  related5["关卡平衡性迭代与批量模拟实验数据管理"]
+  concept3 --&gt; related5
+  related6["实验加载—运行—报告三明治架构"]
+  concept3 --&gt; related6
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4,related5,related6 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="resource-manifest-contract">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>资源清单作为文件接口契约</h3>
+              <p>Resource Manifest as Interface Contract</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">资源清单是游戏工程里的物料单，让美术和程序通过契约协作，不必事无巨细地口头沟通。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>资源清单是代码与资源之间的接口契约，解耦了双方依赖，避免硬编码路径。</li>
+                <li>清单不仅包含路径，还可指定尺寸、格式、适用分辨率等元数据，提供更丰富的信息。</li>
+                <li>清单支持自动化生成与校验，新增资源只需更新清单，工具链即可同步，降低维护成本。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="resource-manifest-contract" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="nav-data-planning-separation">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>导航数据与路径规划算法分离</h3>
+              <p>Separation of Navigation Data and Path Planning</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">把导航数据和寻路算法分开，就像把地图和导航仪分开，任何一边的改动都不会拖累另一边。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>导航数据（导航网格）只描述可通行区域和连通关系，不涉及寻路逻辑。</li>
+                <li>路径规划算法（如A*）只负责在给定导航数据上计算路径，不关心地图如何制作。</li>
+                <li>分离后，修改地图或升级算法均不影响另一方，提高模块独立性和可维护性。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="nav-data-planning-separation" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="fixed-sample-vs-sequential-stopping">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 计算机科学</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>固定样本量模拟与序贯停止</h3>
+              <p>Fixed-Sample Simulation vs. Sequential Stopping</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">固定样本量是闭着眼睛跑完全程，序贯停止则是边看结果边决定何时收工，更聪明也更节省。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>固定样本量模拟设定固定局数N，跑满N局后分析结果，简单但可能浪费计算。</li>
+                <li>序贯停止每跑完一局就评估当前证据是否足够，若已显著则提前停止，节省时间。</li>
+                <li>序贯停止基于统计理论设计停止边界，控制多次“偷看”导致的假阳性风险，保证结论可靠。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="fixed-sample-vs-sequential-stopping" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="resource-manifest-contract">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>资源清单作为文件接口契约</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象在开发海边城堡攻防游戏。图形设计师画了地图、船舰和特效，图片散落各处。最笨的办法是在代码里写死路径，一旦文件名变化就得改代码。更聪明的做法是：另外写一份清单文件，比如 JSON，列出所有资源路径、尺寸、分辨率等。游戏程序启动时读取清单，按单加载。这样新增资源只需更新清单，游戏逻辑不用碰，甚至清单可由工具脚本自动生成。这份清单就是一个“接口契约”，预先约定好代码需要什么资源、资源部门提供什么文件，让两拨人可以相对独立工作。清单结构设计得越清晰，自动化校验越容易。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>定义资源清单的数据结构，包含必要字段（名称、路径、属性等）。</li>
+                <li>游戏引擎在启动时解析清单，构建资源索引，按需加载，而不硬编码路径。</li>
+                <li>当资源增加或修改时，更新清单文件；自动化工具可监听资源变化并同步更新清单，实现流水线自动化。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>例如 terrain_asset_manifest.json 中记录了地形资源的路径、尺寸和类型，游戏启动时按清单加载，设计师新增资源只需追加一条记录。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为清单只是文件路径的简单列表，忽略其可包含的元数据和约束。</li>
+                <li>觉得直接遍历文件夹加载资源更方便，却忽视了频繁变更时的脆弱性和缺乏结构化信息。</li>
+                <li>认为清单是一次性手写的，没意识到它可以由工具自动生成和校验。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>运行时/源资源分离</td><td>清单上只列出运行时可以直接加载的产物，不会出现源文件，从数据层面强制了源与产物的边界。</td></tr>
+                <tr><td>工具链扩展与工作流自动化</td><td>当新增资源的生产脚本运行时，可同时自动更新清单文件，使得整个资源管线实现“一键生成+自动注册”的全自动化。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果清单文件本身也很庞大，有没有办法自动生成一份“清单的清单”，实现分模块加载以减少启动时间？</li>
+                <li>如何为清单设计版本号字段，让旧版游戏读新版清单时不至于崩溃，而是给出清晰的升级提示？</li>
+                <li>如果清单里声明的文件被误删，怎样写一个自动化测试脚本来对清单进行一次“完整性核对”，让缺失的文件在提交前就被揪出来？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="nav-data-planning-separation">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学</p>
+                <h3>导航数据与路径规划算法分离</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>在游戏里，AI控制的小战舰要从A岛开到B岛，它不能穿陆地或碰礁石。这就需要“哪些水面可行”的地理知识和“选哪条路线”的计算过程。前者产出导航地图（导航网格），后者是寻路算法如A*。把它们分开，导航地图只关心“走不走得通”，不关心如何找最短路径；寻路算法只管拿着导航地图和起终点坐标找路，不关心地图怎么来的。如果设计师扩大礁石区，只需更新导航数据；如果换用更高级的寻路算法，只要新算法接受相同格式的导航数据，原地图文件无需改动。这种数据和算法的分离，是计算机科学里模块化设计的经典实践。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>构建导航网格：生成表示可行区域和连通性的图数据结构，存储为独立文件。</li>
+                <li>实现路径规划算法：编写独立模块，接收导航网格和起终点，输出路径。</li>
+                <li>运行时，AI请求路径时，先加载导航数据，再调用算法模块计算，实现数据和算法的解耦。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在一个海战关卡中，navigation_definitions.json 定义了海域多边形的顶点坐标和连接关系；route_planner.gd 脚本实现A*算法，读取JSON后计算路径。当设计师修改海峡宽度时，只需改JSON，寻路代码不变。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为导航网格本身包含了寻路功能，将两者视为一个整体。</li>
+                <li>将地图连通信息直接硬编码在算法逻辑中，导致换地图就得修改算法。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>领域服务解耦</td><td>关卡目标服务在判断是否到达指定区域时，可能需要查询导航数据，清晰的数据接口使服务代码不沾寻路细节。</td></tr>
+                <tr><td>战斗会话状态管理</td><td>战斗会话中的AI决策模块会调用路径规划来移动实体，而路径规划依赖导航数据。解耦不当会导致牵一发而动全身。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果地图中出现了动态障碍物，比如一艘沉船突然挡住航道，导航数据和路径规划之间的接口应如何设计，才能让寻路算法快速感知变化？</li>
+                <li>如何对导航网格本身的正确性进行自动化测试，确保没有“孤岛”或无法到达的区域被错误地标记为可通行？</li>
+                <li>在多人在线游戏中，导航数据和路径规划分离的架构在服务器端和客户端分别应该如何部署，以兼顾安全与响应速度？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="fixed-sample-vs-sequential-stopping">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 计算机科学</p>
+                <h3>固定样本量模拟与序贯停止</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>我们在设计游戏关卡或调整武器平衡时，经常跑批量模拟：让两个AI用不同策略自动对战很多局，计算胜率。比如每个关卡固定跑20局。这个“20”就是固定样本量，逻辑简单但可能浪费：如果前10局已是一边倒碾压，继续跑完浪费资源；如果20局还不足以得出可靠结论，需要手工增加N重新跑。序贯停止则不同：不预设必须跑几局，每跑完一局，就根据目前胜率计算置信区间或统计检验量，如果证据已经够强，就立刻喊停；若不够，继续追加一局。这种方法在保证统计把握度（通常95%置信）的前提下，避免了冗余计算。它基于alpha消耗函数等数学基础，确保多次“看看停”仍控制错误概率。例如气象预报已足够明确就不必等更多数据。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>设定统计检验的目标（如比较两组胜率差异），确定显著性水平α和停止边界（如Pocock或O'Brien-Fleming边界）。</li>
+                <li>每运行完一局模拟，立即进行期中分析，计算当前的检验统计量（如z值）并与边界比较。</li>
+                <li>如果统计量超过停止边界，就拒绝原假设，提前结束模拟；否则继续下一局，直到达到最大样本量或边界被突破。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>测试两种难度参数下关卡t05的胜率差异。固定样本量方案跑20局，若一方胜率70%、另一方30%，其实在12局时已可显著判断，序贯停止会提前结束，节省约40%的时间。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为边看边停会使结论不可靠，因为可能前几局运气好。但在严格统计边界下，这种担忧已被控制。</li>
+                <li>忽略统计设计的必要性，简单地在感觉“差不多”时停止，导致错误率膨胀。</li>
+                <li>认为序贯停止就是随便停，实际上需要预设停止规则和alpha消耗函数，不可事后修改。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>关卡平衡性迭代与批量模拟实验数据管理</td><td>固定样本量是目前已有工作模式，产出文件名带样本量数值；引入序贯停止将改变数据命名和组织方式，需记录实际停止局数。</td></tr>
+                <tr><td>实验加载—运行—报告三明治架构</td><td>若要在三明治架构的运行器中支持序贯停止，需要在运行层和报告层之间增加实时的统计判定模块，体现管道中间环节可插拔的思想。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>在实际工程中，序贯停止的“中间检验点”应该设置得密集（比如每局都看）还是稀疏（比如每5局看一次），各有什么优缺点？</li>
+                <li>如果我们关注的不是单一胜率，而是多个指标（比如胜率、平均战斗时长、资源消耗），如何设计同时考虑多维度的序贯停止边界？</li>
+                <li>当样本量很小的时候，基于正态近似的置信区间可能不准确，序贯停止该如何结合Bootstrap或精确检验来保证结论可靠？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">这三个概念虽然分属不同领域，却有一条共同的暗线：把“数据”和“逻辑”解耦，并用自动化的方式验证或执行。资源清单让游戏代码不关心资源文件位置；导航分离让地图和寻路算法各自独立修改；序贯停止是在统计层面让模拟程序学会“见好就收”。它们分别对应资源管线升级、导航逻辑重构和平衡性迭代这三条主线工作。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">把数据和逻辑解耦，并用自动化的方式验证或执行，是保持复杂系统秩序感的关键。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如果清单文件本身也很庞大，有没有办法自动生成一份“清单的清单”，实现分模块加载以减少启动时间？</li>
+            <li>如果地图中出现了动态障碍物，导航数据和路径规划之间的接口应如何设计，才能让寻路算法快速感知变化？</li>
+            <li>在实际工程中，序贯停止的“中间检验点”应该设置得密集还是稀疏，各有什么优缺点？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
