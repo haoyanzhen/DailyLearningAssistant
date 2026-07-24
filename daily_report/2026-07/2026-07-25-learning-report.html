@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-07-25 学习笔记日报</title>
+    <meta name="description" content="以16:9宽屏适配为线索，学习资产清单作为管线契约、工具链脚本的可组合性，以及导航网格的多比例版本管理，揭示多比例资源管线的连锁反应" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260725-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-07-25</p>
+        <h1>16:9宽屏适配：从资产清单到导航网格的连锁反应</h1>
+        <p>看似只是换个屏幕比例，实则触发了从纹理资源、导航网格到工具脚本的连锁变化。今天通过三条线索理解这种“牵一发而动全身”的现象。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>多比例资源管线的声明、组合与派生</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>资产清单作为多比例资源管线…</strong>
+                <small>清单不是硬编码的替代品，而是管线自…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>工具链脚本的可组合性与管线…</strong>
+                <small>可组合性让整个系统像乐高一样，插上…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>导航网格定义的多比例版本管理</strong>
+                <small>重新烘焙不是偷懒与否的问题，而是数…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">今天三个概念共同支撑起多比例游戏资源管线的知识拼图。资产清单是声明式契约，决定了“在不同比例下，要产出哪些东西”，是所有后续工作的起点。工具链脚本的可组合性则定义了“如何产出”，通过把整个工作拆成地图生成、导航烘焙、美术处理、质量审查等独立阶段，让每个脚本专注一件事，又能像乐高积木一样拼成完整的管线。清单既是这些脚本的输入约定，又是验证脚本的输出标准。而导航网格的多比例版本管理是管线的一种具体产物，它告诉我们：当地形比例改变时，仅仅缩放原有的导航数据是不够的，必须重新“烘焙”一份专门给16:9用的导航网格；并且，这个烘焙脚本本身就作为管线的一个阶段存在，它的运行与否、何时运行，受清单和工具链规则共同约束。三者环环相扣，展示了现代游戏资源工程在应对显示比例这种基础约束变化时，如何用清晰的分层和契约来控制复杂度。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["多比例资源管线的声明、组合与派生"])
+  concept1["资产清单作为多比例资源管线的声明式契约"]
+  hub --&gt; concept1
+  concept2["工具链脚本的可组合性与管线阶段边界"]
+  hub --&gt; concept2
+  concept3["导航网格定义的多比例版本管理"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  related1["接触印相审查"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept2
+  concept3 --&gt; related1
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="asset-manifest-declarative-contract">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>资产清单作为多比例资源管线的声明式契约</h3>
+              <p>Asset Manifest as Declarative Contract for Multi-Aspect Pipelines</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">清单不是硬编码的替代品，而是管线自动化推理的基础。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>清单是声明式契约，只描述产出物的存在与命名，不干涉生成过程。</li>
+                <li>清单包含派生关系、共享关系与版本信息，使机器能理解资产间的血缘。</li>
+                <li>作为中心化契约，清单将新需求广播给所有上下游脚本，驱动连锁反应。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="asset-manifest-declarative-contract" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="toolchain-script-composability">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>工具链脚本的可组合性与管线阶段边界</h3>
+              <p>Composability of Toolchain Scripts and Pipeline Stage Boundaries</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">可组合性让整个系统像乐高一样，插上哪个脚本就增加哪个能力，损坏或替换任何一个都不会让整条线停摆。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>每个脚本只做一件事，通过文件读写接口松耦合，不直接相互调用。</li>
+                <li>独立脚本可单独运行、调试和替换，提升开发效率和可维护性。</li>
+                <li>清晰的阶段边界使系统像乐高一样，可组合、易扩展，任何修改只影响局部。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="toolchain-script-composability" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="navmesh-multi-aspect-versioning">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>导航网格定义的多比例版本管理</h3>
+              <p>Multi-Aspect Versioning of Navigation Mesh Definitions</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">重新烘焙不是偷懒与否的问题，而是数学上的正确性要求。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>导航网格是从地形数据派生的可通行区域凸多边形集合，对游戏AI寻路至关重要。</li>
+                <li>地图比例变化会改变可航行区域的形状，不能简单拉伸原有导航网格。</li>
+                <li>每种比例必须单独烘焙导航网格，并通过版本管理文件区分加载。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="navmesh-multi-aspect-versioning" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="asset-manifest-declarative-contract">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>资产清单作为多比例资源管线的声明式契约</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象你是一个餐厅经理，要让后厨同时供应普通餐和超大份餐。你不会每次口头告诉厨师“大份的那个菜多加点”，而是会写两份清单：普通餐配方和超大份配方。这两份清单就是契约——厨师按清单备菜，服务员按清单上菜，彼此不用再沟通细节。在游戏里，当我们在原来的接近1:1屏幕比例之外，要新增一个16:9宽屏版本时，每张地图的纹理图片、小地图图片、甚至导航数据，都需要专门的宽屏版本。这些“需要产出什么”的信息，被记录在一种叫“资源清单”的文本文件里，比如 `land_asset_manifest.json` 管理陆地纹理， `terrain_asset_manifest.json` 管理地形定义，以及今天才露面的 `coastal_16x9_generation_manifest.json` 专门管16:9海岸地图。清单文件不写“怎么生成”，只写“应该存在哪些文件、叫什么名字、放在哪里”，这就叫声明式。生成脚本读到清单后，就知道要生产什么；检测脚本读到清单后，就知道该去检查哪些文件有没有漏掉。这样，无论以后是增加更多比例，还是修改某种地形的美术，只需要动清单这个“菜单”，上下游的工具和人员都自动跟着新菜单走，不会各说各话。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>声明式与命令式分离：清单只描述“什么”，不描述“如何”，使生成与验证逻辑解耦。</li>
+                <li>作为统一接口契约：所有工具读写相同结构的清单文件，降低沟通成本，提高兼容性。</li>
+                <li>支持自动化验证：通过 `derived_from` 等字段，机器人可自动检查资产血缘与完整性。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>以海岸地形“珊瑚湾”为例，在原始1:1比例下的清单条目可能为 `{"name":"coral_bay","ratio":"1:1",...}`。引入16:9后，新生成的清单 `coastal_16x9_generation_manifest.json` 中会出现 `{"name":"coral_bay_16x9","ratio":"16:9", "texture":"coral_bay_16x9.png","derived_from":"coral_bay"}`，使生成脚本和QA脚本能自动完成派生与验证。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为清单只是一份僵死的列表，与把文件名写死在代码里没有区别。实际上，清单是活的契约，包含派生关系、共享关系和版本信息，使机器能理解资产之间的血缘，而不是孤立地记住一堆路径。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>工具链脚本的可组合性与管线阶段边界</td><td>清单是工具链各阶段的“菜单”，生成脚本按清单生产，烘焙脚本按清单选择条目，形成统一的输入格式。</td></tr>
+                <tr><td>接触印相审查</td><td>16:9清单的存在直接触发了接触印相审查，QA需要对照清单生成所有新资源的缩略图拼图，快速检查遗漏或错误。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果未来要支持21:9甚至更特殊的超宽比例，清单会如何演变？是继续为每个比例创建独立清单，还是可以在同一个清单中用字段区分比例？各自的优缺点是什么？</li>
+                <li>清单中的‘derived_from’字段如果指向的是一个已经不存在的旧资源，管线如何在自动化过程中优雅地报错而不是默默崩溃？</li>
+                <li>能否利用清单自动生成测试用例，比如让CI系统读取清单就能自动运行所有地图的渲染截图对比测试？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="toolchain-script-composability">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>工具链脚本的可组合性与管线阶段边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>回想一下工厂流水线：一个机器只负责焊接，下一个机器只负责喷漆，再下一个只负责检测。你不会让一个机器既焊接又喷漆又自检，因为一旦哪个环节出问题，你根本不知道是哪里坏了，想单独换个焊枪也不行。游戏资源管线同样如此。在今天的 `tiny-sea-war` 中，我们看到新增了好几个脚本工具：`build_coastal_maps_16x9.py` 专门生成16:9地图图片，`bake_coastal16_navigation.py` 专门根据新地图重新计算导航网格，`process_coastal_map_art.py` 独立处理美术风格，`render_terrain_qa.py` 专门渲染用于人工审查的缩略图。这就是‘工具链脚本的可组合性’：每个脚本只干一件事，并且定义明确的输入和输出（通常是文件）。它们之间用存放中间结果的文件来传递信息，而不是在代码里互相调用。这样，开发者可以单独运行‘只重新烘焙导航’而不重新生成地图，省下时间；也能用一个总控脚本把四个脚本串联起来，一键完成整个16:9海岸地图的生产。这种把复杂任务拆成独立阶段，并通过文件接口松耦合连接的思想，就是管线阶段边界设计。它让整个系统像乐高一样，插上哪个脚本就增加哪个能力，难坏或替换任何一个都不会让整条线停摆。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>单一职责：每个脚本只完成一个明确的任务（生成、烘焙、美化或审查），便于理解和修改。</li>
+                <li>文件接口契约：脚本通过读写约定的文件（如地图图片、导航JSON）通信，实现松耦合。</li>
+                <li>增量构建与重用：清晰的阶段边界允许只重新执行受影响的步骤，复用未变更阶段的产物，大幅提升效率。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设只需更新“珊瑚湾”16:9地图的美术风格，工程师会依次执行：1）`build_coastal_maps_16x9.py --only coral_bay` 确保基础地图最新；2）`process_coastal_map_art.py --input coral_bay_16x9.png --style new_style.json` 应用新风格；3）跳过 `bake_coastal16_navigation.py`（导航未变）；4）`render_terrain_qa.py --level coral_bay_16x9` 生成审查缩略图。若全部功能混在一个脚本中，就只能全部重跑，无法跳过。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为拆分阶段只会增加文件读写的开销，是一种过度设计。但实际上，不拆分才是更大的开销：当所有处理逻辑塞在一个脚本里，任何微小的修改都需要重新运行整个流程，调试时无法定位错误，也难以并行开发。拆分带来的独立性、可重用性和可维护性，远超那一点磁盘I/O成本。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>资产清单作为多比例资源管线的声明式契约</td><td>脚本的可组合性依赖资产清单作为各阶段的接口契约：清单告诉每个脚本该处理哪些文件，脚本把结果文件路径写回清单或输出配置供下游使用，形成‘契约驱动’的管道。</td></tr>
+                <tr><td>导航网格定义的多比例版本管理</td><td>烘焙16:9导航网格的脚本本身就是工具链的一个阶段，它遵守阶段边界约定，只负责读取地形图片、输出导航定义文件，可被单独调试或替换。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果两个阶段都修改了同一个文件（比如导航烘焙脚本和美术处理脚本都要改动地形纹理），如何避免互相覆盖？是否需要一个明确的中间产物命名规范或版本化输出目录？</li>
+                <li>怎样设计一个轻量级的任务编排器，让它在读取脚本之间的依赖关系后，自动决定哪些阶段需要重新运行、哪些可以跳过？这背后的依赖拓扑算法是怎样的？</li>
+                <li>如果某个阶段执行时间很长（比如地图生成要跑二十分钟），而开发者想随时取消失败的任务重新开始，如何为脚本加上‘检查点’和断点续跑能力？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="navmesh-multi-aspect-versioning">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>导航网格定义的多比例版本管理</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>在游戏里，AI控制的船只或者士兵怎么知道哪里可以走、哪里是障碍物？答案是一个叫做‘导航网格’的数据结构。你可以把它想象成在游戏地图上铺了一层隐形的网格，网格里面分成一个个小凸多边形，AI只允许在这些多边形里面移动。这个网格是从地形数据（哪里是水域、哪里是礁石）自动计算出来的，叫‘烘焙’。关键问题是：当地图的比例从接近1:1变成16:9时，水道的宽窄、陆地的大小都可能发生变化，即使礁石的位置没变，可航行区域的形状也会因为地图的横向扩展而改变。如果这个时候我们偷懒，把原来1:1的导航网格直接拉伸来用，就会出现AI以为这里能走，实际上已经被礁石堵住，或者觉得不能走的地方其实完全可以通过。所以，对每一种屏幕比例，都需要单独‘烘焙’一份专门的导航网格定义文件，这就是‘多比例版本管理’。今天的线索显示，`tiny-sea-war`中不仅修改了`navigation_definitions.json`（导航网格定义），还新增了专门用于16:9海岸地形的烘焙脚本`bake_coastal16_navigation.py`，说明开发团队深知：导航数据不能复用，必须与地形比例一一对应。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>导航网格的可通行多边形包含拓扑约束（最小宽度、最大坡度等），简单缩放会破坏这些约束。</li>
+                <li>比例变化导致可航行区域几何形状改变，必须基于新地形重新计算凸多边形。</li>
+                <li>版本管理通过不同命名（如 `_16x9_nav.json`）和加载逻辑，确保AI在相应比例下使用正确数据。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>内测时，玩家报告在宽屏模式下，主力战船在“鲨鱼嘴”水道莫名撞礁沉没，但在普通比例下正常。调查发现，16:9的导航网格由1:1版本横向拉伸生成，导致AI认为有一条宽22米的通道可行，而实际水道只有20米宽，最终船只撞礁。修复办法是为该地图单独烘焙一份16:9导航网格，让AI重新“认路”。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>一个常见的误解是：导航网格无非就是一堆多边形顶点坐标，对它做一次等比缩放，不就万事大吉了吗？其实，导航网格的每个多边形必须满足‘可通行’的约束，比如最小宽度、最大坡度等，简单的缩放会破坏这些拓扑约束。想象一个狭窄的通道，在1:1时恰好有3个导航多边形横排连成一条路；均匀拉伸后，中间的某个多边形可能变得极窄，甚至变成一个零面积的狭缝，AI把它标记为不可通行，好好的路就断了。因此，重新烘焙不是偷懒与否的问题，而是数学上的正确性要求。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>工具链脚本的可组合性与管线阶段边界</td><td>烘焙16:9导航网格的脚本是工具链的一个阶段，它独立运行，通过文件接口接收地形图片、输出导航定义，完美契合阶段边界与可组合性设计。</td></tr>
+                <tr><td>接触印相审查</td><td>导航网格的版本正确性可以通过接触印相审查来抽查，将导航可视化叠加到地图缩略图上，快速发现异常或断裂。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果游戏引擎里对导航网格的格式有严格要求（比如所有多边形必须为三角形），烘焙脚本如何保证在不同比例下生成的网格都满足这一约束，而不会因为地形拉伸变形产生非法多边形？</li>
+                <li>当两个比例下的导航拓扑差异很大时（比如某个岛屿在1:1时完全在屏幕外，AI不上去；在16:9时出现在屏幕内，AI可以登陆），如何保证AI的策略在不同比例下还能保持一致的玩法体验？</li>
+                <li>能否设计一种‘导航网格变形参数化’方法，让少量参数就可以从基础的导航网格生成不同比例的派生网格，而不是每次都做全量烘焙？这需要什么样的几何映射技术？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">今天三个概念共同支撑起多比例游戏资源管线的知识拼图。资产清单是声明式契约，决定了“在不同比例下，要产出哪些东西”，是所有后续工作的起点。工具链脚本的可组合性则定义了“如何产出”，通过把整个工作拆成地图生成、导航烘焙、美术处理、质量审查等独立阶段，让每个脚本专注一件事，又能像乐高积木一样拼成完整的管线。清单既是这些脚本的输入约定，又是验证脚本的输出标准。而导航网格的多比例版本管理是管线的一种具体产物，它告诉我们：当地形比例改变时，仅仅缩放原有的导航数据是不够的，必须重新“烘焙”一份专门给16:9用的导航网格；并且，这个烘焙脚本本身就作为管线的一个阶段存在，它的运行与否、何时运行，受清单和工具链规则共同约束。三者环环相扣，展示了现代游戏资源工程在应对显示比例这种基础约束变化时，如何用清晰的分层和契约来控制复杂度。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">清单是活的契约，不是僵死的列表——它让机器能理解资产之间的血缘关系。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如果未来要支持21:9甚至更特殊的超宽比例，清单会如何演变？是继续为每个比例创建独立清单，还是可以在同一个清单中用字段区分比例？</li>
+            <li>如果两个阶段都修改了同一个文件，如何避免互相覆盖？是否需要一个明确的中间产物命名规范或版本化输出目录？</li>
+            <li>如果游戏引擎里对导航网格的格式有严格要求，烘焙脚本如何保证在不同比例下生成的网格都满足这一约束？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
