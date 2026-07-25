@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-07-26 学习笔记日报</title>
+    <meta name="description" content="从接触印相的视觉侦察，到工程审计的CI策略，再到实验设计的维度扩展，三个概念构建了多比例管线与平衡性验证的技术连线。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260726-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-07-26</p>
+        <h1>从裁切检查到实验设计：多比例管线与平衡性验证的三重奏</h1>
+        <p>今日我们由视觉QA的“一眼看全”出发，经历工程审计的“信任决策”，最后抵达仿真实验的“策略空间”，多比例管线与平衡性验证的全景图徐徐展开。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>多比例管线验证与平衡实验维度扩展</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>接触印相与比例差异可视化QA</strong>
+                <small>粗检看全貌，精检对像素，各司其职。</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>未提交工作区状态作为设计证…</strong>
+                <small>未提交的修改是探索草图，不是工程事…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>平衡性仿真实验的维度扩展与…</strong>
+                <small>新维度带来新视角，但也带来指数级复…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">接触印相为多比例管线提供了快速、全局的可视化验证，是管线正确性的第一道防线；当所有工作都留在未提交状态时，CI审计必须做出明确策略选择，这是工程证据可信度的基础；仿真实验引入'路线策略'维度，则将平衡性测试从单变量胜率推向多维实验空间，要求更严谨的序贯设计和停止规则。三者环环相扣：自动化QA检验管线产物，审计策略保障产物可追溯，实验设计则利用结构化产物推动游戏平衡的科学化。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["多比例管线验证与平衡实验维度扩展"])
+  concept1["接触印相与比例差异可视化QA"]
+  hub --&gt; concept1
+  concept2["未提交工作区状态作为设计证据的局限与取舍"]
+  hub --&gt; concept2
+  concept3["平衡性仿真实验的维度扩展与路线策略空间"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["多比例管线验证与平衡实验维度扩展"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="contact-sheet-qa">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>接触印相与比例差异可视化QA</h3>
+              <p>Contact Sheet &amp; Proportional Difference Visual QA</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">粗检看全貌，精检对像素，各司其职。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>将多比例关卡地形图或小地图自动拼接成接触印相图，实现全局扫览而非逐张对比。</li>
+                <li>擅长发现布局级、色调级、缺失级的大毛病，不能替代精确的像素级UI截图测试。</li>
+                <li>配合自动化脚本，可进一步实现异常检测和回归报警，是管线正确性保障的第一道防线。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="contact-sheet-qa" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="uncommitted-workspace-evidence">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>未提交工作区状态作为设计证据的局限与取舍</h3>
+              <p>Limitations and Trade-offs of Uncommitted Workspace as Design Evidence</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">未提交的修改是探索草图，不是工程事实。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>工作区未提交的变更只能作为设计线索，不能作为已完成的工程成果引用，因为别人无法复现。</li>
+                <li>CI面对脏工作区应明确拒绝或进行白名单检查，否则构建结果将不可信且无法用git bisect定位。</li>
+                <li>工作区脏状态是工程债务，可能导致构建不可信、调试不可行，必须强制提交或stash后才能进入流水线。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="uncommitted-workspace-evidence" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="simulation-dimension-expansion">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 计算机科学</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>平衡性仿真实验的维度扩展与路线策略空间</h3>
+              <p>Dimension Expansion and Route Strategy Space in Balance Simulation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">新维度带来新视角，但也带来指数级复杂度，必须靠契约和序贯停止驾驭。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>引入路线策略维度后，实验空间从一维（关卡）扩展到二维（关卡×策略），全面检测AI在不同寻路风格下的表现。</li>
+                <li>维度增加带来组合爆炸，必须结合序贯停止技术，判断策略组合的胜率是否足够稳定，以节省计算资源。</li>
+                <li>命名契约和自动化解析器是多维实验管理的基石，否则配置文件数量和结果数据量的暴涨将使分析陷入混乱。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="simulation-dimension-expansion" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="contact-sheet-qa">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>接触印相与比例差异可视化QA</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>接触印相这个名词来自传统摄影：把一卷胶卷的底片洗成一张大相纸，所有照片缩略排列在一起，一眼就能看出哪张拍糊了、哪张曝光不足。在游戏开发里，我们借用了相同的想法——把几十张不同比例、不同关卡的地形图或小地图自动拼接成一张大图，这张大图就叫'接触印相图'。它的核心作用不是像显微镜那样做逐像素精确对比，而是让开发者或者自动脚本用'眼角余光'扫一遍，迅速发现诸如'岛屿被切掉了一半''导航网格出现了不该有的空洞''两个比例的地图之间颜色差异大得离谱'等宏观问题。在16:9宽屏适配中，原先1:1或4:3的地形图要重新生成拉伸版本，如果每个地图都单独打开对比，效率极低；生成一张16:9的接触印相图，把各种海岸地形并排放在一起，任何比例导致的裁剪、偏移或渲染异常都会立刻跳出来，就像在一排排证件照中找到那个眼睛闭着的人一样直观。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>自动拼合：管线脚本将多张渲染结果按固定网格排列，生成一张大图。</li>
+                <li>全局浏览：开发者或脚本可以一次性扫描整张大图，而非逐个打开文件。</li>
+                <li>异常检测：基于阈值判断（如非透明像素占比）或感知哈希，自动标记疑似出错的格子。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>证件照相馆老板把全校500个学生的底片拼印在一张大相纸上扫一眼——第3排第5个歪头，第8排第2个眨眼，根本不用放大镜。游戏开发中同样的道理：管线跑完自动把30张不同岛屿的16:9小地图拼成一张大图，如果某个岛因比例拉伸导致陆地形状扭曲得像被踩了一脚的蛋糕，一眼就能看出。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误区：认为接触印相可以替代像素级UI截图测试，实际上它只做粗检。</li>
+                <li>误区：以为接触印相图必须人工查看，忽略了结合脚本自动化异常告警的可能性。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>未提交工作区状态作为设计证据的局限与取舍</td><td>印相图可能处于未提交状态，其可信度受工作区状态影响；CI需检查工作区干净性以保证验证结果可复现。</td></tr>
+                <tr><td>平衡性仿真实验的维度扩展与路线策略空间</td><td>接触印相确保多比例地形正确性，为后续在其上运行的仿真实验提供了可靠的基础资源。</td></tr>
+                <tr><td>多比例管线验证与平衡实验维度扩展</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果接触印相图很大（例如包含100个关卡），如何让自动脚本高效定位异常格子，而不必人工一张张检查？</li>
+                <li>能否使用感知哈希（pHash）对两张不同比例同一地形的印相格子进行计算，自动判断它们'视觉上是否相似'，从而捕捉渲染不一致？</li>
+                <li>接触印相图自身如何纳入CI流水线的检查步骤？如果印相图检测到异常，CI除了告警，还可以自动阻止哪些后续构建步骤？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="uncommitted-workspace-evidence">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>未提交工作区状态作为设计证据的局限与取舍</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>在Git项目里，工作区（Working Directory）就是你正在修改代码的那个文件夹，所有没执行过`git add`和`git commit`的改动都只存在于你的电脑上，别人看不到，Git历史也追踪不了。虽然我们能从文件名和修改内容推测出开发者正在做什么，但这些文件不能被当作'已完成的工程成果'来引用。如果一个持续集成（CI）系统在此时拉取仓库运行测试，它将看到的是一个'脏'工作区：代码和资源都变了，但Git提交记录的SHA和远程仓库一模一样。这样跑出来的构建结果完全不可复现，因为别人按相同SHA下载到的是旧文件。正确的做法是在CI中执行'pre-flight检查'——即`git status --porcelain`检查是否干净，如果不干净则根据策略决断：如果是已知的临时测试脚本可以白名单放行，否则一律拒绝，并提示开发者'请先提交或储藏你的修改'。工作区线索只能用来讨论设计意图和推测技术方向，不能作为审计证据或发布依据。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>工作区修改仅限本地，未入版本历史，缺乏可追溯性。</li>
+                <li>CI基于干净检出运行，脏工作区导致构建不可复现。</li>
+                <li>pre-flight检查通过`git status --porcelain`判断工作区是否干净，并依据白名单策略决策是否放行。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>快递仓库里，货架上的货物（提交历史）都登记在册。地上突然出现一堆新货（工作区修改），但货单（git commit）上没有记录。如果按货单给客户发货，下次同一货单取到的货就不同了。CI就是那个发货员，必须停止发货，等仓管员先清点入库（提交）或挪到暂存区（stash），再处理登记在册的订单。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误区：认为'反正我改的文件都在本地，直接跑CI应该没问题'。但CI环境通常是从干净的Git checkout开始，带着未提交修改构建会使结果与任何其他人的检出不一致，无法复现。</li>
+                <li>误区：把工作区脏状态当作无所谓的临时状态，实际上它可能导致构建不可信、调试不可行的工程债务。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>接触印相与比例差异可视化QA</td><td>印相脚本和生成的资源若留在未提交状态，其验证结果无法被CI信任，也无法被他人复用。</td></tr>
+                <tr><td>平衡性仿真实验的维度扩展与路线策略空间</td><td>未提交的实验配置和脚本使实验来源不可查询，导致仿真结果缺乏可追溯性。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果开发者坚持需要在不提交的情况下运行CI，能否利用Git stash机制自动保存并在CI结束后恢复？这样做的利弊是什么？</li>
+                <li>如何设计白名单机制，允许特定文件名或路径的临时文件存在而不阻塞CI，同时防止白名单被滥用？</li>
+                <li>能不能利用文件时间戳（mtime）作为线索，将未提交变更与开发者的工作日志关联起来，生成'推测性构建报告'，但明确标注其可信度低？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="simulation-dimension-expansion">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 计算机科学</p>
+                <h3>平衡性仿真实验的维度扩展与路线策略空间</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>此前进行关卡平衡性仿真实验，主要让两个AI在固定地形上反复对战，统计某一方的胜率。这相当于一个一维实验：只改变不同关卡（因子A），看胜率如何变化。而新出现的实验配置文件引入了'路线策略'维度。也就是说，现在实验不仅要问'在关卡T05上AI强不强'，还要问'当AI采用不同的寻路策略（比如激进冲锋 vs. 保守绕路）时，胜率稳定吗？'这便将实验空间从一维（关卡）扩展到了二维（关卡×路线策略）。为何要这样做？因为同一关卡上，可能策略A虐策略B，但策略B在复杂地形里反而更强，单看胜率会给出片面结论。加入路线策略维度后，我们才能评估AI的鲁棒性，并可能发现某些策略组合的不公平现象。然而，维度增加带来组合爆炸：假如有10个关卡、5种策略，就需要50种实验配置，每种再跑多次，计算量骤增。因此，必须借助序贯停止技术来判断何时某个策略组合的胜率已足够稳定可以提前停止，从而节省资源。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>原实验：固定一种策略，只改变关卡因子，统计胜率。</li>
+                <li>新实验：同时改变关卡因子和路线策略因子，形成二维实验矩阵。</li>
+                <li>通过方差分析或联合假设检验评估策略的鲁棒性，并利用序贯停止提前结束稳定组合。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>测试新款运动鞋的防滑性能。最初只在干燥路面（关卡）测试，结论是'防滑很好'。后来引入湿滑路面、冰面、石子路（不同关卡），再引入不同跑步姿势：前掌着地、后跟着地、内翻、外翻（路线策略）。实验变成了'路面×跑步姿势'的组合，发现某种姿势在冰面上极佳，在石子路上却易崴脚。如果不引入姿势维度，永远不知道这个弱点。游戏平衡测试同理。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误区：以为增加实验因子就是多加几个for循环，忽略了统计上需要更精细的方差分析和工程上数据暴涨的问题。</li>
+                <li>误区：认为只要跑足够多次就能得到可靠结论，忽视了序贯停止可以在保证统计显著性的前提下大幅节省计算资源。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>接触印相与比例差异可视化QA</td><td>经印相验证的正确地形是仿真实验的基础，确保实验环境在多比例下无视觉或导航缺陷。</td></tr>
+                <tr><td>未提交工作区状态作为设计证据的局限与取舍</td><td>实验配置文件的未提交状态会导致实验结果来源不明，无法追溯，必须提交后才能成为正式实验数据。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当实验空间变为'关卡×策略'二维后，如何设计序贯停止规则？是每个组合独立停止，还是基于全局功效边界统一决策？</li>
+                <li>如果路线策略是一个连续参数（如侵略性从0到1），如何选择有代表性的离散点进行有限实验，而不遗漏关键行为突变点？</li>
+                <li>实验数据增多后，如何用热力图或平行坐标等可视化手段，让设计师直观理解'策略×关卡'对胜率的影响，从而做出平衡调整？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">接触印相为多比例管线提供了快速、全局的可视化验证，是管线正确性的第一道防线；当所有工作都留在未提交状态时，CI审计必须做出明确策略选择，这是工程证据可信度的基础；仿真实验引入'路线策略'维度，则将平衡性测试从单变量胜率推向多维实验空间，要求更严谨的序贯设计和停止规则。三者环环相扣：自动化QA检验管线产物，审计策略保障产物可追溯，实验设计则利用结构化产物推动游戏平衡的科学化。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">接触印相不是精确像素比对，而是用'一眼看全'的方式快速发现多比例地形中的布局异常、导航缺失等明显问题，是大规模资源验证的高效起点。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何将接触印相的异常检测与CI流水线结合，利用感知哈希自动判断渲染不一致，并阻止后续构建？</li>
+            <li>面对未提交变更，怎么设计白名单与stash策略，既能保证CI可复现，又允许临时测试脚本并行探索？</li>
+            <li>多维实验空间（关卡×路线策略）如何设计联合停止边界，同时控制多个统计指标的错误率？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
