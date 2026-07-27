@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-07-28 学习笔记日报</title>
+    <meta name="description" content="今日聚焦海岸地形宽屏迁移，通过工单锚定意图、揭示LFS缺失下二进制盲区，以及多轮次序贯仿真检验公平性，串联起知识发现全链路。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260728-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-07-28</p>
+        <h1>2026年7月28日 学习笔记日报</h1>
+        <p>团队正将海岸地形资产从旧比例迁移到16:9宽屏，今日围绕这一动作，学习工单驱动的意图锚定、LFS缺失下的观测盲区，以及平衡性仿真在“路线策略×关卡×轮次”三维空间中的序贯检验。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>宽屏迁移的知识传导：意图-观测-验证</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>工单驱动的任务溯源与知识锚定</strong>
+                <small>工单是在代码仓库里贴的便条，用人类…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>LFS缺失环境下的二进制资…</strong>
+                <small>当Git LFS缺席时，大文件的变…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>平衡性仿真实验中的维度扩展…</strong>
+                <small>平衡性仿真的维度扩展就像用多层不同…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念构成一条认知链：工单是写在墙上的任务宣言，让所有技术动作有了可回望的理由；LFS缺口则像蒙在监控镜头上的薄雾，提醒我们工具的缺失会让某些关键变化从视野中溜走；而仿真实验的多维扩展，恰是在这层雾里用统计手段做“化验”——即使肉眼看不到某些二进制差异，数学仍能通过大量自动对战捕捉设计上的偏差。工单设定了方向，LFS缺口划定了能看清的边界，仿真则在那里顽强地寻找真相，三者共同揭示了一个真实管线在比例迁移中知识生成与验证的完整肌理。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["宽屏迁移的知识传导：意图-观测-验证"])
+  concept1["工单驱动的任务溯源与知识锚定"]
+  hub --&gt; concept1
+  concept2["LFS缺失环境下的二进制资产变更可观测性缺口"]
+  hub --&gt; concept2
+  concept3["平衡性仿真实验中的维度扩展与路线策略空间"]
+  hub --&gt; concept3
+  related1["管线契约传播（C01）"]
+  concept1 --&gt; related1
+  related2["未提交工作区状态（C05）"]
+  concept1 --&gt; related2
+  concept2 --&gt; related1
+  related3["接触印相（C02）"]
+  concept2 --&gt; related3
+  concept2 --&gt; related2
+  related4["导航网格重新烘焙（C03）"]
+  concept3 --&gt; related4
+  concept3 --&gt; related3
+  related5["工单（C06）"]
+  concept3 --&gt; related5
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4,related5 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="work-order-driven-task-traceability">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>工单驱动的任务溯源与知识锚定</h3>
+              <p>Work Order-Driven Task Traceability &amp; Knowledge Anchoring</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">工单是在代码仓库里贴的便条，用人类语言把“我们要做什么、为什么做”写成可追溯的故事。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>工单不是代码之外的累赘，而是将设计意图编码为可回查故事的知识锚点，让未来的考古学家一眼看懂为什么会有这批变更。</li>
+                <li>工单把分散的设计意图收拢起来，形成一个可追溯的知识锚点，让代码考古变成读故事而不是猜谜。</li>
+                <li>工单声明了16：9迁移意图，为管线契约传播提供了人类可理解的需求信号锚点。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="work-order-driven-task-traceability" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="lfs-missing-observability-gap">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>LFS缺失环境下的二进制资产变更可观测性缺口</h3>
+              <p>Observability Gap of Binary Asset Changes in LFS-Missing Environments</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">当Git LFS缺席时，大文件的变更就像隔着一层毛玻璃——你知道某些东西动了，但永远看不清它变成了什么。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>当Git LFS不在场时，二进制资产的变更就变成了黑箱，我们不能默认所有文件变化都是可观测的，必须像对待盲区一样安排额外的验证手段。</li>
+                <li>LFS缺失导致二进制源图的变更不可观测，直接削弱了管线契约传播输入端的可信度。</li>
+                <li>二进制大文件的真实内容成为不可观测的黑箱，给管线审查留下盲区。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="lfs-missing-observability-gap" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="balance-simulation-dimension-expansion">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 计算机科学</span>
+                <span class="tag warm">★★★★★</span>
+              </div>
+              <h3>平衡性仿真实验中的维度扩展与路线策略空间</h3>
+              <p>Dimension Expansion and Route Strategy Space in Balance Simulation Experiments</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">平衡性仿真的维度扩展就像用多层不同粗细的滤网反复筛检设计质量，让隐藏的不平衡无处藏身。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>仿真实验从一次性的固定样本进化到路线策略×关卡×轮次的多维空间，每一次维度扩张都让检验更全面，但也需要更精细的序贯设计来决定什么时候可以放心叫停。</li>
+                <li>维度扩展能揪出更多隐藏的不平衡，但代价是实验次数爆炸，且带来了新问题：怎么判断第二轮之后数据就够稳定了？</li>
+                <li>序贯实验设计像一位聪明的考官，每考完一阶段就评估一次，够清楚了就提前收卷，没必要无休止地考下去。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="balance-simulation-dimension-expansion" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="work-order-driven-task-traceability">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>工单驱动的任务溯源与知识锚定</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象一个大厨房里几个厨师同时在忙，如果没有贴在墙上的点菜单，每个人都按自己的理解下料，最后端出的菜为什么是那个味道就只有天知道。在软件开发这座更大的厨房里，工单就是那张贴在仓库里的点菜单。它用大家都能看懂的句子写清楚：这次我们要把海岸地图适配到16：9宽屏，这样未来任何一个人查阅历史时，看到的就不是一堆神秘的文件改动，而是一个完整的故事——从起因到目标，再到牵扯到的脚本和资产。工单把分散的设计意图收拢起来，形成一个可追溯的知识锚点，让代码考古变成读故事而不是猜谜。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>工单用自然语言捕获设计意图，将技术变更组织成可读的故事。</li>
+                <li>工单作为意图锚点，把分散的文件改动串联为统一的任务视图。</li>
+                <li>工单补充了“为什么要做”的意图型契约，与清单的结果型契约互补。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一个朋友做完乐高宽屏城堡后留下一张便条：“塔楼已扩建为16：9比例，新零件在蓝箱里，说明书在左边抽屉。”你接手后即使没亲眼看他搭，也能靠这张便条迅速理解每一块新积木为什么放在那里。工单就是软件工程里的这张便条。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>很多人以为工单只是项目经理的看板工具，和代码本身关系不大。事实上，工单是技术动作的“意图锚点”，它把代码变更从冷冰冰的文件差异转化成人能理解的设计叙事，缺了它，工程知识就会散落成互相孤立的碎片。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>管线契约传播（C01）</td><td>工单声明了16：9迁移意图，为管线契约传播提供了人类可理解的需求信号锚点。</td></tr>
+                <tr><td>未提交工作区状态（C05）</td><td>配合未提交工作区状态使用，工单提供意图层级证据，工作区快照提供代码级线索，二者互补形成更完整的知识图景。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何让工单和Git提交自动关联起来，比如在提交信息中强制带上工单编号，使线索永不丢失？</li>
+                <li>工单的生命周期结束后，它还能持续充当知识索引吗？是否需要让它与活文档机制联动？</li>
+                <li>在多团队协作时，工单的字段和模板如何演化，才能同时满足前端、美术和数值策划不同的知识溯源需要？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="lfs-missing-observability-gap">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>LFS缺失环境下的二进制资产变更可观测性缺口</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>Git对代码文件很友好，但遇到图片、模型这类大块头二进制文件就吃力了。于是人们发明了Git LFS，它的原理很简单：真正的大文件存到专门的服务器，仓库里只留一张写着真实文件指纹的“小纸条”（指针文件）。当你需要看原图时，LFS工具就会拿着纸条去服务器取货。但这一切有个前提——你的操作环境里必须已经安装git-lfs命令。如果缺失这个命令，Git只能告诉你纸条上的指纹变化了，却完全没法展示图片本身改成了什么样子。这就好像监控摄像头坏了，你只知道有人进出过房间，却完全看不到画面。这个状态就叫“可观测性缺口”——二进制资产的内容变化落入盲区，管线输入端的审计因此缺了一块。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Git LFS将大文件实体的引用替换为指针文件，仓库仅存储轻量指针。</li>
+                <li>当git-lfs命令缺失时，Git只能检测指针的哈希变化，无法解析实际二进制内容。</li>
+                <li>缺失LFS导致二进制资产的差异对比落入盲区，形成管线的可观测性缺口。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>你管理着一个相册，把所有高清原图都存在云端，桌子上只摆了带着链接的缩略图卡片。有一天你想确认一张海报是否被PS过，但网络断了，你打开卡片上的链接只看到一串乱码。没有云端内容的实际对照，你永远不知道海报是旧版还是新版。这就是LFS缺失时的窘境。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>一件常见的误解是：只要文件在工作区被修改了，git status就一定能告诉我们所有细节。实际上，没有LFS时，git对二进制文件只能感知到“指针变了”，无法呈现像素差异或文件大小对比，导致误以为一切尽在掌握，实则盲区巨大。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>管线契约传播（C01）</td><td>LFS缺失导致二进制源图的变更不可观测，直接削弱了管线契约传播输入端的可信度。</td></tr>
+                <tr><td>接触印相（C02）</td><td>接触印相本身也是二进制图片，LFS不可用时其差异对比也不完整，影响视觉回归锚点的可靠性。</td></tr>
+                <tr><td>未提交工作区状态（C05）</td><td>与未提交工作区状态的认知边界叠加，使工作区线索作为设计证据的层次进一步降低。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何在CI流水线的最前端加入一个pre-flight检查，自动探测LFS是否安装并配置正确，不给盲区任何机会？</li>
+                <li>在没有LFS的环境中，能否通过外部文件哈希（如sha256sum）绕过Git指针，直接对比二进制文件的实际内容？</li>
+                <li>LFS提供的文件锁定功能，在多比例资产生成时如何防止不同开发者同时修改同一张贴图而产生冲突？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="balance-simulation-dimension-expansion">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 计算机科学</p>
+                <h3>平衡性仿真实验中的维度扩展与路线策略空间</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>为了让游戏公平，我们常用AI自动对战成千上万局来检验关卡难度和武器平衡。最简单的做法是在一个关卡上用固定战术打N局，看胜率。但这样的检验就像只用体温计量健康——太少维度了。这次宽屏迁移逼着我们做更全面的“体检”：除了不同的关卡，还要测试不同的路线策略（比如AI是偏进攻还是偏防守），而且每个组合不止跑一轮，而是跑第二轮、第三轮。于是，实验从一条线变成了一个立体的网格，网格的坐标是“路线策略×关卡比例×轮次”。这种维度扩展能揪出更多隐藏的不平衡，但代价是实验次数爆炸，且带来了新问题：怎么判断第二轮之后数据就够稳定了？每一轮结果该独立判断还是累积到一起看？这些正是序贯实验设计要解决的问题，它像一位聪明的考官，每考完一阶段就评估一次，够清楚了就提前收卷，没必要无休止地考下去。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>单维度检验（固定关卡×固定策略×单轮）仅能提供有限视角，容易遗漏交互效应。</li>
+                <li>多维扩展（路线策略×关卡比例×轮次）能揭示隐藏的不平衡，但导致实验次数指数级增长。</li>
+                <li>序贯实验设计通过阶段性评估与提前停止，在保证统计推断效力的同时控制计算成本。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>你是班主任，想检验换个教学法后学生数学水平是否提高。如果只考一次通用卷子，可能刚好碰上学生擅长的题型。更靠谱的做法是设计两份侧重点不同的卷子（两种路线策略），在同一批学生身上各考一次，并在一个月后重测一轮，看成绩是否稳定。这个多卷子、多轮次的测试设计，就是平衡性仿真维度扩展的朴素版本。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>很多人以为增加实验维度只是多跑几次模拟，没有本质区别。其实，维度一多就会出现交互效应：某种进攻策略在16：9的宽屏地图上特别强，在4：3的旧地图上却吃亏，如果只看平均胜率就会掩盖这种关键的不一致性。必须用多因子实验设计才能把主效应和交互效应拆解清楚。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>导航网格重新烘焙（C03）</td><td>导航网格重新烘焙为16：9地图提供了新的可通行区域，这会直接影响AI的路线选择，从而改变仿真实验结果。</td></tr>
+                <tr><td>接触印相（C02）</td><td>接触印相可作为仿真结果的可视化回归锚，帮助工程师快速对比不同轮次或不同策略下的地形渲染是否出现异常。</td></tr>
+                <tr><td>工单（C06）</td><td>工单可能明确要求对16：9地图执行多轮次平衡性验证，为实验的维度扩展提供了意图级的背书。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>在多轮次实验中如何分配每一轮的显著水平？alpha消耗函数（如Lan-DeMets方法）如何保证整体假阳性率不膨胀？</li>
+                <li>当路线策略是连续参数时，如何用贝叶斯优化在庞大的策略空间中智能选点，避免实验次数爆炸？</li>
+                <li>多轮次结果如何区分“AI随训练变聪明”的效应和“地图比例变化”带来的真实影响，确保分析不被混杂因素干扰？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念构成一条认知链：工单是写在墙上的任务宣言，让所有技术动作有了可回望的理由；LFS缺口则像蒙在监控镜头上的薄雾，提醒我们工具的缺失会让某些关键变化从视野中溜走；而仿真实验的多维扩展，恰是在这层雾里用统计手段做“化验”——即使肉眼看不到某些二进制差异，数学仍能通过大量自动对战捕捉设计上的偏差。工单设定了方向，LFS缺口划定了能看清的边界，仿真则在那里顽强地寻找真相，三者共同揭示了一个真实管线在比例迁移中知识生成与验证的完整肌理。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">工单锚定意图，LFS暴露盲区，仿真验证公平，构成比例迁移的知识全链路。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何让工单自动关联提交形成知识图谱，使设计意图永不丢失？</li>
+            <li>如何在LFS缺失时仍能审计二进制变更，比如通过外部文件哈希绕过指针？</li>
+            <li>如何设计序贯规则，让仿真在足够证据时自动停止，避免无休止计算？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
