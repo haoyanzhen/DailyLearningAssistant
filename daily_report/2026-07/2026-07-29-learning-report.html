@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-07-29 学习笔记日报</title>
+    <meta name="description" content="揭露版本控制可观测性的内生局限：远端引用快照是变更的“充分非必要”证据，工具链耦合脆性让基础命令整体崩盘，进而引出观测工具本身的可靠性元问题。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260729-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-07-29</p>
+        <h1>版本控制可观测性的内生局限</h1>
+        <p>远端引用快照是变更的“充分非必要”证据，工具链的耦合脆性则让本地观测完全黑屏——两相结合，迫使我们必须重新审视观测工具的可靠性元问题。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>观测工具的能力边界与脆性耦合</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>远端引用快照作为变更证据的…</strong>
+                <small>远端引用快照是变更的充分非必要证据…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>版本控制工具链的耦合脆性</strong>
+                <small>Git LFS 缺失不只是大文件…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>工程观测工具本身的可靠性元…</strong>
+                <small>我们不仅需要让系统可靠，也需要让观…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念从具体到抽象，构成一条清晰的知识链：首先，远端引用快照是变更的‘充分非必要证据’，它定义了远端监控的信息上限；接着，本地工具链的耦合脆性告诉我们，Git LFS 不只是附加功能，它已经进入 Git 核心命令的执行路径，缺失时会让整个工作区观测变成黑箱；最后，这两者共同指向一个更深刻的认识——工程观测工具本身也需要被纳入可靠性保障的范围，否则我们连‘自己到底看到了什么’都无法确认。三者统一在‘版本控制可观测性的内生局限’这一主题之下。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["观测工具的能力边界与脆性耦合"])
+  concept1["远端引用快照作为变更证据的充分性与必要性"]
+  hub --&gt; concept1
+  concept2["版本控制工具链的耦合脆性"]
+  hub --&gt; concept2
+  concept3["工程观测工具本身的可靠性元问题"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["观测工具的能力边界与脆性耦合"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="remote-ref-snapshot-sufficiency-necessity">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>远端引用快照作为变更证据的充分性与必要性</h3>
+              <p>Sufficiency and Necessity of Remote Ref Snapshots as Change Evidence</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">远端引用快照是变更的充分非必要证据，指针不动不代表没有故事发生。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>`git ls-remote` 只能报告分支指针当前指向的 commit 编号，无法感知快速往返的 force-push。</li>
+                <li>指针移动是变更的充分条件，但指针不动不是仓库无变更的必要条件，监控存在采样盲区。</li>
+                <li>在设计监控流水线时，不能将“没有检查到变化”等同于“今天无事发生”，需保持信息上限的谦逊。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="remote-ref-snapshot-sufficiency-necessity" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="version-control-toolchain-coupling-brittleness">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>版本控制工具链的耦合脆性</h3>
+              <p>Coupling Brittleness of Version Control Toolchain</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">Git LFS 缺失不只是大文件 diff 看不清，它会瘫痪 `git status` 本身，让整个工作区查询变成黑屏。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>Git LFS 通过 filter 机制深度嵌入 Git 查询工作区状态的路径，缺失时导致 `git status` 完全瘫痪。</li>
+                <li>这种脆性并非仅限于大文件本身，而是会污染整个工作区查询，使得所有文件的变更状态都被遮蔽。</li>
+                <li>在设计自动化环境和 CI 管线时，必须将 `git-lfs` 等外部依赖视为基础设施的一部分，并在入口处进行前置检查。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="version-control-toolchain-coupling-brittleness" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="engineering-observation-tool-reliability-meta-problem">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★★</span>
+              </div>
+              <h3>工程观测工具本身的可靠性元问题</h3>
+              <p>Meta-problem of Engineering Observation Tool Reliability</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">我们不仅需要让系统可靠，也需要让观察系统的方式可靠。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>我们用来“看”代码世界的工具（如 git status、git ls-remote）本身也是一套观测系统，有视角盲区和健康条件。</li>
+                <li>当观测工具本身故障或能力受限时，我们常常误以为观测对象出了问题，或将局部观测结果当成全部真相。</li>
+                <li>工程实践中必须将观测工具的可用性、能力边界和失效模式纳入质量保障范围，建立元观测与健康检查机制。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="engineering-observation-tool-reliability-meta-problem" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="remote-ref-snapshot-sufficiency-necessity">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>远端引用快照作为变更证据的充分性与必要性</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象你只能通过看一扇小窗来判断远方工厂里有没有开工。这扇窗展示的是屋顶上的旗杆——旗子换了一面新的，你能确认工厂肯定有新动静（远端的 ref 指针变了，说明一定有新提交）。但如果旗子没换，你能说工厂里就一片太平吗？不能——工人可能刚搬完货又把旗子换回了原样，而你没恰好在那短短几分钟往窗外看。`git ls-remote` 就是这样一扇窗，它只报告每个分支指针此刻指向的 commit 编号，如果这个编号和上次记录一样，只能说明‘指针未移动’，却无法证明‘仓库没有新提交’。指针移动是变更的充分证据，但指针不动不是不变的绝对证明——这就是‘充分非必要’。我们还可能因为采样时机错过 force-push 的快速往返，使得真实变化从眼皮底下溜走。理解这层信息上限，才能在设计监控流水线时保持适度的谦逊，不把‘今天没检查到变化’等同于‘今天无事发生’。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>远端引用快照本质是对远端仓库 HEAD 指针的周期性采样，无法捕获在采样间隔内发生且又复原的变更。</li>
+                <li>指针移动是变更的充分证据，但指针不动无法推导出仓库状态未变，因而监控方案的证据强度是不对称的。</li>
+                <li>采样频率与信息上限构成权衡：提高频率可以缩小盲区，但无法完全消除，且可能增加网络/权限开销。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设你监控 `refs/heads/main`，早上10点读到的 SHA 是 `abc123`，下午2点再读依然是 `abc123`。你的脚本安心地写下“无变更”。但实际上，12点05分有人推送过 `def456`，又在12点06分强制推回 `abc123`，你的两次采样完美错过了中间的60秒。这就是采样窗口带来的盲区。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>常见误区一：认为 `git ls-remote` 返回的 SHA 没变就等于远端仓库没有被碰过——这会把‘基于采样的观测结论’错误升级为‘关于仓库历史的完整事实陈述’。</li>
+                <li>常见误区二：忽视 `git ls-remote` 本身也是一个依赖网络和远端服务的命令，它也可能因为权限或网络问题而失败，此时监控脚本若无容错机制将产生误报或漏报。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>版本控制工具链的耦合脆性</td><td>与耦合脆性形成观测对偶：一端是远端监控的信息上限，一端是本地观测的能力下限，二者共同界定代码仓库完整状态的感知盲区。</td></tr>
+                <tr><td>工程观测工具本身的可靠性元问题</td><td>远端引用快照的信息上限是元问题在远端监控维度的具体表现，说明所有观测窗口都有其内在口径和盲区。</td></tr>
+                <tr><td>观测工具的能力边界与脆性耦合</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果需要在远端监控中捕捉到短暂 force-push 的痕迹，除了缩小轮询间隔还有哪些更可靠的手段？</li>
+                <li>Git 的 `reflog` 只能在本地查看，有没有办法在远端安全地暴露一份受限的 reflog 来辅助监控？</li>
+                <li>当远端引用未变但本地怀疑内容被篡改时，如何用树哈希或 commit 签名进行交叉验证？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="version-control-toolchain-coupling-brittleness">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>版本控制工具链的耦合脆性</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>你一定用过 `git status` 来查看自己改了哪些文件，这个命令稳得像闹钟。但今天我们发现，如果仓库里有些大文件用 Git LFS 管理，而这个仓库配置了 `.gitattributes` 让 Git 必须通过 `git-lfs` 过滤器才能正确呈现文件状态，那么一旦你的电脑上找不到 `git-lfs` 这个程序，`git status` 就会彻底报错退出，连一句‘你改了两个文件’都说不出来。这就像一个房子装了一扇需要密码才能看的窗户，你把密码忘了，连外面是白天还是黑夜都无从知晓。更关键的是，这个过滤器并不仅仅影响大文件本身，它被嵌入在了 Git 查询工作区状态的整条路径上，一处卡住，上游全部瘫痪。这就是‘工具链耦合的脆性’：当工具 A 在核心功能上强依赖工具 B 的正常运行时，B 的消失不会让 A 优雅降级，只会让 A 整体失效。在设计自动化环境、CI 管线或开发者新手指南时，必须意识到这些看不见的依赖，否则环境的‘健康’是经不起一个缺失的命令考验的。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Git 使用 filter 机制在 worktree 和 index 之间进行内容转换，`git-lfs` 作为 filter 驱动被注册到 Git 配置中。</li>
+                <li>当 `git-lfs` 命令不存在时，`git status` 调用 filter 进程失败，导致整个状态查询流程中断，且 Git 当前设计无优雅降级机制。</li>
+                <li>这种耦合源于 Git LFS 将自身作为必需的数据解码组件，而未设计为可选或可回退的插件，因此缺失时表现为硬错误而非警告。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>你的仓库用 LFS 追踪 `.psd` 文件，并在 `.gitattributes` 中写了 `*.psd filter=lfs diff=lfs merge=lfs -text`。当系统中没有 `git-lfs` 时，任何与这些文件的暂存状态、工作区改动相关的 `git status` 都会抛出 `error: cannot run git-lfs filter-process: No such file or directory` 并退出，输出的状态信息为零。而一个纯文本文件的小改动也因此被连带遮蔽。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>常见误区一：认为 Git LFS 只是一个‘更好处理大文件的插件’，缺失时仅影响大文件的 diff/下载，不影响其他命令——实际上 filter 驱动缺失会从根上使 `git status` 等命令失败。</li>
+                <li>常见误区二：以为移除 `.gitattributes` 中的 filter 设置就能快速恢复，但这往往需要对仓库进行清理和迁移，且可能破坏历史版本中大文件的正确性。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>远端引用快照作为变更证据的充分性与必要性</td><td>一端是远端监控的信息上限，一端是本地观测的能力下限，二者共同界定感知盲区。</td></tr>
+                <tr><td>工程观测工具本身的可靠性元问题</td><td>工具链耦合脆性是元问题在本地开发环境中的典型实例，说明观测手段本身可能因依赖缺失而完全失效。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>Git 的 filter 机制有没有可能设计成‘优雅降级’模式，当外部 filter 不可用时自动回退为原始内容，并给出一条醒目标注？</li>
+                <li>在团队中如何用容器或开发环境定义文件（如 Docker Dev Container 或 Vagrantfile）来确保每个成员的 `git-lfs` 及其版本都在预期状态？</li>
+                <li>除了 Git LFS，还有哪些常见工具（如依赖包管理器、代码格式化器）会通过 Git hooks 或 filter 嵌入版本控制流程，同样可能造成类似脆性？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="engineering-observation-tool-reliability-meta-problem">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>工程观测工具本身的可靠性元问题</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>现在让我们后退一步，把今天的两个现象并排放在一起看。左边是远端监控：`git ls-remote` 这种依靠指针采样的方式，注定遗漏快速往返的变更。右边是本地日常操作：`git status` 竟然会因为一个辅助工具的缺失而彻底黑屏。表面上是两个独立的技术细节，但它们背后藏着同一个让人不安的认识——我们用来‘看’代码世界的工具本身，就是一套需要小心对待的观测系统，而这套观测系统有自己的视角盲区和健康条件。就像你戴上了一副自带滤镜且需要电池的眼镜：电池没电（工具缺失），你什么都看不见；即便电池有电，镜片的镀膜也只让你看到特定波长的光（远端快照信息上限）。更麻烦的是，我们在日常工作中常常忘了自己正戴着这样一副眼镜，以为‘看不见就是没有’，‘报错就是命令本身坏了’。这就是工程观测工具的可靠性元问题：当我们在设计自动化管线、监控脚本、开发环境时，必须把‘观测工具的可用性、能力边界和失效模式’纳入质量保障的范围，否则就会在‘看起来一切正常’的错觉中悄然滑入盲区。这是一个提醒我们保持谦逊的概念：我们不仅需要让系统可靠，也需要让观察系统的方式可靠。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>所有观测工具都有其构成组件和运行依赖，这些组件本身的正确安装、版本匹配和运行状态构成了观测可靠性的前提。</li>
+                <li>观测工具的设计往往假设自身组件完整且正常，未内置自检或降级逻辑，导致故障时直接传递错误感知或完全盲视。</li>
+                <li>将观测工具视为需要被观测的对象，引入元观测层（如预检脚本、健康仪表盘），是解决此元问题的工程方法。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一个自动化脚本每天运行 `curl` 去抓取一个 API 的版本信息，然后判断代码是否更新。有一天脚本报错说连不上服务器，运维第一反应是‘服务挂了’，紧急排查半天才发现是运行脚本的机器上 `curl` 包被误删了。这就是典型的‘观测工具本身故障却被误读为观测对象故障’的案例，与 Git 场景如出一辙。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>常见误区一：将观测工具的输出直接等同于观测对象的全部事实，忽视工具自身的设计承诺和局限性，从而过度信任自动化报告。</li>
+                <li>常见误区二：只在系统出问题后检查工具链，而没有在事前为工具链建立持续的健康检测和告警，导致“维生系统自身失效时无人知晓”。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>远端引用快照作为变更证据的充分性与必要性</td><td>远端引用快照的信息上限是元问题在监控维度的具体表现，揭示观测窗口的尺寸限制。</td></tr>
+                <tr><td>版本控制工具链的耦合脆性</td><td>工具链耦合脆性是元问题在本地环境中的典型实例，表明观测通路本身可能因依赖缺失而完全中断。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>能否设计一个‘开发环境健康度仪表盘’，在开发者打开项目时自动检查 git-lfs、依赖包、hook 脚本等关键组件的状态，并在状态页面上统一展示？</li>
+                <li>在 CI 流水线中，如何把对工具链本身的检查（如 `git-lfs version`、`python --version`）变成流水线的第一个必须成功的 Job，从而将观测工具的可靠性正式固化为工程纪律？</li>
+                <li>从更广泛的系统角度，我们如何在架构中加入‘元观测’层，让监控系统定期验证自己的传感器是否仍在正常工作，避免维生系统自身的失效被掩盖？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念从具体到抽象，构成一条清晰的知识链：首先，远端引用快照是变更的‘充分非必要证据’，它定义了远端监控的信息上限；接着，本地工具链的耦合脆性告诉我们，Git LFS 不只是附加功能，它已经进入 Git 核心命令的执行路径，缺失时会让整个工作区观测变成黑箱；最后，这两者共同指向一个更深刻的认识——工程观测工具本身也需要被纳入可靠性保障的范围，否则我们连‘自己到底看到了什么’都无法确认。三者统一在‘版本控制可观测性的内生局限’这一主题之下。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">我们不仅需要让系统可靠，也需要让观察系统的方式可靠。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何设计一个开发环境健康度仪表盘，在项目打开时自动检查关键工具链状态？</li>
+            <li>在 CI 流水线中，如何将对工具链本身的预检固化为第一个必须成功的 Job？</li>
+            <li>能否从系统架构角度加入“元观测”层，让监控系统定期验证自身传感器的健康？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
