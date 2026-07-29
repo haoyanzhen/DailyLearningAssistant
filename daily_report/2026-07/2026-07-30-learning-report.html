@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-07-30 学习笔记日报</title>
+    <meta name="description" content="学会给变更信号分层评估可信度，理解比例适配引发的管线契约传播连锁反应，并将实验从单轮升级为多轮序贯评估以考察策略稳健性。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260730-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-07-30</p>
+        <h1>学习日报：证据层级、管线契约与序贯评估</h1>
+        <p>今天的所有仓库都没有正式提交，唯一有动静的 tiny-sea-war 也只是一片未提交的工作区改动的“考古现场”。这恰好给了我们一个难得的机会：练习如何从模糊的开发痕迹中，读出设计意图、判断信号可信度、推演工程响应。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>从模糊信号中读懂设计意图</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>自动化管线中未确认变更的工…</strong>
+                <small>提交历史是铁板钉钉的事实，工作区快…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>比例适配引发的管线契约传播</strong>
+                <small>比例适配不是给图片换一个尺寸标签…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>模拟实验配置中的多轮序贯评估</strong>
+                <small>当实验从“跑一轮看胜率”扩展到“跑…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">今天的三个概念构成了一条从“观察”到“响应”再到“进化”的认知链条。首先，我们学会用三层证据体系给监控信号打分，避免被模糊的工作区快照迷惑。接着，我们用比例适配的管线契约传播说明，当一个参数（如画面比例）改变时，自动化工具链必须逐站重新声明契约，否则产物之间就会像拼图错位。最后，多轮序贯评估展示了实验设计本身的维度扩展，从单轮胜率跃迁到连续多轮路线规划的稳健性考察——尽管目前这还只是工作区中的一个“待确认线索”。面对未确认变化时，正是这些概念帮助我们维持思考的清醒度，既不轻信，也不轻易放过有价值的工程信号。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["从模糊信号中读懂设计意图"])
+  concept1["自动化管线中未确认变更的工程证据层级"]
+  hub --&gt; concept1
+  concept2["比例适配引发的管线契约传播"]
+  hub --&gt; concept2
+  concept3["模拟实验配置中的多轮序贯评估"]
+  hub --&gt; concept3
+  related1["工作区状态快照作为设计意图的模糊信号"]
+  concept1 --&gt; related1
+  related2["远端 Git 引用的只读监控与证据边界"]
+  concept1 --&gt; related2
+  related3["工具链脚本的系统边界与 LFS 环境脆性"]
+  concept2 --&gt; related3
+  concept2 --&gt; concept3
+  concept3 --&gt; concept2
+  concept3 --&gt; related1
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="evidence-hierarchy">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>自动化管线中未确认变更的工程证据层级</h3>
+              <p>Engineering Evidence Hierarchy of Unconfirmed Changes in Automated Pipelines</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">提交历史是铁板钉钉的事实，工作区快照是模糊意图，远端指针是最粗糙的警报——读懂层级，才不会被假信号牵着走。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>三层证据体系：远端引用指针（粗糙指示）、本地提交历史（可靠档案）、工作区未提交状态（模糊草图）</li>
+                <li>可信度递减：提交 &gt; 工作区快照 &gt; 远端指针变化；提交是铁证，工作区是意图线索，指针只是风声</li>
+                <li>监控策略必须分层响应：提交触发完整构建，工作区变动只做轻量检查，避免基于模糊信号浪费资源</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="evidence-hierarchy" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="pipeline-contract-propagation">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>比例适配引发的管线契约传播</h3>
+              <p>Pipeline Contract Propagation Triggered by Aspect Ratio Adaptation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">比例适配不是给图片换一个尺寸标签，而是从源图生成、导航烘焙到小地图渲染的整条生产线按新契约重新跑一遍，任何一个环节的工具缺失都会让整个传播链卡住。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>比例适配不是孤立的图片拉伸，而是从源图生成到导航烘焙再到小地图渲染的全链路连锁反应</li>
+                <li>管线契约：上下游通过明确的输入输出约定（清单、生成脚本、烘焙脚本）传递新规格，任何一站缺失都会导致契约断裂</li>
+                <li>环境依赖的脆弱性：管线依赖外部工具（如 git-lfs），工具缺失会直接切断传播链，需要前置条件检查和优雅降级</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="pipeline-contract-propagation" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="multi-round-sequential-evaluation">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 数学</span>
+                <span class="tag warm">★★★★★</span>
+              </div>
+              <h3>模拟实验配置中的多轮序贯评估</h3>
+              <p>Multi-Round Sequential Evaluation in Simulation Experiment Configuration</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">当实验从“跑一轮看胜率”扩展到“跑多轮看路线稳定度”，评估的数学规则得跟着升级——轮次间的相关性、停止边界、指标联合分布都要重新设计。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>从单轮采样升级为连续多回合：考虑轮次间状态携带和相关性，评估策略的持久稳健性而非一次闪光</li>
+                <li>统计方法必须升级：不能简单平均各轮胜率，需处理观察值依赖性，重新设计停止边界和综合评判指标</li>
+                <li>实验维度扩展：引入轮次作为新因子，与路线策略等因子交互，形成多因子序贯实验设计，要求更严格的误差控制</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="multi-round-sequential-evaluation" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="evidence-hierarchy">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>自动化管线中未确认变更的工程证据层级</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象你是一位情报分析员，桌上同时放着三份报告：一份说“某仓库的远端指针地址变了”，一份是详细的提交日志，还有一份只是一个文件夹里被改动的文件列表，连是谁在什么时候改的都不知道。你会同样对待它们吗？当然不会。自动化管线里的证据层级，就是教我们把变更信号分档：最粗糙的是远端引用指针，它只告诉你“可能有新东西”，但不告诉你是什么；最可靠的是提交历史，它就像盖了时间戳和签名的正式档案；处于中间的是未提交的工作区状态，它很像一张迷迷瞪瞪的草图，能告诉你“有人在琢磨什么”，但不足以当作完工凭证。理解这个层级，你的监控系统就知道什么时候该拉响警报，什么时候该按兵不动。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>信号分档：依据信息的明确程度和可追溯性，将自动化管线面临的变更信号划分为三级</li>
+                <li>证据强度：提交历史（含时间戳、作者、签名）&gt; 未确认的工作区改动（无历史、未追踪）&gt; 远端引用指针变化（仅表示存在移动）</li>
+                <li>决策映射：不同层级的证据触发不同力度的响应——正式提交触发完整构建与测试，工作区变动只触发轻量检查或通知，远端指针变化仅作为提示</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在 tiny-sea-war 仓库中，今天没有任何新提交，但工作区里躺着一大堆 16:9 地图的脚本和配置文件。按照证据层级，我们只能说“存在一个关于 16:9 适配的活跃工作意图”，而不能确认“项目已经支持 16:9”。这个区分在编写 CI 脚本时非常重要——我们不能把未提交的工作区状态当作触发自动构建的唯一依据，否则可能产生大量半成品。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为远端指针变了就等于代码已经合并或功能已完成，实际上指针移动可能只是新建分支、推送标签或 force push 回滚，内容可能没变</li>
+                <li>将工作区未提交的修改等同于已完成的工程交付，直接在 CI 中当作构建依据，导致半成品进入流水线</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>工作区状态快照作为设计意图的模糊信号</td><td>工作区快照正是三层证据中最模糊但仍有信息量的那一层，需要像考古学家解读碎陶片一样谨慎对待</td></tr>
+                <tr><td>远端 Git 引用的只读监控与证据边界</td><td>远端引用指针是最上层的粗糙指示器，与工作区快照、提交历史共同构成完整的证据层级金字塔</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果我想设计一个混合监控策略，应该给这三层证据分别分配什么权重，才能在不过度报警的前提下及时发现重要变更？</li>
+                <li>如何在 CI 流水线的触发规则中实现对不同证据层级的条件判断，例如仅当有新的提交才进行完整构建，而工作区变动只触发轻量检查？</li>
+                <li>当远端引用指针频繁变化但始终没有对应提交内容时，可能是什么工程反模式，又该如何通过策略设计减少这种噪音？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="pipeline-contract-propagation">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>比例适配引发的管线契约传播</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>假如你是一位舞台剧导演，突然决定把原本方形的小舞台换成一个宽银幕大舞台。你不仅要重新画背景布，还要调整演员的走位、灯光范围、音响角度，甚至连观众席的视角都得重算。在游戏开发中，把画面比例从 4:3 改成 16:9 也是同样的道理——它不只是“换一张更宽的图”，而是必须沿着整条自动生产线，一站一站地重新声明每一道工序的输入输出约定。源图生成器要按新比例作图，导航烘焙脚本要根据新地形重算寻路网格，小地图渲染器要按新视口生成预览图……上游的这一个参数变化，就像投进池塘的石子，波纹一圈圈往外传，要求下游所有产物的“契约”都重新履行。这就是管线契约传播。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>上游触发：画面比例等规格参数发生变更</li>
+                <li>契约逐站传播：源图生成→导航烘焙→小地图渲染……每一站根据新规格重新执行，并产出符合新契约的产物</li>
+                <li>依赖链完整性：各站依赖外部工具和前置产物，任何缺失都会导致契约断裂，产生部分更新、部分旧版本的状态撕裂</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在 tiny-sea-war 未提交的工作区中，我们看到 coastal_16x9_generation_manifest.json 是一份清单，声明了要生成哪些 16:9 地图；build_coastal_maps_16x9.py 负责实际生成源图；bake_coastal16_navigation.py 则读取新源图，烘焙出对应的导航网格。这三个文件共同描摹了一条清晰的契约传播链：清单定义“要什么”，生成脚本执行“做地图”，烘焙脚本履行“地图做好后，帮我算出 AI 能走的区域”。虽然这些都还没有正式提交，但它们作为设计意图的痕迹，非常清晰地演示了契约传播的流程。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为只要把最终图片拉伸一下就能适配新比例，或者导航网格会自动跟随缩放；实际上导航网格需要根据新比例的真实可通行区域重新烘焙，否则 AI 会按变形地图寻路</li>
+                <li>认为管线可以自动处理所有关联变化，不需要显式定义各阶段的输入输出契约，导致隐藏的功能错误</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>工具链脚本的系统边界与 LFS 环境脆性</td><td>比例适配管线依赖多个脚本，任何工具缺失（如 git-lfs）都会切断契约传播链，导致产物版本不一致</td></tr>
+                <tr><td>模拟实验配置中的多轮序贯评估</td><td>当 16:9 地图重新生成后，原有的多轮实验可能需要在新比例地图上重新运行，实验配置与管线契约形成“实验需求驱动地图重制，地图重制又要求实验重跑”的反馈环</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何设计一个声明式的管线配置，使得比例更改时只需要修改一个参数，就能自动触发所有相关阶段的重建，而无需手动编写每个新的生成脚本？</li>
+                <li>在契约传播过程中，如何利用文件哈希或构建系统（如 Make）实现增量验证，确保只有真正受影响的产物被重新生产？</li>
+                <li>如果某一阶段因为环境问题（如缺少外部工具）执行失败，管线应当如何优雅降级并留下清晰的错误追踪，避免部分更新带来的状态撕裂？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="multi-round-sequential-evaluation">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 数学</p>
+                <h3>模拟实验配置中的多轮序贯评估</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>迄今为止，我们评估游戏关卡平衡性时，大多是让 AI 在一个固定地图上打很多局，然后看胜率。这就像只考一遍立定跳远来评价一个运动员的全部身体素质。但真正的对抗不是一锤子买卖——在连续多轮的战斗中，每一轮的路线选择、资源消耗和位置都会影响下一轮的起跑线。多轮序贯评估就是要把实验从“单轮采样”升级为“连续多回合的策略稳定性测试”。需要引入“轮次”作为新的实验因子，考虑轮次间的相关性，重新设计什么时候停止实验更合理，以及如何综合多个指标（如各轮胜率、得分、资源剩余）来下判断。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>单轮评估局限性：仅反映瞬时表现，无法暴露策略在持续对抗中的疲软或累积劣势</li>
+                <li>引入轮次因子：将实验设计扩展为多轮序贯，每一轮的初始条件取决于上一轮的结果，形成状态依赖</li>
+                <li>统计模型适配：需使用混合效应模型、广义估计方程等方法处理轮次间相关性，并设计多维指标的联合停止边界，控制家族错误率</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在 tiny-sea-war 的工作区中，我们发现了 level_t0[5-8]_route_round2_20.json 和 round3_20.json 等新配置文件，同时原有的 win_rate_20.json 文件也被修改。这暗示实验设计可能想要完成这样一种场景：对于地图 t5 到 t8，固定某套 AI 路线策略，先跑 20 次单轮交锋获得胜率基线；然后跑第 2 轮——即上一轮的幸存者或战果携带到新一局中，再统计第 2 轮的胜率；接着是第 3 轮……这样就能观察路线策略在连续消耗下的稳定性。当然，由于没有正式提交，我们还不知道设计者是否完成了统计规则的重构，但这正是多轮序贯评估思想在真实项目中的投影。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为多轮实验就是把单轮实验多跑几次，然后把各轮的胜率简单平均一下；实际上轮次间不独立，上一轮的状态直接影响下一轮，普通平均会严重低估不确定性</li>
+                <li>忽视停止规则的重新设计，仍然使用单轮实验的固定样本量，导致要么过早停止（证据不足）要么浪费资源继续测试已明显稳定的策略</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>比例适配引发的管线契约传播</td><td>当 16:9 地图重新生成后，原有的多轮实验可能需要在新比例地图上重新运行，实验配置与管线契约形成“实验需求驱动地图重制，地图重制又要求实验重跑”的反馈环</td></tr>
+                <tr><td>工作区状态快照作为设计意图的模糊信号</td><td>round2/round3 配置目前仅以未提交文件形式存在，属于典型的模糊意图信号，必须等到正式提交和实验数据配齐，才能确认设计是否已经完成对序贯规则的适配</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>在多轮序贯实验中，如何处理轮次间状态依赖导致的数据相关性问题，能不能用混合效应模型或广义估计方程来正确估计各轮胜率的置信区间？</li>
+                <li>当实验维度从一维（胜率）扩展到多维（各轮胜率、资源效率、路线多样性）时，如何构造一个能够保护家族错误率的联合停止边界，避免过度拒绝或过度保守？</li>
+                <li>如何利用因子设计和响应曲面法，高效地探索“路线策略”与“轮次”这两个因子的交互作用，从而在有限的计算资源下找到最稳健的策略配置？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">今天的三个概念构成了一条从“观察”到“响应”再到“进化”的认知链条。首先，我们学会用三层证据体系给监控信号打分，避免被模糊的工作区快照迷惑。接着，我们用比例适配的管线契约传播说明，当一个参数（如画面比例）改变时，自动化工具链必须逐站重新声明契约，否则产物之间就会像拼图错位。最后，多轮序贯评估展示了实验设计本身的维度扩展，从单轮胜率跃迁到连续多轮路线规划的稳健性考察——尽管目前这还只是工作区中的一个“待确认线索”。面对未确认变化时，正是这些概念帮助我们维持思考的清醒度，既不轻信，也不轻易放过有价值的工程信号。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">自动化管线面对的信号分三个档次：远端指针是最粗糙的“可能有动静”警报，提交历史是铁板钉钉的事实，工作区快照则是最模糊但也最能反映当下活跃意图的痕迹——读懂层级，就不会被假信号牵着走。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如果我想设计一个混合监控策略，应该给这三层证据分别分配什么权重，才能在不过度报警的前提下及时发现重要变更？</li>
+            <li>如何设计一个声明式的管线配置，使得比例更改时只需要修改一个参数，就能自动触发所有相关阶段的重建，而无需手动编写每个新的生成脚本？</li>
+            <li>在多轮序贯实验中，如何处理轮次间状态依赖导致的数据相关性问题，能不能用混合效应模型或广义估计方程来正确估计各轮胜率的置信区间？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
