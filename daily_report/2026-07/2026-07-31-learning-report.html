@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-07-31 学习笔记日报</title>
+    <meta name="description" content="当代码仓库沉寂，未提交的工作区快照成为线索，LFS缺失让资产变动不可见，比例适配蔓延至管线，我们学会在迷雾中区分证据层级。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260731-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-07-31</p>
+        <h1>施工中的蓝图：从工作区草稿到管线传播的审慎观察</h1>
+        <p>没有一次提交，却有满屏线索。今天，我们只在 tiny-sea-war 的未提交工作区里捕捉到项目脉动，而正是这种‘候选证据’状态，逼出了对证据层级、工具链完整性和契约传播最深刻的实战理解。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>软件工程中的证据层级与可观测性缺口</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>工作区状态快照作为候选变更…</strong>
+                <small>工作区状态快照是开发者的思考草稿…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>git‑lfs 缺失环境下…</strong>
+                <small>git-lfs的缺失让二进制资产的…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>多比例资产管线中的比例适配…</strong>
+                <small>多比例适配不是文件拷贝，而是以清单…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念如同一组嵌套的透镜：最外面是“工作区状态快照作为候选变更证据”，它告诉我们观察到的所有线索都带有“待确认”的标记，必须严格限定其证据层级；往里一层是“git‑lfs缺失环境下的二进制资产可观测性缺口”，它解释了为什么我们看不清某些变更的真实内容，这种缺口直接降低了工作区快照的信息质量；最核心的是“多比例资产管线中的比例适配与清单传播”，它展现了在快照中实际观察到的工程活动——通过独立清单和专门脚本将资产从原有比例迁向16:9，但这一切因为尚未提交且受限于lfs盲区，只能视作候选方案。三者环环相扣，共同提醒我们：在工程观察中，看得见什么、看不清什么、以及由此能得出什么结论，都深深依赖于工具链的完整性和证据的可靠程度。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["软件工程中的证据层级与可观测性缺口"])
+  concept1["工作区状态快照作为候选变更证据"]
+  hub --&gt; concept1
+  concept2["git‑lfs 缺失环境下的二进制资产可观测性缺口"]
+  hub --&gt; concept2
+  concept3["多比例资产管线中的比例适配与清单传播"]
+  hub --&gt; concept3
+  related1["git‑lfs缺失环境下的二进制资产可观测性缺口"]
+  concept1 --&gt; related1
+  concept1 --&gt; concept3
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; related1
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="workspace-snapshot-as-candidate-evidence">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>工作区状态快照作为候选变更证据</h3>
+              <p>Workspace Snapshot as Candidate Change Evidence</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">工作区状态快照是开发者的思考草稿，只提供探索方向的线索而非不可动摇的工程事实。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>未提交的修改只是‘临时实验场’，随时可能被放弃、覆盖或推翻</li>
+                <li>快照只能当作候选证据，绝不能当作最终审计依据</li>
+                <li>今天的分析里 tiny-sea-war 的所有线索都来自未提交快照，因此每一步都必须声明‘待确认’</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="workspace-snapshot-as-candidate-evidence" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="git-lfs-blindness-for-binary-assets">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>git‑lfs 缺失环境下的二进制资产可观测性缺口</h3>
+              <p>Observability Gap of Binary Assets Without Git LFS</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">git-lfs的缺失让二进制资产的变更变成一场猜谜游戏，你只知道指针变了却看不清内容。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>git-lfs缺失时，二进制文件的 diff 几乎完全失效，只能看到指针哈希变更</li>
+                <li>会导致审计盲区，让自动化工具产生严重遗漏</li>
+                <li>在今天 tiny-sea-war 的工作区快照中，大量地形贴图、导航纹理的变化无法被真正读取</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="git-lfs-blindness-for-binary-assets" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="multi-scale-pipeline-adaptation-and-manifest-propagation">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>多比例资产管线中的比例适配与清单传播</h3>
+              <p>Scale Adaptation and Manifest Propagation in Multi-Resolution Asset Pipelines</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">多比例适配不是文件拷贝，而是以清单为契约，牵动整条管线的传播运动。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>比例适配是管线契约传播问题，不是文件复制问题</li>
+                <li>新增比例需要生成独立清单、更新烘焙脚本，并通知所有下游工具（如 Agent 技能文件）</li>
+                <li>今天的 tiny-sea-war 快照显示了独立 16:9 清单、烘焙脚本和配套工作订单，但未提交，只能视为候选方案</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="multi-scale-pipeline-adaptation-and-manifest-propagation" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="workspace-snapshot-as-candidate-evidence">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>工作区状态快照作为候选变更证据</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>在软件开发中，Git 仓库就像一本账本，每一次正式提交（commit）都是一笔带时间戳和签名的确定记录。而工作区状态快照，也就是我们运行 git status 看到的那些“修改过但还没提交”“新加进来还没跟踪”的文件列表，就像写在本子边上的铅笔草稿。它说明了谁可能在修改什么，但既没有说明为什么而改，也没有说明什么时候完成的、改完之后有没有经过测试。因此，它只能当作“候选证据”——告诉我们这里可能有值得关注的变化，却绝不是可以盖章定论的工程事实。今天的整个分析里，tiny-sea-war 项目所有线索都来自这种未提交的快照，所以我们必须在每一步都声明“待确认”，避免把施工中的脚手架错当成已经竣工的大楼。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Git 提交是有时间戳、作者签名和完整变更记录的事实，而工作区状态是瞬时、易失的草稿</li>
+                <li>未提交修改缺乏上下文（为什么改、何时完成），无法作为可靠审计或报告的依据</li>
+                <li>在证据层级中，工作区快照位于最底层，必须通过标注“待确认”来区分它与已确认提交的差异</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>想象你是一个侦探，来到一个房间，发现桌子上摊开着一张画了一半的地图，旁边还散落着几支铅笔和橡皮屑。你可以推断这个房间的主人正在修改地图，甚至能猜出他可能在往西方扩展一块陆地。但你不知道他是不是昨晚突发奇想随手改的，还是按照一个深思熟虑的方案在工作，更不知道他会不会明天就全部擦掉重来。这张未完成的草图就是工作区快照，给你线索，却不给你结论。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>很多人以为只要 git status 显示一堆修改，就说明项目正在往这些方向推进，甚至可以写进进度报告。实际上，未提交的工作区状态只是开发者的“临时实验场”，随时可能被放弃、覆盖或推翻。</li>
+                <li>若把这种瞬时状态当作决定性的工程证据来决策，就很容易被误导。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>git‑lfs缺失环境下的二进制资产可观测性缺口</td><td>工作区状态快照是观察 git-lfs 缺失环境下二进制资产可观测性缺口的窗口，因为只有先通过快照发现“有文件被修改”，才会触发想要查看 diff 的需求，而 lfs 缺失恰恰让这一需求落空。</td></tr>
+                <tr><td>多比例资产管线中的比例适配与清单传播</td><td>多比例资产管线中的比例适配与清单传播的所有技术线索，包括新增的 16:9 清单和烘焙脚本，都恰恰来自工作区快照，因此我们必须对这个适配策略保持“待确认”的审慎态度。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>有没有办法自动记录工作区状态快照，并给它们打上时间戳，使之成为更接近“实验记录”的半正式证据？</li>
+                <li>如果快照中包含用户并未打算提交的临时文件，如何通过自动化脚本筛选出真正意图改动的文件，从而减少噪音？</li>
+                <li>除了 git stash 和 worktree，还有哪些工作流机制可以帮助开发者在多个并行的未提交探索之间安全切换而不丢失上下文？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="git-lfs-blindness-for-binary-assets">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>git‑lfs 缺失环境下的二进制资产可观测性缺口</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>Git LFS（大文件存储）是一种把大型二进制文件（比如游戏美术的贴图、模型）替换成轻量级“指针”的扩展工具。正常环境下，git diff 可以穿透这些指针，展示实际图片或资源的变化。但如果环境里没有安装 git-lfs 这个命令，Git 就只会看到指针文件的哈希变化，而无法解码背后的真实内容。这时候，对于二进制美术资产，就像一个能拍出模糊轮廓的廉价监控镜头：你知道文件动过了，但根本看不清它到底从一张什么图变成了另一张什么图，这就是可观测性的缺口。在今天的 tiny-sea-war 仓库里，检查工具直接报出了 `git-lfs: command not found`，导致大量地形贴图、导航纹理等资源的变化无法被读取，让整个项目的美术更新蒙上了一层迷雾。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Git LFS 用指针文件代替真实大文件，正常环境下通过 smudge/clean 过滤器透明还原内容</li>
+                <li>当 git-lfs 命令不可用时，Git 只比较指针字符串，无法展示实际内容的差异</li>
+                <li>这种缺口直接导致基于 git diff 的自动化质量检查（如视觉回归、资产审计）失效</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设图书馆把所有厚重的大部头书换成了小小的索引卡片（指针），你想知道某本书有没有被读者修改过，就必须有一台特殊的机器能根据卡片找到原书并比较。如果机器坏了或根本没装，你只能看到卡片上的编号变了，却完全不知道书里面到底是被撕了几页、还是被加上了整章新内容。今天 tiny-sea-war 项目就遇到了这种情况——管理员发现很多美术资产的“卡片”编号变了，但因为缺少那台特殊机器，根本没法知道这些资产的内容到底发生了什么变化。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>一个常见的误解是，只要 git status 正常显示了文件变更，就说明所有信息都可以被完整追踪。实际上，当 git-lfs 缺席时，二进制文件的 diff 几乎完全失效，你可能看到 git status 报告某个大文件被“修改”，但 git diff 输出的只是一行指针哈希变更，根本体现不出图像、模型等资产的实际改动。</li>
+                <li>这会让人误以为系统监控覆盖到位，实则存在致命的盲区。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>工作区状态快照作为候选变更证据</td><td>这个缺口直接削弱了工作区状态快照作为候选变更证据的信息量：快照告诉我们有文件被动了，但缺口却让我们看不清到底动了什么，二者叠加导致整个证据链条更加脆弱。</td></tr>
+                <tr><td>多比例资产管线中的比例适配与清单传播</td><td>多比例适配需要依托大量美术资产和导航纹理，若这些二进制资产的变更不可见，就无法判断比例迁移的脚本是否生成了正确的运行时产物，也无法排查是否引入了视觉或逻辑错误。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>在没有 git-lfs 的环境中，能否通过计算文件的外部哈希（如 SHA-256）并比对大小来构建一个简易的二进制资产变更探测机制？</li>
+                <li>如何设计一个 pre-flight 检查脚本，在开发者或 CI 流水线的一开始就探测 git-lfs 是否可用，并在缺失时给出清晰的安装指引和降级策略？</li>
+                <li>如果团队迁移到其他版本控制系统（如 Perforce），二进制资产的可观测性机制有何本质不同？会不会依然存在类似的工具链依赖问题？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="multi-scale-pipeline-adaptation-and-manifest-propagation">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>多比例资产管线中的比例适配与清单传播</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>游戏在不同屏幕比例的设备上运行时，地图、UI、导航数据等都需要做专门的适配，不然就会出现画面错位、AI 撞墙等问题。这个过程不是简单地缩放图片，而是需要一整套自动化管线：从美术制作的原始资产开始，经过裁剪、重排、遮罩合成等步骤，烘焙出针对特定比例（比如 16:9）的运行时版本，同时生成一份“清单”文件来记录哪些资产对应哪个比例、以及它们之间的依赖关系。当项目决定新增一个比例时，这条管线就需要传播变化：一方面要为新比例生成独立的清单和产物，另一方面，原有的工具脚本、构建规则、甚至 Agent 的技能文件都要跟上，不然它们还会试图使用旧路径或旧格式去访问资产，导致构建失败或自动化流程出错。今天的 tiny-sea-war 工作区快照正好展现了这种传播的初期形态：出现了独立的 16:9 地图清单、专门的地图烘焙脚本，以及一个名为 coastal-map-scale-runtime-integration 的工作订单，预示着项目正在将比例适配从想法推向实施。但因为所有改动都未提交，我们无从判断这是最终选定的“独立清单”策略，还是只是过渡方案。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>屏幕比例不同导致游戏视觉和逻辑区域变化，需要专门的裁剪、重排和遮罩合成来生成适配的资产</li>
+                <li>清单文件是管线各阶段的契约，定义了资产、比例及其依赖关系，下游工具依赖清单查找和加载资源</li>
+                <li>新增比例时，必须更新清单、烘焙脚本以及所有消费该清单的工具（如 Agent、自动化测试），否则会出现加载失败或错误</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>想象一家出版社同时印刷纸质书和电子书，这两种格式的排版完全不同，不能把印刷用的版面直接丢到电子屏幕上去。于是他们建立了一条自动化流水线：作者提供原始文稿（源资产），排版软件根据不同格式（比例）的需求，自动调整字体、图片位置、页面边距，生成针对特定终端的版本。每一批生成好的文件，都附带有详细的物料单（清单），上面写着这一版本里有哪些章节、图片编号、以及它们来自作者原稿的哪些部分。如果出版社要增加一种新的电子阅读器格式，就不能只把旧物料单复制一份，而是要更新整条流水线，增加新的排版规则，重新先生成一份新物料单，并通知所有后期校对工具和分发系统，否则新格式的书就会缺页少图。今天项目里的 16:9 地图就像这种新格式，它正在催生一套新的清单和生成脚本，同时也要确保自动化 agent 知道去哪里找它。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>很多人认为只要把旧比例的资产文件复制一份，改改尺寸就算完成适配了。但实际上，多比例适配根本不是一个文件操作问题，而是一个管线契约传播问题。</li>
+                <li>如果只复制文件而不生成新的清单并更新加载器的路径配置，系统就根本找不到新资源；反之，如果只生成了新清单却忘了通知 Agent 或自动化测试，它们就会基于过时的信息执行错误操作。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>工作区状态快照作为候选变更证据</td><td>今天观察到的 16:9 清单和烘焙脚本都来自未提交的工作区快照，因此只能视作待确认的候选方案，不能直接认为是最终工程设计。</td></tr>
+                <tr><td>git‑lfs缺失环境下的二进制资产可观测性缺口</td><td>比例适配需要修改大量美术资产和导航纹理，若这些二进制文件的变更因 lfs 缺失而不可见，我们就无法验证清单和烘焙脚本是否生成了正确的适配产物。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>在什么情况下应该为每个比例维护独立清单，什么情况下又应该改为同一个清单用字段（如 scale 属性）区分？它们对管线复杂度、缓存命中率和团队协作的影响分别是什么？</li>
+                <li>如何设计清单的格式和工具链，使得新增一个比例时，大部分过程可以自动完成，只需填写少数必要参数（如宽高比和拉伸策略），从而减少手工传播出错的风险？</li>
+                <li>当 Agent 的技能文件因比例适配而需要更新时，有没有办法让这一更新自动推导，比如通过解析新清单来自动生成部分技能定义，从而减少手动同步带来的漂移？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念如同一组嵌套的透镜：最外面是“工作区状态快照作为候选变更证据”，它告诉我们观察到的所有线索都带有“待确认”的标记，必须严格限定其证据层级；往里一层是“git‑lfs缺失环境下的二进制资产可观测性缺口”，它解释了为什么我们看不清某些变更的真实内容，这种缺口直接降低了工作区快照的信息质量；最核心的是“多比例资产管线中的比例适配与清单传播”，它展现了在快照中实际观察到的工程活动——通过独立清单和专门脚本将资产从原有比例迁向16:9，但这一切因为尚未提交且受限于lfs盲区，只能视作候选方案。三者环环相扣，共同提醒我们：在工程观察中，看得见什么、看不清什么、以及由此能得出什么结论，都深深依赖于工具链的完整性和证据的可靠程度。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">工作区状态快照不是工程事实，而是开发者的思维草稿，只能作为“待确认”的线索使用，不可当作最终的审计依据。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>有没有办法自动记录工作区状态快照，并给它们打上时间戳，使之成为更接近“实验记录”的半正式证据？</li>
+            <li>在没有 git-lfs 的环境中，能否通过计算文件的外部哈希（如 SHA-256）并比对大小来构建一个简易的二进制资产变更探测机制？</li>
+            <li>在什么情况下应该为每个比例维护独立清单，什么情况下又应该改为同一个清单用字段（如 scale 属性）区分？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
