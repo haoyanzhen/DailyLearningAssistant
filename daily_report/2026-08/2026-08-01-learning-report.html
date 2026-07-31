@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-08-01 学习笔记日报</title>
+    <meta name="description" content="通过未提交工作区梳理出声明式资产清单、导航烘焙与批量实验的配置‑计算‑验证链条，理解16:9宽屏适配的系统性工作。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260801-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-08-01</p>
+        <h1>2026年8月1日 学习日报 - 配置·计算·验证</h1>
+        <p>在 tiny-sea-war 的未提交工作区中，我们梳理出一条关于声明式资产清单、导航图烘焙和批量路线实验的知识链，展示了一次多比例适配中的工程逻辑。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>海岸地图16:9宽屏适配中的配置…</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>声明式资产清单在多比例管线…</strong>
+                <small>清单是自动化管线的契约，新增比例必…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>导航图的批量烘焙与多比例适配</strong>
+                <small>导航图不是静态图片，比例一变就得重…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>多轮次批量路线实验的配置与…</strong>
+                <small>多轮次实验是看清AI策略稳定性的放…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">声明式清单驱动了导航烘焙阶段，为其提供了需要处理的地图列表；新烘焙的导航图又成为批量路线实验的地图基础，实验中的AI路线规划直接依赖这些导航网格；实验产生的胜率统计则反馈回来，用于判断导航图和策略的质量，形成从计算到验证的闭环。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["海岸地图16:9宽屏适配中的配置、计算与验证"])
+  concept1["声明式资产清单在多比例管线中的契约角色"]
+  hub --&gt; concept1
+  concept2["导航图的批量烘焙与多比例适配"]
+  hub --&gt; concept2
+  concept3["多轮次批量路线实验的配置与回放"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["海岸地图16:9宽屏适配中的配置、计算与验证"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept2
+  concept3 --&gt; concept1
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="declarative-asset-manifest-contract">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>声明式资产清单在多比例管线中的契约角色</h3>
+              <p>Declarative Asset Manifest as Contract</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">清单是自动化管线的契约，新增比例必须更新清单。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>清单定义需要生成的资产及其依赖，是自动化构建的契约。</li>
+                <li>缺少新比例条目会导致管线忽略相关地图，造成静默失败。</li>
+                <li>清单驱动构建工具判断资产是否最新，避免重复生成。</li>
+                <li>清单更新触发下游阶段（烘焙、打包等）的连锁执行。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="declarative-asset-manifest-contract" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="batch-nav-baking-multi-aspect">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>导航图的批量烘焙与多比例适配</h3>
+              <p>Batch Navigation Baking &amp; Multi-Aspect Adaptation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">导航图不是静态图片，比例一变就得重新烘焙。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>导航图依赖屏幕比例参数，比例变化会导致可视区域和可通行区域不同。</li>
+                <li>烘焙工具根据地形、障碍物、角色体型等数据重新生成导航网格。</li>
+                <li>直接复用4:3导航图会造成AI碰撞障碍物或忽略新通道。</li>
+                <li>新导航图是AI路线规划和策略验证的基础。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="batch-nav-baking-multi-aspect" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="multi-round-batch-experiments">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>多轮次批量路线实验的配置与回放</h3>
+              <p>Multi-Round Batch Route Experiment Configuration &amp; Replay</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">多轮次实验是看清AI策略稳定性的放大镜。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>每轮测试固定局数，避免单局偶然性，提供稳定的胜率样本。</li>
+                <li>多轮对比用于检测批次效应和随机漂移，确保结论可靠。</li>
+                <li>实验配置应纳入声明式清单管理，支持可复现的回放验证。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="multi-round-batch-experiments" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="declarative-asset-manifest-contract">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>声明式资产清单在多比例管线中的契约角色</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象你要组装一个乐高城堡，你手里有一份清单，上面写着需要哪些零件以及它们的编号。如果没有这份清单，机器人帮你捡零件的时候就不知道该拿什么。在游戏开发里，当需要生成一套新比例的地图资产时，开发者会写一份类似的清单文件，告诉自动化工具需要生成哪些16:9海岸地图，它们的源数据是什么，生成参数是什么。这份清单就是声明式资产清单。它不关心具体怎么生成——那些细节由工具脚本处理——它只负责声明需求和依赖关系。只要清单准确，构建工具就能自动判断哪些产物已经存在、哪些需要重新生成。正因为如此，清单成了整个自动化管线的“契约”，新增一个屏幕比例就等于签订一份新的契约：你要生成的东西变了，清单必须跟着更新。否则，即使烘焙脚本写好了，工具也不知道该去处理哪些地图，管线就会中断。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>声明式清单模型：用数据描述期望的资产，而非实现过程。</li>
+                <li>构建系统读取清单，计算所需生成的目标文件集合。</li>
+                <li>新增比例时，清单中必须添加对应条目，否则构建系统无法得知新需求。</li>
+                <li>清单变动触发相关构建阶段，形成自动化流水线。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设原本用于4:3比例的海岸地图清单里记录了地图“ring_lagoon”生成规则。开发者要加入16:9支持，需要在同一个清单文件中新增一条记录，指向专为16:9准备的地形源文件，并指定输出为ring_lagoon_16x9_map.asset。这样构建脚本扫描清单时才能发现新产物，触发后续流程。如果没有这条记录，自动化管线不会将该地图打包为可用游戏地图。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为清单只是注释性文件，改不改不影响最终结果。</li>
+                <li>认为只要把源文件放入目录，构建系统就会自动识别生成。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>导航图的批量烘焙与多比例适配</td><td>资产清单为导航烘焙提供需要处理的地图列表，驱动生成16:9导航图。</td></tr>
+                <tr><td>多轮次批量路线实验的配置与回放</td><td>清单思想可延伸到实验配置管理，确保实验可复现。</td></tr>
+                <tr><td>海岸地图16:9宽屏适配中的配置、计算与验证</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>为什么清单缺失会导致自动化构建静默失败，而不是报错提醒？</li>
+                <li>如果屏幕比例有十几种，清单应该如何设计才能避免条目爆炸？</li>
+                <li>声明式清单和直接写脚本调用相比，在多人协作项目中有哪些优势？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="batch-nav-baking-multi-aspect">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学</p>
+                <h3>导航图的批量烘焙与多比例适配</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>导航图就像一个扫地机器人脑子里的房间地图，它记录了哪里是沙发、哪里是走廊、哪里是禁区。如果机器人只记得一个正方形房间的布局，而你把它搬到了一个长方形客厅，它就会迷路。在游戏里，屏幕比例从4:3变成16:9，相当于可视窗口变宽了，相机的视野变了，原本屏幕边缘的障碍物现在可能进入画面，或者原本不可见的通道现在暴露出来。因此，导航图必须根据新的视口参数重新计算，这个过程就叫“烘焙”。烘焙工具会读取地形高度、障碍物位置、角色体型等数据，重新生成一张包含所有可通行区域的网格，确保AI在任何新比例下都能找到正确的路线。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>导航图记录了游戏世界中的可通行区域，其生成依赖相机视锥体的宽高比。</li>
+                <li>烘焙算法输入地形、障碍物、角色属性，输出导航网格。</li>
+                <li>不同屏幕比例需要不同的视口裁剪，导致可通行区域变化，必须重新烘焙。</li>
+                <li>烘焙脚本批量处理多张地图，生成对应比例的导航产物。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>想象一个海战游戏里的小型环礁地图。4:3比例下，玩家只能看到环礁的中央潟湖和一圈环形陆地，右侧的大洋被屏幕边缘切断，导航图中对应的可航行区域也只到屏幕边缘为止。当切换到16:9后，右侧的洋面完全展开，原来被裁切的深海区域现在成为可到达的新战场。如果不重新烘焙导航图，AI战舰会认为那里仍然是地图边界而拒绝驶入，白白浪费战术机会。正确的做法是让烘焙工具根据16:9的可见范围重新扫描整个地形，生成一张包含右侧深海的新导航网格。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为改变游戏分辨率只是简单拉伸画面，与导航无关。</li>
+                <li>以为可以复用旧比例导航网格，直接裁剪或缩放。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>声明式资产清单在多比例管线中的契约角色</td><td>清单指定了哪些地图需要烘焙16:9导航图，为烘焙工具提供工作列表。</td></tr>
+                <tr><td>多轮次批量路线实验的配置与回放</td><td>烘焙生成的导航图是路线实验的地图基础，AI路径规划直接基于这些网格进行。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>导航烘焙算法是如何根据地形高度和障碍物数据判断一个区域是否可通行的？</li>
+                <li>如果屏幕比例变化，但地形本身没变，为什么不能直接复用原来的导航网格？</li>
+                <li>在自动化管线中，如何检测导航烘焙是否成功，而不是生成一张有漏洞的网格？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="multi-round-batch-experiments">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学</p>
+                <h3>多轮次批量路线实验的配置与回放</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>假如你想测试一台自动糖果售卖机找零的准确率，只测一次可能刚好碰到它出错，也可能刚好碰到它完全正确。所以你决定每个小时让它找零20次，然后记录这20次中有几次出错，这就是一轮实验。第二天你又重复一遍（第二轮），第三天再做一遍（第三轮）。最后你把三轮的出错率比对一下，如果三轮结果差不多，说明机器的找零稳定性不错；如果第一轮全对、第二轮错8次、第三轮错7次，就说明机器有间歇性故障。在游戏里，AI船队的路线导航也有随机性，比如风暴位置、敌方反应等，所以也需要类似的多轮次设计。20局一组的轮次就像一次测试批次，它让开发者知道结果是不是碰运气得出的，而多轮的对比则暴露了系统是否存在随时间、批次变化的不稳定因素。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>将AI测试划分为多个独立轮次，每轮包含固定数量的对局。</li>
+                <li>统计每轮胜率，比较轮次间差异，判断策略稳定性。</li>
+                <li>通过轮次隔离，发现批次效应和随机种子影响。</li>
+                <li>实验配置和结果应结构化存储，支持回放与审计。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>以关卡t05为例，开发者设计了一套实验：round2目录里存放20个.log文件，每一局记录AI船只的航迹、交战结果和最终胜负。该目录下还有一个win_rate_20.json，写着胜率0.65。round3同样有20局，胜率0.70。如果只看到round2的0.65，可能认为AI表现一般；但round3的0.70表明可能是导航图的某次调整带来了策略改进。如果继续运行更多轮次，胜率稳定在0.70左右，就可以确认改进有效。如果后续轮次胜率大幅波动，则说明提升不稳定，需要检查环境一致性。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为跑很多局直接取平均胜率就够了，不需要拆分轮次。</li>
+                <li>忽略轮次间环境一致性，导致实验无法复现。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>导航图的批量烘焙与多比例适配</td><td>实验依赖新烘焙的16:9导航图作为AI寻路的地图基础。</td></tr>
+                <tr><td>声明式资产清单在多比例管线中的契约角色</td><td>实验配置本身也应纳入声明式清单管理，确保参数可追溯。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>为什么每轮选择20局而不是50局或100局，这个数字是如何确定的？</li>
+                <li>在实验结果中如何区分真正的策略改进和随机波动？</li>
+                <li>如果要在自动化管线中集成实验回放，如何保证每次实验的初始条件完全一样？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">声明式清单驱动了导航烘焙阶段，为其提供了需要处理的地图列表；新烘焙的导航图又成为批量路线实验的地图基础，实验中的AI路线规划直接依赖这些导航网格；实验产生的胜率统计则反馈回来，用于判断导航图和策略的质量，形成从计算到验证的闭环。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">声明式资产清单就像一份自动化的购物清单，新增屏幕比例意味着必须扩展这份清单，否则管线不知道要生成新地图。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>为什么清单缺失会导致自动化构建静默失败，而不是报错提醒？</li>
+            <li>如果屏幕比例有十几种，清单应该如何设计才能避免条目爆炸？</li>
+            <li>在实验结果中如何区分真正的策略改进和随机波动？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
