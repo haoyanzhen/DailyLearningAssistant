@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-08-02 学习笔记日报</title>
+    <meta name="description" content="从工作区快照的证据层级，到二进制资产的可观测性缺口，再到声明式清单的契约传播，三个概念串联起工程变化管理的完整链条。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260802-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-08-02</p>
+        <h1>海岸地图16:9适配：证据、观测与契约</h1>
+        <p>今天所有线索都来自一次大规模未提交工作区快照，核心事件是将海岸地图全面适配到16:9宽高比。比例变化像多米诺骨牌般推动资产清单、工具链乃至模拟实验的联动，但一切都建立在“未提交变更”的低证据层级上。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>工程中对变化的感知、观测与契约守护</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>工作区快照作为待确认变更证据</strong>
+                <small>工作区快照就像一张凌乱桌面的照片…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>二进制资产的可观测性缺口（…</strong>
+                <small>在未安装 git-lfs 的环境中…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>声明式资产清单的多比例契约…</strong>
+                <small>声明式资产清单是比例适配的契约中心…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念围绕同一个比例适配事件，但分别从证据层、可观测性层和工程契约层展开。工作区快照告诉我们：看到的只是候选线索，不是确定结论；LFS 缺失则解释了为什么关键资产的变化我们看不清楚；声明式清单传播解释了如果一切正常，比例变更应该如何被系统化地管理。三者合在一起，正好构成一个完整的认知链条：拿到工作区快照后，我们能感知到方向，却无法确认细节；而想从“感知”升级为“确认”，就必须解决二进制资产的可观测性问题，并验证清单契约是否被完整履行。这堂课本质上是一场关于“工程中对变化的感知、观测与契约守护”的讨论。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["工程中对变化的感知、观测与契约守护"])
+  concept1["工作区快照作为待确认变更证据"]
+  hub --&gt; concept1
+  concept2["二进制资产的可观测性缺口（LFS 缺失）"]
+  hub --&gt; concept2
+  concept3["声明式资产清单的多比例契约传播"]
+  hub --&gt; concept3
+  concept1 --&gt; concept3
+  concept1 --&gt; concept2
+  concept2 --&gt; concept3
+  concept2 --&gt; concept1
+  related1["16:9地图生成管线的工具链契约"]
+  concept3 --&gt; related1
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="workspace-snapshot-evidence">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>工作区快照作为待确认变更证据</h3>
+              <p>Workspace Snapshot as Unconfirmed Change Evidence</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">工作区快照就像一张凌乱桌面的照片，能提供线索但不能当作结案证据。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>工作区快照不具备原子性，没有时间戳、提交说明和作者签名，置信度最低</li>
+                <li>工作区快照只能指示开发方向，不能作为已完成功能的证据</li>
+                <li>需要过滤噪音（临时文件、构建产物、未筛选的试探性改动）</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="workspace-snapshot-evidence" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="binary-observability-gap">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>二进制资产的可观测性缺口（LFS 缺失）</h3>
+              <p>Observability Gap of Binary Assets (Missing LFS)</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">在未安装 git-lfs 的环境中，二进制资产变成了只读的指针文件，变更完全不可见，这让管线契约的验证能力大幅退化。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>Git LFS 用指针文件指向外部存储的二进制实体，缺失客户端时只能看到指针哈希</li>
+                <li>二进制资产的真实变更在 `git diff` 中不可见，无法自动验证资产清单是否正确</li>
+                <li>文件大小、修改时间等常规手段无法反映实际二进制内容的变化</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="binary-observability-gap" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="declarative-manifest-propagation">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>声明式资产清单的多比例契约传播</h3>
+              <p>Declarative Asset Manifest’s Multi-Aspect Ratio Contract Propagation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">声明式资产清单是比例适配的契约中心，新增一种比例意味着在清单中显式宣告，再由工具链逐级执行，任何一环的契约断裂都可能引发静默失败。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>声明式资产清单用 JSON/YAML 显式声明资产需求，是管线的契约源头</li>
+                <li>比例变化通过清单入口扩散到构建、烘焙、测试等所有下游环节，实现联动更新</li>
+                <li>清单与工具间的契约断裂会导致静默失败（如缺少特定比例贴图、生成空白区域）</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="declarative-manifest-propagation" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="workspace-snapshot-evidence">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>工作区快照作为待确认变更证据</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>在 Git 中，我们通常把修改划分成三个区域：工作区、暂存区和提交历史。工作区就是你正在编辑文件的地方，任何改动在 `git add` 和 `git commit` 之前，都只停留在工作区。一个“工作区快照”就是某个时刻对所有这些未提交改动的一份记录，比如通过 `git status` 和文件列表抓取到的信息。关键的地方在于：工作区快照不具备原子性。它可能包含写了一半的功能、临时调试日志、误复制进去的文件，甚至根本不知道这些修改是多久前留下的，是谁留下的。它没有提交时间戳，没有作者签名，没有说明“我为什么这样改”。因此在工程证据体系中，工作区快照的置信度最低，它只能告诉我们“正在发生什么方向”，而不能证明“已经做完了什么”。今天 tiny-sea-war 仓库的所有线索都来自这样一个快照：我们看到大量文件变动，能猜出在搞 16:9 比例适配，但我们不能声称这些变更已经被正式采纳或验证通过。理解这个层级，对后续任何自动化分析系统都至关重要——不能把快照当结论，只能把它当成追问的起点。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Git 的三区模型：工作区（未追踪/已修改）、暂存区（已暂存）、提交历史（已确认），工作区快照只包含未提交的瞬时状态</li>
+                <li>工作区快照缺乏原子提交所需的元数据（时间戳、作者、说明），无法保证修改的完整性和意图</li>
+                <li>快照中的文件可能包含临时文件、调试日志或废弃的试探性改动，必须经过过滤和确认才能作为有效线索</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>你走进一间开着门的办公室，发现桌上摊着几十张设计图、半瓶咖啡和一张写着“改成16:9”的便利贴。显然有人在忙海岸地图的事情，可你不知道这些图纸是最终版还是废稿，不知道它们是不是今天摆在这里的，也不知道那个离开的人是否打算回头继续改。工作区快照就是这张凌乱桌面的照片。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为在 `git status` 里看到的大量修改就是最近的、代表项目最新进展的确定变更</li>
+                <li>直接拿未筛选的工作区快照当作确认结论，忽略可能存在的临时文件或废弃改动</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>声明式资产清单的多比例契约传播</td><td>当天所有关于清单修改的认知都来自工作区快照，所以清单变化目前只是线索，不是确凿证据</td></tr>
+                <tr><td>二进制资产的可观测性缺口</td><td>LFS 缺失进一步削弱了工作区快照中二进制文件线索的判断力，让本已不可靠的证据更难解读</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>在设计自动化分析管线时，应该用什么样的规则来过滤工作区快照中的噪音（如临时文件、日志、生成物）？</li>
+                <li>如果工作区快照是唯一的线索来源，我们有没有办法通过对比历史提交或分支结构来提高推断的可信度？</li>
+                <li>是否可能通过强制要求 commit 粒度或引入 pre-commit 检查，来减少依赖工作区快照做判断的场景？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="binary-observability-gap">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>二进制资产的可观测性缺口（LFS 缺失）</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>在游戏开发等项目中，经常要存储贴图、模型、声音等二进制文件。这些文件动辄几十甚至几百 MB，如果直接放进 Git 仓库，仓库体积会急剧膨胀，每次 clone 都会超级慢。Git LFS（Large File Storage）就是用来解决这个问题的：它把大文件的实际内容存储在一个外部服务器上，而在 Git 仓库里只保存一个轻量的“指针文件”——就像一个写着“去 LFS 服务器取 ID 为 abc123 的原文件”的便条。当天 tiny-sea-war 仓库的环境报出了 `git-lfs: command not found`，说明该环境里没有安装 Git LFS 客户端。这时 Git 只会把那个如假包换的指针文件当作普通文本文件来追踪，你看到的只是几字节的哈希值，完全无法知道实际大图是否被修改、被替换。这就在版本控制层面造成了一个巨大的“可观测性缺口”——二进制资产的变化对你来说，在 `git diff` 里是凭空消失的。这个缺口带来的直接代价，就是无法自动验证资产清单里声明的贴图是否已经更新为 16:9 版本，也无法判断一张图是被错误替换，还是保持着旧版。我们唯一能依赖的只剩下文件存在性、文件大小或外部 MD5，这些手段远比 diff 要粗糙和脆弱。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Git LFS 通过指针文件将大文件的真实内容托管于外部存储，仓库内仅保留一个轻量的引用</li>
+                <li>当环境缺少 LFS 客户端时，Git 无法解析指针，只能展示指针文件的文本内容，无法获取真实二进制数据</li>
+                <li>由于二进制变更不可见，依赖版本 diff 的资产校验体系失效，必需设计外部校验机制（如独立哈希比对）来弥补</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>想象一个图书馆里，放大型画册的书架为了节省空间，不会把整本厚重画册摆在架子上，而是在架子上插一张索引卡，写着“大画册第5号存放在隔壁仓库”。一位没有仓库钥匙的管理员来查架，只能看到这张索引卡，却看不到画册里的内容。如果今天有人换了一本新画册，管理员看到的仍然是那张索引卡，根本察觉不到变化。Git LFS 就是这个仓库，没有安装 LFS 客户端就像管理员无权进仓库，二进制资产的变更因此完全隐形。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为只要文件大小或修改时间变了，就说明资产被改动了，但 LFS 缺失时指针文件大小固定，无法反映实际变更</li>
+                <li>误认为 `git status` 中标记为 modified 的二进制文件一定发生了内容变化，其实可能只是指针哈希变动</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>声明式资产清单的多比例契约传播</td><td>清单对二进制贴图的引用是否正确，需要靠可观测的资产变更来验证，而 LFS 缺失让验证变成不可能</td></tr>
+                <tr><td>工作区快照作为待确认变更证据</td><td>二进制资产的可观测性缺口进一步降低了工作区快照中二进制文件线索的可解读性，让这部分信息几乎沦为盲区</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>在 CI/CD 或自动化巡检环境中，如何自动检测是否安装了 git-lfs，并在缺失时提供明确的二进资产变更外部校验机制？</li>
+                <li>除了文件哈希，还有哪些方法可以在不加拉取完整大文件的前提下，确认二进制资产是否被替换为新版本？</li>
+                <li>如果项目同时使用部分 LFS 和非 LFS 的二进制文件，怎样在仓库中设计清晰的边界，避免可观测性缺口蔓延到关键资产？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="declarative-manifest-propagation">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>声明式资产清单的多比例契约传播</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>所谓“声明式资产清单”，是指一种用数据（通常是 JSON 或 YAML 文件）来描述“我需要的所有资产有哪些、它们从哪里来、生成什么格式”的方式。它不像脚本那样用命令步骤来“怎么做”，而是直接声明“我想要什么”。这个清单就像一份正式的契约，签发给下游的一系列构建工具。当项目需要支持一个新的屏幕比例——例如 16:9——这个契约就需要被扩展：清单中必须明确写出“在 16:9 比例下，需要哪些新贴图、每一张贴图的源文件路径、输出尺寸等”。一旦清单完成更新，工具链中的每一个环节（地图拼接、导航烘焙、mini-map 生成等）都会读取这些新条目，按契约执行。这就像一张多米诺骨牌，推动第一块（清单），后面的所有步骤自动联动，避免了开发者到处找脚本、四处改参数。“传播”的意思是：比例变化不仅仅停留在清单里，而是通过清单→工具→产物的方向，有控制地扩散到整个管线的每个阶段。如果清单没写，工具就会认为不需要处理，于是静默跳过；如果清单写了但工具不能理解的新字段，可能产生错误产物甚至崩溃。因此，维护清单与工具之间的契约一致性，就是保障比例适配不翻车的关键。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>声明式清单把资产需求抽象为可解析的数据结构，分离了“要什么”与“怎么做”</li>
+                <li>工具链通过读取清单中的字段（比例、贴图路径、尺寸）来驱动构建，清单更新自动引发全链路重算</li>
+                <li>契约传播依赖于清单 schema 的稳定与工具对该 schema 的正确实现，任一方的断裂都会导致构建失败或产物缺失</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一家大型连锁餐厅，总部制定了一套菜单（资产清单），上面标注“本季饮品”会生成甜橙冰沙和苹果汽水。各地分店的厨房（构建工具）只要看到菜单上有某一项，就自动准备对应的原料和流程。现在总部决定推出 16:9 特别套餐，菜单上新增一行“16:9特供：大杯海盐焦糖冰”。厨房一看菜单更新，马上开始配料、调制，整个过程整齐划一。如果总部的菜单上没写这行，厨房根本不知道有新饮品；如果菜单写了但厨房看不懂“大杯”是什么意思，就会做出一杯奇怪的饮料。声明式资产清单就充当了这份总菜单，它让变化一次性宣告，然后传播到所有制作环节。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为新增屏幕比例直接改美术文件或脚本参数就足够了，忽视清单作为契约中心的地位，导致后续维护困难</li>
+                <li>以为只要清单中加了条目就万事大吉，忽略了对新字段的工具侧解析支持，最终造成静默失败</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>16:9地图生成管线的工具链契约</td><td>清单正是这条工具链的契约接口，比例传播依赖工具链逐级消费清单内容，清单→工具的匹配性是契约传播的核心</td></tr>
+                <tr><td>工作区快照作为待确认变更证据</td><td>今天所有清单变更的推断都来自工作区快照，它们目前只是候选契约，无法确认是否已审定、是否完整</td></tr>
+                <tr><td>二进制资产的可观测性缺口</td><td>如果清单中引用的二进制贴图在 LFS 缺失下不可观测，契约传播后的产物是否基于最新资产就无法自动验证</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当项目需要同时支持多种宽高比（如 16:9, 21:9, 4:3）时，清单设计是应该采用独立文件还是统一带比例属性？各有什么维护上的利弊？</li>
+                <li>如何在工具链中增加自动化的契约校验步骤，当清单条目与工具期望不匹配时提前告警，避免静默失败？</li>
+                <li>大型管线中，声明式清单和命令行参数驱动的方式，在面对多比例扩展时，哪一个更有长期的可维护性？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念围绕同一个比例适配事件，但分别从证据层、可观测性层和工程契约层展开。工作区快照告诉我们：看到的只是候选线索，不是确定结论；LFS 缺失则解释了为什么关键资产的变化我们看不清楚；声明式清单传播解释了如果一切正常，比例变更应该如何被系统化地管理。三者合在一起，正好构成一个完整的认知链条：拿到工作区快照后，我们能感知到方向，却无法确认细节；而想从“感知”升级为“确认”，就必须解决二进制资产的可观测性问题，并验证清单契约是否被完整履行。这堂课本质上是一场关于“工程中对变化的感知、观测与契约守护”的讨论。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">工作区快照是工程中最廉价的线索来源，但也最容易夹杂噪音，它只能用来提出假设，不能作为已完成的证据。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>在设计自动化分析管线时，应该用什么样的规则来过滤工作区快照中的噪音（如临时文件、日志、生成物）？</li>
+            <li>在 CI/CD 或自动化巡检环境中，如何自动检测是否安装了 git-lfs，并在缺失时提供明确的二进资产变更外部校验机制？</li>
+            <li>大型管线中，声明式清单和命令行参数驱动的方式，在面对多比例扩展时，哪一个更有长期的可维护性？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
