@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-08-03 学习笔记日报</title>
+    <meta name="description" content="从声明式分层数据建模，到导航网格生成，再到多轮模拟验证，用工程化方法确保游戏地图平衡。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260803-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-08-03</p>
+        <h1>2026年8月3日 学习笔记日报</h1>
+        <p>游戏地图从数据设计到平衡性验证的完整链条，三步由浅入深，把创意变成可验证的游戏内容。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>游戏地图系统：从数据建模到平衡性验证</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>游戏地图系统的声明式分层数…</strong>
+                <small>声明式分层数据模型就是给地图写说明…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>导航网格的生成、刻面与可通…</strong>
+                <small>导航网格就是AI眼中的简化地图，像…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>多轮次路线模拟与胜率统计推断</strong>
+                <small>多轮模拟就像用多次抛硬币来推断硬币…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念构成一条逐步递进的逻辑链：先用声明式分层数据模型定义世界的构成，再用导航网格把这个世界转化为AI能理解的行走图，最后通过多轮模拟对这个世界进行“压力测试”和统计评估。分层数据是基础，导航网格是连接数据与行为的桥梁，统计推断则是质量判断的标尺。没有清晰的数据模型，导航生成就无从谈起；没有可靠的导航信息，模拟跑出的胜率就没有意义；而没有统计推断，模拟结果就只是一堆数字，无法指导设计决策。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["游戏地图系统：从数据建模到平衡性验证"])
+  concept1["游戏地图系统的声明式分层数据模型"]
+  hub --&gt; concept1
+  concept2["导航网格的生成、刻面与可通行性判定"]
+  hub --&gt; concept2
+  concept3["多轮次路线模拟与胜率统计推断"]
+  hub --&gt; concept3
+  related1["导航网格生成"]
+  concept1 --&gt; related1
+  related2["资产自动构建管线"]
+  concept1 --&gt; related2
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept2
+  related3["工单与验收标准"]
+  concept3 --&gt; related3
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="declarative-layered-data-model">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>游戏地图系统的声明式分层数据模型</h3>
+              <p>Declarative Layered Data Model for Game Maps</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">声明式分层数据模型就是给地图写说明书，而不是直接画出来。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>用分层JSON描述地图，而非硬编码，地形、导航、关卡各一层</li>
+                <li>声明式：只描述“有什么、在哪里”，不描述具体怎么构建</li>
+                <li>修改任一层数据，下游自动重新生成，无需手动重画</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="declarative-layered-data-model" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="navigation-mesh-generation">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>导航网格的生成、刻面与可通行性判定</h3>
+              <p>Navigation Mesh Generation, Faceting, and Traversability</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">导航网格就是AI眼中的简化地图，像地铁线路图一样高效、清晰。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>生成：将连续地面自动切分为多边形（如三角形），形成网格</li>
+                <li>刻面：为每个多边形标注地形类型和移动代价，区分浅滩、陆地等</li>
+                <li>可通行性判定与寻路：检查起点和终点是否可通行，并在网格上执行A*等算法</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="navigation-mesh-generation" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="multi-round-simulation-win-rate">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 计算机科学</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>多轮次路线模拟与胜率统计推断</h3>
+              <p>Multi-round Route Simulation and Statistical Win Rate Inference</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">多轮模拟就像用多次抛硬币来推断硬币是否公平，而不是凭感觉下结论。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>对同一关卡跑大量自动战斗（如多轮×20局），将每局视为一次随机实验</li>
+                <li>计算平均胜率，并根据多轮波动构造置信区间</li>
+                <li>用统计证据替代直觉，判断地图是否有显著偏向，指导设计迭代</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="multi-round-simulation-win-rate" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="declarative-layered-data-model">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学</p>
+                <h3>游戏地图系统的声明式分层数据模型</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象你要给朋友描述一间教室的布局：黑板在墙上、课桌有五行、门在左边。你可以画一张图，但更方便的办法是写一份描述清单——比如“黑板：坐标(0,0)，尺寸3x1”、“课桌：坐标(1,2)，数量5行”。这份清单就是声明式数据模型。你只声明了“有什么、在哪里”，而不需要写具体怎么画。游戏地图的声明式分层数据模型就是把世界拆成几层说明书：一层写地形类型（沙滩、浅滩、悬崖），一层写哪里能走（导航区域），一层写关卡里有什么目标。每层都是一份独立的“世界说明书”，修改任何一层，其他层会自动适应，因为电脑能根据这些说明书重新生成整个地图，而不是让人手动重画。这种方法的优点是清晰、不容易出错，而且方便把同一套地形快速变成白天版、夜晚版或不同比例的地图。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>分层描述：将地图拆分为地形、导航、关卡等多层独立数据，每层只关注一个方面。</li>
+                <li>声明式分离：数据文件只记录世界的状态（有何物、在何处），解析程序单独编写，一次编写，多次复用。</li>
+                <li>自动传播：修改任何一层的定义，下游的导航生成、渲染等流程会自动反映变化，无需人工同步。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在开发一个海岛战斗游戏时，设计师想加一种新的地形——“红树林”，部队走进去会变慢。如果地图是用代码一句句画出来的，程序员就得一个像素一个像素去改。但在声明式分层模型里，设计师只需要在“地形定义”那层加上“红树林”这个新类型，并标注它的移动速度。导航脚本会自动把红树林区域处理成高代价的通行区域，渲染脚本会读取红树林的视觉素材并自动生成新地图快照。整个过程就像在表格里加一行新数据，而不是重写整本书。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为“声明式”就是不用写代码——实际上仍然需要编写解析JSON的程序，只是数据与逻辑分离。</li>
+                <li>认为分层越多越好——分层过多会增加层间不一致的风险，需要在灵活性和复杂度之间找到平衡。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>导航网格生成</td><td>导航网格生成工具直接读取地形定义层的数据，来决定哪些区域可以通行，哪些是障碍物。</td></tr>
+                <tr><td>资产自动构建管线</td><td>资产自动构建管线把分层数据作为原材料，按照声明式清单逐层加工成最终的视觉地图和导航文件。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果地形定义层新增一种“沼泽”类型，需要修改哪些下游的数据和脚本才能让整个系统不崩溃？</li>
+                <li>在分层模型中，如何自动检测“沙滩被标记为不可通行”这类设计冲突，而不是等到模拟时才发现问题？</li>
+                <li>声明式模型会不会因为数据文件太大而变慢？如果导航定义文件接近50万行，加载一次要多久？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="navigation-mesh-generation">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学</p>
+                <h3>导航网格的生成、刻面与可通行性判定</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>游戏里的AI角色需要像人一样知道哪里能走，哪里是墙。如果计算机逐像素检查，数以百万计的像素会让计算慢到无法运行。导航网格的解决方案是把连续的地面分割成一块块小的多边形（通常是三角形或凸多边形），每个多边形代表一小片完全可通行的区域。这些多边形连成一张网，AI只需要在这张网上找路，计算量大大减少。“生成”就是从地形数据中自动计算出这些多边形；“刻面”是给不同的多边形贴标签，比如这片是“沙滩”、那片是“深水”，让AI知道不同地面的通过代价不同；“可通行性判定”就是回答一个简单问题：“从A点到B点能不能走？”。整个过程就像把一张精细的城市地图简化成地铁线路图——地铁线路图不显示每栋建筑，但你依然能从它找到从A站到B站的最优路线。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>生成阶段：根据地形定义，将连续空间分割为大量小多边形（如三角形），构成网格。</li>
+                <li>刻面阶段：为每个多边形绑定元数据（如地形类型、移动代价），使AI能区分不同区域。</li>
+                <li>可通行性判定与寻路：查询起点、终点所在的多边形，在网格上运行寻路算法（如A*），绕开不可通行区，优先选择低代价路径。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在沿海战争的游戏地图上，有一个海湾，沿岸有沙滩和礁石。如果不用导航网格，战舰AI要走直线冲向目标，就会一头撞上礁石。有了导航网格后，系统把整个海湾切成几百个三角形，礁石区域标记为“不可通行”，沙滩标记为“通行但代价高”。AI寻路时，程序在这张三角形网上用A*算法搜索，找到一条绕开礁石、尽量少走沙滩的路线。当设计师修改了海岸线，导航网格需要重新“烘焙”（生成）。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为导航网格就是玩家看到的3D地面模型——实际上导航网格是纯数据，玩家永远看不见。</li>
+                <li>以为导航网格生成后就是固定的——只要有地形或障碍物变化，必须重新生成，否则AI会按旧网格“穿墙”。</li>
+                <li>认为导航网格精度越高越好——过高的精度会让多边形数量爆炸，寻路速度反而变慢。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>声明式分层数据模型</td><td>导航网格的生成完全依赖于声明式分层数据模型中的地形定义层，地形类型的变化会直接反映在网格的可通行性上。</td></tr>
+                <tr><td>多轮次路线模拟</td><td>多轮次路线模拟是在导航网格提供的可通行空间里运行的，没有网格，AI就不知道往哪走，胜率统计也就无从谈起。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>导航网格用三角形和用正方形有什么区别？为什么游戏引擎大多选择三角形网格？</li>
+                <li>在多楼层建筑中，导航网格如何表示上楼梯或跳下平台？这需要怎样的数据结构？</li>
+                <li>如果有可移动的障碍物（比如一辆车），能否在运行时局部更新导航网格，而不需要重新烘焙整张地图？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="multi-round-simulation-win-rate">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 计算机科学</p>
+                <h3>多轮次路线模拟与胜率统计推断</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>你设计了一张游戏地图，但不确定双方是不是都有公平的获胜机会。凭感觉打几局不靠谱，因为可能一方运气好连赢三局。多轮次路线模拟的做法是：让电脑控制双方自动对战很多局，记录每局谁赢、走的什么路径。这不是为了好玩，而是把每局战斗当成一次随机实验。假设双方实力完全对称，地图也完全平衡，那么每一局双方胜率应该各50%，就像抛一枚公平硬币。但实际地图总有地形差异，所以我们通过大量模拟来估计真实胜率。比如跑100局，进攻方赢了53局，胜率估计值就是53%。不过因为随机性，再跑100局可能是49%。我们需要跑足够多的轮次，让这个估计稳定下来，而且不同轮次之间的差异可以用来计算“置信区间”——大致可以理解为“真实胜率有95%的可能落在某个区间内”。如果这个区间不包含50%，我们才比较有信心说地图偏向某一边。这种方法就是用统计证据替代直觉判断，科学地回答“这地图平衡吗”。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>设置AI控制交战双方，进行大量独立对局，每轮包含固定数量的战斗（如20局）。</li>
+                <li>多轮重复以评估稳定性，计算平均胜率，并利用轮间差异估计标准差和置信区间。</li>
+                <li>若95%置信区间不包含50%胜率，则认为地图存在显著偏向；否则无法下定论，可能需要更多数据或调整AI。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>以沿海地图为例，开发者设置AI控制交战双方，对每个关卡执行多轮“20局实验”。假设进攻方从海上进攻，防守方在岸边堡垒里。跑完5轮各20局，防守方胜率分别是61%、58%、60%、57%、59%。平均约59%，波动很小。这说明防守方确实有明显优势，不是短时间的运气波动。开发者据此给进攻方增加两艘登陆艇，然后重新跑模拟。这就是用数据驱动设计决策的过程。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为跑足够多次模拟就能得到绝对精确的真实胜率——实际上得到的只是估计值，统计推断永远有出错的可能性。</li>
+                <li>只看总胜率，不看路线数据——胜率只告诉你“谁赢了”，路线数据能揭示“怎么赢的”，可能隐藏地图设计的漏洞。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>导航网格</td><td>导航网格定义了模拟中AI的可通行空间，没有可靠的导航网格，模拟出的路线和胜率就没有实际意义。</td></tr>
+                <tr><td>工单与验收标准</td><td>工单中记载了地图的设计目标和验收标准，模拟胜率数据正是对这些目标是否达成进行量化验收的证据。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果模拟结果发现胜率偏向一方，如何区分是地图设计问题、AI策略问题还是随机波动造成的？</li>
+                <li>路线轨迹数据可以用来做什么深入分析？比如能不能通过路线热点图发现哪些区域几乎从不被使用？</li>
+                <li>除了胜率，还有哪些统计指标可以用来衡量地图质量？比如平均战斗时长、资源消耗差异等。</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念构成一条逐步递进的逻辑链：先用声明式分层数据模型定义世界的构成，再用导航网格把这个世界转化为AI能理解的行走图，最后通过多轮模拟对这个世界进行“压力测试”和统计评估。分层数据是基础，导航网格是连接数据与行为的桥梁，统计推断则是质量判断的标尺。没有清晰的数据模型，导航生成就无从谈起；没有可靠的导航信息，模拟跑出的胜率就没有意义；而没有统计推断，模拟结果就只是一堆数字，无法指导设计决策。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">游戏地图不是画出来的，而是用多层JSON数据“声明”出来的，每一层独立维护，自动组合成完整世界。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如果地形定义层新增一种“沼泽”类型，需要修改哪些下游的数据和脚本才能让整个系统不崩溃？</li>
+            <li>导航网格用三角形和用正方形有什么区别？为什么游戏引擎大多选择三角形网格？</li>
+            <li>如果模拟结果发现胜率偏向一方，如何区分是地图设计问题、AI策略问题还是随机波动造成的？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
