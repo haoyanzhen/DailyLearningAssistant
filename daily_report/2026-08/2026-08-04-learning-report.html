@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-08-04 学习笔记日报</title>
+    <meta name="description" content="清理生成产物、建立可丢弃判据、迁移数据注册到基础层——从文件到判据到架构，三层边界管理让项目复杂度可控。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260804-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-08-04</p>
+        <h1>2026年8月4日：用边界管理复杂度</h1>
+        <p>今天，我们从文件清理出发，抽象出可丢弃性判据，再将数据注册模块迁入基础设施层，一步步探索如何用清晰的边界驯服软件项目日益增长的复杂度。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>用边界管理复杂度</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>声明式资产清单的产物边界与…</strong>
+                <small>清理生成产物不是嫌文件太多，而是用…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>自动化管线中产出物的可丢弃…</strong>
+                <small>一个文件能不能丢弃，取决于两个条件…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>基础设施层与领域层的边界划…</strong>
+                <small>把 data_registry 从…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念形成了一条从具体动作到抽象规则的递进链条。“声明式资产清单的产物边界与生命周期”解释了为什么要删除那些生成图片，并用 .gdignore 划出明确的忽略线。“自动化管线中产出物的可丢弃性判据”从这次删除中提炼出了两个通用条件——确定性重建与非唯一授权来源，把一次性的清理行为变成了可以反复使用的判断规则。“基础设施层与领域层的边界划分”则更进一步，通过一次 autoload 迁移，展示了如何用目录结构和依赖方向来约束模块的关系，让大型项目不至于因为随意耦合而失控。三层概念合在一起，构成了软件工程中“用边界管理复杂度”的完整图景。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["用边界管理复杂度"])
+  concept1["声明式资产清单的产物边界与生命周期"]
+  hub --&gt; concept1
+  concept2["自动化管线中产出物的可丢弃性判据"]
+  hub --&gt; concept2
+  concept3["基础设施层与领域层的边界划分（分层架构中的模块迁移）"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  related1["声明式资产清单的多比例契约传播"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  related2["远端引用快照的变更判定"]
+  concept2 --&gt; related2
+  related3["碰撞场离散化建模"]
+  concept3 --&gt; related3
+  related4["运行时级别隔离与场景状态管理"]
+  concept3 --&gt; related4
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="declarative-asset-manifest-output-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>声明式资产清单的产物边界与生命周期</h3>
+              <p>Declarative Asset Manifest Output Boundary and Lifecycle</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">清理生成产物不是嫌文件太多，而是用 .gdignore 明确告诉 Git：这个目录里的东西是可丢弃的中间结果，不是值得版本化的资产。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>自动生成的中间产物应与原始资产区分，避免污染版本控制。</li>
+                <li>使用 .gdignore 等忽略规则将可丢弃文件排除出仓库。</li>
+                <li>只要生成管线稳定，删除冗余副本不会丢失数据。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="declarative-asset-manifest-output-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="automated-pipeline-artifact-discardability-criteria">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>自动化管线中产出物的可丢弃性判据</h3>
+              <p>Criteria for Discardability of Artifacts in Automated Pipelines</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">一个文件能不能丢弃，取决于两个条件：工具链能否确定性重建它，以及有没有人把它当作唯一的事实来源。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>可丢弃需满足两条：确定性重建和非唯一权威来源。</li>
+                <li>确定性重建要求相同输入和脚本产生一致输出。</li>
+                <li>非唯一权威来源意味着文件不担任下游系统的唯一数据源。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="automated-pipeline-artifact-discardability-criteria" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="infrastructure-layer-domain-layer-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>基础设施层与领域层的边界划分（分层架构中的模块迁移）</h3>
+              <p>Boundary between Infrastructure and Domain Layers (Module Migration in Layered Architecture)</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">把 data_registry 从全局 autoload 移入 infrastructure/bootstrap，不是换个文件夹，而是给它加上一条依赖方向纪律：只能被上层使用，不能反向依赖应用逻辑。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>分层架构通过目录和依赖方向隔离复杂度。</li>
+                <li>data_registry 从 autoload 迁移到 infrastructure，确立基础设施位置。</li>
+                <li>基础设施层代码不能反向依赖领域层或应用层。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="infrastructure-layer-domain-layer-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="declarative-asset-manifest-output-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>声明式资产清单的产物边界与生命周期</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>在一个复杂的软件项目里，有很多文件是工具自动生成的，比如程序化地形生成的预览图片、导航网格烘焙后的数据、或者 AI 路线的测试截图。这些文件并不是设计师一笔一画画出来的原始资产，而是从原始输入（比如一张高度图）按照固定脚本计算出来的“中间产物”。如果把这些中间产物也当成正式资产来管理，每次重新生成时，Git 就会产生大量无意义的变更记录，就像你每次抄写同一份笔记，还把每一页都拍下来存档一样。声明式资产清单的产物边界就是把“什么算正式资产”“什么只是可丢弃的中间结果”的界限写清楚。当生成管线足够稳定，中间产物就可以从版本控制中排除，让仓库只保留真正重要的源头材料和最终交付物。这就像厨房里只保留食谱和成品照片，而不把每次试做的黑暗料理都塞进冰箱。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>识别产出物类型：源资产、中间产物、最终资产。</li>
+                <li>声明式清单确定哪些是正式资产。</li>
+                <li>利用版本控制忽略机制隔离中间产物。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>想象一个面包房。主厨有一本配方书（这就是声明式资产清单），上面写着每种面包需要多少面粉、多少水。每次烤出来的面包（最终资产）会被贴上标签摆进橱窗。而在和面、发酵过程中产生的边角料面团、试烤的小面包块（中间产物），以前也被放进橱窗，结果客人和店员都分不清哪些是今天的成品。后来主厨规定：只有配方书上明确列出的面包才能进橱窗，其余的面团渣统一扔进临时垃圾桶（用 .gdignore 忽略）。橱窗清爽了，每天的盘点也变得简单了。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为删掉生成产物就等于以后不生成这些文件，或者觉得 .gdignore 是一种偷懒的做法，不保存生成结果会丢失重要数据。实际上删除的只是版本控制中的冗余副本，工具脚本仍会每次构建时重新生成这些文件。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>自动化管线中产出物的可丢弃性判据</td><td>为判据提供了具体的工程实践场景。</td></tr>
+                <tr><td>声明式资产清单的多比例契约传播</td><td>清单不仅要声明“我们需要什么输入”，现在还要明确“哪些输出不算资产”。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果生成管线还不够稳定，有时候会产生略有差异的输出，怎样才能逐步过渡到可以安全忽略中间产物的状态？</li>
+                <li>除了 .gdignore，还有哪些技术手段可以自动化地区分可丢弃产物和正式资产，而不用人工手动维护一个忽略列表？</li>
+                <li>在大团队中，如果有人误把新的中间产物目录忘记加入忽略规则，有没有自动检查机制可以提醒“这个目录应该被忽略”？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="automated-pipeline-artifact-discardability-criteria">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>自动化管线中产出物的可丢弃性判据</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>当我们在自动化管线中清理了某个文件后，一个更根本的问题会浮上来：凭什么说这个文件可以被丢掉？这不是凭感觉决定的，而是有一套可以推而广之的判据。一个产出物可以被当作“可丢弃”的中间结果，需要同时满足两个条件。第一，它必须可以由已知的输入和工具链确定性重建——也就是说，只要给它同样的源头材料和同样的脚本，就能生成出一模一样的文件，不会掺杂随机的“味道”。第二，这个文件不能是任何下游环节的唯一权威来源——如果某个 AI 导航系统只依据这个烘焙出来的导航网格来决定寻路，修改了这个文件就是修改了游戏行为，那它就不该被丢弃，因为它承担了“事实来源”的角色。只有当一个文件同时满足这两条，才意味着把它从版本控制中移除是安全的。这套判据不仅适用于地形生成，也可以用在程序化贴图烘焙、AI 训练的中间特征图，甚至像今天材料里延伸讨论的，LLM 用固定 prompt 和模型版本生成的文本摘要上。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>可丢弃性判据基于两个独立维度：重建的确定性和来源的权威性。</li>
+                <li>确定性重建确保文件内容可重新生成而不丢失信息。</li>
+                <li>权威性检查确保删除不会破坏系统正确性。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>学校文印室有一台自动出题机，你只要输入章节范围和题型，它就能打印出一份练习题。每次打印的练习题内容完全一样（因为程序是确定性的）。如果你把每次打印的卷子都存进档案柜，柜子很快就会被一模一样的卷子塞爆。这个时候，你就可以给它贴上“可丢弃”的标签——甚至不用存，需要的时候再印一份就行。但如果你把上周老师手动批改过的答卷也打算丢掉，那就坏了：上面有老师的评分和评语，它不仅仅是一张打印纸，而是记录了唯一具有权威性的批改结果，是完全不可丢弃的“事实来源”。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为只要工具能重新生成就可以扔掉旧文件，忽略唯一授权来源。</li>
+                <li>认为确定性重建就代表百分百一致，忽略不同环境可能引入差异。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>声明式资产清单的产物边界与生命周期</td><td>清理实践直接催生了可丢弃判据。</td></tr>
+                <tr><td>远端引用快照的变更判定</td><td>共享用最小信息做最准确判断的工程哲学。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果一个文件既是确定性可重建的，又被下游作为唯一数据源，应该如何安全地解除这种不良依赖？</li>
+                <li>在管线中引入随机性（例如为了增加地形多样性）的情况下，如何改造判据，使得仍然可以区分哪些产物可丢弃、哪些必须版本化？</li>
+                <li>如何设计一个自动化检查脚本，在每次提交前扫描所有生成目录，自动报告哪些文件满足可丢弃判据但尚未被忽略？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="infrastructure-layer-domain-layer-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>基础设施层与领域层的边界划分（分层架构中的模块迁移）</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>当一个软件项目越来越大，模块之间的关系可能变得像一团乱麻：负责加载数据的模块直接调用了战斗规则的函数，界面的代码偷偷依赖了敌人的 AI 逻辑。如果任由这种交叉依赖发展，任何一个小改动都可能引发意想不到的连锁崩溃。分层架构就是给项目画上一条条横向的线，把代码分成若干层，每层只能使用它下面层提供的服务，不能往上调。基础设施层就是这个分层体系中的最下面一层，它提供最基础的能力——比如数据加载、网络通信、日志记录。领域层在它上面，负责游戏的核心规则，比如战斗流程、船舶物理。今天 tiny-sea-war 做的一件事就是把 data_registry（数据注册）这个模块从全局任意访问的位置，迁移到 infrastructure/bootstrap 目录下。这不仅仅是搬文件，而是宣布：数据注册是基础设施，它可以被战斗场景、地形管理、碰撞场加载等上层模块调用，但它自己绝对不能反过来依赖这些高层逻辑。否则就会出现“加载地形的代码居然需要知道战斗界面是不是打开着”的荒唐情况。通过物理目录的划分来强化这种依赖方向，就像在学校里规定教学楼不同楼层只能往同一层或下楼借东西，不允许蹿到楼上，将混乱控制在了源头。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>分层架构约束依赖方向：上层依赖下层，下层不依赖上层。</li>
+                <li>基础设施层提供基础服务，领域层实现核心规则。</li>
+                <li>通过目录结构物理隔离，强化逻辑分层。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一个图书馆重新规划了楼层：一楼是工务间，有电表、水管总阀和网络交换机（基础设施层）。二楼是阅览室和借阅规则执行区（领域层），三楼是读者活动室和展览区（应用层）。以前电表箱放在二楼的走廊尽头，谁都可以动。结果有一天清洁阿姨为了插吸尘器，不小心把总闸关了，整栋楼停电。管理员决定把电表箱搬到一楼的专门房间，只有有权限的维护人员才能进去，并且明确规定：二楼、三楼的设备可以依赖一楼供电，但一楼绝对不能反过来需要二楼展览的投影仪才能启动。这就像 data_registry 从 autoload 搬到 infrastructure，给“数据注册”这个基础能力赋予了明确的架构位置和使用纪律。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为放进 infrastructure 目录就算完成分层，没有强制依赖检查。</li>
+                <li>认为 autoload 本身是邪恶的，而忽略了约束哪些模块应该成为 autoload。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>碰撞场离散化建模</td><td>数据加载器可放入基础设施层，实现干净依赖。</td></tr>
+                <tr><td>运行时级别隔离与场景状态管理</td><td>纵向分层控制依赖，横向隔离控制运行时可见性，共同降低认知负载。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>除了用目录规范，还有哪些自动化工具（如架构单元测试、依赖分析脚本）可以帮助检测分层是否被破坏？</li>
+                <li>在 Godot 引擎固有的 autoload 机制下，如何设计一套团队规范，既能合理利用 autoload 的便利，又不至于让分层努力付诸东流？</li>
+                <li>如果未来需要把 data_registry 替换成另一个数据来源（比如从本地文件变成网络数据库），在分层架构下改动应该只限于基础设施层内部吗？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念形成了一条从具体动作到抽象规则的递进链条。“声明式资产清单的产物边界与生命周期”解释了为什么要删除那些生成图片，并用 .gdignore 划出明确的忽略线。“自动化管线中产出物的可丢弃性判据”从这次删除中提炼出了两个通用条件——确定性重建与非唯一授权来源，把一次性的清理行为变成了可以反复使用的判断规则。“基础设施层与领域层的边界划分”则更进一步，通过一次 autoload 迁移，展示了如何用目录结构和依赖方向来约束模块的关系，让大型项目不至于因为随意耦合而失控。三层概念合在一起，构成了软件工程中“用边界管理复杂度”的完整图景。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">它们共同回答一个问题：当一个项目的零件越来越多，我们怎样用明确的边界来控制复杂度？</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何在生成管线尚未完全稳定的情况下逐步过渡到可以安全忽略中间产物的状态？</li>
+            <li>如何设计一个自动化检查脚本，在每次提交前扫描所有生成目录，自动报告哪些文件满足可丢弃判据但尚未被忽略？</li>
+            <li>除了依赖目录规范，还有哪些自动化工具（如架构单元测试、依赖分析脚本）可以帮助检测分层是否被破坏？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
