@@ -3,6 +3,96 @@
   "year_month": "2026-08",
   "threads": [
     {
+      "id": "2026-08-05-concept-d19043f09a",
+      "question": "在 Godot 这类注重节点树和场景实例化的引擎里，如何优雅地实现接口注入，而不破坏引擎自身的场景管理模式？",
+      "source_date": "2026-08-05",
+      "source_concept": "战斗与运动服务对导航约束的依赖倒置",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-08-05T06:04:06.964593+08:00",
+      "updated_at": "2026-08-05T06:04:06.964593+08:00"
+    },
+    {
+      "id": "2026-08-05-concept-d03efeab48",
+      "question": "如果未来需要支持动态可移动障碍物的碰撞场更新，依赖倒置的接口需要增加什么方法才能保证现有服务不破坏？",
+      "source_date": "2026-08-05",
+      "source_concept": "战斗与运动服务对导航约束的依赖倒置",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-08-05T06:04:06.964593+08:00",
+      "updated_at": "2026-08-05T06:04:06.964593+08:00"
+    },
+    {
+      "id": "2026-08-05-concept-815035cb25",
+      "question": "如何利用单元测试来验证依赖倒置确实起到了解耦作用，即更换一个桩实现后，上层服务的逻辑仍然正确运行？",
+      "source_date": "2026-08-05",
+      "source_concept": "战斗与运动服务对导航约束的依赖倒置",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-08-05T06:04:06.964593+08:00",
+      "updated_at": "2026-08-05T06:04:06.964593+08:00"
+    },
+    {
+      "id": "2026-08-05-collision-field-eb9b97f878",
+      "question": "在路径规划时，是把碰撞场当作硬约束（超过一定值就绝对不能走）还是软约束（乘以权重因子），各自的优缺点是什么？",
+      "source_date": "2026-08-05",
+      "source_concept": "碰撞场 (Collision Field)",
+      "domain": "计算机科学 / 物理",
+      "status": "open",
+      "created_at": "2026-08-05T06:04:06.964593+08:00",
+      "updated_at": "2026-08-05T06:04:06.964593+08:00"
+    },
+    {
+      "id": "2026-08-05-collision-field-5931d4e9b0",
+      "question": "如何为动态障碍物（比如移动的船只）实时更新碰撞场，而不需要重新烘焙整张地图？",
+      "source_date": "2026-08-05",
+      "source_concept": "碰撞场 (Collision Field)",
+      "domain": "计算机科学 / 物理",
+      "status": "open",
+      "created_at": "2026-08-05T06:04:06.964593+08:00",
+      "updated_at": "2026-08-05T06:04:06.964593+08:00"
+    },
+    {
+      "id": "2026-08-05-collision-field-467769f937",
+      "question": "碰撞场的值如何从地形设计的语义信息中自动计算出来，而不是靠设计师手工绘制每一个格子的数值？",
+      "source_date": "2026-08-05",
+      "source_concept": "碰撞场 (Collision Field)",
+      "domain": "计算机科学 / 物理",
+      "status": "open",
+      "created_at": "2026-08-05T06:04:06.964593+08:00",
+      "updated_at": "2026-08-05T06:04:06.964593+08:00"
+    },
+    {
+      "id": "2026-08-05-bake-validate-pipeline-c8f9b3204f",
+      "question": "如果烘焙工具的版本升级了，怎样保证旧的碰撞场定义文件仍然能被正确烘焙，而不会悄悄产生错误数据？",
+      "source_date": "2026-08-05",
+      "source_concept": "数据烘焙-验证工具链 (Bake-Validate Pipeline)",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-08-05T06:04:06.964593+08:00",
+      "updated_at": "2026-08-05T06:04:06.964593+08:00"
+    },
+    {
+      "id": "2026-08-05-bake-validate-pipeline-8e016132dc",
+      "question": "除了检查数据格式和逻辑约束，验证工具能否进一步检查物理语义上的合理性，比如礁石区域不能悬空在没有海水的地形上？",
+      "source_date": "2026-08-05",
+      "source_concept": "数据烘焙-验证工具链 (Bake-Validate Pipeline)",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-08-05T06:04:06.964593+08:00",
+      "updated_at": "2026-08-05T06:04:06.964593+08:00"
+    },
+    {
+      "id": "2026-08-05-bake-validate-pipeline-7079664397",
+      "question": "验证工具本身的正确性如何保证？谁来测试这个测试工具？",
+      "source_date": "2026-08-05",
+      "source_concept": "数据烘焙-验证工具链 (Bake-Validate Pipeline)",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-08-05T06:04:06.964593+08:00",
+      "updated_at": "2026-08-05T06:04:06.964593+08:00"
+    },
+    {
       "id": "2026-08-04-concept-f9ead2a895",
       "question": "如果未来需要把 data_registry 替换成另一个数据来源（比如从本地文件变成网络数据库），在分层架构下改动应该只限于基础设施层内部吗？",
       "source_date": "2026-08-04",

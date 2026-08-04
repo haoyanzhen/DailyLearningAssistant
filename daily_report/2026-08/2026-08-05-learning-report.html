@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-08-05 学习笔记日报</title>
+    <meta name="description" content="数据烘焙验证工具链、依赖倒置与碰撞场三大概念，串联起导航系统空间约束数据层的工程实践、架构设计与核心数据结构。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260805-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-08-05</p>
+        <h1>碰撞场：空间约束的数据层革命</h1>
+        <p>今天所有技术线索都指向为导航系统引入“碰撞场”这一新的空间约束数据层，它将“哪里可以走”升级为“走起来有多难”，并牵动着数据管线与软件架构的协同进化。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>导航系统与空间约束</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>数据烘焙-验证工具链</strong>
+                <small>生成-验证管线就像工厂里的生产-质…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>战斗与运动服务对导航约束的…</strong>
+                <small>依赖倒置原则就像电源插座，电器只关…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>碰撞场</strong>
+                <small>碰撞场就像一张积雪深度地图，告诉你…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">今天的三个概念构成了一条从“怎么安全地生产数据”到“如何让系统各部分优雅地协作”再到“什么是碰撞场本身”的认知链条。生成-验证管线是最外层的工程纪律，它确保碰撞场数据在运行时代码之前就经过质量把关。战斗与运动服务对导航约束的依赖倒置则向内一层，处理软件架构问题：当碰撞场作为新领域服务出现时，其他服务应该如何依赖它才不会破坏分层架构。最后，碰撞场本身是这个链条的核心概念，它是一个空间数据结构，将连续障碍物抽象为可查询的场，服务于路径规划和运动避障。三层知识从工具链到架构再到数据结构，由表及里，层层递进。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["导航系统与空间约束"])
+  concept1["数据烘焙-验证工具链"]
+  hub --&gt; concept1
+  concept2["战斗与运动服务对导航约束的依赖倒置"]
+  hub --&gt; concept2
+  concept3["碰撞场"]
+  hub --&gt; concept3
+  concept1 --&gt; concept3
+  concept1 --&gt; concept3
+  related1["自动化导航性能测试（C8）"]
+  concept1 --&gt; related1
+  related2["地形查询服务的升级扩展（C4）"]
+  concept2 --&gt; related2
+  related3["领域服务边界（SW1）"]
+  concept2 --&gt; related3
+  concept2 --&gt; concept3
+  concept3 --&gt; concept3
+  concept3 --&gt; concept3
+  related4["空间剖分与离散化（M1）"]
+  concept3 --&gt; related4
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="bake-validate-pipeline">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>数据烘焙-验证工具链</h3>
+              <p>Bake-Validate Pipeline</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">生成-验证管线就像工厂里的生产-质检流水线：烘焙工具制造数据，验证工具立刻质检，把问题挡在游戏运行之前。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>数据烘焙将设计数据自动转换为运行时格式，验证工具随后检查其正确性，构成自动化质检流水线。</li>
+                <li>只有通过验证的数据才能进入游戏，让问题尽早暴露，避免后期运行时异常。</li>
+                <li>烘焙是确定性过程，保证产物可丢弃，随时可按需重建，无需版本化中间结果。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="bake-validate-pipeline" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="dependency-inversion-navigation">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>战斗与运动服务对导航约束的依赖倒置</h3>
+              <p>Dependency Inversion for Navigation Constraints</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">依赖倒置原则就像电源插座，电器只关心插座标准，不关心电来自火电还是太阳能，换电源时电器无需改动。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>依赖倒置让高层模块依赖接口而非具体实现，隔离数据层变化对核心逻辑的影响。</li>
+                <li>碰撞场服务通过实现导航约束接口，以注入方式提供给战斗与运动服务。</li>
+                <li>接口定义在领域层，具体实现放在基础设施层，确保架构边界清晰。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="dependency-inversion-navigation" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="collision-field">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 物理</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>碰撞场</h3>
+              <p>Collision Field</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">碰撞场就像一张积雪深度地图，告诉你每个位置走起来有多难，AI会据此选择总困难值最低的路线。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>碰撞场用连续值（如0到1）表示空间各点的通行难度，替代简单的二元可通行判定。</li>
+                <li>路径规划算法将碰撞场作为代价函数，权衡距离与难度，生成更自然的绕行路线。</li>
+                <li>碰撞场与导航网格协同，从离散拓扑升级为连续的代价评估，支持灰度决策。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="collision-field" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="bake-validate-pipeline">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>数据烘焙-验证工具链</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>你可以把数据烘焙想象成用烤箱做面包：给定一份原料清单和配方（声明式资产清单），烘焙工具就像烤箱，自动把原始设计数据“烤”成运行时可以直接使用的成品数据。但光有烤箱不够，我们还需要有人尝一口面包，确认没有烤焦或者漏放材料——这就是验证工具的角色。烘焙工具和验证工具配合在一起，就构成了一条“先生产、后质检”的自动化流水线。在这个项目里，`bake_collision_fields.py` 负责从地形定义生成碰撞场数据，`validate_collision_fields.py` 紧接着检查生成的数据是否符合规定（比如不能有洞、区域必须闭合等），只有通过验证的数据才能被游戏加载。这种模式的好处是，一旦有人不小心改错了地形或者碰撞场规范，验证工具会立刻报错，开发者就能在第一时间修好，而不是等游戏运行时才出现奇怪的行为。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>声明式资产清单作为输入契约，定义需要烘焙的碰撞场及其参数。</li>
+                <li>烘焙工具按清单读取原始地形定义，执行确定性算法，生成运行时碰撞场数据。</li>
+                <li>验证工具依据预设规则（如格式校验、值域检查、区域完整性）对产物进行自动化测试。</li>
+                <li>只有验证通过的产物才会被标记为可用，供游戏加载；未通过则阻断构建并报警。</li>
+                <li>由于烘焙过程完全可重复，碰撞场数据被视为可丢弃产物，不纳入版本控制。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设地形上新增了一片“礁石区域”，策划定义了碰撞强度0.8的多边形。烘焙工具根据边界和强度值生成碰撞场二进制文件；验证工具随即检查：区域面积是否与定义一致、强度值是否在0到1之间、有无意外覆盖开放水域。若航路被覆盖，验证工具立即报错，防止问题数据流入游戏。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>常见误区是认为烘焙和验证只适用于大型3A游戏，小项目用不上。实际上，任何需要把手工编辑数据转换为机器可消费格式的场景，只要涉及多人协作，引入自动验证都能避免大量无谓的沟通和返工。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>碰撞场烘焙（C2）</td><td>烘焙是生成碰撞场数据的具体过程，验证工具保证其正确性，二者共同构成可靠的数据管线。</td></tr>
+                <tr><td>碰撞场清单（C3）</td><td>清单定义了哪些碰撞场需要被烘焙和验证，是整条管线的输入契约，验证工具可对照清单逐项检查。</td></tr>
+                <tr><td>自动化导航性能测试（C8）</td><td>验证工具检查数据本身是否合法，性能测试则检查基于这些数据的导航算法是否变慢，构成多层次的自动化质检链。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果烘焙工具的版本升级了，怎样保证旧的碰撞场定义文件仍然能被正确烘焙，而不会悄悄产生错误数据？</li>
+                <li>验证工具本身的正确性如何保证？谁来测试这个测试工具？</li>
+                <li>除了检查数据格式和逻辑约束，验证工具能否进一步检查物理语义上的合理性，比如礁石区域不能悬空在没有海水的地形上？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="dependency-inversion-navigation">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>战斗与运动服务对导航约束的依赖倒置</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>当系统里突然多了一个新角色——比如碰撞场服务，它负责告诉你“这个位置走起来有多困难”，那么原本负责战斗和船体运动的老模块该怎么办？一个直觉的做法是，让战斗服务直接去调用碰撞场的具体类，比如 `CollisionField.compute_cost(position)`。但这样做会让战斗服务紧紧绑死在碰撞场的实现细节上，以后只要碰撞场的数据结构或计算方法一改，战斗服务和运动服务都得跟着改。依赖倒置思想告诉我们：要把这种依赖关系翻过来。应该由碰撞场服务去实现一个通用的接口，比如 `NavigationConstraintProvider`，而战斗服务和运动服务只依赖这个接口，不依赖具体类。这样，碰撞场服务的内部可以换数据结构、换算法，只要它遵守接口约定，战斗服务完全不用动。在这个项目里，战斗会话和船体运动服务因为碰撞场的引入需要调整，合理的做法正是让它们依赖一个抽象的导航约束接口，碰撞场服务则作为这个接口的一个具体实现被注入进来，从而保护了核心战斗逻辑不受数据层变化的影响。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>在领域层定义导航约束接口（如 `INavigationConstraintProvider`），声明必要的查询方法。</li>
+                <li>碰撞场服务在基础设施层实现该接口，封装具体的数据结构与算法。</li>
+                <li>战斗服务和运动服务在构造或初始化时通过依赖注入获得接口实例，只调用接口方法。</li>
+                <li>当碰撞场数据表示方式变化时，只需替换接口的实现类，高层服务无需修改。</li>
+                <li>配合分层架构，接口定义在领域层，实现在基础设施层，自然满足上层依赖下层的纪律。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设碰撞场服务目前使用均匀网格存储代价。战斗服务在判断近身攻击时，需要查询目标船周围是否在碰撞场内。如果不做依赖倒置，战斗服务直接调用 `grid_based_collision_field.get_danger_zone(ship.position)`。后来团队决定改用八叉树来节省内存，方法名变为 `octree_collision_field.query_region(sphere)`，所有直接引用的服务就都崩溃了。如果改为依赖接口 `ICollisionFieldService`，方法统一为 `query_collision(spatial_region)`，更换内部实现时，战斗服务一行代码都无需修改。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>很多人以为依赖倒置就是“不要依赖具体的类，要依赖接口”，于是给每个类都加一层接口，结果出现了大量重复的接口和实现，反而增加复杂度。正确的做法是只在真正可能发生变化、或者存在多个替代实现的边界上引入接口。判断标准很简单：如果一个服务未来很可能被替换掉（比如碰撞场表示方式从网格变成八叉树），那就值得为它抽象接口；如果永远只有一个实现，为“架构漂亮”而加接口就是过度设计。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>地形查询服务的升级扩展（C4）</td><td>地形查询服务也需要接入碰撞场数据，同样应通过接口依赖碰撞场信息，形成统一的导航约束查询抽象。</td></tr>
+                <tr><td>领域服务边界（SW1）</td><td>碰撞场、战斗、运动服务之间的依赖关系决定了模块结构，依赖倒置原则帮助划定清晰的边界。</td></tr>
+                <tr><td>碰撞场清单（C3）</td><td>清单作为契约定义加载哪些碰撞场，依赖倒置的接口可设计为接收清单，由加载器按清单注入具体实现。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>在 Godot 这类注重节点树和场景实例化的引擎里，如何优雅地实现接口注入，而不破坏引擎自身的场景管理模式？</li>
+                <li>如果未来需要支持动态可移动障碍物的碰撞场更新，依赖倒置的接口需要增加什么方法才能保证现有服务不破坏？</li>
+                <li>如何利用单元测试来验证依赖倒置确实起到了解耦作用，即更换一个桩实现后，上层服务的逻辑仍然正确运行？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="collision-field">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 物理</p>
+                <h3>碰撞场</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>在游戏或仿真中，我们经常需要决定一个角色能不能走到某个地方。最简单的办法是用网格：把地图切成小方格，每个格子标上“能走”或“不能走”。但世界没那么简单：一片沙滩可能“能走但走得很慢”，浅水区“能走但有风险”，暗礁区“不能走但可以贴着边绕过去”。碰撞场就是为了表达这些更精细的空间约束而引入的概念。它不再是二元开关，而是一个可以查询的“场”，就像温度场告诉你每个点的温度是多少，碰撞场可以告诉你每个点的“通行难度”或“碰撞危险度”是多少。从计算角度，碰撞场可以是一个均匀网格，每个格子存一个0到1之间的值；也可以是连续的函数，用数学公式描述障碍物边界；还可以是一组三角面片，表示碰撞体的表面。路径规划算法利用这个场，不仅可以找出通得过的路径，还能倾向于选择难度低、远离危险区的路线，生成更自然的绕行行为。在 tiny-sea-war 中，引入碰撞场意味着导航系统不再只看“礁石=不能走”的简化世界，而是能理解“靠近礁石就有危险，远一点更安全”这种灰度信息，从而让舰船的行为更像一位经验丰富的船长。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>碰撞场将障碍物分布抽象为一个标量场，每个位置赋予[0,1]的代价或危险度。</li>
+                <li>可通过距离场、多边形衰减函数等方式从地形设计自动生成碰撞场数据。</li>
+                <li>在路径搜索时，总代价 = 路径长度 + Σ碰撞场代价，使AI倾向于选择安全且经济的路线。</li>
+                <li>碰撞场支持软约束（乘以权重）或硬约束（超出阈值禁止通行），灵活调整行为策略。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设地图上有一大块礁石区域，传统导航网格标注整片为“不可通行”，AI只能远远绕开。碰撞场则用连续值描述：礁石核心区值为1.0（完全不可进入），向外逐渐衰减到边缘的0.2。路径规划器看到0.2的位置虽然有一点代价，但如果绕一大圈更耗时，就可能选择贴着边快速穿过，就像真实船长判断“擦着边过去问题不大”。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>很多初学者容易把碰撞场和物理引擎的碰撞体积混为一谈。碰撞体积是具体每个物体的形状，用于判断两个物体是否即时碰撞；而碰撞场是对整个空间障碍物分布的抽象描述，主要用于路径规划和宏观决策，不直接处理“两个物体是否相交”的即时物理计算。碰撞场是物理碰撞信息在空间上的预计算摘要，专为“思考”服务。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>碰撞场烘焙（C2）</td><td>烘焙是将原始地形定义转换成碰撞场数据的具体计算过程，例如对礁石多边形向外生成距离场。</td></tr>
+                <tr><td>导航轨迹规划器与碰撞场集成（C5）</td><td>规划器使用碰撞场作为代价函数的一部分，在搜索路径时累加每个点的碰撞场代价，实现智能绕行。</td></tr>
+                <tr><td>空间剖分与离散化（M1）</td><td>为了让计算机存储和查询碰撞场，需要把连续空间划分成小块（网格、体素、八叉树），离散化过程决定了精度和性能。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何为动态障碍物（比如移动的船只）实时更新碰撞场，而不需要重新烘焙整张地图？</li>
+                <li>在路径规划时，是把碰撞场当作硬约束（超过一定值就绝对不能走）还是软约束（乘以权重因子），各自的优缺点是什么？</li>
+                <li>碰撞场的值如何从地形设计的语义信息中自动计算出来，而不是靠设计师手工绘制每一个格子的数值？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">今天的三个概念构成了一条从“怎么安全地生产数据”到“如何让系统各部分优雅地协作”再到“什么是碰撞场本身”的认知链条。生成-验证管线是最外层的工程纪律，它确保碰撞场数据在运行时代码之前就经过质量把关。战斗与运动服务对导航约束的依赖倒置则向内一层，处理软件架构问题：当碰撞场作为新领域服务出现时，其他服务应该如何依赖它才不会破坏分层架构。最后，碰撞场本身是这个链条的核心概念，它是一个空间数据结构，将连续障碍物抽象为可查询的场，服务于路径规划和运动避障。三层知识从工具链到架构再到数据结构，由表及里，层层递进。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">碰撞场本质上是对“哪里不能走”的连续化、可计算描述，它比简单的“可通行/不可通行”网格更精细，能告诉路径规划算法某个区域的通行难度，从而让AI做出更自然的绕行决策。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何为动态障碍物实时更新碰撞场，而不需要重新烘焙整张地图？</li>
+            <li>如果烘焙工具的版本升级，怎样保证旧的碰撞场定义文件仍然能被正确烘焙，不会悄悄产生错误数据？</li>
+            <li>在 Godot 这类引擎里，如何优雅地实现接口注入，而不破坏引擎自身的场景管理模式？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
