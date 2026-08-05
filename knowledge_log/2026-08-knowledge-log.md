@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-08/2026-08-06-learning-report.html">2026-08-06</a>
+      </td>
+      <td>碰撞场二进制格式（.tscf）</td>
+      <td>计算机科学</td>
+      <td>★★</td>
+      <td>碰撞场二进制格式（.tscf）就是把碰撞场这张“棋盘”变成一串紧凑数字序列，让电脑快速加载、占用更小空间。</td>
+      <td>下一次可以深入比较几种碰撞场存储方案（均匀网格、距离场、四叉树）在内存、查询速度和精度上的权衡，并探讨如何让 .tscf 格式支持流式加载和多层数据。</td>
+    </tr>
+    <tr>
+      <td>固定时间步（Fixed Tick）</td>
+      <td>计算机科学 / 物理</td>
+      <td>★★★</td>
+      <td>固定时间步就是让模拟世界每一步走固定长短的时间，像节拍器一样稳定，从而使结果可复现、可测试。</td>
+      <td>下一次可以深入讲解固定时间步下的数值积分方法（如欧拉法、Verlet 积分）及其误差特征，并讨论如何在不同 tick 间隔下保持物理行为一致性。</td>
+    </tr>
+    <tr>
+      <td>检测事实缓存（Per-Tick Detection Fact Cache）</td>
+      <td>计算机科学</td>
+      <td>★★★★</td>
+      <td>per-tick 缓存把同一个 tick 内的重复检测结果记在小本本上，省去重复计算，并在 tick 结束自动作废，以空间换时间。</td>
+      <td>下一次可以深入讲解缓存失效策略、LRU 等缓存替换算法，以及如何在更粗粒度（如跨越多个 tick）上做缓存一致性验证，并对比无缓存、per-tick 缓存和全缓存三者的性能差异。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-08/2026-08-05-learning-report.html">2026-08-05</a>
       </td>
       <td>数据烘焙-验证工具链 (Bake-Validate Pipeline)</td>

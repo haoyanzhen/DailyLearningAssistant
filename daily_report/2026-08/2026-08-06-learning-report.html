@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-08-06 学习笔记日报</title>
+    <meta name="description" content="今日围绕碰撞场的数据链路展开，从.tscf二进制存储到固定时间步保证确定性，再到per-tick缓存优化检测，三者串联起数据驱动与性能优化的核心思想。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260806-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-08-06</p>
+        <h1>碰撞场数据链路：存储、节拍与缓存</h1>
+        <p>理解碰撞场如何以紧凑格式存储、如何用固定时间步保障可复现，以及如何用per-tick缓存提升检测效率。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>数据驱动与确定性模拟</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>碰撞场二进制格式（.tsc…</strong>
+                <small>碰撞场二进制格式是数据存储的'网格…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>固定时间步（Fixed T…</strong>
+                <small>固定时间步是模拟世界的节拍器，保证…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>检测事实缓存（Per-Ti…</strong>
+                <small>per-tick 缓存是 tick…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念分别对应数据表示、时间离散化和计算优化。.tscf 提供紧凑高效的二进制存储；固定时间步让所有模拟按统一节拍推进，保证验证可复现；per-tick 缓存避免同一 tick 内重复检测。三者相互配合：二进制格式为查询提供快速读取基础，固定时间步为缓存划定失效边界，缓存提升固定 tick 下的检测吞吐，共同支撑确定性导航验证体系。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["数据驱动与确定性模拟"])
+  concept1["碰撞场二进制格式（.tscf）"]
+  hub --&gt; concept1
+  concept2["固定时间步（Fixed Tick）"]
+  hub --&gt; concept2
+  concept3["检测事实缓存（Per-Tick Detection Fact Cache）"]
+  hub --&gt; concept3
+  related1["数据烘焙（Data Baking）"]
+  concept1 --&gt; related1
+  related2["数据验证（Data Validation）"]
+  concept1 --&gt; related2
+  related3["基础设施加载器（Infrastructure Loader）"]
+  concept1 --&gt; related3
+  related4["轨迹规划器（Trajectory Planner）"]
+  concept2 --&gt; related4
+  related5["船舶运动服务（Ship Motion Service）"]
+  concept2 --&gt; related5
+  related6["per-tick 缓存"]
+  concept2 --&gt; related6
+  related7["碰撞场查询（Collision Field Query）"]
+  concept3 --&gt; related7
+  concept3 --&gt; concept2
+  related8["性能基准（Performance Benchmark）"]
+  concept3 --&gt; related8
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4,related5,related6,related7,related8 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="tscf-binary-format">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>碰撞场二进制格式（.tscf）</h3>
+              <p>.tscf Binary Format</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">碰撞场二进制格式是数据存储的'网格胶带'——紧凑、高效，但需要验证工具来读懂。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>.tscf 是碰撞场的序列化格式，将二维网格数据转为紧凑二进制</li>
+                <li>文件由头部信息（宽高、含义）和连续网格数据组成</li>
+                <li>相比于 JSON，体积更小、加载更快，但人类不可读，需要验证工具</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="tscf-binary-format" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="fixed-tick">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 物理</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>固定时间步（Fixed Tick）</h3>
+              <p>Fixed Tick</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">固定时间步是模拟世界的节拍器，保证每一步长度相同，结果才可复现。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>固定时间步以恒定间隔推进逻辑更新，不受渲染帧率波动影响</li>
+                <li>保证模拟结果可复现：相同输入、相同随机种子得到相同结果</li>
+                <li>是自动化轨迹验证和回归测试的前提</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="fixed-tick" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="per-tick-detection-fact-cache">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>检测事实缓存（Per-Tick Detection Fact Cache）</h3>
+              <p>Per-Tick Detection Fact Cache</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">per-tick 缓存是 tick 内的即时贴，用完即撕，保证新鲜又省力。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>在同一 tick 内缓存重复的碰撞检测结果，避免重复计算</li>
+                <li>缓存生命周期与 tick 绑定，tick 结束即清空，保证数据新鲜</li>
+                <li>本质是空间换时间，与记忆化思想一致</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="per-tick-detection-fact-cache" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="tscf-binary-format">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学</p>
+                <h3>碰撞场二进制格式（.tscf）</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>碰撞场可以想象成一张棋盘，每个格子写着一个数字，表示这个地方能不能走、走的代价有多大。要把这张棋盘存到电脑里，有两种思路：一种写成 JSON 文本，如“第1行第1列是0……”——人读起来清楚，但电脑要逐行解析，速度慢且占用空间大。更聪明的办法是直接铺一块连续内存区域，按顺序把每个格子变成一个二进制数字，如 0 表示可通行、1 表示不可通行。.tscf 正是这样做的：它将二维碰撞场“拍扁”成一串数字，并在开头加上一小段说明信息（宽、高、每个数字的含义），形成紧凑且可直接读取的文件。这种将文本描述转换为机器友好的紧凑二进制的过程称为序列化，反向操作是反序列化。.tscf 的优点是体积更小、加载更快，缺点是普通人无法直接阅读，因此需要配套的验证工具保证正确性。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>序列化将结构化的碰撞场数据转换为线性字节流，便于存储和加载</li>
+                <li>头部字段记录元数据，保证反序列化时能正确解释数据</li>
+                <li>二进制存储利用计算机内存布局，避免文本解析开销</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>以 4×4 碰撞场为例：JSON 表示是 `{"data": [[0,1,0,0],[0,1,1,0],[0,0,1,0],[0,0,0,0]], "width":4, "height":4}`，而 .tscf 只需用 2 字节位图或 16 字节 int8 加上宽高信息，总共不过二十多字节；运行时按固定偏移量直接读入，无需逐字符解析。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>二进制格式不是加密或神秘文件，只是另一种数字表示方式，可通过工具解析回文本</li>
+                <li>二进制文件也可能出错，而且更隐蔽，所以需要 validate 验证脚本检查</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>数据烘焙（Data Baking）</td><td>.tscf 是地形定义经烘焙脚本转换后的输出结果</td></tr>
+                <tr><td>数据验证（Data Validation）</td><td>.tscf 会经过验证脚本检查格式、逻辑和语义，确保正确性</td></tr>
+                <tr><td>基础设施加载器（Infrastructure Loader）</td><td>加载器读取 .tscf 并转换为领域服务可用的碰撞场对象</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何设计 .tscf 的头部字段，让不同版本的格式可以向后兼容？</li>
+                <li>对于大量碰撞场数据，除了平铺数组，还可以用什么空间数据结构（如四叉树）来压缩存储？</li>
+                <li>.tscf 在序列化时如何处理不同网格分辨率（如默认和 16x9）的差异？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="fixed-tick">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 物理</p>
+                <h3>固定时间步（Fixed Tick）</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>计算机模拟中，时间通常离散推进。固定时间步就是让逻辑每隔固定间隔更新，如每 1/60 秒。可变时间步的更新间隔取决于渲染耗时，导致模拟不可复现。固定时间步像节拍器，不管环境如何变化，逻辑更新始终按稳定节拍走。如果渲染一帧超过一个 tick，可能需要在一帧内补跑或推迟到下一帧，但每次逻辑更新的时间间隔恒定。最大好处是确定性：同样输入、同样随机种子、同样 tick 间隔，运行两次结果完全一致，这对轨迹验证至关重要——自动化测试可以断言轨迹是否经过某区域，而不会因机器性能变化时灵时不灵。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>离散时间推进以固定间隔为基本单位，保证模拟步长一致</li>
+                <li>确定性来源于恒定步长与相同的初始条件，排除外部时序干扰</li>
+                <li>自动测试依赖可复现结果，固定 tick 是回归测试的基础</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设一艘船每 tick 前进 0.1 米，碰撞场中某个障碍物占一个格子。若时间步不固定，系统繁忙时更新距离可能不同，导致第二次运行撞上障碍物；固定时间步下，无论系统如何波动，每次更新船都恰好前进 0.1 米，绕障轨迹每次一致，测试稳定通过。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>固定时间步不等于固定帧率：帧率指画面渲染次数，tick 指逻辑更新次数，二者独立</li>
+                <li>固定时间步不保证画面流畅，但保证模拟世界的时间流速恒定</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>轨迹规划器（Trajectory Planner）</td><td>依赖固定时间步按等间隔生成路径点，保证规划结果一致</td></tr>
+                <tr><td>船舶运动服务（Ship Motion Service）</td><td>按固定 tick 推进船的位置，使运动学计算稳定可预测</td></tr>
+                <tr><td>per-tick 缓存</td><td>固定时间步作为缓存失效的边界，tick 结束即清空</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>固定时间步的间隔长度如何选择？太大会导致穿墙，太小会增加计算开销，怎么权衡？</li>
+                <li>当固定 tick 与渲染帧率不同步时，如何用插值使画面平滑而不影响逻辑确定性？</li>
+                <li>在分布式或多线程环境中，如何保证所有节点用同一套固定 tick 推进，避免时间偏移？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="per-tick-detection-fact-cache">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学</p>
+                <h3>检测事实缓存（Per-Tick Detection Fact Cache）</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>在一个 tick 内，AI 可能对同一位置反复询问“这里能不能走”。每次询问都做昂贵检测非常浪费。检测事实缓存的做法是：同一 tick 内首次算出结果后存入临时存储，后续相同查询直接查缓存。这个小本本只在当前 tick 内有效，tick 结束就清空。为什么必须按 tick 清空？因为下一 tick 游戏状态可能变了，继续用旧结果会出错。因此 per-tick 既是优点也是边界：保证缓存数据不过期，固定时间步提供自然的失效时机。本质上是空间换时间，多花内存省重复计算。与记忆化思想一致，适合“输入相同、输出一定相同”的纯函数式查询。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>利用查询的纯函数特性：相同输入在同一个 tick 内输出不变</li>
+                <li>以额外内存存储结果，减少重复计算的开销</li>
+                <li>tick 结束清空缓存，确保数据与当前游戏状态一致</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一个 tick 内，轨迹规划器尝试 20 次方向探测，其中 15 次都查询同一点 (x,y) 是否可通行。第一次查询后结果存入缓存，后面 14 次直接读取；若每次检测需 0.1ms，则省下 1.4ms，累计节省可观。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>缓存并非越多越好、永远有效，失效处理不当会导致错误结果</li>
+                <li>缓存不是银弹，如果命中率低，维护开销可能超过收益</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>碰撞场查询（Collision Field Query）</td><td>per-tick 缓存优化的是同一 tick 内重复的碰撞场查询</td></tr>
+                <tr><td>固定时间步（Fixed Tick）</td><td>tick 结束即清空缓存，保证缓存数据不会跨 tick 过期</td></tr>
+                <tr><td>性能基准（Performance Benchmark）</td><td>通过基准测试验证缓存带来的性能提升和内存开销</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何设计缓存键，才能精准命中同一位置但避免错误共享？比如浮点坐标的精度问题。</li>
+                <li>如果碰撞场在同一个 tick 内可能发生变化（比如动态障碍物），per-tick 缓存还能安全使用吗？为什么？</li>
+                <li>如何用基准测试量化缓存带来的性能提升，并证明它没有引入过多内存开销？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念分别对应数据表示、时间离散化和计算优化。.tscf 提供紧凑高效的二进制存储；固定时间步让所有模拟按统一节拍推进，保证验证可复现；per-tick 缓存避免同一 tick 内重复检测。三者相互配合：二进制格式为查询提供快速读取基础，固定时间步为缓存划定失效边界，缓存提升固定 tick 下的检测吞吐，共同支撑确定性导航验证体系。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">固定时间步是确定性模拟的基石，让轨迹验证在任何机器上都能复现。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何设计 .tscf 的头部字段，让不同版本的格式可以向后兼容？</li>
+            <li>固定时间步的间隔长度如何选择？太大会导致穿墙，太小会增加计算开销，怎么权衡？</li>
+            <li>如果碰撞场在同一个 tick 内可能发生变化，per-tick 缓存还能安全使用吗？为什么？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>

@@ -3,6 +3,96 @@
   "year_month": "2026-08",
   "threads": [
     {
+      "id": "2026-08-06-tscf-8713a4b9f2",
+      "question": "对于大量碰撞场数据，除了平铺数组，还可以用什么空间数据结构（如四叉树）来压缩存储？",
+      "source_date": "2026-08-06",
+      "source_concept": "碰撞场二进制格式（.tscf）",
+      "domain": "计算机科学",
+      "status": "open",
+      "created_at": "2026-08-06T06:03:37.174693+08:00",
+      "updated_at": "2026-08-06T06:03:37.174693+08:00"
+    },
+    {
+      "id": "2026-08-06-tscf-8675fd94b2",
+      "question": "如何设计 .tscf 的头部字段，让不同版本的格式可以向后兼容？",
+      "source_date": "2026-08-06",
+      "source_concept": "碰撞场二进制格式（.tscf）",
+      "domain": "计算机科学",
+      "status": "open",
+      "created_at": "2026-08-06T06:03:37.174693+08:00",
+      "updated_at": "2026-08-06T06:03:37.174693+08:00"
+    },
+    {
+      "id": "2026-08-06-tscf-07d3a4da21",
+      "question": ".tscf 在序列化时如何处理不同网格分辨率（如默认和 16x9）的差异？",
+      "source_date": "2026-08-06",
+      "source_concept": "碰撞场二进制格式（.tscf）",
+      "domain": "计算机科学",
+      "status": "open",
+      "created_at": "2026-08-06T06:03:37.174693+08:00",
+      "updated_at": "2026-08-06T06:03:37.174693+08:00"
+    },
+    {
+      "id": "2026-08-06-per-tick-detection-fact-cache-ea4391f55f",
+      "question": "如何用基准测试（benchmark）量化缓存带来的性能提升，并证明它没有引入过多内存开销？",
+      "source_date": "2026-08-06",
+      "source_concept": "检测事实缓存（Per-Tick Detection Fact Cache）",
+      "domain": "计算机科学",
+      "status": "open",
+      "created_at": "2026-08-06T06:03:37.174693+08:00",
+      "updated_at": "2026-08-06T06:03:37.174693+08:00"
+    },
+    {
+      "id": "2026-08-06-per-tick-detection-fact-cache-6f8c8adb0d",
+      "question": "如何设计缓存键，才能精准命中同一位置但避免错误共享？比如浮点坐标的精度问题。",
+      "source_date": "2026-08-06",
+      "source_concept": "检测事实缓存（Per-Tick Detection Fact Cache）",
+      "domain": "计算机科学",
+      "status": "open",
+      "created_at": "2026-08-06T06:03:37.174693+08:00",
+      "updated_at": "2026-08-06T06:03:37.174693+08:00"
+    },
+    {
+      "id": "2026-08-06-per-tick-detection-fact-cache-0a67c388f5",
+      "question": "如果碰撞场在同一个 tick 内可能发生变化（比如动态障碍物），per-tick 缓存还能安全使用吗？为什么？",
+      "source_date": "2026-08-06",
+      "source_concept": "检测事实缓存（Per-Tick Detection Fact Cache）",
+      "domain": "计算机科学",
+      "status": "open",
+      "created_at": "2026-08-06T06:03:37.174693+08:00",
+      "updated_at": "2026-08-06T06:03:37.174693+08:00"
+    },
+    {
+      "id": "2026-08-06-fixed-tick-bd2c6cd145",
+      "question": "当固定 tick 与渲染帧率不同步时，如何用插值使画面平滑而不影响逻辑确定性？",
+      "source_date": "2026-08-06",
+      "source_concept": "固定时间步（Fixed Tick）",
+      "domain": "计算机科学 / 物理",
+      "status": "open",
+      "created_at": "2026-08-06T06:03:37.174693+08:00",
+      "updated_at": "2026-08-06T06:03:37.174693+08:00"
+    },
+    {
+      "id": "2026-08-06-fixed-tick-2669fc9197",
+      "question": "在分布式或多线程环境中，如何保证所有节点用同一套固定 tick 推进，避免时间偏移？",
+      "source_date": "2026-08-06",
+      "source_concept": "固定时间步（Fixed Tick）",
+      "domain": "计算机科学 / 物理",
+      "status": "open",
+      "created_at": "2026-08-06T06:03:37.174693+08:00",
+      "updated_at": "2026-08-06T06:03:37.174693+08:00"
+    },
+    {
+      "id": "2026-08-06-fixed-tick-26659b1eb5",
+      "question": "固定时间步的间隔长度如何选择？太大会导致穿墙，太小会增加计算开销，怎么权衡？",
+      "source_date": "2026-08-06",
+      "source_concept": "固定时间步（Fixed Tick）",
+      "domain": "计算机科学 / 物理",
+      "status": "open",
+      "created_at": "2026-08-06T06:03:37.174693+08:00",
+      "updated_at": "2026-08-06T06:03:37.174693+08:00"
+    },
+    {
       "id": "2026-08-05-concept-d19043f09a",
       "question": "在 Godot 这类注重节点树和场景实例化的引擎里，如何优雅地实现接口注入，而不破坏引擎自身的场景管理模式？",
       "source_date": "2026-08-05",
