@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-08/2026-08-07-learning-report.html">2026-08-07</a>
+      </td>
+      <td>Git 引用（ref）指针与状态指纹</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★</td>
+      <td>Git 引用（ref）就像指向最新提交的箭头，箭头末端那个 SHA 就是分支当前状态的指纹。</td>
+      <td>下一次可以深入讲解 Git 对象模型（blob、tree、commit）如何形成这个 SHA，以及 refs 与对象数据库的关系。</td>
+    </tr>
+    <tr>
+      <td>基于哈希比较的状态变化检测</td>
+      <td>计算机科学</td>
+      <td>★★★</td>
+      <td>哈希比较就是通过对比两个固定长度的指纹来判断事物是否变化，又快又省，不需要看内容。</td>
+      <td>下一次可以深入讲解 SHA-256 与 SHA-1 的差异，以及为什么大型仓库监控中哈希比较是首选方法。</td>
+    </tr>
+    <tr>
+      <td>变更检测的可观测性边界</td>
+      <td>软件工程</td>
+      <td>★★★★</td>
+      <td>变更检测的可观测性边界，是指你选择的信息通道决定了你能知道的答案粒度，信号不等于细节。</td>
+      <td>下一次可以深入讲解 git fetch 与 git ls-remote 的区别，以及如何通过 fetch 后的本地对象获得提交级、文件级、行级信息，实现从“变没变”到“变了什么”的进阶监控。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-08/2026-08-06-learning-report.html">2026-08-06</a>
       </td>
       <td>碰撞场二进制格式（.tscf）</td>

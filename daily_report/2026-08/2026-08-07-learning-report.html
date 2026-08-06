@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-08-07 学习笔记日报</title>
+    <meta name="description" content="通过 Git ref 与 SHA 指纹判断仓库状态变化，理解哈希比较的轻量检测，并认识只读监控的可观测性边界。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260807-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-08-07</p>
+        <h1>从指纹到边界：仓库状态检测的三步认知</h1>
+        <p>一只 ref 指针，两条 SHA 比较，三种边界意识——今天用最轻的方式确认仓库是否变化。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>证据与边界</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>Git 引用（ref）指针…</strong>
+                <small>分支顶端的 SHA 就是它的指纹…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>基于哈希比较的状态变化检测</strong>
+                <small>指纹相同，内容相同；指纹不同，内容…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>变更检测的可观测性边界</strong>
+                <small>信号告诉你变了，但不告诉你变了什么。</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">今天的可确认概念都围绕“证据与边界”。Git ref 指针和 SHA 指纹是基础，它们让状态可以被压缩成唯一的标识；基于哈希比较的状态变化检测是方法，它利用指纹相同即状态相同这一原则，以最小成本完成判断；变更检测的可观测性边界是认知，它提醒我们任何检测手段都有自己的视野极限。工程上必须尊重这条边界：已确认事实可以进入决策，待确认线索只能被记录和追踪。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["证据与边界"])
+  concept1["Git 引用（ref）指针与状态指纹"]
+  hub --&gt; concept1
+  concept2["基于哈希比较的状态变化检测"]
+  hub --&gt; concept2
+  concept3["变更检测的可观测性边界"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["证据与边界"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="git-ref-pointer-and-state-fingerprint">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>Git 引用（ref）指针与状态指纹</h3>
+              <p>Git Reference Pointer and State Fingerprint</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">分支顶端的 SHA 就是它的指纹，指纹不变，状态就没变。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>ref 是指针，如 refs/heads/main 指向当前分支的最新提交。</li>
+                <li>提交哈希 SHA 是分支状态的唯一指纹。</li>
+                <li>比较两个时间的 SHA 即可判断分支是否变化，无需下载内容。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="git-ref-pointer-and-state-fingerprint" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="hash-based-state-change-detection">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>基于哈希比较的状态变化检测</h3>
+              <p>Hash-based State Change Detection</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">指纹相同，内容相同；指纹不同，内容必不同。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>哈希函数将任意数据浓缩为固定长度摘要。</li>
+                <li>比较两个哈希值即可判断内容是否相同。</li>
+                <li>检测远端变化只需比较两个时间的 SHA，无需下载全部文件。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="hash-based-state-change-detection" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="observability-boundary-of-change-detection">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>变更检测的可观测性边界</h3>
+              <p>Observability Boundary of Change Detection</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">信号告诉你变了，但不告诉你变了什么。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>每个信息通道只暴露特定粒度的数据。</li>
+                <li>远端 ref 监控只能看到“分支有没有变化”，看不到提交细节。</li>
+                <li>超出边界的推断应降级为待确认线索，不能当作已确认事实。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="observability-boundary-of-change-detection" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="git-ref-pointer-and-state-fingerprint">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>Git 引用（ref）指针与状态指纹</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象你有一个存放很多版本的仓库，为了快速找到“当前最新版本”，你在门口立了一块牌子，上面写着“最新版在这里”。Git 的 ref 就是这样的牌子，比如 refs/heads/main 表示名为 main 的分支当前指向哪个提交。每个提交都有一个唯一的哈希值（SHA），像身份证号一样。所以 ref 指针加上末尾的 SHA，就构成了分支状态的“指纹”：只要指纹没变，就说明分支顶端没有动过。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>每个提交有唯一哈希值，作为内容摘要。</li>
+                <li>分支 ref 始终指向最新提交，所以 ref + SHA 代表分支当前状态。</li>
+                <li>状态未变 ⇔ ref 指向的 SHA 未变。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在 public-library 仓库中，监控脚本读取 refs/heads/main，比较历史 SHA 与当前 SHA，发现完全一致，于是给出“远端 ref 未变化”的结论，全程没有 clone。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为 refs/heads/main 是一个文件夹，里面装着分支的所有文件，实际上它只是一个指针，内容是 40 位十六进制 SHA。</li>
+                <li>以为 ref 包含文件内容，其实它只是指向提交对象，不包含任何文件。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>基于哈希比较的状态变化检测</td><td>ref 指向的 SHA 就是状态指纹，比较两个 SHA 是否一致即是在比较状态。</td></tr>
+                <tr><td>变更检测的可观测性边界</td><td>只读远端监控只暴露 ref 指针的当前 SHA，自然形成只能判断变化与否的信息边界。</td></tr>
+                <tr><td>证据与边界</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>为什么 Git 使用哈希而不是简单的递增版本号来标识提交？</li>
+                <li>如果两个不同提交内容完全相同，它们的 SHA 会一样吗？为什么？</li>
+                <li>refs/heads/main 和 HEAD 有什么区别？HEAD 指向什么？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="hash-based-state-change-detection">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学</p>
+                <h3>基于哈希比较的状态变化检测</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>哈希是一种把任意数据浓缩成固定长度字符串的算法。比较两个哈希值，就像比较两片指纹：指纹不同，内容一定不同；指纹相同，内容也几乎必然相同。因此，要判断一个仓库有没有变化，不需要下载全部文件，只需要拿到两个时间的 SHA 进行比较。这是最轻量、最快速的变化检测方式。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>哈希是单向函数，相同输入必有相同输出，不同输入几乎不同输出。</li>
+                <li>状态可用哈希值摘要表示，因此比较哈希等价于比较状态。</li>
+                <li>该检测方式只消耗极小的元数据带宽，适合大规模监控。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>public-library 在 2026-08-07 通过 git ls-remote 读取 refs/heads/main 的历史 SHA 和当前 SHA，两个值相等，于是判定“未变化”。整个过程没有 clone、没有 fetch、没有读取任何文件内容。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为哈希比较必须看到实际内容才能判断，其实哈希本身就是内容的“摘要”，只需要比较摘要。</li>
+                <li>担心哈希碰撞会让判断不可靠，但在常规工程场景中，SHA-1 碰撞几乎不可能被意外触发，所以“相同哈希”可以当作“相同内容”来使用。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>Git 引用（ref）指针与状态指纹</td><td>ref 指向的 SHA 就是状态指纹，比较两个 SHA 是否一致即是在比较状态。</td></tr>
+                <tr><td>变更检测的可观测性边界</td><td>这种比较只看元数据，不传输内容，因此只能提供“变/没变”的结论，无法提供细节。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>哈希函数为什么是单向的？能不能从 SHA 反推出原始内容？</li>
+                <li>两个不同的提交有可能产生相同 SHA 吗？Git 如何应对哈希碰撞？</li>
+                <li>如果历史 SHA 在记录时出错，哈希比较会误判吗？如何防护？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="observability-boundary-of-change-detection">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>变更检测的可观测性边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>当你使用一种工具观察系统时，工具本身决定了你能看到什么和不能看到什么。只读远端监控（git ls-remote）只能拿到 ref 的当前 SHA，所以它能回答“这个分支有没有变化”，但不能回答“变化了什么”——谁提交的、提交了几个、改了哪些文件、diff 是什么，统统看不到。这些信息超出了这条信息通道的“可观测性边界”。理解边界，才能克制自己不做过度推断。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>信息通道的权限和协议决定了能获取的数据集合。</li>
+                <li>可观测性边界意味着结论只能基于已获得的数据，不能超出。</li>
+                <li>工程上需要区分已确认事实与待确认线索，避免过度推断。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>public-library 监控只比较 SHA，没有 clone，因此看不到提交信息、作者、文件列表和 diff；tiny-sea-war 的工作区快照只能作为“待确认线索”。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>看到 SHA 变化就以为知道了具体改动，其实 SHA 变化只说明“有新的提交或 ref 被改写”，细节需要额外步骤才能看到。</li>
+                <li>以为工具能自动获得全部信息，实际只获得工具暴露的那一部分，比如 ls-remote 只给 ref 的 SHA。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>Git 引用（ref）指针与状态指纹</td><td>只读远端监控只暴露 ref 指针的当前 SHA，所以自然形成“只能判断变化与否”的信息边界。</td></tr>
+                <tr><td>基于哈希比较的状态变化检测</td><td>哈希比较只查看元数据，不传输内容，因此只能提供“变/没变”的结论，无法提供细节。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果监控需要看到“具体改了哪些文件”，应该将权限扩大到什么程度？最小权限和可观测性如何平衡？</li>
+                <li>在什么情况下，SHA 没有变化但本地工作区内容可能已经变化？“远端 ref”与“本地工作区”是两个不同层面的状态。</li>
+                <li>如何设计一个监控系统，让它的可观测性边界与实际决策需求精确匹配？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">今天的可确认概念都围绕“证据与边界”。Git ref 指针和 SHA 指纹是基础，它们让状态可以被压缩成唯一的标识；基于哈希比较的状态变化检测是方法，它利用指纹相同即状态相同这一原则，以最小成本完成判断；变更检测的可观测性边界是认知，它提醒我们任何检测手段都有自己的视野极限。工程上必须尊重这条边界：已确认事实可以进入决策，待确认线索只能被记录和追踪。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">指纹不变，状态就没变；信号不等于细节。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>为什么 Git 使用哈希而不是简单的递增版本号来标识提交？</li>
+            <li>哈希比较能否从相同 SHA 反推出原始内容？为什么？</li>
+            <li>如何设计一个监控系统，让它的可观测性边界与实际决策需求精确匹配？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
