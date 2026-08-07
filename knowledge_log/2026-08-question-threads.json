@@ -3,6 +3,96 @@
   "year_month": "2026-08",
   "threads": [
     {
+      "id": "2026-08-08-ls-remote-e2c835af06",
+      "question": "当监控需求从“分支是否变化”升级为“变化了哪些提交和文件”时，应该怎样从 ls-remote 切换到 git fetch？",
+      "source_date": "2026-08-08",
+      "source_concept": "远端只读监控（ls-remote）",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-08-08T06:03:30.839862+08:00",
+      "updated_at": "2026-08-08T06:03:30.839862+08:00"
+    },
+    {
+      "id": "2026-08-08-ls-remote-d01b9361c4",
+      "question": "如何验证 ls-remote 返回的 SHA 确实来自被信任的远端，而不是中间人伪造的？",
+      "source_date": "2026-08-08",
+      "source_concept": "远端只读监控（ls-remote）",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-08-08T06:03:30.839862+08:00",
+      "updated_at": "2026-08-08T06:03:30.839862+08:00"
+    },
+    {
+      "id": "2026-08-08-ls-remote-5818b17d2b",
+      "question": "如果远端启用了协议 v2，ls-remote 的过滤能力（如只请求某个 ref）会对监控效率有什么影响？",
+      "source_date": "2026-08-08",
+      "source_concept": "远端只读监控（ls-remote）",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-08-08T06:03:30.839862+08:00",
+      "updated_at": "2026-08-08T06:03:30.839862+08:00"
+    },
+    {
+      "id": "2026-08-08-git-ref-6275ed6eac",
+      "question": "`refs/heads/main` 与 `HEAD` 的指向关系在切换到其他分支时会发生什么变化？",
+      "source_date": "2026-08-08",
+      "source_concept": "Git 引用（ref）指针",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-08T06:03:30.839862+08:00",
+      "updated_at": "2026-08-08T06:03:30.839862+08:00"
+    },
+    {
+      "id": "2026-08-08-git-ref-50f028f640",
+      "question": "为什么不直接用递增数字给分支版本命名，而要使用内容哈希来定位提交？",
+      "source_date": "2026-08-08",
+      "source_concept": "Git 引用（ref）指针",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-08T06:03:30.839862+08:00",
+      "updated_at": "2026-08-08T06:03:30.839862+08:00"
+    },
+    {
+      "id": "2026-08-08-git-ref-2300aa733f",
+      "question": "如果分支被删除，对应的 ref 文件会怎样？是否还能通过提交哈希找到历史？",
+      "source_date": "2026-08-08",
+      "source_concept": "Git 引用（ref）指针",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-08T06:03:30.839862+08:00",
+      "updated_at": "2026-08-08T06:03:30.839862+08:00"
+    },
+    {
+      "id": "2026-08-08-concept-2e7b841fad",
+      "question": "如何借助 shell 历史、编辑器日志、外部系统记录等证据，把待确认变化线索升级为较可信的时间归属？",
+      "source_date": "2026-08-08",
+      "source_concept": "待确认变化线索",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-08-08T06:03:30.839862+08:00",
+      "updated_at": "2026-08-08T06:03:30.839862+08:00"
+    },
+    {
+      "id": "2026-08-08-concept-2355596ff4",
+      "question": "`.uid` 文件是否真的用于 Godot 资源唯一标识？可以用哪些实验或官方文档验证？",
+      "source_date": "2026-08-08",
+      "source_concept": "待确认变化线索",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-08-08T06:03:30.839862+08:00",
+      "updated_at": "2026-08-08T06:03:30.839862+08:00"
+    },
+    {
+      "id": "2026-08-08-concept-0be1ef6849",
+      "question": "在多个 worktree 组成的仓库中，如何用一条命令列出所有 worktree 的状态并汇总未提交变更？",
+      "source_date": "2026-08-08",
+      "source_concept": "待确认变化线索",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-08-08T06:03:30.839862+08:00",
+      "updated_at": "2026-08-08T06:03:30.839862+08:00"
+    },
+    {
       "id": "2026-08-07-git-ref-f596303d8e",
       "question": "如果两个不同提交内容完全相同，它们的 SHA 会一样吗？为什么？",
       "source_date": "2026-08-07",

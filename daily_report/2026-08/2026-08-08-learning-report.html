@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-08-08 学习笔记日报</title>
+    <meta name="description" content="通过远端引用监控，掌握引用指针的概念与应用；通过工作区状态审计，认识未提交变化的时间不可证性，理解状态观测的可观测性边界。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260808-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-08-08</p>
+        <h1>Git 状态观测：从 ref 指针到工作区线索</h1>
+        <p>今天用两个真实场景，学习如何通过 Git 命令观察远端与本地状态，并理解观测结果背后的可证明边界。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>Git 状态观测的能力与边界</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>Git 引用（ref）指针</strong>
+                <small>ref 就是书签，指向最新一页。</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>远端只读监控（ls-rem…</strong>
+                <small>看门牌号，就知道屋里变没变，但不知…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>待确认变化线索</strong>
+                <small>脚印看得见，时间说不清。</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">综合来看，当天的知识主线是“Git 状态观测的能力与边界”。远端监控用 ref 与 SHA 回答“分支是否动过”，本地审计用 status 回答“工作区是否干净”。前者受限于不下载对象，所以看不到内容；后者受限于没有提交，所以看不到时间。两者合在一起，正好拼出 Git 证据世界的两堵墙：元数据可见但内容不可见；当前状态可见但历史归属不可证。最小权限访问是连接两端的思想：为了判断“是否变化”，只需要请求 ref 指针，不需要请求完整仓库。它让监控变轻，也主动放弃了提交内容层面的可观测性。反过来，如果需要知道具体改动，就必须扩大权限去 fetch 或 clone，这就是可观测性与权限范围的权衡。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["Git 状态观测的能力与边界"])
+  concept1["Git 引用（ref）指针"]
+  hub --&gt; concept1
+  concept2["远端只读监控（ls-remote）"]
+  hub --&gt; concept2
+  concept3["待确认变化线索"]
+  hub --&gt; concept3
+  related1["提交哈希"]
+  concept1 --&gt; related1
+  concept1 --&gt; concept2
+  related2["工作区状态审计"]
+  concept1 --&gt; related2
+  concept2 --&gt; concept1
+  related3["最小权限访问"]
+  concept2 --&gt; related3
+  related4["可观测性边界"]
+  concept2 --&gt; related4
+  concept3 --&gt; related2
+  related5["Git worktree"]
+  concept3 --&gt; related5
+  concept3 --&gt; related4
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4,related5 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="git-ref">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>Git 引用（ref）指针</h3>
+              <p>Git Reference (ref)</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">ref 就是书签，指向最新一页。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>ref 是一个可移动的命名指针，保存提交对象的哈希值。</li>
+                <li>分支名只是指向最新提交的标签，不包含提交历史本身。</li>
+                <li>ref 只反映已提交历史，未提交改动不会出现在 ref 中。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="git-ref" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="ls-remote">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>远端只读监控（ls-remote）</h3>
+              <p>git ls-remote</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">看门牌号，就知道屋里变没变，但不知道具体变了什么。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>只请求远端 ref 的名字和对应的提交哈希，不下载对象内容。</li>
+                <li>通过比较新旧 SHA 判断分支是否变化，是一种最小权限的观测方式。</li>
+                <li>只能证明 ref 指针移动，不能证明具体提交内容、作者或文件变更。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="ls-remote" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="pending-change-clue">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>待确认变化线索</h3>
+              <p>Pending Change Clue</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">脚印看得见，时间说不清。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>未提交改动没有生成提交哈希，因此无法通过 Git 元数据证明发生时间。</li>
+                <li>git status 只能证明当前工作区状态，不能证明状态何时出现或是否完成。</li>
+                <li>多个 worktree 会使未提交变更分散，审计时需覆盖所有 worktree。</li>
+                <li>在日报中应标记为“待确认变化线索”，而不是已确认历史事实。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="pending-change-clue" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="git-ref">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>Git 引用（ref）指针</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>把 Git 仓库想象成一本持续更新的书。书本身是很多提交对象，每个提交像一页快照，记录当时的文件状态。但读者不可能每次都说“请给我最新那页”，因为页与页之间互相链接，需要知道链的末端在哪。Git 引用（ref）就是解决这个问题的“书签”：它是一个可移动的命名指针，里面保存的是一个提交的哈希值。比如 `refs/heads/main` 这个 ref 指向 main 分支的最新提交哈希。ref 与提交历史的关系有点像“当前进度存档”和“完整游戏流程”的关系。流程是完整的历史，存档只是告诉你现在打到哪一关。你可以删除存档，历史还在；也可以移动存档，指向另一个进度。分支名并不真正“包含”提交，它只是指向提交的标签。今天 public-library 监控的正是 `refs/heads/main` 这个 ref。它不关心工作区文件长什么样，也不关心中间有多少提交，只关心这个指针现在指向哪一个 SHA。理解了 ref，才能理解后面 ls-remote 为什么不下载任何文件就能判断分支是否变化。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>每次提交生成一个唯一的 SHA-1 哈希，作为提交对象的指纹。</li>
+                <li>提交对象通过 parent 指针链接成有向无环图，ref 指向链的末端（即最新提交）。</li>
+                <li>读取 ref 的当前值，即可获得分支最新提交的哈希，无需遍历整个历史。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>监控脚本先保存历史 SHA `abcdef123456...`，然后执行 `git ls-remote origin refs/heads/main`，返回 `a1b2c3d4... refs/heads/main`，脚本发现两个 SHA 不同，就判定 `refs/heads/main` 这个 ref 指针移动了。整个过程没有下载仓库，也没有读取工作区。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>常见的误区是把分支名当成一个装着一串提交的盒子。实际上分支名只是一个 ref 指针，它保存的是一个提交哈希；提交与提交之间通过父子关系连成历史，分支名只是给这条链的末端起了一个可移动的名字。</li>
+                <li>另一个误区是混淆 HEAD 与分支：HEAD 通常是一个符号引用，指向当前所在的分支；而 `refs/heads/main` 是那个分支本身的指针。工作区还没提交的改动，ref 也完全不知道。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>提交哈希</td><td>Git 引用（ref）指针保存的是提交哈希，因此 ref 是提交哈希的命名别名。</td></tr>
+                <tr><td>远端只读监控（ls-remote）</td><td>远端只读监控（ls-remote）直接读取 refs/heads/main 的当前值，说明 ref 是远程状态观测的基本单位。</td></tr>
+                <tr><td>工作区状态审计</td><td>ref 只反映已提交历史；工作区未提交变更不写进 ref，所以需要工作区状态审计来补充。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果分支被删除，对应的 ref 文件会怎样？是否还能通过提交哈希找到历史？</li>
+                <li>`refs/heads/main` 与 `HEAD` 的指向关系在切换到其他分支时会发生什么变化？</li>
+                <li>为什么不直接用递增数字给分支版本命名，而要使用内容哈希来定位提交？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="ls-remote">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>远端只读监控（ls-remote）</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>`git ls-remote` 是一个向远端仓库问路的命令：它只索要远端所有引用（ref）的名字和对应的提交哈希，不下载提交对象、不 clone、不 fetch。因为提交哈希本身就是状态的指纹，所以只要比较“上次记录的 SHA”和“这次返回的 SHA”，就能判断某个分支是否被移动。这种监控方式非常符合最小权限思想：为了回答“远端分支变了吗”，最小必要信息是一个 ref 名字加一个 SHA。它不需要知道提交信息、作者、文件列表、diff，也不需要把仓库复制到本地。于是它可以很轻、很快、很低侵入地高频运行，适合做定时巡检。但它也有明确的可观测性边界：它只能证明 `refs/heads/main` 这个指针从旧 SHA 变成了新 SHA，不能证明这中间新增了几个提交、谁提交的、改了什么文件。就像看到门牌号变了，只能推断里面有变化，却不知道具体变化是什么。若需要具体内容，必须改用 `git fetch` 把对象下载到本地。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>远端仓库通过 refs 暴露引用状态，每个 ref 对应一个 SHA。</li>
+                <li>ls-remote 只获取 ref 列表及哈希，不获取对象数据库内容，因此网络开销小。</li>
+                <li>对比历史 SHA 与当前 SHA，即可得到分支是否移动的布尔结论。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>public-library 的定时任务先记住 `refs/heads/main` 的历史 SHA，然后执行 `git ls-remote origin refs/heads/main`。假设返回 `9f3e1a2... refs/heads/main`，与历史 SHA `2b4c6d8...` 不同，于是它把状态标为 changed。但它没有本地对象可以查看提交说明，所以只能输出“远端版本变化线索”而不是“某某作者提交了某某改动”。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>有些人以为 `git ls-remote` 会把远端提交记录下载到本地，或者至少会更新本地的 remote-tracking 分支。实际上它只返回远端 ref 的名单与哈希，不写对象数据库，也不更新 `refs/remotes/origin/*`。</li>
+                <li>另一个误区是认为“远端 SHA 变了”就等于知道了具体提交内容；其实这只是状态层面的变化信号，内容层面的信息完全不可见。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>Git 引用（ref）指针</td><td>ls-remote 的观察对象是 Git 引用（ref）指针，比较对象是提交哈希，因此它把 Git 引用（ref）指针与提交哈希直接串起来。</td></tr>
+                <tr><td>最小权限访问</td><td>ls-remote 只请求 ref 元数据，是典型的最小权限访问；它不 clone、不 fetch，所以不会把仓库内容读到本地。</td></tr>
+                <tr><td>可观测性边界</td><td>ls-remote 能回答“ref 是否变化”，但回答不了“具体变了什么”，这正是可观测性边界的一个具体表现。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当监控需求从“分支是否变化”升级为“变化了哪些提交和文件”时，应该怎样从 ls-remote 切换到 git fetch？</li>
+                <li>如果远端启用了协议 v2，ls-remote 的过滤能力（如只请求某个 ref）会对监控效率有什么影响？</li>
+                <li>如何验证 ls-remote 返回的 SHA 确实来自被信任的远端，而不是中间人伪造的？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="pending-change-clue">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>待确认变化线索</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>Git 的可靠快照只存在于提交对象里。未提交的修改、未暂存的文件、未跟踪的文件都停留在工作区，并没有形成提交哈希。`git status` 能列出它们，但 Git 的元数据不能证明这些改动是什么时候发生的，也不能证明它们是否已经完成。工作区状态审计就是做这样一次“现场检查”：看看当前工作区里有哪些与 HEAD 不同、但还没有进入版本控制的东西。tiny-sea-war 的检查发现：目标时间窗口内没有任何新提交，主工作区却有未提交变更和未跟踪文件。于是这些变化只能被记录为“当前存在”，而不能写成“昨天完成了这些工作”。为什么不能证明时间？因为 Git 对未提交内容不生成快照，没有写入对象数据库，自然也没有交给提交哈希来背书。文件系统的时间戳虽然存在，但它可以被修改、可能受同步工具影响，不能作为 Git 层面的可靠证据。因此，“待确认变化线索”是一种严谨的表述：不忽略现象，也不夸大结论。如果仓库启用了多个 worktree，这种审计还要分别查看每个 worktree，因为未提交变更可能分散在不同目录。今天 tiny-sea-war 提到存在 1 个 worktree 的待确认线索，说明状态审计不能只看主工作区。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Git 只对已提交内容生成不可篡改的哈希元数据。</li>
+                <li>未提交内容仅存在于工作区，没有进入对象数据库，因此没有 Git 层面的时间证明。</li>
+                <li>工作区状态审计基于 git status 的当前输出，只能反映“存在”，不能反映“何时”。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>tiny-sea-war 的总结里写着：目标日期前一天至今窗口内没有提交，但 `git status` 发现主工作区存在未提交变更和未跟踪文件，其中包括若干 `.uid` 文件。由于存在这些文件的时间无法被 Git 证明，总结没有把它们当成已确认的历史事实，而是标记为“待确认变化线索”。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>常见误区是把“工作区有未提交改动”直接等同于“目标日期发生了这些改动”。`git status` 只能证明“现在有这个状态”，不能证明“它在什么时候出现”。</li>
+                <li>另一个误区是以为未跟踪文件也已经被 Git 管理；实际上它只是放在工作区里、还没有被纳入版本控制的文件，因此它的证据效力更弱，只能作为线索。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>工作区状态审计</td><td>待确认变化线索来自工作区状态审计，而工作区状态审计观测的是 Git 尚未快照的内容，与 ref 指针所代表的已提交历史不在同一层面。</td></tr>
+                <tr><td>Git worktree</td><td>多个 Git worktree 会使未提交变更分散在不同目录，因此审计时不能只看主工作区，否则会漏掉待确认线索。</td></tr>
+                <tr><td>可观测性边界</td><td>待确认变化线索与可观测性边界本质相同：工具只能证明“当前存在状态”，不能证明“状态何时发生或是否完成”。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何借助 shell 历史、编辑器日志、外部系统记录等证据，把待确认变化线索升级为较可信的时间归属？</li>
+                <li>在多个 worktree 组成的仓库中，如何用一条命令列出所有 worktree 的状态并汇总未提交变更？</li>
+                <li>`.uid` 文件是否真的用于 Godot 资源唯一标识？可以用哪些实验或官方文档验证？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">综合来看，当天的知识主线是“Git 状态观测的能力与边界”。远端监控用 ref 与 SHA 回答“分支是否动过”，本地审计用 status 回答“工作区是否干净”。前者受限于不下载对象，所以看不到内容；后者受限于没有提交，所以看不到时间。两者合在一起，正好拼出 Git 证据世界的两堵墙：元数据可见但内容不可见；当前状态可见但历史归属不可证。最小权限访问是连接两端的思想：为了判断“是否变化”，只需要请求 ref 指针，不需要请求完整仓库。它让监控变轻，也主动放弃了提交内容层面的可观测性。反过来，如果需要知道具体改动，就必须扩大权限去 fetch 或 clone，这就是可观测性与权限范围的权衡。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">在 Git 世界里，“可证明的事实”依赖于你观察的层和使用的命令。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如果分支被删除，对应的 ref 文件会怎样？是否还能通过提交哈希找到历史？</li>
+            <li>当监控需求从“分支是否变化”升级为“变化了哪些提交和文件”时，应该怎样从 ls-remote 切换到 git fetch？</li>
+            <li>如何借助 shell 历史、编辑器日志、外部系统记录等证据，把待确认变化线索升级为较可信的时间归属？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
