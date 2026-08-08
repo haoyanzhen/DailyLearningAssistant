@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-08-09 学习笔记日报</title>
+    <meta name="description" content="今日学习 Godot 资源识别码、关卡索引偏移和 Git 观测证据的差异，理解稳定标识与可观测粒度的边界，避免从指针变化推断文件变更。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260809-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-08-09</p>
+        <h1>从资源 UID 到证据粒度：理解稳定标识与可观测性边界</h1>
+        <p>今天的仓库状态很有趣：远端只读监控只看到指针未动，本地提交却列出了文件级变更，两种证据带我们深入 Godot 资源 UID、关卡索引与证据粒度的世界。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>引用与标识的可靠性</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>Godot `.uid`…</strong>
+                <small>资源搬家不慌张，UID 就是身份证。</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>关卡索引与边界偏移</strong>
+                <small>第 2 关不等于下标 2，先减一再…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>指针级证据与文件级证据的差异</strong>
+                <small>ls-remote 只看指针动没动…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念都在讲“引用和标识的可靠性”。.uid 文件为资源提供了稳定的唯一标识，避免路径变化后引用断裂；关卡索引为关卡提供了数字编号，但一旦边界偏移，就会加载错误的碰撞场和导航数据；而指针级证据与文件级证据的差异，则提醒我们：不同的观测手段只能回答不同粒度的问题，只有选择合适的证据等级，才能得到可信的变更结论。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["引用与标识的可靠性"])
+  concept1["Godot `.uid` 文件"]
+  hub --&gt; concept1
+  concept2["关卡索引与边界偏移"]
+  hub --&gt; concept2
+  concept3["指针级证据与文件级证据的差异"]
+  hub --&gt; concept3
+  related1["Git 状态指纹 SHA"]
+  concept1 --&gt; related1
+  related2["碰撞场资源"]
+  concept1 --&gt; related2
+  concept1 --&gt; concept3
+  related3["碰撞场"]
+  concept2 --&gt; related3
+  related4["自动化测试与回归验证"]
+  concept2 --&gt; related4
+  concept2 --&gt; concept1
+  related5["Git 引用（ref）指针"]
+  concept3 --&gt; related5
+  related6["状态指纹 SHA"]
+  concept3 --&gt; related6
+  related7["最小权限访问原则"]
+  concept3 --&gt; related7
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4,related5,related6,related7 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="godot-uid-file">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>Godot `.uid` 文件</h3>
+              <p>Godot Resource UID</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">资源搬家不慌张，UID 就是身份证。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>.uid 文件在 Godot 4.x 中为每个需要稳定引用的资源生成，内容是一串唯一 ID。</li>
+                <li>当资源文件被移动或改名后，引擎通过 UID 仍能定位原始资源，避免引用路径断裂。</li>
+                <li>.uid 不是内容哈希，而是随机生成的唯一标识，不应当作缓存或垃圾文件随意删除。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="godot-uid-file" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="level-index-off-by-one">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>关卡索引与边界偏移</h3>
+              <p>Level Index and Off-by-One Error</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">第 2 关不等于下标 2，先减一再取数。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>数组下标从 0 开始，玩家看到的关号从 1 开始，两者需要明确映射。</li>
+                <li>off-by-one 错误会导致加载错误的地图、碰撞场和敌人配置。</li>
+                <li>修复索引偏移时，往往需要同步更新受影响的测试脚本和碰撞场模块。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="level-index-off-by-one" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="pointer-vs-file-level-evidence">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>指针级证据与文件级证据的差异</h3>
+              <p>Pointer-level vs File-level Evidence</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">ls-remote 只看指针动没动，想看文件得 fetch。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>git ls-remote 只返回 ref 指向的 SHA，属于指针级证据。</li>
+                <li>查看具体文件变更需要本地提交记录或 git fetch 下载对象后的文件级证据。</li>
+                <li>两种证据适用场景不同，不能互相替代，也不能从指针级推断文件级结论。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="pointer-vs-file-level-evidence" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="godot-uid-file">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>Godot `.uid` 文件</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>在 Godot 4.x 中，每个需要稳定引用的资源（如脚本）旁边会生成一个同名后缀为 .uid 的小文件，里面存放一串随机生成的唯一 ID。引擎在解析资源引用时，优先以这个 ID 为凭据，而不是路径。因此当资源文件被移动、重命名或所在文件夹调整后，只要 UID 不变，场景中的引用依然有效，不会出现红色报错。本地 tiny-sea-war 的提交中新增了多个 .uid 文件（如 terrain_collision_field.gd.uid 和 navigation_collision_field_test.gd.uid），这正好为 '.uid 文件用于资源唯一标识'提供了实例。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Godot 4.x 在生成资源时为其分配随机唯一 ID，并写入同名 .uid 文件。</li>
+                <li>引擎引用解析先查 UID 映射表，再映射到当前路径，因此路径变化不影响最终定位。</li>
+                <li>UID 是稳定的标识符，与内容哈希无关，也不应被当作缓存文件删除。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一个“英雄”脚本原本住在 scripts/hero.gd，项目大整理后路径变成 characters/hero.gd。按照老办法，所有引用它的场景都会找不到它；但 Godot 通过 .uid 文件里的 ID 仍然能找到它，就像快递员扫身份证件一样，不受地址变化影响。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为 .uid 文件是编译缓存或垃圾文件，可以随意删除。实际上它们是资源索引，删除可能导致引用暂时失效。</li>
+                <li>误以为 .uid 内容是文件内容或路径的哈希。实际上它是随机生成的唯一标识。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>Git 状态指纹 SHA</td><td>.uid 文件与 Git 的 SHA 都是一种稳定标识，让对象不被路径或名字的变化所迷惑。</td></tr>
+                <tr><td>碰撞场资源</td><td>.uid 文件服务于 Godot 的资源唯一标识机制，与地形碰撞场、导航碰撞场等脚本资源紧密关联。</td></tr>
+                <tr><td>指针级证据与文件级证据的差异</td><td>在变更检测中，.uid 文件的新增为文件级证据提供了一个具体条目，帮助确认提交涉及了哪些资源。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>Godot 是如何生成 .uid 的？它能否保证在不同项目甚至全球范围内唯一？</li>
+                <li>如果两个 .uid 文件里恰好写入了相同的 ID，会发生什么？Godot 如何检测和处理冲突？</li>
+                <li>.uid 文件是否需要纳入版本控制？如果迁移到 Godot 3 或其他引擎，这些 UID 还能复用吗？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="level-index-off-by-one">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>关卡索引与边界偏移</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>关卡索引即用数字给关卡排序，程序通常将关卡数据存在数组里，而数组下标从 0 开始。若用户看到的“第 1 关”对应数组下标 0，则在用用户输入作为下标时需要做 -1 转换。如果遗漏或写错，就会产生 off-by-one（栅栏柱）错误：玩家选择第 n 关，实际加载了第 n+1 关的数据，或者访问越界崩溃。这个错误的影响会传导到地图、碰撞场和敌人配置等所有依赖索引的模块。例如，一个三关游戏列表为 [森林关, 沙漠关, 雪地关]，若直接用玩家输入的 2 作为下标，就会取到雪地关而不是沙漠关。修复这类问题常需要同步调整测试脚本，以覆盖边界用例。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>数组下标从 0 开始，用户界面编号从 1 开始，两者需要显式转换。</li>
+                <li>关卡索引是配置入口，偏移会连带影响地图、碰撞场、敌人等所有关联数据。</li>
+                <li>off-by-one 错误常被 UI 掩盖，只有通过边界测试才能暴露。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一个小游戏有 3 个关卡，列表是 [森林关, 沙漠关, 雪地关]，索引分别是 0、1、2。如果玩家选择“第 2 关”时代码直接用 selectedLevel（值为 2）去取列表，就会取到“雪地关”，而不是“沙漠关”。修复方法可以是在取列表前做一次转换 list[selectedLevel - 1]，或者把用户输入从 1 开始的编号先变成内部从 0 开始的索引。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为索引错误只是改一个数字的小问题。实际上关卡索引是配置入口，偏移会影响所有下游子系统。</li>
+                <li>误以为界面显示正常就没有索引错误。实际上用户界面会掩盖 off-by-one，只有仔细对比或测试才能发现。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>碰撞场</td><td>关卡索引偏移会直接影响地形碰撞场和导航碰撞场的加载，因为不同关卡可能对应不同的碰撞配置。</td></tr>
+                <tr><td>自动化测试与回归验证</td><td>修复关卡索引时同步更新测试脚本，体现了测试与回归验证在工程中的反馈闭环。</td></tr>
+                <tr><td>Godot `.uid` 文件</td><td>关卡索引的正确性依赖于用户可见编号到程序内部索引的映射规则，这与资源唯一标识要解决的问题都属于引用可靠性问题。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何设计一个关卡映射层，让用户看到的关卡号与程序内部索引完全解耦？</li>
+                <li>可以使用哪些单元测试或集成测试来捕获 off-by-one 错误？</li>
+                <li>在配置文件中，使用从 1 开始的编号还是从 0 开始的索引，哪个更不容易出错？为什么？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="pointer-vs-file-level-evidence">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>指针级证据与文件级证据的差异</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>在监控远程仓库时，git ls-remote 只读取远端引用（ref）指针指向的提交哈希，这属于指针级证据。它能够告诉我们某个分支的指针是否移动，但无法得知具体提交信息和文件改动。若要查看文件级证据，必须使用 git fetch 将提交对象下载到本地，才能查看 commit message、改动文件列表和 diff。以公共仓库 public-library 为例，ls-remote 显示 refs/heads/main 的 SHA 未变化，只能说明远端主分支指针没有移动；而本地 tiny-sea-war 的提交记录则给出了 6 个文件变更，属于文件级证据。两种证据适用场景不同：低成本只读监控可选用指针级，详细审查则必须获取文件级。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>ref 指针保存提交哈希，比较前后哈希即可判断是否变化，信息粒度极低。</li>
+                <li>commit 对象中保存 tree，tree 保存文件列表，只有 fetch 到本地才能读取这些细节。</li>
+                <li>监控目的决定证据粒度，最小权限原则倾向使用指针级，审查则需文件级。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>public-library 仓库的监控脚本通过 SSH 执行 git ls-remote，得到历史 SHA 与当前 SHA 相同，于是记录为 unchanged。这个结论只能说明远端 main 指针此刻没有移动，不能说明期间是否发生过提交后回滚等操作。而 tiny-sea-war 仓库的提交 87faa464 显示 HEAD -&gt; main, origin/main 指向同一提交，并且文件列表中 6 个文件变更，这是文件级证据，能直接看到改动范围。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为 ls-remote 返回的 SHA 相同就说明仓库完全没有变化。实际上只能说明检查的 ref 没有变，其他分支或标签可能已变。</li>
+                <li>误以为本地提交记录一定比远端 ref 证据更可信。实际上它们回答的问题不同，不能简单比较可信度。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>Git 引用（ref）指针</td><td>指针级证据对应 git ls-remote 的可观测性边界，而文件级证据来自本地提交记录或 git fetch 后的对象。</td></tr>
+                <tr><td>状态指纹 SHA</td><td>状态指纹 SHA 是指针级证据的核心，通过比较前后两次 SHA 是否相同来判断 ref 是否变化。</td></tr>
+                <tr><td>最小权限访问原则</td><td>最小权限访问原则支持使用指针级证据，在不需要文件细节时，只给 ref 读取权限，缩小安全暴露面。</td></tr>
+                <tr><td>关卡索引与边界偏移</td><td>关卡索引修复的提交记录属于文件级证据，说明本地提交可以提供比远端监控更细粒度的变更信息。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当监控需求从“分支是否变化”升级为“变化了哪些提交和文件”时，如何设计从 ls-remote 到 git fetch 的切换策略？</li>
+                <li>如何验证 ls-remote 返回的 SHA 确实来自被信任的远端，而不是中间人伪造？SSH 指纹和远端密钥在此起什么作用？</li>
+                <li>如何结合指针级证据、文件级证据以及工作区快照，构建一条完整可信的变更证据链？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念都在讲“引用和标识的可靠性”。.uid 文件为资源提供了稳定的唯一标识，避免路径变化后引用断裂；关卡索引为关卡提供了数字编号，但一旦边界偏移，就会加载错误的碰撞场和导航数据；而指针级证据与文件级证据的差异，则提醒我们：不同的观测手段只能回答不同粒度的问题，只有选择合适的证据等级，才能得到可信的变更结论。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">没有一种证据是全能的，只有组合使用才能得到更完整的图景。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>Godot 的 .uid 文件是如何生成并保证唯一性的？</li>
+            <li>如何设计关卡映射层来彻底避免 off-by-one 错误？</li>
+            <li>如何将远程监控从指针级升级到文件级，并保持权限最小化？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>

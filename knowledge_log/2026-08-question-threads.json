@@ -3,6 +3,96 @@
   "year_month": "2026-08",
   "threads": [
     {
+      "id": "2026-08-09-godot-uid-fd7a3cee3f",
+      "question": "如果两个 `.uid` 文件里恰好写入了相同的 ID，会发生什么？Godot 如何检测和处理冲突？",
+      "source_date": "2026-08-09",
+      "source_concept": "Godot `.uid` 文件",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-09T06:03:18.782842+08:00",
+      "updated_at": "2026-08-09T06:03:18.782842+08:00"
+    },
+    {
+      "id": "2026-08-09-godot-uid-a68c9c2cc8",
+      "question": "Godot 是如何生成 `.uid` 的？它能否保证在不同项目甚至全球范围内唯一？",
+      "source_date": "2026-08-09",
+      "source_concept": "Godot `.uid` 文件",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-09T06:03:18.782842+08:00",
+      "updated_at": "2026-08-09T06:03:18.782842+08:00"
+    },
+    {
+      "id": "2026-08-09-godot-uid-8d2d739238",
+      "question": "`.uid` 文件是否需要纳入版本控制？如果迁移到 Godot 3 或其他引擎，这些 UID 还能复用吗？",
+      "source_date": "2026-08-09",
+      "source_concept": "Godot `.uid` 文件",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-09T06:03:18.782842+08:00",
+      "updated_at": "2026-08-09T06:03:18.782842+08:00"
+    },
+    {
+      "id": "2026-08-09-concept-dfbb5c8f34",
+      "question": "如何结合指针级证据、文件级证据以及工作区快照，构建一条完整可信的变更证据链？",
+      "source_date": "2026-08-09",
+      "source_concept": "指针级证据与文件级证据的差异",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-08-09T06:03:18.782842+08:00",
+      "updated_at": "2026-08-09T06:03:18.782842+08:00"
+    },
+    {
+      "id": "2026-08-09-concept-763813b81c",
+      "question": "可以使用哪些单元测试或集成测试来捕获 off-by-one 错误？",
+      "source_date": "2026-08-09",
+      "source_concept": "关卡索引与边界偏移",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-09T06:03:18.782842+08:00",
+      "updated_at": "2026-08-09T06:03:18.782842+08:00"
+    },
+    {
+      "id": "2026-08-09-concept-75b6429124",
+      "question": "在配置文件中，使用从 1 开始的编号还是从 0 开始的索引，哪个更不容易出错？为什么？",
+      "source_date": "2026-08-09",
+      "source_concept": "关卡索引与边界偏移",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-09T06:03:18.782842+08:00",
+      "updated_at": "2026-08-09T06:03:18.782842+08:00"
+    },
+    {
+      "id": "2026-08-09-concept-6ac4fdbbc3",
+      "question": "当监控需求从“分支是否变化”升级为“变化了哪些提交和文件”时，如何设计从 `ls-remote` 到 `git fetch` 的切换策略？",
+      "source_date": "2026-08-09",
+      "source_concept": "指针级证据与文件级证据的差异",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-08-09T06:03:18.782842+08:00",
+      "updated_at": "2026-08-09T06:03:18.782842+08:00"
+    },
+    {
+      "id": "2026-08-09-concept-3477d7d71d",
+      "question": "如何设计一个关卡映射层，让用户看到的关卡号与程序内部索引完全解耦？",
+      "source_date": "2026-08-09",
+      "source_concept": "关卡索引与边界偏移",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-09T06:03:18.782842+08:00",
+      "updated_at": "2026-08-09T06:03:18.782842+08:00"
+    },
+    {
+      "id": "2026-08-09-concept-1fdc57c49d",
+      "question": "如何验证 `ls-remote` 返回的 SHA 确实来自被信任的远端，而不是中间人伪造？SSH 指纹和远端密钥在此起什么作用？",
+      "source_date": "2026-08-09",
+      "source_concept": "指针级证据与文件级证据的差异",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-08-09T06:03:18.782842+08:00",
+      "updated_at": "2026-08-09T06:03:18.782842+08:00"
+    },
+    {
       "id": "2026-08-08-ls-remote-e2c835af06",
       "question": "当监控需求从“分支是否变化”升级为“变化了哪些提交和文件”时，应该怎样从 ls-remote 切换到 git fetch？",
       "source_date": "2026-08-08",
