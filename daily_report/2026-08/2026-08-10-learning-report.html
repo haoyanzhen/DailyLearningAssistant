@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-08-10 学习笔记日报</title>
+    <meta name="description" content="当日学习围绕SHA引用指纹、状态基线与证据链时间归属，理解变更检测的证据层级，以及未提交变更只能作为待确认线索的原因。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260810-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-08-10</p>
+        <h1>证据的层级：从 SHA 指纹到时间归属</h1>
+        <p>通过两个仓库的观察，我们看到了变化检测的不同层级：从最轻量的 SHA 指纹，到需要基线的状态比较，再到时间归属的局限。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>变更检测的证据层级</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>SHA 引用作为状态指纹</strong>
+                <small>SHA 指纹变了，指针就动了；但指…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>状态基线与首次基线</strong>
+                <small>第一次看到的状态不是变化，而是未来…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>证据链的时间归属</strong>
+                <small>没有时间戳的改动，只能算是待确认的…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">今天的三个概念构成了一个完整的逻辑链：SHA 引用作为状态指纹，是变化检测的最小信号单元；状态基线与首次基线，为指纹比较提供了参考零点；证据链的时间归属，则决定了这些变化能否被钉在时间轴上，成为可信的历史事实。三者层层递进，帮助我们理解为什么 `ls-remote` 只能提供指针级证据，以及为什么未提交变更只能作为待确认线索。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["变更检测的证据层级"])
+  concept1["SHA 引用作为状态指纹"]
+  hub --&gt; concept1
+  concept2["状态基线与首次基线"]
+  hub --&gt; concept2
+  concept3["证据链的时间归属"]
+  hub --&gt; concept3
+  related1["远端只读监控（ls-remote）"]
+  concept1 --&gt; related1
+  related2["指针级证据与文件级证据的差异"]
+  concept1 --&gt; related2
+  concept1 --&gt; concept2
+  concept2 --&gt; concept1
+  related3["变更检测的正确性"]
+  concept2 --&gt; related3
+  concept2 --&gt; related1
+  related4["待确认变化线索"]
+  concept3 --&gt; related4
+  concept3 --&gt; related2
+  related5["可观测性边界"]
+  concept3 --&gt; related5
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4,related5 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="sha-fingerprint">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>SHA 引用作为状态指纹</h3>
+              <p>SHA as State Fingerprint</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">SHA 指纹变了，指针就动了；但指纹本身不告诉你改了什么。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>SHA 是仓库状态的数字指纹，由提交内容唯一决定</li>
+                <li>比较当前 SHA 与历史 SHA 即可判断 ref 是否移动</li>
+                <li>SHA 指纹只反映指针是否变化，不透露具体修改内容</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="sha-fingerprint" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="state-baseline">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>状态基线与首次基线</h3>
+              <p>State Baseline and Initial Baseline</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">第一次看到的状态不是变化，而是未来的比较起点。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>基线是变化检测的参考零点，没有基线无法判定变化</li>
+                <li>首次观察到的 ref 只记录为基线，不视为新增变化</li>
+                <li>后续比较当前值与基线，相等为未变化，不等为已变化</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="state-baseline" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="time-attribution">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>证据链的时间归属</h3>
+              <p>Time Attribution of Evidence Chain</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">没有时间戳的改动，只能算是待确认的线索。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>提交记录自带时间戳，可作为修改的时间锚点</li>
+                <li>工作区未提交改动没有 Git 时间戳，无法证明发生时间</li>
+                <li>缺少时间锚点的改动只能标记为待确认变化线索</li>
+                <li>需借助外部证据补全时间归属，但可信度有限</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="time-attribution" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="sha-fingerprint">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学</p>
+                <h3>SHA 引用作为状态指纹</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>在 Git 中，每一次提交的内容（包括文件快照、父提交、提交信息、作者等）都会被算出一个固定长度的 SHA-1 哈希值，通常表示为 40 位的十六进制字符串。这个哈希值是由内容本身决定的，只要内容有一个字节的差异，算出来的哈希就会完全不一样。因此，我们可以把 SHA 看作仓库某个状态的“指纹”：不需要打开仓库看每一个文件，只需要比较指纹是否一致，就能判断状态有没有变。在远端监控场景中，我们用 `git ls-remote` 拿到一个分支当前指向的 SHA，然后和之前记录下来的 SHA 进行比较：相同，就说明分支指针没有动；不同，就说明指针移动了。这就是 SHA 作为状态指纹的核心思想。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>提交内容（文件快照、父提交、提交信息、作者等）经哈希运算生成固定长度的 SHA-1 值</li>
+                <li>SHA 值由内容完全决定，内容任意字节变化都会导致哈希不同</li>
+                <li>通过 `git ls-remote` 获取 ref 当前 SHA，与历史基线比较</li>
+                <li>相同则指针未移动，不同则指针移动，由此判断仓库状态是否变化</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>public-library 的脚本执行 `git ls-remote` 得到 `refs/heads/main` 的 SHA，假设历史基线是 `8a6b...`，当前读取到的也是 `8a6b...`，那就判定“未变化”。某一天脚本发现当前 SHA 变成了 `c3d9...`，即使我们不知道中间经历了哪些提交、作者是谁、改了哪些文件，也能确定 main 分支的指针确实移动了。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误区：SHA 变了就代表仓库发生了很多修改。实际上，哪怕只改一个空格，SHA 也会变化。</li>
+                <li>误区：SHA 没变就代表仓库一切正常。实际上，如果发生 force push 后又回到原 SHA，或其它 ref 变化，只监控此 ref 时仍会判定未变化。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>远端只读监控（ls-remote）</td><td>SHA 指纹是其核心依据，通过比较当前与历史 SHA 判断 ref 是否变化。</td></tr>
+                <tr><td>指针级证据与文件级证据的差异</td><td>SHA 指纹属于指针级证据，无法提供文件级细节，这是两者分界。</td></tr>
+                <tr><td>状态基线与首次基线</td><td>首次观察到的 SHA 会被记为基线，这自然引出状态基线与首次基线的概念。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>Git 的提交哈希具体由哪些字段计算得到？为什么内容不变哈希就能保持稳定？</li>
+                <li>如果远端发生了 force push 后又回到原来的 SHA，ls-remote 监控能发现这次变化吗？为什么？</li>
+                <li>SHA-1 和 SHA-256 在作为状态指纹时有什么异同？Git 为什么正在迁移到 SHA-256？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="state-baseline">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>状态基线与首次基线</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>任何变化检测都需要一个“参考零点”，这个零点就是基线。基线是我们在时间轴上选定的已知状态，之后每次观察都拿当前状态和基线比较：当前值等于基线，就是“未变化”；不等，就是“已变化”。当天材料里提到，第一次看到某个 ref 时，只记录基线，不视为新增提交。原因很简单：第一次接触时，我们没有任何历史信息，不能判断这个指针是刚移动过还是几个月前就在那里。所以只能把这一刻的状态记下来，作为以后比较的起点。基线思想看似简单，却是所有监控系统正确工作的前提：没有基线，变化就无从谈起。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>变化检测需要一个参考零点，即基线</li>
+                <li>首次观察到某个 ref 时，因为没有历史信息，只能记录为基线，不视为新增变化</li>
+                <li>后续每次观察都拿当前值与该基线比较，相等为未变化，不等为已变化</li>
+                <li>基线一旦建立，监控变成循环比较过程</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设你从今天开始监控某个仓库的 main 分支，第一次运行 `git ls-remote` 得到的 SHA 是 `abc123`。你不能说“我发现了一个新提交 abc123”，因为你不知道它是什么时候创建的。你只能把 `abc123` 记入基线库。第二天再查，如果仍然是 `abc123`，则判断“未变化”；如果变成了 `def456`，才能说“相对基线发生了变化”，而且这个变化发生在第一次和第二次观察之间。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误区：把第一次看到的状态当作新增变化。实际上，第一次观察只作为基线。</li>
+                <li>误区：基线一旦设定就永远不变。当仓库被强制重置或删除重建时，需要主动重置基线。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>SHA 引用作为状态指纹</td><td>状态基线是 SHA 指纹比较的参照点，没有基线，当前哈希就没有‘变化’的含义。</td></tr>
+                <tr><td>变更检测的正确性</td><td>首次看到 ref 只记录基线，避免把历史存量误判为新增变化。</td></tr>
+                <tr><td>远端只读监控（ls-remote）</td><td>基线一旦建立，监控就变成‘当前值 vs 基线’的循环比较。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>什么时候需要重置基线？比如仓库被 force push 或者被删除重建时，应该如何重置？</li>
+                <li>在多分支监控中，每个分支是否都需要独立的基线？基线之间有什么关系？</li>
+                <li>如果首次观察到的 SHA 本身就是一个异常状态，基线会不会“污染”后续的检测结果？如何缓解？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="time-attribution">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>证据链的时间归属</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>证据链的时间归属，是指把一次修改“钉”在时间轴上的能力。在 Git 中，提交记录自带作者时间和提交时间，可以说明“这个提交在某时某刻被创建”。但工作区中未提交的改动没有这样的时间锚点：我们只能看到“当前工作区相对 HEAD 有这些差异”，却无法让 Git 证明这些差异是何时产生的。因此，如果我们需要复盘某天到底做了哪些工作，缺少提交记录的改动就不能被确认为“那一天完成的事实”，只能称为“待确认变化线索”。要补全时间归属，必须借助 Git 之外的证据，比如 shell 历史、编辑器自动保存日志、文件系统时间戳、外部系统记录或人工确认。但这些外部证据的可信度通常低于 Git 提交元数据，所以证据链仍然存在缺口。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Git 提交记录自带作者时间和提交时间，可作为修改的时间锚点</li>
+                <li>工作区未提交改动没有 Git 时间戳，无法证明改动何时产生</li>
+                <li>缺少时间锚点的改动只能标记为待确认变化线索</li>
+                <li>要补全时间归属，需借助 Git 之外的外部证据，但可信度较低</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>tiny-sea-war 仓库在 2026-08-10 的观察窗口内没有任何提交，但 `git status` 显示工作区有 28 个文件变更，包括设计文档、角色配置和脚本。比如一个角色绑定点配置被批量修改了，但 Git 只知道“当前文件与 HEAD 不同”，不知道这些改动是昨天做的、今天做的还是几天前开始的。因此，这份变更清单只能被记录为“待确认变化线索”。要确认这些改动发生的时间，需要查看开发者 shell 中的编辑命令、编辑器的恢复记录、或者直接询问开发者。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误区：认为工作区有改动就等于改动发生在最近。实际上，Git 无法证明未提交改动的时间。</li>
+                <li>误区：认为没有提交记录就说明没有工作成果。实际上，未提交改动可能是进行中的工作，只是缺少时间凭证。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>待确认变化线索</td><td>未提交变更缺少提交动作，导致时间归属断链，这是证据链时间归属的核心场景。</td></tr>
+                <tr><td>指针级证据与文件级证据的差异</td><td>指针级证据只能确认 ref 是否变化，而时间归属需要更丰富的提交元数据，两者对应证据链的不同粒度。</td></tr>
+                <tr><td>可观测性边界</td><td>要补全证据链，需要引入外部证据，这是对可观测性边界的一种超越与补充。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何设计一种机制，让工作区未提交的改动也能自动记录时间戳？例如 IDE 插件或文件系统监控。</li>
+                <li>shell 历史、编辑器日志、文件系统 mtime 这几种外部证据的可信度如何排序？为什么？</li>
+                <li>在需要精确知道“某天做了哪些事”的复盘场景中，除了 Git 提交记录外，还有哪些可靠的证据源？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">今天的三个概念构成了一个完整的逻辑链：SHA 引用作为状态指纹，是变化检测的最小信号单元；状态基线与首次基线，为指纹比较提供了参考零点；证据链的时间归属，则决定了这些变化能否被钉在时间轴上，成为可信的历史事实。三者层层递进，帮助我们理解为什么 `ls-remote` 只能提供指针级证据，以及为什么未提交变更只能作为待确认线索。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">证据是有层级的，每一层都定义了“我们到底知道了什么，以及还有哪些不知道”。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>Git 的提交哈希具体由哪些字段计算得到？为什么内容不变哈希就能保持稳定？</li>
+            <li>什么时候需要重置基线？比如仓库被 force push 或者被删除重建时，应该如何重置？</li>
+            <li>如何设计一种机制，让工作区未提交的改动也能自动记录时间戳？例如 IDE 插件或文件系统监控。</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
