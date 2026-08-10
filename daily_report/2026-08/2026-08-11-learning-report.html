@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-08-11 学习笔记日报</title>
+    <meta name="description" content="从两个真实场景切入，理解最小权限接口、提交元数据与变更内容分离、证据粒度三个概念，学会判断信息的可靠程度与可观测性边界。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260811-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-08-11</p>
+        <h1>从轻量监控到残缺提交：证据的边界</h1>
+        <p>今天通过 public-library 的轻量监控和 tiny-sea-war 的残缺提交，学会选择观察通道、辨别意图与事实、把握证据粒度。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>可观测性的边界：在有限条件下知道“…</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>最小权限接口</strong>
+                <small>只拿你需要的那一点点信息，绝不多拿。</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>提交元数据与变更内容分离</strong>
+                <small>标题是意图，diff 是事实，没有…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>证据粒度</strong>
+                <small>指针动了不代表你看到了细节，证据粒…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念构成一条证据链：最小权限接口决定了通过什么通道收集信息，提交元数据与变更内容分离区分了他人的意图描述和可验证的事实，证据粒度决定了最终能确认什么、不能确认什么。它们共同支撑一个普适理念：可观测性是有边界的，且边界往往由你选择的接口决定。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["可观测性的边界：在有限条件下知道“发生了”和“多细”"])
+  concept1["最小权限接口"]
+  hub --&gt; concept1
+  concept2["提交元数据与变更内容分离"]
+  hub --&gt; concept2
+  concept3["证据粒度"]
+  hub --&gt; concept3
+  related1["远端只读监控"]
+  concept1 --&gt; related1
+  related2["可观测性边界"]
+  concept1 --&gt; related2
+  related3["凭据透明性边界"]
+  concept1 --&gt; related3
+  concept2 --&gt; concept3
+  related4["状态指纹"]
+  concept2 --&gt; related4
+  related5["自动化测试作为行为契约"]
+  concept2 --&gt; related5
+  concept3 --&gt; related2
+  related6["状态基线"]
+  concept3 --&gt; related6
+  related7["待确认变化线索"]
+  concept3 --&gt; related7
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4,related5,related6,related7 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="least-privilege-interface">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>最小权限接口</h3>
+              <p>Least Privilege Interface</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">只拿你需要的那一点点信息，绝不多拿。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>最小权限接口只请求完成任务所需的最小信息，避免多余数据访问。</li>
+                <li>在 Git 监控中，`git ls-remote` 只返回 ref 名称和 SHA，不下载仓库内容。</li>
+                <li>多余的信息访问权会扩大攻击面、增加存储和信任复杂度。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="least-privilege-interface" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="metadata-content-separation">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>提交元数据与变更内容分离</h3>
+              <p>Separation of Commit Metadata and Change Content</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">标题是意图，diff 是事实，没有 diff 时标题只是候选线索。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>提交包含元数据（标题、作者、时间、文件统计）和变更内容（实际 diff）两层。</li>
+                <li>元数据是意图描述，diff 是可验证的实现事实，二者不能划等号。</li>
+                <li>缺少 diff 时，提交标题只能作为待验证的候选线索，不能当作已确认的机制。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="metadata-content-separation" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="evidence-granularity">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>证据粒度</h3>
+              <p>Evidence Granularity</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">指针动了不代表你看到了细节，证据粒度决定你知道什么、不知道什么。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>证据粒度是单次观测能提供的最小信息单位细度。</li>
+                <li>`git ls-remote` 提供 ref 指针级证据，只能判断分支是否移动。</li>
+                <li>更细粒度需要升级观测通道（如 git fetch），并付出更多数据、权限和处理成本。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="evidence-granularity" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="least-privilege-interface">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>最小权限接口</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>最小权限接口的意思是：一个程序或工具去访问另一个系统时，只请求完成当前任务所必需的最小信息，不多拿一样东西。就像你去图书馆借书，只需要凭条在柜台取书，不需要拿到库房总钥匙。public-library 的监控脚本只执行 `git ls-remote`，这个命令只会返回远端仓库里 ref 的名称和对应的 SHA，既不会 clone 整个仓库，也不会 fetch 对象内容。这么做的好处是：暴露面小、速度快、对远端的影响也小。如果换成克隆整个仓库，虽然也能判断 commit 是否变化，但会白白下载大量数据，还会让监控脚本拥有超出需求的数据访问权。最小权限接口的核心不是“功能弱”，而是“刚刚好”；它让监控工具只拿到判断“分支有没有动”所需的指纹，而不去触碰更重、更有风险的内容。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>最小权限的核心是“只拿完成任务所需的最小信息”，不多拿一样东西。</li>
+                <li>在 Git 监控中，判断分支是否变化只需要 ref 名称和 SHA，因此 `git ls-remote` 比 clone/fetch 更合适。</li>
+                <li>控制信息暴露面能降低数据风险、传输成本和信任复杂度。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设我们只关心远端 `main` 分支是否从昨天开始移动过。执行 `git ls-remote &lt;url&gt; refs/heads/main` 得到新 SHA，与基线 SHA 比较即可判断 unchanged/changed。整个过程不下载任何提交对象或文件内容，只获得一行 ref 数据。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为“能拿到更多信息的接口一定更好，因为功能更强”。</li>
+                <li>认为最小权限是能力妥协，实际上它是风险控制。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>远端只读监控</td><td>public-library 只调用 git ls-remote 而不是 git clone，体现了只获取所需元数据的原则。</td></tr>
+                <tr><td>可观测性边界</td><td>接口暴露的信息越少，能观察到的状态维度也越窄；ls-remote 看不到对象内容，所以监控边界止步于 ref 指针。</td></tr>
+                <tr><td>凭据透明性边界</td><td>远端身份信任依赖本机 key/agent，状态文件不记录密钥，接口本身也不暴露凭据细节。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>在 Git 监控场景中，如何判断 ls-remote 的权限范围已经足够，而不需要升级为 fetch？</li>
+                <li>如果未来监控需求从 ref 变化升级到需要提交内容变化，最小权限接口的设计原则会发生什么变化？</li>
+                <li>最小权限接口与安全审计之间有什么关系？更少的权限是否必然意味着更可验证的安全性？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="metadata-content-separation">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>提交元数据与变更内容分离</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>一个 Git 提交其实包含两层信息：一层是“元数据”，包括提交标题、提交说明、作者、提交时间、涉及到的文件列表和增删行数；另一层是“变更内容”，也就是真正每一个文件里的 diff——哪些行被删掉、哪些行被加进来。元数据告诉我们“有人声称做了什么”，变更内容告诉我们“他实际改了什么”。两者不能划等号。今天 tiny-sea-war 的提交标题是 `fix: fix rotating angle`，统计显示 28 个文件变化、184 行新增、29 行删除。材料没有提供 diff，所以我们只能确认提交者的意图是修复旋转角，而不能确认他到底是用什么方式修好的：是改了角度符号、调整了角度取值范围，还是修改了旋转插值方向？这些都要看 diff 才能知道。把提交标题当成实现机制，等于把快递单上的“易碎品”当成包裹里摔碎的证据，是不严谨的。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>提交由元数据层和内容层组成，元数据是“人声称做了什么”，内容层是“机器实际改了什么”。</li>
+                <li>没有 diff 时，我们只能获得提交者的意图声明，无法验证具体实现方式。</li>
+                <li>将“意图”与“事实”分离，才能避免把未经证实的标题当作结论。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一个提交的标题是 `fix: fix rotating angle`，统计显示 28 个文件变化、184 行新增、29 行删除，但没有 diff。我们能确认提交者声称在修旋转角，但不能确认具体改法——是改了角度符号、调整取值范围，还是修改旋转插值方向？这些只能在 diff 里看到。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把提交标题当作提交内容的可靠摘要。</li>
+                <li>认为“标题是 fix rotating angle，那就等于旋转角已经被正确修复”。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>证据粒度</td><td>标题和文件统计是粗粒度元数据，diff 才是细粒度内容证据，证据粒度决定了能回答的问题层次。</td></tr>
+                <tr><td>状态指纹</td><td>SHA 是提交对象的指纹，但标题和统计无法从指纹直接推导出来，需要读取提交对象和 diff 才能获得。</td></tr>
+                <tr><td>自动化测试作为行为契约</td><td>没有 diff 时，测试是否随实现同步变更成为判断修复意图的重要旁证。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>在缺少 diff 的情况下，有哪些外部证据可以帮助我们把“提交意图”验证为“实现事实”？</li>
+                <li>如何设计提交规范，使提交标题、说明和 diff 三者之间的对应关系更容易被自动化检查？</li>
+                <li>提交统计（文件数、行数）在什么情况下会误导人对变更真实影响范围的判断？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="evidence-granularity">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>证据粒度</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>证据粒度是指一次观测所能提供的最小信息单位有多细。粒度越粗，你能回答的问题越少；粒度越细，你能回答的问题越多，但获取成本也越高。public-library 使用 `git ls-remote` 得到的证据粒度是“ref 指针级”：只能知道某个分支的指针现在指向哪个 SHA。这个粒度足以回答“分支有没有动”，但不足以回答“动了多少次提交、提交者是谁、改了什么文件、diff 是什么”。因为 ls-remote 只返回 ref 名称和 SHA，不返回对象数据库里的任何内容。如果把观察切换到 `git fetch`，把远端对象下载到本地，证据粒度就会变细，变成“提交级”甚至“文件级/行级”。但获取更细的粒度需要更多的数据、更大的权限和更复杂的处理。理解证据粒度的意义在于：不要指望用一个粗粒度工具去回答细粒度问题，也不要以为指针变了就等于掌握了详细的变更历史。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>证据粒度由观测通道的能力决定，ls-remote 只能返回 ref 指针级信息。</li>
+                <li>指针级证据足以回答“分支有没有动”，但不能回答“动了多少次、改了什么文件、diff 是什么”。</li>
+                <li>要获得更细粒度证据需要升级观测通道（如 git fetch），并付出更多数据、权限和处理成本。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>public-library 通过 `git ls-remote` 监控远端 `refs/heads/main`，发现 SHA 从 `1234567` 变成 `89abcde`。我们能确认 ref 移动了，但不能确认是 1 次还是 5 次提交、提交者是谁、改了什么文件。要了解这些，需要通过 `git fetch` 把对象下载到本地，再用 `git log`、`git show` 获取更细粒度证据。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为“SHA 变了”就等于“我们获得了这次变化的所有细节”。</li>
+                <li>认为证据粒度越细越好，忽视了获取成本和数据冗余。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>可观测性边界</td><td>ls-remote 的接口能力决定了证据只能达到 ref 指针级，无法进入文件级和 diff 级，因此可观测性边界也随之固定。</td></tr>
+                <tr><td>状态基线</td><td>只有基线存在之后，指针级证据才能做出 unchanged/changed 判断；基线本身不携带任何内容细节。</td></tr>
+                <tr><td>待确认变化线索</td><td>未提交变更在 Git 中只有“有差异”这一指针级事实，缺少时间与成因，因此只能标记为待确认线索。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当需要从 ref 级监控升级到 commit/file/diff 级监控时，git fetch 之后本地对象库提供哪些新的证据粒度？</li>
+                <li>如何组合多个不同粒度的证据源（ls-remote、git log、文件系统 mtime），形成一条可信的证据链？</li>
+                <li>证据粒度越细是否总是越好？在什么场景下粗粒度证据反而更可靠、更可维护？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念构成一条证据链：最小权限接口决定了通过什么通道收集信息，提交元数据与变更内容分离区分了他人的意图描述和可验证的事实，证据粒度决定了最终能确认什么、不能确认什么。它们共同支撑一个普适理念：可观测性是有边界的，且边界往往由你选择的接口决定。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">可观测性是有边界的，且边界往往由你选择的接口决定。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>在 Git 监控场景中，如何判断 ls-remote 的权限范围已经足够，而不需要升级为 fetch？</li>
+            <li>在缺少 diff 的情况下，有哪些外部证据可以帮助我们把“提交意图”验证为“实现事实”？</li>
+            <li>当需要从 ref 级监控升级到 commit/file/diff 级监控时，git fetch 之后本地对象库提供哪些新的证据粒度？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
