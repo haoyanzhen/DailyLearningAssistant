@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-08-12 学习笔记日报</title>
+    <meta name="description" content="从固定种子测试到数据契约联动，再到横切变更模式，三层递进解释一次跨全栈提交背后的确定性、一致性与影响面工程。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260812-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-08-12</p>
+        <h1>固定种子、数据契约与横切变更：一次大型提交里的工程智慧</h1>
+        <p>通过 tiny-sea-war 的 37 文件无 diff 大提交，看看确定性测试、数据 schema 联动与横切变更如何交织成一次系统级升级。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>确定性、数据一致性与跨层变更</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>固定种子可复现测试</strong>
+                <small>种子相同，命运剧本就相同；AI 测…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>数据契约联动</strong>
+                <small>一份合同变了，四份合同都要跟着变…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>横切变更模式</strong>
+                <small>一次装修动全屋管线，文档、数据、代…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">固定种子保证 AI 测试在随机性面前稳定复现；数据契约联动保证四个模块在数据语义变化时不脱节；横切变更则提醒一次真正的功能升级需要文档、数据、schema、脚本、测试和工具同步更新。三者分别从测试确定性、数据一致性和变更影响面三个角度，解释了一次复杂提交背后的工程现实。它们都和证据粒度有关：固定种子测试是内容级证据的产物，数据契约联动目前只是文件级证据的候选线索，横切变更是从元数据中观察到的模式。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["确定性、数据一致性与跨层变更"])
+  concept1["固定种子可复现测试"]
+  hub --&gt; concept1
+  concept2["数据契约联动"]
+  hub --&gt; concept2
+  concept3["横切变更模式"]
+  hub --&gt; concept3
+  related1["游戏 AI 测试"]
+  concept1 --&gt; related1
+  related2["状态基线 / SHA 指纹"]
+  concept1 --&gt; related2
+  related3["测试运行器接入"]
+  concept1 --&gt; related3
+  related4["数据构建脚本与数据资产"]
+  concept2 --&gt; related4
+  concept2 --&gt; concept3
+  related5["证据粒度"]
+  concept2 --&gt; related5
+  concept3 --&gt; concept2
+  related6["提交元数据与变更内容分离"]
+  concept3 --&gt; related6
+  related7["workorder 任务上下文"]
+  concept3 --&gt; related7
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4,related5,related6,related7 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="fixed-seed-reproducible-test">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>固定种子可复现测试</h3>
+              <p>Fixed-Seed Reproducible Test</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">种子相同，命运剧本就相同；AI 测试不再靠运气。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>固定种子让伪随机序列完全可重复，测试结果摆脱运气波动。</li>
+                <li>AI 对战测试因此可以稳定复现失败，帮助定位算法缺陷或参数问题。</li>
+                <li>固定种子不消灭随机性，只是把随机序列变成可控变量，仍可换多粒种子覆盖不同情况。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="fixed-seed-reproducible-test" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="data-contract-linkage">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>数据契约联动</h3>
+              <p>Data Contract Linkage</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">一份合同变了，四份合同都要跟着变，否则数据就会各说各话。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>数据契约是模块间约定的通用语言，常由 schema 集中管理。</li>
+                <li>核心数据语义变化时，多个 schema 需联动更新，否则模块间读取错位。</li>
+                <li>schema 联动是跨模块的一致性保障，不只是文档层面的同步修改。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="data-contract-linkage" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="cross-cutting-change-pattern">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>横切变更模式</h3>
+              <p>Cross-Cutting Change Pattern</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">一次装修动全屋管线，文档、数据、代码、测试都要同步跟上。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>横切变更像一把刀切过系统多个层面，影响面呈面状而非点状。</li>
+                <li>各层必须保持一致：只改代码忘了文档和数据，团队认知落后；只改数据忘了代码，系统可能无法运行。</li>
+                <li>识别横切变更能提醒评审和测试不能只盯核心代码，还要检查所有被切到的层面。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="cross-cutting-change-pattern" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="fixed-seed-reproducible-test">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>固定种子可复现测试</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>程序中的随机并非真正随机，而由一个公式基于种子数产生。固定种子可复现测试在一开始把种子设为固定值，如 42，使整个测试过程里的随机完全可预测。运行十次，AI 每次面对的状况都一样，测试结果稳定；失败时可复现，便于找 bug。若没有固定种子，测试每次从不同起跑线开始，成绩差时难以分辨是策略问题还是运气问题。在 tiny-sea-war 的提交中新增了 submarine_ai_fixed_seed_test.gd，这是固定种子测试的文件级证据；具体如何调用种子函数、如何断言，因无 diff 只能合理推断。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>伪随机数生成器：相同种子产生完全相同的数字序列。</li>
+                <li>可复现前提：同一初始条件产生同一结果，与 SHA 指纹思想呼应。</li>
+                <li>自动化测试稳定性：固定种子隔离随机扰动，让失败可定位。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>测试潜艇 AI 躲避鱼雷时，固定种子为 20260812 后，AI 每次都会在同一时刻做出同样的转向，于是能清晰分辨算法 bug 与参数问题。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>固定种子后测试就不随机、覆盖率降低。实际上固定种子只是序列可重复，仍可换多粒种子扩展覆盖。</li>
+                <li>固定种子就一定能保证完全确定的结果。若还依赖真实时钟、网络、外部文件或哈希遍历顺序，结果依然可能抖动。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>游戏 AI 测试</td><td>固定种子让 AI 随机决策序列可复现，使对战测试成为可回归的自动化测试。</td></tr>
+                <tr><td>状态基线 / SHA 指纹</td><td>都依赖同一条件产生同一结果，只是基线是提交指纹，种子是随机序列指纹。</td></tr>
+                <tr><td>测试运行器接入</td><td>test_runner.gd 被修改，推测用于接入新测试，但接入方式尚无 diff 确认。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>为什么伪随机数生成器给定相同种子会产生完全相同的序列？</li>
+                <li>如果只固定种子，但测试代码中调用外部时间或环境变量，还能保证可复现吗？</li>
+                <li>在游戏 AI 测试中，除了固定种子，还有哪些因素会影响测试的确定性？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="data-contract-linkage">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>数据契约联动</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>数据契约可以理解成不同模块之间约定的通用语言。例如战斗模块知道“鱼雷伤害”写为 torpedo_damage，AI 模块也需要知道这个字段名，表现模块需要知道单位是整数还是浮点数。这些约定常被集中写在 schema 文档里。当核心数据语义改变，所有依赖字段的模块都要同步更新 schema，否则一个模块按老格式读，另一个按新格式写，两边对不上。这种多个 schema 在同一批改动里一起变化的现象就是数据契约联动。该次提交中 docs/21_combat_data_schema.md、docs/24_ai_data_schema.md、docs/25_presentation_data_schema.md、docs/26_simulation_data_schema.md 同时被修改，是数据契约联动的候选线索，而非已确认事实。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>共享字段语义：多个模块对同一字段名和类型有一致假设。</li>
+                <li>语义变化传播：核心概念变化会沿数据依赖链传导到所有相关 schema。</li>
+                <li>一致性保障：schema 联动避免读写双方因格式不一致而解耦失败。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>四个 schema 文档同时修改，暗示战斗、AI、表现、仿真四个层面共享的数据定义发生了联动调整；但要确认具体字段变化，仍需 diff 证据。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>schema 只是数据字典，改字段名全局替换即可。实际上其背后有类型、范围、必填、嵌套等约束，改动可能引发读取逻辑崩溃。</li>
+                <li>看到多个 schema 同时修改就能认定存在联动。目前只有文件级证据，还需 diff 级证据确认具体变化。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>数据构建脚本与数据资产</td><td>schema 定义模式，JSON 装载数据，构建脚本维护 roster 数据，契约变化会顺着数据管道扩散。</td></tr>
+                <tr><td>横切变更模式</td><td>多个 schema 文档同改是横切变更在数据层的具体表现。</td></tr>
+                <tr><td>证据粒度</td><td>目前只有文件级证据，要确认契约联动需要提交或 diff 级证据。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何设计 schema 版本管理，让多个 schema 的版本能够一一对应而不错位？</li>
+                <li>在没有 diff 的情况下，有哪些外部证据可以进一步验证数据契约联动是否真的发生？</li>
+                <li>数据契约联动是否必然意味着数据和构建脚本也要同步修改？什么情况下不一定？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="cross-cutting-change-pattern">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>横切变更模式</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>横切变更是一次改动跨越系统的多个不同层面。普通变更是点状的，只改一个函数；横切变更是面状的，同时改代码、配置文件、文档和测试。它影响范围广，各层之间需要保持一致。若只改运行时代码而忘记文档和数据，功能可能正常但团队认知落后；若只改数据而忘记代码，可能运行不起来。识别横切变更，就是提醒评审和测试时不只盯核心代码，还要检查所有被切到的层面。tiny-sea-war 的提交 3ec068cf 同时改了 docs、data、schema、scripts、tests 和 tools，正是横切变更模式的典型观察样本。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>跨层影响：一次逻辑升级需要在多个抽象层次同步落地。</li>
+                <li>一致性要求：各层之间若不同步，会产生隐藏的认知或运行错位。</li>
+                <li>影响面评估：从文件路径可预估影响范围，但具体内容需 diff 证据。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>tiny-sea-war 的提交 3ec068cf 同时修改 docs、data、schema、scripts、tests、tools，成为横切变更模式的典型观察样本。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>横切变更等于改动文件数量多。实际上关键在跨层而不是量多，少量文件覆盖多个层次也是横切变更。</li>
+                <li>一次提交修改几百个数据文件就是横切变更。如果只是同类型资产批量更新，不一定算，可能只是数据批量更新。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>数据契约联动</td><td>四个 schema 文档同时修改是横切变更在数据层的一个具体表现。</td></tr>
+                <tr><td>提交元数据与变更内容分离</td><td>识别横切变更主要依赖提交元数据中的文件路径，但内容层面的确认需要 diff 证据。</td></tr>
+                <tr><td>workorder 任务上下文</td><td>workorder 文档以“潜艇战斗 AI 运行时闭环”为主题，为横切变更提供了任务意图背景。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何自动从提交的文件路径中识别横切变更并计算影响范围？</li>
+                <li>横切变更在代码评审和回归测试中应该采取哪些更严谨的策略？</li>
+                <li>哪些架构设计（如依赖倒置、接口稳定）可以有效减少横切变更的发生？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">固定种子保证 AI 测试在随机性面前稳定复现；数据契约联动保证四个模块在数据语义变化时不脱节；横切变更则提醒一次真正的功能升级需要文档、数据、schema、脚本、测试和工具同步更新。三者分别从测试确定性、数据一致性和变更影响面三个角度，解释了一次复杂提交背后的工程现实。它们都和证据粒度有关：固定种子测试是内容级证据的产物，数据契约联动目前只是文件级证据的候选线索，横切变更是从元数据中观察到的模式。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">在复杂系统中，一致性和可复现性需要显式设计，而不是自然保证。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>为什么“同一条件产生同一结果”能同时体现在 SHA 指纹和随机种子上？</li>
+            <li>如何在缺少 diff 时用更多证据验证数据契约联动是否真实发生？</li>
+            <li>横切变更应该如何影响代码评审和回归测试的检查清单？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
