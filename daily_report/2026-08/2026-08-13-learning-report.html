@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-08-13 学习笔记日报</title>
+    <meta name="description" content="无变更复习日：从PRNG机制到测试确定性边界，再到变更影响面模型，串起一条可复现、可计算的确定性主线。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260813-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-08-13</p>
+        <h1>确定性：从种子到影响面</h1>
+        <p>固定种子为什么能复现？测试确定性需要封冻哪些输入？一次改动到底影响多少下游模块？今天用三个概念，把“确定性”变成一套可计算、可验证的方法。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>无变更复习日：确定性机制深挖</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>伪随机数生成器的确定性机制</strong>
+                <small>种子是账本的第一页，翻页规则固定…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>测试确定性的完整边界条件</strong>
+                <small>固定种子只锁住面粉，鸡蛋和烤箱还在…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>变更影响范围的计算模型</strong>
+                <small>影响范围是依赖图中的可达区域，不是…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">这三个概念共享同一个关键词：确定性。PRNG 机制是最底层的确定性来源，测试确定性边界把确定性的要求从随机数发生器扩展到整个测试输入面，变更影响范围计算则把确定性的价值用在回归验证上——只有测试可复现，算出的影响面才值得相信。今天的知识网络还连着另外三个复习概念：多 Schema 版本对齐的版本矩阵决定依赖图中关键节点如何变化，外部证据链的可信度分级与时间归属决定影响面计算的输入是否可信，渲染帧与逻辑帧的解耦则是“把可变因素隔离在逻辑层之外”的另一处体现。这样几个概念合起来，不是零散标题，而是围绕确定性、依赖和证据展开的一张网。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["无变更复习日：确定性机制深挖"])
+  concept1["伪随机数生成器的确定性机制"]
+  hub --&gt; concept1
+  concept2["测试确定性的完整边界条件"]
+  hub --&gt; concept2
+  concept3["变更影响范围的计算模型"]
+  hub --&gt; concept3
+  related1["固定种子可复现测试"]
+  concept1 --&gt; related1
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  concept2 --&gt; concept1
+  related2["渲染帧与逻辑帧的解耦"]
+  concept2 --&gt; related2
+  concept2 --&gt; concept3
+  related3["多 Schema 版本对齐的版本矩阵"]
+  concept3 --&gt; related3
+  related4["外部证据链的可信度分级与时间归属"]
+  concept3 --&gt; related4
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="prng-deterministic-mechanism">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 计算机科学</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>伪随机数生成器的确定性机制</h3>
+              <p>Deterministic Mechanism of PRNG</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">种子是账本的第一页，翻页规则固定，后续每一页都确定。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>PRNG 内部是一个确定性状态机，种子决定初始状态，状态转移函数决定后续所有输出。</li>
+                <li>同种子必同序列，这是固定种子测试能够复现随机事件的根本原因。</li>
+                <li>固定种子只锁住随机数流，测试还读取外部输入时并不够。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="prng-deterministic-mechanism" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="test-determinism-full-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>测试确定性的完整边界条件</h3>
+              <p>Complete Boundary Conditions for Test Determinism</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">固定种子只锁住面粉，鸡蛋和烤箱还在自由发挥。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>确定性要求同一代码、同一输入、同一受控环境产生同一可观测结果。</li>
+                <li>可变输入不止随机数，还包括系统时间、环境变量、路径、网络、遍历顺序、线程调度等。</li>
+                <li>固定种子只是必要条件，完整边界是把所有可变输入识别、固定或隔离。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="test-determinism-full-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="change-impact-scope-model">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>变更影响范围的计算模型</h3>
+              <p>Computational Model for Change Impact Scope</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">影响范围是依赖图中的可达区域，不是提交里的文件数量。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>以依赖图为模型，影响范围是从被修改节点出发的传递闭包。</li>
+                <li>横切变更涉及多个不相邻区域，影响范围是多个可达集合的并集。</li>
+                <li>文件数和行数只统计施工点本身，不能真实反映影响面。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="change-impact-scope-model" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="prng-deterministic-mechanism">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 计算机科学</p>
+                <h3>伪随机数生成器的确定性机制</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>伪随机数生成器（PRNG）并不是在掷骰子，而是一台按固定公式运转的机器。机器内部有一个“状态”作为当前账本；每生成一个数，账本就按固定规则翻到下一页。种子就是账本的第一页。只要第一页和翻页规则相同，之后每一页当然完全相同。以最简单的线性同余生成器（LCG）为例，X_{n+1} = (a × X_n + c) mod m。X_n 是当前状态，X_{n+1} 是下一个状态，a、c、m 是固定参数，mod 表示“除以 m 后取余数”。给定种子 X_0，后面的 X_1、X_2……全被这条递推式锁死。梅森旋转看起来复杂，但本质上是同一个思想：一个更大的状态盒子，配合确定的线性变换，按步推进。这样，“同种子同序列”就不再神秘。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>PRNG 内部状态按固定递推式更新，种子就是初始状态。</li>
+                <li>给定同一初始状态和同一转移规则，输出序列完全确定。</li>
+                <li>LCG 是递推式的典型示例，梅森旋转也是同一思想的大状态版本。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>设 a=5，c=3，m=16，种子 X_0=2。LCG 会得到 X_1=(5×2+3) mod 16=13，X_2=(5×13+3) mod 16=68 mod 16=4，X_3=(5×4+3) mod 16=23 mod 16=7。在同一个实现下，任何人从 X_0=2 开始都会得到 2,13,4,7……这条同样的序列。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把“固定种子”当成“只固定第一个随机数”，实际上固定的是整个状态链的起点。</li>
+                <li>觉得“伪随机”就不靠谱，但可复现性对测试、回放和联机同步是宝贵性质。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>固定种子可复现测试</td><td>PRNG 机制解释了为什么固定种子测试有效：种子相同，随机数序列就相同。</td></tr>
+                <tr><td>测试确定性的完整边界条件</td><td>固定种子只约束随机数流，时钟、环境变量、路径等污染源需要另外隔离，否则程序仍可能不可复现。</td></tr>
+                <tr><td>变更影响范围的计算模型</td><td>只有随机源可复现，影响面评估后的回归测试才有可靠的验证基础。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>线性同余生成器的周期最多是多少？a、c、m 应该如何选择才能让周期尽量长？</li>
+                <li>梅森旋转的内部状态比 LCG 大得多，它的周期和统计性质比 LCG 好在哪些地方？</li>
+                <li>当游戏里多个模块各自使用随机数时，如何隔离随机数流，避免某个模块多调用一次随机数影响其他模块？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="test-determinism-full-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>测试确定性的完整边界条件</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>如果把测试程序比作做蛋糕，固定随机种子只相当于固定了其中一种调料。要让每次成品完全一样，必须把其他调料、火候、环境都固定下来。测试确定性的完整要求是：同一份代码、同一组输入、同一个受控环境，必须产生同一个可观测结果。随机数发生器只是其中一个输入来源；系统时间、环境变量、当前工作目录、绝对路径、网络请求、随机设备、浮点舍入、字典遍历顺序、线程调度等都可能改变结果。因此，完整边界条件不是“设好种子就够了”，而是要把测试运行时会读取的全部可变输入都识别出来，并让它们在该测试中被固定、注入或隔离，让整个输入面都处于受控状态。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>把测试看成一个输入-输出系统，所有可能影响结果的外部输入都属于“输入面”。</li>
+                <li>随机数只是输入面的一部分，时间、环境变量、遍历顺序等都会改变结果。</li>
+                <li>只有让整个输入面受控（固定、注入或隔离），测试才算真正确定。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一个游戏 AI 测试固定了随机种子，但 AI 技能冷却判断里读取了系统时钟 Time.now()，导致每次运行进入的冷却状态都不同。把 Time.now() 替换成测试专用的假时钟，再把实体字典遍历改为按 id 排序，测试才从“偶尔复现”变成“稳定复现”。这说明种子之外的输入边界必须一起处理。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把固定种子当成可复现测试的充分条件，实际上它只是必要条件。</li>
+                <li>以为不显式调时间、不做网络请求就足够；哈希表迭代顺序、浮点优化、绝对路径或语言环境差异依然会让测试漂移。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>伪随机数生成器的确定性机制</td><td>种子只约束随机数流，时钟、环境变量、线程调度等污染源需要另外隔离。</td></tr>
+                <tr><td>渲染帧与逻辑帧的解耦</td><td>可变因素被隔离在渲染层，不写回逻辑状态，逻辑层的确定性才不被帧率破坏。</td></tr>
+                <tr><td>变更影响范围的计算模型</td><td>影响集合算出后需要回归测试；如果测试本身不确定，就无法判断失败是改动导致还是随机噪声。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何用依赖注入为代码提供假时钟，同时不改变生产环境中的调用方式？</li>
+                <li>浮点数在不同 CPU 或编译器优化下可能产生微小差异，哪些场景必须付出代价消除这种差异？</li>
+                <li>在实际项目中，如何区分“必须封冻”和“可以忽略”的可变输入，避免测试改造成本失控？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="change-impact-scope-model">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>变更影响范围的计算模型</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>要回答“一次改动会影响哪些地方”，不能只看提交里改了哪几个文件。更可靠的模型是把代码库看成一张依赖图：节点是文件或模块，边表示“谁依赖谁”。如果 B 被 A 使用，B 一变，A 就要一起检查；如果 A 又被 C 使用，C 也要继续检查。因此影响范围就是从被修改节点出发，沿着“谁在依赖它”的方向一层层向外扩展，直到没有新的受影响节点为止。在数学上，这对应图论里的传递闭包或可达集。横切变更的危险，是一次提交同时修改了依赖图中多个不相邻的区域，使影响范围变成多个可达集合的并集。文件数和行数之所以会误导，正是因为它们只统计了施工点本身，没有统计施工点能波及的整个路网。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>将代码库抽象为依赖图，节点是文件/模块，边表示“谁依赖谁”。</li>
+                <li>从被修改节点出发，沿反向依赖边做传递闭包，直到没有新节点。</li>
+                <li>横切变更的多个修改点产生多个可达集，最终影响范围取并集。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>三个文件：battle_schema.json 被 data_loader.py 读取，data_loader.py 又被 battle_logic.py 和 map_renderer.py 调用。这次提交只修改了 battle_schema.json，直接修改文件数是 1，但从它出发的依赖链会到达 data_loader.py、battle_logic.py、map_renderer.py。因此影响范围不是 1 个文件，而是 3 个下游文件；评审和回归测试都应该覆盖这 3 个下游模块。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>用文件数或行数衡量影响：改 1 个核心 schema 可能引爆一大片消费方，改 50 个独立配置文件可能只影响 50 个局部区域。</li>
+                <li>只看直接调用者，忽略间接影响：使用 B 的 A 又被 C 使用，C 也会被间接影响。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>多 Schema 版本对齐的版本矩阵</td><td>schema 是依赖图中的关键节点，版本错位会沿依赖边扩散到所有消费方，版本矩阵用于控制这种扩散。</td></tr>
+                <tr><td>外部证据链的可信度分级与时间归属</td><td>只有确认真实依赖关系和改动时间，影响面计算才有可信的事实基础。</td></tr>
+                <tr><td>测试确定性的完整边界条件</td><td>影响集算出后要靠可复现的回归测试确认，测试不稳定就无法验证影响面是否准确。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何从源码中可靠地提取依赖边，避免把 import 字符串、动态加载和注释误判为真实依赖？</li>
+                <li>当依赖图巨大时，如何用模块分层或架构边界把影响范围收敛到评审和测试真正需要覆盖的子集？</li>
+                <li>在 CI 中能否实现自动提示，例如在 PR 上列出受影响模块和对应测试套件，辅助团队决定评审范围？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">这三个概念共享同一个关键词：确定性。PRNG 机制是最底层的确定性来源，测试确定性边界把确定性的要求从随机数发生器扩展到整个测试输入面，变更影响范围计算则把确定性的价值用在回归验证上——只有测试可复现，算出的影响面才值得相信。今天的知识网络还连着另外三个复习概念：多 Schema 版本对齐的版本矩阵决定依赖图中关键节点如何变化，外部证据链的可信度分级与时间归属决定影响面计算的输入是否可信，渲染帧与逻辑帧的解耦则是“把可变因素隔离在逻辑层之外”的另一处体现。这样几个概念合起来，不是零散标题，而是围绕确定性、依赖和证据展开的一张网。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">固定种子能复现，不是因为种子本身神奇，而是因为伪随机数生成器是一台由种子启动的确定性状态机。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>梅森旋转的内部状态比 LCG 大得多，它的周期和统计性质比 LCG 好在哪些地方？</li>
+            <li>如何用依赖注入为代码提供假时钟，同时不改变生产环境中的调用方式？</li>
+            <li>在 CI 中能否实现自动提示，例如在 PR 上列出受影响模块和对应测试套件，辅助团队决定评审范围？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
