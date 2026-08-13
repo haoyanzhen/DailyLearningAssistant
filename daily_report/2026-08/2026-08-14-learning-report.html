@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-08-14 学习笔记日报</title>
+    <meta name="description" content="今日围绕可复现证据、确定性资源与结构归约三条主线，讲解Git提交哈希的内容寻址、随机数流分裂与跨模块隔离、强连通分量与影响图归约，让分析与测试在复杂系统中可复现、可收敛、可决策。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260814-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-08-14</p>
+        <h1>可复现证据 × 确定性资源 × 结构归约</h1>
+        <p>无变更复习日，我们从新事实转向更深的工作原理，围绕可复现证据、确定性资源与结构归约，拆解三个关键概念。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>原理深化：从不可变快照到组件级影响集</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>提交对象的哈希构成与内容寻址</strong>
+                <small>提交哈希 = 提交对象所有字段的指…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>随机数流分裂与跨模块隔离</strong>
+                <small>多模块共用一个随机数流，一个模块多…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>强连通分量与影响图归约</strong>
+                <small>互相可达的节点是一个电话群，消息传…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">概念之间并非孤立。Git 对象哈希为依赖提取提供不可变快照，使影响分析拥有可信底座；随机数流分裂把单条 PRNG 序列拆成互不干扰的子流，是多模块场景下保持确定性的关键结构；强连通分量归约则将大依赖图压缩成有向无环图，把影响范围从文件级收敛到组件级。三者的共同目标是让软件分析和测试在复杂系统中依然可复现、可收敛、可决策。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["原理深化：从不可变快照到组件级影响集"])
+  concept1["提交对象的哈希构成与内容寻址"]
+  hub --&gt; concept1
+  concept2["随机数流分裂与跨模块隔离"]
+  hub --&gt; concept2
+  concept3["强连通分量与影响图归约"]
+  hub --&gt; concept3
+  related1["静态依赖边的鲁棒提取"]
+  concept1 --&gt; related1
+  concept1 --&gt; concept2
+  related2["时间源抽象"]
+  concept2 --&gt; related2
+  related3["提交对象哈希"]
+  concept2 --&gt; related3
+  concept3 --&gt; related1
+  related4["变更驱动的回归测试选择"]
+  concept3 --&gt; related4
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="git-commit-hash-content-addressing">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>提交对象的哈希构成与内容寻址</h3>
+              <p>Commit Object Hashing &amp; Content Addressing</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">提交哈希 = 提交对象所有字段的指纹，内容一变指纹就变，历史从此不可篡改。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>提交对象包含 tree 哈希、父提交哈希、作者、提交者、提交消息等字段，提交哈希是对这些字段整体哈希计算得到的指纹。</li>
+                <li>内容寻址意味着对象的名字就是对象内容的哈希，内容变化则对象名必然变化，对象一旦写入就不能原地修改。</li>
+                <li>提交哈希不仅由代码内容决定，还受作者名、提交者名、提交时间、提交消息和父提交哈希影响。</li>
+                <li>内容寻址机制让 Git 历史极难被篡改，因为伪造一个相同哈希的对象需要找到哈希碰撞。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="git-commit-hash-content-addressing" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="random-stream-splitting-cross-module-isolation">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 计算机科学</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>随机数流分裂与跨模块隔离</h3>
+              <p>Random Stream Splitting &amp; Cross-Module Isolation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">多模块共用一个随机数流，一个模块多抽一次，全世界都会跟着漂移；分给每个模块自己的抽奖箱，才真正互不干扰。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>伪随机数生成器（PRNG）按固定递推公式输出一条无限长的确定性序列，种子相同则序列相同。</li>
+                <li>多个模块顺序共享同一个 PRNG 时，一个模块多调用一次随机数，就会污染其他模块的随机序列，造成因果污染。</li>
+                <li>随机数流分裂将一个长序列划分为互不重叠的子序列，或为每个模块分配独立 PRNG 实例，实现跨模块随机隔离。</li>
+                <li>固定种子不等于隔离随机源，只有确保消费顺序独立，模块之间的确定性才能互不干扰。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="random-stream-splitting-cross-module-isolation" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="strongly-connected-component-impact-graph-reduction">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>强连通分量与影响图归约</h3>
+              <p>Strongly Connected Components &amp; Impact Graph Reduction</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">互相可达的节点是一个电话群，消息传到一个，全村皆知；分析影响时把整个村子打包成一个超级节点。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>若一组节点两两之间都能通过有向边互相到达，则它们构成一个强连通分量（SCC）。</li>
+                <li>将每个 SCC 收缩为一个大节点，原图从有环图变为无环的 DAG。</li>
+                <li>在变更影响分析中，SCC 内部任一节点被修改，影响会传播到整个分量，因此可将文件级影响集提升为组件级影响集。</li>
+                <li>单个节点也是合法的 SCC，收缩不会丢失对外部节点的影响信息。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="strongly-connected-component-impact-graph-reduction" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="git-commit-hash-content-addressing">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>提交对象的哈希构成与内容寻址</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>Git 会把文件内容存成 blob 对象，把目录结构存成 tree 对象，把一次提交的信息存成 commit 对象。commit 对象里装着 tree 哈希、父提交哈希、作者、提交者、提交消息等字段。提交哈希就是对这些字段整体做哈希计算得到的指纹。内容寻址的意思是：对象的名字就是对象内容的哈希，内容一旦变化，对象名也必然变化，因此对象一旦写入，就不能原地修改。这个机制让 Git 中的历史记录极难被篡改。想象你写了一封信，信封上的地址是根据信的内容算出来的。你改信里的一个字，信封地址就会变成新的，而旧地址下再也找不到旧信。别人想伪造一封看起来一模一样的信，除非他能重算出完全相同的地址，否则一改内容就会暴露。Git 的提交对象就像这封信，提交哈希就是那个神奇的地址。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>对象存储结构：blob 存文件内容，tree 存目录结构，commit 存提交信息，对象层层嵌套形成完整源码快照。</li>
+                <li>哈希计算方式：commit 对象的所有字段（tree 哈希、父提交哈希、作者、提交者、提交消息等）作为一个整体进行哈希，得到提交哈希。</li>
+                <li>内容寻址特性：对象名由内容哈希决定，内容如有任何变化，对象名必然变化，使得对象一旦写入即为不可变。</li>
+                <li>防篡改保证：篡改历史需要构造出相同哈希的新对象，在 SHA-1/SHA-256 的碰撞难度下几乎不可能，因此历史极难被篡改。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>你在仓库里执行一次提交，得到哈希 abc123。后来你发现提交消息写错了，用 git commit --amend 修改消息，提交哈希立刻变成 def456。这说明提交消息是哈希计算的一部分。反过来，如果文件内容没变，同一个提交哈希就能稳定地指向同一棵源码树，这就是内容寻址的力量。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误区：提交哈希只由代码内容决定。实际：作者名、提交者名、提交时间、提交消息和父提交哈希都会参与计算，代码内容相同但提交消息不同，哈希也会不同。</li>
+                <li>误区：提交哈希可以被“设置”成任意值。实际：在 SHA-1/SHA-256 的碰撞难度下，要人为构造一个指定哈希的提交对象几乎不可能。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>静态依赖边的鲁棒提取</td><td>依赖提取必须基于不可变 Git 对象快照，结果才能跨时间复现。</td></tr>
+                <tr><td>随机数流分裂</td><td>每个模块的随机种子分配方案需要被记录为配置，Git 哈希保证配置在历史中不可变，随机隔离方案因此可审计。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>commit 对象与 tree、blob 对象分别包含哪些字段，它们如何层层嵌套形成完整快照？</li>
+                <li>为什么 Git 正在从 SHA-1 迁移到 SHA-256？哈希长度和碰撞安全性如何影响信任？</li>
+                <li>内容寻址机制如何防止对象库中出现只更新一半的中间状态？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="random-stream-splitting-cross-module-isolation">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 计算机科学</p>
+                <h3>随机数流分裂与跨模块隔离</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>伪随机数生成器（PRNG）本质上是按固定递推公式不断翻状态，从而输出一条无限长的确定性序列。如果多个模块顺序消费同一个生成器，那么模块 A 每多调用一次随机数，模块 B 拿到的序列就会整体往后平移，相当于 A 的行为污染了 B 的随机因果。随机数流分裂就是把这一个长序列划分成互不重叠的子序列，并让每个模块只在自己的子序列里取数；更简单的做法是给每个模块独立的 PRNG 实例。这样模块之间的随机行为彻底隔离，谁多调用都不会影响别人。一个社团活动只有一个抽奖箱，大家轮流抽奖。如果前面的同学忍不住多抽了一次，后面所有人能拿到的奖品都会变。为了公平，给每位同学发一个独立的抽奖箱，每个人只在属于自己的箱子里抽，无论别人怎么抽，都不会影响你的随机体验。随机数流分裂就是给模块发“独立抽奖箱”。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>PRNG 是确定性的：同一种子开始，按固定递推公式产生相同的无限序列。</li>
+                <li>共享消费导致因果污染：多个模块顺序消费同一个 PRNG 时，任何模块的额外调用都会平移后续模块的序列。</li>
+                <li>隔离策略：将一个长序列划分成互不重叠的子流，或为每个模块创建独立 PRNG 实例，使消费互不影响。</li>
+                <li>审计与可复现性：每个模块的种子分配方案需要记录为配置，配合不可变 Git 对象哈希，使随机隔离方案可审计。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一个游戏里，战斗掉落和 NPC 对话都使用同一个 random() 函数。某次版本更新中，战斗系统多抽了一次随机数来判断暴击，结果玩家发现 NPC 的对话顺序全都变了。解决方案是创建两个 PRNG 实例，一个给战斗，一个给 NPC，两个实例的种子分别配置。从此战斗无论怎么改，NPC 的对话序列都稳定不变。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误区：只要固定了种子，整个程序就是确定的。实际：只有在一个 PRNG 且消费顺序固定时成立，多模块共享时任何一个模块多调用都会改变其他模块的序列。</li>
+                <li>误区：固定种子等于隔离随机源。实际：固定种子只保证同一序列，不保证不同模块之间的序列独立性。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>时间源抽象</td><td>随机源和时间源都是程序的外部可变输入，都通过显式分配与注入控制把不确定性挡在模块边界之外。</td></tr>
+                <tr><td>提交对象哈希</td><td>每个模块的种子分配方案需要被记录为配置，Git 对象哈希保证该配置在历史中不可变，随机隔离方案因此可审计。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>跳转技术（jump-ahead）如何高效计算 PRNG 状态的大步进，从而快速划分子流？</li>
+                <li>如何确定两个子流之间的间隔足够大，避免它们随调用次数增长而发生重叠？</li>
+                <li>如果两个模块需要共享部分随机序列，随机流分裂模型应该如何扩展？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="strongly-connected-component-impact-graph-reduction">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 计算机科学 / 软件工程</p>
+                <h3>强连通分量与影响图归约</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>在有向依赖图中，如果一组节点两两之间都能通过有向边互相到达，那么这一组节点就是一个强连通分量。把每个强连通分量收缩成一个大节点，原图就从一个有环图变成一个没有环的有向无环图（DAG）。在变更影响分析中，强连通分量内部任何一个节点被修改，影响都能传播到整个分量，所以它们本质上是利益共同体。把文件级影响集提升为组件级影响集，评审和测试需要覆盖的对象数会大幅下降。一个小村庄里所有人都是一个电话群，只要消息传给其中一个人，很快全村都知道。分析“消息会传到哪些地方”时，你不需要挨个记录村里谁传给谁，直接把整个村子当成一个整体即可。强连通分量就是依赖图中的“电话群”。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>定义：有向图中，两两互相可达的节点集合构成强连通分量。</li>
+                <li>归约操作：将每个 SCC 压缩为一个超级节点，原图成为 DAG。</li>
+                <li>影响传播：SCC 内部任何修改都会波及整个分量，因此可作为组件级影响单元。</li>
+                <li>计算效率：可基于依赖图的可达闭包进行 SCC 划分，将文件级影响集收敛为组件级，大幅降低评审与测试对象数量。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>模块 B 依赖 C，C 依赖 B，且都依赖 D。B 和 C 互相可达，形成强连通分量。修改 B 时，C 一定受影响，修改 C 时 B 也一定受影响。因此把 B、C 合并为一个组件 BC，影响集从原来的“B、C、D 以及下游”变成了“组件 BC 以及下游”。需要评审的文件数量从几十个收敛为几个组件。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误区：强连通分量一定包含很多节点。实际：单个节点也是合法的强连通分量。</li>
+                <li>误区：收缩强连通分量会丢失影响信息。实际：对外部节点而言，分量内部是否互相可达并不影响它对外的影响结果，分量一旦被触发就会整体波及。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>静态依赖边的鲁棒提取</td><td>依赖图质量决定 SCC 划分质量，缺失的边会把一个 SCC 错拆，多余的假边会把无关模块误并。</td></tr>
+                <tr><td>变更驱动的回归测试选择</td><td>SCC 归约把节点级影响集提升为组件级影响集，测试选择可以在组件粒度上建立变更资产到测试资产的映射。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>Tarjan 算法如何在 O(V+E) 时间内找出有向图的所有强连通分量？</li>
+                <li>动态加载的插件节点在依赖图中如何参与 SCC 归约，会不会造成伪分量？</li>
+                <li>如何结合模块分层架构，在 SCC 归约的基础上进一步裁剪组件级影响集？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">概念之间并非孤立。Git 对象哈希为依赖提取提供不可变快照，使影响分析拥有可信底座；随机数流分裂把单条 PRNG 序列拆成互不干扰的子流，是多模块场景下保持确定性的关键结构；强连通分量归约则将大依赖图压缩成有向无环图，把影响范围从文件级收敛到组件级。三者的共同目标是让软件分析和测试在复杂系统中依然可复现、可收敛、可决策。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">不变性、隔离性与归约性，是复杂软件分析可复现、可收敛、可决策的三大支柱。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>Git 为什么从 SHA-1 迁移到 SHA-256？哈希长度和碰撞安全性如何影响信任？</li>
+            <li>跳转技术（jump-ahead）如何高效计算 PRNG 状态的大步进，从而快速划分子流？</li>
+            <li>Tarjan 算法如何在 O(V+E) 时间内找出有向图的所有强连通分量？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
