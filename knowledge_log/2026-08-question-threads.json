@@ -3,6 +3,96 @@
   "year_month": "2026-08",
   "threads": [
     {
+      "id": "2026-08-15-git-fbf8a6704c",
+      "question": "一个 tree 对象能直接保存子 tree 的哈希吗？它是如何避免循环依赖的？",
+      "source_date": "2026-08-15",
+      "source_concept": "Git 对象图与提交快照的递归构成",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-15T06:04:56.139747+08:00",
+      "updated_at": "2026-08-15T06:04:56.139747+08:00"
+    },
+    {
+      "id": "2026-08-15-git-cd3e628ebe",
+      "question": "merge commit 的根 tree 是如何由两个父提交的树合并得到的？",
+      "source_date": "2026-08-15",
+      "source_concept": "Git 对象图与提交快照的递归构成",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-15T06:04:56.139747+08:00",
+      "updated_at": "2026-08-15T06:04:56.139747+08:00"
+    },
+    {
+      "id": "2026-08-15-git-7c59060551",
+      "question": "在对象库中，如何用 `git fsck` 检查有没有悬空对象或损坏对象？",
+      "source_date": "2026-08-15",
+      "source_concept": "Git 对象库的原子写入与引用更新",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-15T06:04:56.139747+08:00",
+      "updated_at": "2026-08-15T06:04:56.139747+08:00"
+    },
+    {
+      "id": "2026-08-15-git-3e4d797009",
+      "question": "lockfile 机制如果遇到进程崩溃，残留的 lock 文件会怎样处理？",
+      "source_date": "2026-08-15",
+      "source_concept": "Git 对象库的原子写入与引用更新",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-15T06:04:56.139747+08:00",
+      "updated_at": "2026-08-15T06:04:56.139747+08:00"
+    },
+    {
+      "id": "2026-08-15-git-26bf909835",
+      "question": "为什么 Git 最终采用“写临时文件再 rename”而不是直接写最终文件？",
+      "source_date": "2026-08-15",
+      "source_concept": "Git 对象库的原子写入与引用更新",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-15T06:04:56.139747+08:00",
+      "updated_at": "2026-08-15T06:04:56.139747+08:00"
+    },
+    {
+      "id": "2026-08-15-git-01dbb863a3",
+      "question": "如果两个文件内容完全相同，它们在对象图中会共享同一个 blob 吗？对仓库体积有什么影响？",
+      "source_date": "2026-08-15",
+      "source_concept": "Git 对象图与提交快照的递归构成",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-15T06:04:56.139747+08:00",
+      "updated_at": "2026-08-15T06:04:56.139747+08:00"
+    },
+    {
+      "id": "2026-08-15-concept-fd0f0ef283",
+      "question": "在设计监控策略时，如何根据变更风险决定采样频率？",
+      "source_date": "2026-08-15",
+      "source_concept": "状态采样的时间盲区与瞬态不可观测性",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-15T06:04:56.139747+08:00",
+      "updated_at": "2026-08-15T06:04:56.139747+08:00"
+    },
+    {
+      "id": "2026-08-15-concept-9d839543e7",
+      "question": "如果改用 GitHub 的 webhook 事件通知，能否完全避免时间盲区？",
+      "source_date": "2026-08-15",
+      "source_concept": "状态采样的时间盲区与瞬态不可观测性",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-15T06:04:56.139747+08:00",
+      "updated_at": "2026-08-15T06:04:56.139747+08:00"
+    },
+    {
+      "id": "2026-08-15-concept-1608884426",
+      "question": "reflog 能记录本地 ref 的瞬态变化吗？远端 reflog 是否总是可用？",
+      "source_date": "2026-08-15",
+      "source_concept": "状态采样的时间盲区与瞬态不可观测性",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-15T06:04:56.139747+08:00",
+      "updated_at": "2026-08-15T06:04:56.139747+08:00"
+    },
+    {
       "id": "2026-08-14-concept-f4b5e28d8f",
       "question": "跳转技术（jump-ahead）如何高效计算 PRNG 状态的大步进，从而快速划分子流？",
       "source_date": "2026-08-14",

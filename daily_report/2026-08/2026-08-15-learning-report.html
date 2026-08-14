@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-08-15 学习笔记日报</title>
+    <meta name="description" content="今天深入 Git 对象库的原子写入、提交快照的递归构成，并指出状态采样存在时间盲区，三者合力解释了 Git 状态可靠性与观测边界。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260815-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-08-15</p>
+        <h1>从内容寻址到观测盲区：Git 状态可靠性探秘</h1>
+        <p>今天是无变更复习日，我们从内容寻址下探到 Git 对象库的原子写入，再顺着哈希边展开整棵递归快照树，最后直面采样观测的时间盲区。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>Git 对象安全与观测边界</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>Git 对象库的原子写入与…</strong>
+                <small>先写对象，再改指针，原子替换，仓库…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>Git 对象图与提交快照的…</strong>
+                <small>一个 SHA 就能代表整个项目在那…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>状态采样的时间盲区与瞬态不…</strong>
+                <small>采样是拍照，不是录像；指纹相同，不…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">Git 对象库通过“先写对象、校验哈希、再更新引用”的原子顺序，避免出现引用指向半写对象的中间状态；对象图进一步把 commit、tree、blob 织成一棵递归哈希树，让一个 SHA 就能锁定整个项目快照。而状态采样的时间盲区则提醒我们，即使两次采样看到同一个 SHA，也不能断言中间没有发生过瞬态变化。这三者构成“写入安全 → 结构完整 → 观测有界”的递进链条，帮助我们在工程中既信任 Git 的可靠性，又理解自动监控的固有局限。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["Git 对象安全与观测边界"])
+  concept1["Git 对象库的原子写入与引用更新"]
+  hub --&gt; concept1
+  concept2["Git 对象图与提交快照的递归构成"]
+  hub --&gt; concept2
+  concept3["状态采样的时间盲区与瞬态不可观测性"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["随机数流分裂"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  related2["提交对象的哈希构成与内容寻址"]
+  concept2 --&gt; related2
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  related3["SHA 引用作为状态指纹"]
+  concept3 --&gt; related3
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="git-atomic-write">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>Git 对象库的原子写入与引用更新</h3>
+              <p>Atomic Write and Reference Update in Git Object Store</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">先写对象，再改指针，原子替换，仓库永不悬空。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>对象写入先写临时文件，校验哈希后再原子重命名到最终位置。</li>
+                <li>引用更新通过 lockfile 先写新值，再原子替换旧引用文件。</li>
+                <li>对象一旦写入不可变，断电或崩溃后对象库仍保持一致。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="git-atomic-write" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="git-object-graph-recursive">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>Git 对象图与提交快照的递归构成</h3>
+              <p>Recursive Structure of Git Object Graph and Commit Snapshot</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">一个 SHA 就能代表整个项目在那一刻的完整内容。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>提交对象通过根 tree 递归引用子 tree 和 blob，形成完整文件树。</li>
+                <li>任意文件内容变化会沿哈希链向上传播，最终改变 commit 哈希。</li>
+                <li>相同内容对象共享，天然去重，节省存储。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="git-object-graph-recursive" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="state-sampling-time-blind-spot">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>状态采样的时间盲区与瞬态不可观测性</h3>
+              <p>Time Blind Spots in State Sampling and Transient Unobservability</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">采样是拍照，不是录像；指纹相同，不代表剧情空白。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>采样只在特定时刻观察状态，无法覆盖两次采样之间的完整历史。</li>
+                <li>SHA 是状态指纹，不是事件日志，两个时刻 SHA 相同不能证明中间没有瞬态变化。</li>
+                <li>要缩小盲区需提高频率或改用事件驱动，但无法完全消除。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="state-sampling-time-blind-spot" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="git-atomic-write">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>Git 对象库的原子写入与引用更新</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象你要往图书馆里放一本新书。如果先撕掉旧索引卡片，再把新书上架，中间这段时间有人来查旧书就会扑空；如果先放书再更新索引，读者又暂时找不到它。Git 不希望出现这种中间状态，所以它遵循一个原则：先放好完整对象，再改指针。
+
+在 Git 里，对象是内容寻址的，对象名就是内容哈希。对象要进入对象库时，Git 不会直接写到最终路径，而是先写到一个临时文件，同时算好哈希、确认内容完整，再把它重命名（rename）到最终位置。这个重命名在同一个文件系统上是原子的——要么不存在，要么完整存在，不会出现半个对象。
+
+引用（ref）是指向提交的箭头，比如 `refs/heads/main` 保存着一个 SHA。更新引用也不是直接改文件，而是先写一个 lockfile，把新值写进去，然后原子替换旧引用文件。这样外部观察者在任何时刻看到的都是“旧引用 + 旧对象”或“新引用 + 新对象”，绝不会出现引用指向不存在或半写对象的状态。
+
+为什么这么重要？因为 Git 承诺对象一旦写入就不可变。原子写入保证了这条承诺不会被破坏。即使电脑在写入中途断电，重启后要么对象完整存在，要么临时文件被清理，对象库依然是一致的。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>对象写入采用“临时文件→校验→重命名”的原子顺序，避免中间状态。</li>
+                <li>引用更新采用“lockfile→原子替换”方式，保证引用要么是旧值要么是新值。</li>
+                <li>对象不可变保证了原子写入的承诺不破坏，即使崩溃也能恢复一致。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设你要在 Git 仓库里提交一个新版本。Git 先把新版本的全部文件内容分别写成 blob 对象，再把目录信息写成 tree 对象，最后写一个 commit 对象。每个对象都是先写临时文件、校验哈希、再放入对象库。等 commit 对象就绪后，Git 才通过 lockfile 把 `refs/heads/main` 从旧 SHA 改成新 SHA。这个过程里，如果任何一步失败，ref 依然指向旧提交，仓库不会进入“引用指向不存在对象”的状态。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>常见误区是“更新引用才是关键，对象随便写写就好了”。实际上引用只负责指路，如果对象没写完整，引用指向的就是一个悬空地址。</li>
+                <li>另一个误区是认为 Git 会直接原地修改对象文件——不会，对象一旦写入就不可变，新版本产生的是新的对象，旧对象仍留在仓库里。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>Git 对象图与提交快照的递归构成</td><td>原子写入保证对象先完整入库，对象图才能可靠地由 tree 和 commit 递归构成完整快照。</td></tr>
+                <tr><td>状态采样的时间盲区</td><td>引用更新是原子的，只能从旧状态切到新状态，但采样监控不一定能观察到中间瞬态。</td></tr>
+                <tr><td>随机数流分裂</td><td>随机子流起点需要作为配置记录，而对象库保证配置一旦提交就不可变，使随机流分配方案可复现、可审计。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>lockfile 机制如果遇到进程崩溃，残留的 lock 文件会怎样处理？</li>
+                <li>为什么 Git 最终采用“写临时文件再 rename”而不是直接写最终文件？</li>
+                <li>在对象库中，如何用 `git fsck` 检查有没有悬空对象或损坏对象？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="git-object-graph-recursive">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>Git 对象图与提交快照的递归构成</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>一个 Git 提交并不是一张简单的“文件清单”，而是一个指向“目录树”的指针。这棵树把整个项目的文件结构用一种分层的方式保存下来。你平时看到的文件夹嵌套，在 Git 里就是一棵递归的树：根树下面有子树，子树下面还有子树，一直到叶子节点——叶子节点就是文件内容（blob）。
+
+具体来说，Git 有四种对象：blob 保存文件内容，tree 保存目录条目，commit 保存一次提交的元信息并指向一棵根 tree，tag 偶尔会用到。一个 commit 对象里有一个字段叫 “tree”，它保存的是根 tree 的 SHA。根 tree 里列出的是项目顶层目录和文件，每个条目都存着对应的子 tree 或 blob 的哈希。子 tree 再递归地往下展开，就形成了整棵文件树。
+
+因此，当任意一个文件内容改变时，对应 blob 的哈希会变，包含它的 tree 的哈希也会变，往上一直到根 tree 都会变，最终 commit 的哈希也跟着变。这让提交快照具有“整体性”：一个 SHA 就代表了整个项目在那一刻的完整状态。你不需要存储所有文件的副本，因为相同的文件内容会共享同一个 blob，这是一种天然的去重。
+
+为什么这叫递归构成？因为你只要给出根 tree 的 SHA，就能顺着哈希一层层找到所有文件和子目录。就像根据一本书的目录，你不需要背出全部内容，目录上的每一个页码都能带你找到对应章节，而章节下面还有小节。Git 的“目录”就是 tree，“页码”就是指向子对象的 SHA。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Git 有 blob/tree/commit/tag 四种对象，commit 指向根 tree。</li>
+                <li>tree 保存目录条目，递归指向子 tree 与 blob，构成分层文件树。</li>
+                <li>内容变化导致哈希级联，使一个 SHA 成为整个快照的指纹。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设项目里有个文件 `src/game.ts`。第一次提交时，Git 把文件内容存成 blob A，`src` 目录存成 tree B，根目录存成 tree C，commit 指向 C。后来你在文件末尾加了一行，文件内容变长，Git 生成 blob D，因为 `src` 目录内容变了，所以 tree E 生成，根 tree F 生成，最后 commit 指向 F。旧的 blob A、tree B、tree C 和旧 commit 仍然存在，只是 `main` 分支现在指向新 commit。两个提交共享了没变的其他文件对象，整棵树是层层叠起来的。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>常见误区是认为 commit 里保存了“文件的快照副本”。实际上 commit 只保存一棵根 tree 的哈希，所有内容都存储在 tree/blob 对象里，而且相同内容只存一份。</li>
+                <li>另一个误区是认为 tree 只存文件名，实际上它还存文件模式（可执行权限等）和指向子对象的哈希。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>Git 对象库的原子写入</td><td>原子写入保证对象一个个安全入库，对象图描述这些对象如何连接成完整快照。</td></tr>
+                <tr><td>状态采样的时间盲区</td><td>对象图能解释某个 SHA 对应的完整内容，但 SHA 相同不能证明两次采样之间没有发生过瞬态变化。</td></tr>
+                <tr><td>提交对象的哈希构成与内容寻址</td><td>哈希构成针对单个对象，递归构成针对对象之间的连接。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>一个 tree 对象能直接保存子 tree 的哈希吗？它是如何避免循环依赖的？</li>
+                <li>如果两个文件内容完全相同，它们在对象图中会共享同一个 blob 吗？对仓库体积有什么影响？</li>
+                <li>merge commit 的根 tree 是如何由两个父提交的树合并得到的？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="state-sampling-time-blind-spot">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>状态采样的时间盲区与瞬态不可观测性</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>你有一个远程 Git 仓库，你每隔一小时用 `git ls-remote` 看一眼某个分支的 SHA。假设 10:00 看到的是 A，11:00 看到的还是 A。你能说这中间仓库完全没变吗？不能。可能有人在 10:30 把分支从 A 推到 B，又在 10:50 强制推回 A。你的两次采样之间发生了瞬态变化，但采样结果显示“没变”。这就叫时间盲区。
+
+凡是基于采样的监控，都有这个问题。采样只在特定时刻拍一张照片，两张照片之间发生了什么，只能靠推理，不能直接看到。Git 引用（ref）的更新是原子的，不代表事件可以被采样到。SHA 相同只能证明两个采样时刻的状态相同，不能证明两个时刻之间的事件历史为空。就像你每天中午给天空拍照，如果上午多云下午转晴，你只能看到正午的样子，看不到云是怎么走的。
+
+这种盲区不是 Git 的缺陷，而是观测方式的固有边界。要缩小盲区，就要提高采样频率，或者使用事件驱动机制（比如 hook 推送通知），但即使频率再高，也无法保证捕捉到瞬间发生又立即恢复的变化。因此，当我们需要用 Git 状态作为审计证据时，必须承认证据的粒度限制：它只能证明起点和终点的状态，不能完整叙述中间的剧情。
+
+为什么这个概念重要？因为很多自动化系统用轮询检测“变化”，用来判断是否需要构建、部署或告警。如果两次轮询之间发生了一次“闪回”，系统可能漏报。理解了这个盲区，你就知道什么时候该信任 SHA 对比结果，什么时候需要更细的事件日志（比如 reflog）。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>采样只获得离散时刻的状态快照。</li>
+                <li>状态指纹相同不代表事件历史为空。</li>
+                <li>盲区是观测方式固有边界，可通过提高频率或事件流缩小但不能根除。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>想象一个保安每隔 10 分钟看一眼大门的门锁。有一次门锁被人撬开又马上锁上，保安回来时锁还是好的，于是他记录“一切正常”。但实际上刚才有人进来过。保安的记录没有错，只是采样频率太低，错过了瞬态事件。Git 的 ls-remote 监控就是这位保安，只是它检查的是分支指针有没有动。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>常见误区是“SHA 没变就等于没发生过任何变化”。实际上 SHA 是状态指纹，不是事件日志。</li>
+                <li>另一个误区是“提高采样频率到极致就能消灭盲区”。理论上只要不是连续实时监控，就总有盲区；即使连续监控，也可能因为传输延迟或快照瞬间而漏掉某些瞬态。真正的解决思路是同时记录事件流，而不是只依赖状态采样。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>Git 对象库的原子写入</td><td>引用更新是原子的，ref 只能从旧有效状态切换到新有效状态，但采样监控不一定能采集到中间瞬态。</td></tr>
+                <tr><td>Git 对象图与提交快照的递归构成</td><td>对象图能解释某个 SHA 对应的完整内容，但 SHA 相同不能证明两次采样之间没有发生过瞬态变化。</td></tr>
+                <tr><td>SHA 引用作为状态指纹</td><td>指纹的“不变”不等于“事件不存在”。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果改用 GitHub 的 webhook 事件通知，能否完全避免时间盲区？</li>
+                <li>reflog 能记录本地 ref 的瞬态变化吗？远端 reflog 是否总是可用？</li>
+                <li>在设计监控策略时，如何根据变更风险决定采样频率？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">Git 对象库通过“先写对象、校验哈希、再更新引用”的原子顺序，避免出现引用指向半写对象的中间状态；对象图进一步把 commit、tree、blob 织成一棵递归哈希树，让一个 SHA 就能锁定整个项目快照。而状态采样的时间盲区则提醒我们，即使两次采样看到同一个 SHA，也不能断言中间没有发生过瞬态变化。这三者构成“写入安全 → 结构完整 → 观测有界”的递进链条，帮助我们在工程中既信任 Git 的可靠性，又理解自动监控的固有局限。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">Git 通过“先写对象、校验哈希、再原子更新引用”的顺序，确保仓库不会出现引用了半个对象的中间状态。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>lockfile 机制如果遇到进程崩溃，残留的 lock 文件会怎样处理？</li>
+            <li>一个 tree 对象能直接保存子 tree 的哈希吗？它是如何避免循环依赖的？</li>
+            <li>如果改用 GitHub 的 webhook 事件通知，能否完全避免时间盲区？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
