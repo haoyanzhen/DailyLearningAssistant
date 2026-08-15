@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-08-16 学习笔记日报</title>
+    <meta name="description" content="以内容寻址为主线，理解 blob 去重和体积效应，推导出对象图无环的必然性，并掌握合并提交根树的三方合并生成原理。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260816-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-08-16</p>
+        <h1>内容寻址与不可变对象图：从去重到三方合并</h1>
+        <p>今天围绕 Git 对象模型，从"内容即地址"出发，解释 blob 去重、对象图无环和 merge commit 根树的三方合并生成。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>Git 对象模型</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>内容寻址下的 blob 去…</strong>
+                <small>内容即地址，相同内容只存一份。</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>内容寻址对象库的循环依赖规避</strong>
+                <small>循环会让哈希变成死锁，内容寻址天然…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>合并提交的根树生成与三方合并</strong>
+                <small>合并不是拼目录，而是以共同祖先为基…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">内容寻址是起点，blob 去重是它在存储层的直接推论，循环依赖规避是它在结构层的安全边界，三方合并则是它在对象图上的构造性应用。三者都依赖哈希一致性：比较内容是否相同，本质上就是比较对象哈希是否相同。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["Git 对象模型"])
+  concept1["内容寻址下的 blob 去重与仓库体积效应"]
+  hub --&gt; concept1
+  concept2["内容寻址对象库的循环依赖规避"]
+  hub --&gt; concept2
+  concept3["合并提交的根树生成与三方合并"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["Git 对象模型"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="blob-deduplication-and-repository-volume">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>内容寻址下的 blob 去重与仓库体积效应</h3>
+              <p>Blob Deduplication and Repository Volume under Content Addressing</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">内容即地址，相同内容只存一份。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>blob 的哈希完全由内容计算，相同内容只会得到一个对象。</li>
+                <li>仓库体积取决于唯一内容总量，而不是文件路径或版本数量。</li>
+                <li>内容变化才会生成新 blob，旧 blob 仍被历史快照引用。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="blob-deduplication-and-repository-volume" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="cycle-avoidance-in-content-addressed-object-store">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>内容寻址对象库的循环依赖规避</h3>
+              <p>Cycle Avoidance in Content-Addressed Object Store</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">循环会让哈希变成死锁，内容寻址天然禁止自指。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>tree 对象通过哈希引用子 tree，若目录互相包含，哈希将变成自指方程。</li>
+                <li>在密码学哈希的抗原像性下，合法自指对象在计算上不可构造，因此对象图不可能成环。</li>
+                <li>对象不可变意味着循环无法通过事后更新旧对象补上，最终 Git 对象图一定是 DAG。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="cycle-avoidance-in-content-addressed-object-store" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="merge-commit-root-tree-generation-and-three-way-merge">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>合并提交的根树生成与三方合并</h3>
+              <p>Root Tree Generation of Merge Commits and Three-Way Merge</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">合并不是拼目录，而是以共同祖先为基准逐路径表决。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>merge commit 有多个父提交，其根树需要通过三方合并生成。</li>
+                <li>三方合并以 merge base 为共同起点，逐路径比较 base、ours、theirs 三个版本。</li>
+                <li>只有单侧修改时自动采用，双侧相同修改也自动采用，双侧不同修改则产生冲突，需人工解决。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="merge-commit-root-tree-generation-and-three-way-merge" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="blob-deduplication-and-repository-volume">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>内容寻址下的 blob 去重与仓库体积效应</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>Git 在保存文件内容时，会把内容放进 blob 对象，blob 的名称由内容算出，因此只要内容相同，哈希就相同。当 Git 发现某个哈希已存在时，不会重复保存，而是让所有需要该内容的地方指向同一个对象。这就是内容寻址：对象用内容给自己命名。其直接效果是仓库体积不会因相同内容被复制多次而线性膨胀，体积更接近仓库里到底有多少种不同内容。即使同一文件在一百次提交中不变，也只需共享同一个 blob；一旦内容改动一个字节，哈希变成新值，Git 为新内容生成新 blob，旧 blob 仍被历史快照引用，不会被破坏。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>blob 的名称是内容哈希，内容相同则哈希相同。</li>
+                <li>当 Git 发现相同哈希已存在，就不再重复写入，而是复用已有对象。</li>
+                <li>对象一旦写入不可修改，因此旧内容对应的 blob 始终保留，供历史快照引用。</li>
+                <li>体积因此只与仓库中不同内容的总量有关。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>项目里有 a.txt 和 backup/a.txt 两个文件，内容都恰好是 hello。git add 之后，暂存区会记录两个路径都指向同一个 blob 哈希，比如 ce013625...，而 .git/objects 中只保存一个对象。如果只把 a.txt 改成 hello!，那么只有 a.txt 产生新 blob，backup/a.txt 依然指向原来的旧 blob。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为只有文件名相同的文件才共享 blob；实际上只要内容相同，无论路径、权限如何，都会共享。</li>
+                <li>误以为 Git 体积小是因为保存差异；实际上保存的是完整快照，去重和压缩才是体积小的原因。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>内容寻址对象库的循环依赖规避</td><td>两者同源于内容即地址：去重是相同内容收敛到同一对象，无环是对象之间不能通过自指成环。</td></tr>
+                <tr><td>合并提交的根树生成与三方合并</td><td>合并结果中未变化的文件继续复用原有 blob，不会因为合并而产生重复内容。</td></tr>
+                <tr><td>Git 对象模型</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>为什么内容完全相同的两个文件在 Git 中只会产生一个 blob 对象？</li>
+                <li>如果两个不同路径的文件共享同一个 blob，这个 blob 损坏后会同时影响多少历史版本？</li>
+                <li>如何用 git count-objects 查看仓库中唯一的对象数量，从而估算去重后的体积？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="cycle-avoidance-in-content-addressed-object-store">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>内容寻址对象库的循环依赖规避</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>一个目录在 Git 里对应一个 tree 对象，tree 的每一行记录子目录或文件及其哈希，因此 tree 可以指向另一个 tree。如果目录 A 包含 B，B 又包含 A，那么 A 的哈希依赖 B，B 的哈希又依赖 A，形成自指方程，计算无法开始。在密码学哈希函数的抗原像性假设下，构造一个内容块使自己的哈希参与构成自己，在计算上不可行，所以 Git 对象库中不存在合法成环对象图。加上对象一旦写入不能修改，循环依赖无法事后补上，因此 Git 对象图一定是有向无环图，递归遍历不会无限循环。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>tree 对象的内容包含子项的哈希，因此父 tree 的哈希依赖于子 tree 的哈希。</li>
+                <li>若目录成环，则两个对象互为前提，形成自指方程，无法计算哈希。</li>
+                <li>密码学哈希的抗原像性使得构造满足自指的内容不可行。</li>
+                <li>对象不可写修改后，循环无法在事后弥补，因此对象图必然无环。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设 src 目录要包含 lib 子目录，src 的 tree 对象里有一项是 lib &lt;哈希L&gt;。如果 lib 也要反向包含 src，那么 lib 的 tree 对象里就应有一项是 src &lt;哈希S&gt;。哈希S 来自 src 的 tree 内容，而 src 的 tree 内容又包含哈希L；哈希L 来自 lib 的 tree 内容，lib 的 tree 内容又包含哈希S。两个未知数互相定义，永远无法写出一个可验证的 src 和 lib。因此 Git 仓库中不会出现这种循环目录。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为 Git 会主动检测循环并拒绝写入；实际上无需检测，内容寻址从数学上阻止了成环。</li>
+                <li>误以为 Git 对象图是一棵严格树；实际上多个 tree 可共享子 tree，所以是有向无环图。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>内容寻址下的 blob 去重与仓库体积效应</td><td>都来自内容即地址；一个说明相同内容收敛，一个说明内容引用不能成环。</td></tr>
+                <tr><td>合并提交的根树生成与三方合并</td><td>合并生成的新 tree 也必须遵守无环规则，只能引用已存在对象，不能原地修改旧对象。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>为什么说 Git 对象图是 DAG 而不是严格意义上的树？</li>
+                <li>如果理论上存在一个满足自指哈希的对象，Git 的遍历会遇到什么问题？</li>
+                <li>对象不可变在阻止循环依赖中扮演什么角色？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="merge-commit-root-tree-generation-and-three-way-merge">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>合并提交的根树生成与三方合并</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>merge commit 是有多个父提交的 commit，其根树需要回答两个父提交快照如何变成一个新快照。Git 用三方合并：找一个共同起点 merge base，即两个分支分叉前都见过的提交。对每个文件或路径，取出 base、ours、theirs 三个版本：只有我们改则用我们，只有对方改则用对方，两边都没改保持原样，两边同样改则自动采用相同结果，两边改得不同则冲突。目录也递归执行相同规则。最终得到的完整目录树就是 merge commit 的根树，以新 tree 对象写入对象库，内容哈希由内容决定，相同内容直接复用已有对象。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>找到两个父提交的 merge base 作为比较基准。</li>
+                <li>对每个路径提取 base、ours、theirs 三个版本，按规则决策。</li>
+                <li>目录递归进入，逐路径生成新树。</li>
+                <li>新树以不可变对象写入，相同内容复用已有对象。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设共同祖先 base 中有 readme.txt 内容为 欢迎，app.js 内容为 v1。你的分支把 readme.txt 改成 欢迎来到我的分支；同事分支把 app.js 改成 v2，并把 readme.txt 改成 欢迎来到同事分支。三方合并时，app.js 只有同事改过，所以自动采用 v2；readme.txt 两边都改且内容不同，于是产生冲突。把 readme.txt 手工合并成 欢迎来到我的分支，也欢迎来到同事分支 后，这棵新的根树包含 readme.txt 的合并文本和 app.js 的 v2。这个新根树就是 merge commit 的根树。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为 merge commit 的根树是两个父提交树的并集或直接覆盖；真实是逐路径三方合并。</li>
+                <li>误以为只有发生冲突才需要三方合并；实际上每个路径都按三方规则决策。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>内容寻址下的 blob 去重与仓库体积效应</td><td>合并结果中相同内容复用旧 blob，继承去重存储收益。</td></tr>
+                <tr><td>内容寻址对象库的循环依赖规避</td><td>合并生成的新 tree 必须写入内容寻址对象库，遵守无环规则。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>Git 是如何找到两个父提交的 merge base 的？如果不止一个共同祖先会怎么选择？</li>
+                <li>在目录级别上，三方合并如何递归进入子 tree 并逐路径决策？</li>
+                <li>如果两个父提交完全没有共同祖先，Git 的三方合并会怎样表现？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">内容寻址是起点，blob 去重是它在存储层的直接推论，循环依赖规避是它在结构层的安全边界，三方合并则是它在对象图上的构造性应用。三者都依赖哈希一致性：比较内容是否相同，本质上就是比较对象哈希是否相同。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">内容即地址，相同内容只存一份；对象图天然无环，新快照由三方合并生成。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何用 git count-objects 查看仓库去重后的对象数量？</li>
+            <li>Git 如何找到多个共同祖先时的 merge base？</li>
+            <li>git fsck 如何从 refs 出发遍历无环对象图检测缺失与损坏对象？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
