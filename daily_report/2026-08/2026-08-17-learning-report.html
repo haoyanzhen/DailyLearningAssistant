@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-08-17 学习笔记日报</title>
+    <meta name="description" content="本日报围绕固定随机种子、模拟数据管道和数据模式演进，揭示如何从可控随机到统计报告，再到契约同步，构建可信、可用、可持续的模拟数据链路。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260817-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-08-17</p>
+        <h1>模拟数据链路的三块基石：种子、管道与契约</h1>
+        <p>今天我们从tiny-sea-war的一次提交出发，沿着固定随机种子、模拟数据管道、数据模式演进，理解如何让AI优化效果被可信地衡量并长期维护。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>模拟数据链路与契约演进</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>固定随机种子</strong>
+                <small>给随机机器一个密码，它每次都会走出…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>模拟数据管道</strong>
+                <small>像工厂流水线，把战斗事件加工成统计…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>数据模式演进</strong>
+                <small>改数据图纸，要让实现和文档一起咬合。</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念构成一条递进关系：固定随机种子让每次模拟的随机输入可控，解决‘可比较性’；模拟数据管道把可控输入下产生的大量事件按‘记录-聚合-报告’加工成统计结论，解决‘可用性’；数据模式演进则为管道各环节定义统一数据契约，并在需求变化时同步更新实现与文档，解决‘可持续性’。三者合在一起，回答了一个实际工程问题：如何让AI优化的效果被可信地衡量并长期维护。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["模拟数据链路与契约演进"])
+  concept1["固定随机种子"]
+  hub --&gt; concept1
+  concept2["模拟数据管道"]
+  hub --&gt; concept2
+  concept3["数据模式演进"]
+  hub --&gt; concept3
+  related1["可复现测试"]
+  concept1 --&gt; related1
+  related2["测试环境封冻"]
+  concept1 --&gt; related2
+  concept1 --&gt; concept2
+  concept2 --&gt; concept1
+  related3["数据聚合"]
+  concept2 --&gt; related3
+  concept2 --&gt; concept3
+  concept3 --&gt; concept2
+  related4["文档-代码同步演进"]
+  concept3 --&gt; related4
+  related5["工作项追踪"]
+  concept3 --&gt; related5
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4,related5 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="fixed-random-seed">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>固定随机种子</h3>
+              <p>Fixed Random Seed</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">给随机机器一个密码，它每次都会走出同一条路。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>伪随机数生成器是确定性机器，种子相同则输出序列相同。</li>
+                <li>固定随机种子让AI测试的行为序列可控、可复现，便于可靠对比改动效果。</li>
+                <li>固定种子不是消灭随机性，而是让随机序列可复播。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="fixed-random-seed" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="simulation-data-pipeline">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>模拟数据管道</h3>
+              <p>Simulation Data Pipeline</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">像工厂流水线，把战斗事件加工成统计报告。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>由记录、聚合、报告三个阶段组成，每一阶段都有明确的输入输出格式。</li>
+                <li>管道的关键是“有序加工”，而不是简单地把数据存起来。</li>
+                <li>将细粒度事件加工成统计性结论，例如从命中事件汇总出命中率提升。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="simulation-data-pipeline" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="data-schema-evolution">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>数据模式演进</h3>
+              <p>Data Schema Evolution</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">改数据图纸，要让实现和文档一起咬合。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>数据模式（schema）是数据的“图纸”，规定了字段、类型和嵌套结构。</li>
+                <li>演进需要同时更新schema、代码和文档，防止“悄悄改”导致下游断裂。</li>
+                <li>真正的演进必须考虑兼容性、版本迁移和文档同步，必要时设计迁移脚本。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="data-schema-evolution" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="fixed-random-seed">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>固定随机种子</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>固定随机种子是给随机数生成器一个确定的初始值，让它在多次运行中产生完全相同的随机序列。伪随机数生成器不是真的随机，它是一台由种子启动的确定性机器：种子相同，后续生成的数字序列就完全相同。这就像用同一本说明书拼乐高，拼出来的模型一定一样。在游戏AI测试中，如果不固定种子，AI每次决策都会不同，很难判断改动到底是变好还是变坏。固定种子后，AI的行为序列变得可控和可复现，测试结果才能进行可靠对比。
+
+想象你是一个游戏测试员，要验证一个潜艇AI的改动。第一次测试AI成功躲避了鱼雷，第二次测试却直接撞上了。不是AI变笨了，而是随机数让它每次行动不同。你把随机种子固定，比如“20260817”，于是AI每次都会走同一条“随机”路线。现在你改了AI逻辑，再跑同一颗种子，就能直接对比到底哪个行为变好了。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>伪随机数生成器内部是一个状态机，种子决定初始状态，之后按固定算法演化出整个序列。</li>
+                <li>种子相同，状态演化路径相同，因此输出序列完全相同。</li>
+                <li>固定种子只是把随机源变成了可复播的“录像带”，序列本身仍具有统计上的随机性。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在`submarine_ai_fixed_seed_test.gd`中，测试脚本在调用随机数生成器前先设置固定种子（如`seed(42)`），然后运行100个tick的潜艇AI决策。无论运行多少次，AI在每个tick产生的随机数都一样，所以决策路径也一样。测试可以断言“第30个tick时潜艇应该转向”，而不是“大概会转向”。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为固定种子就是让随机数不再随机。实际上，固定种子只让随机序列可复现，序列本身仍然具有统计上的随机性。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>可复现测试</td><td>固定随机种子是让AI测试结果可复现的基础，它让随机源不再成为不可控变量。</td></tr>
+                <tr><td>测试环境封冻</td><td>固定随机种子只有配合完整的测试环境封冻（如时间、路径），才能成为严格的可复现测试。</td></tr>
+                <tr><td>模拟数据管道</td><td>固定随机种子让模拟数据管道输出的数据具备可比性，否则不同次模拟之间的差异会混杂随机噪声。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>为什么伪随机数生成器给定相同种子会产生完全相同的序列？</li>
+                <li>如果只固定种子，但测试代码中调用了外部时间或环境变量，还能保证可复现吗？</li>
+                <li>在实际项目中，如何区分哪些随机源需要封冻、哪些可以忽略？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="simulation-data-pipeline">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>模拟数据管道</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>模拟数据管道是一条从“事件产生”到“结论输出”的数据处理流水线。以游戏战斗模拟为例：每一场战斗会产生大量细粒度的事件，比如“第3秒潜艇发射鱼雷”“第5秒鱼雷命中”。这些事件如果零散落在内存里，很难看出AI优化效果。所以需要依次经过记录（battle_recorder）、聚合（simulation_aggregator）、报告（simulation_report_writer），把细粒度记录变成统计性结论，比如“命中率从62%提升到75%”。管道就像工厂流水线：原料是原始事件，中间是加工环节，成品是报告。
+
+假设你想知道食堂哪个菜最受欢迎。你可以让每个窗口记录每个人的打菜明细，但直接看几千行记录很累。于是你设计一条管道：先记录每笔打菜，再按菜名聚合计算总份数，最后生成一张“本周最受欢迎菜品Top3”的报告。如果有人想调整菜谱，就不用翻原始记录，直接看报告就行。战斗模拟管道也是这个道理。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>原始事件是细粒度的，需要经过步骤化加工才能提炼出统计结论。</li>
+                <li>每个阶段有明确的输入输出格式，记录环节保证事件完整，聚合环节按维度汇总，报告环节输出可读结论。</li>
+                <li>管道的有序性确保了从数据到信息的可信转换。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在tiny-sea-war中，一次战斗模拟会产生潜艇位置、鱼雷轨迹、命中判定等事件。`battle_recorder.gd`把这些事件写入记录；`simulation_aggregator.gd`把多局记录按局数、战术类型等维度汇总；`simulation_report_writer.gd`输出类似“使用新AI后，平均存活时间提升3.2秒”的报告。整条链路的每一环都在前一步的基础上增加结构性。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为管道只是把数据存起来。实际上管道的关键是“有序加工”：每一步都有明确的输入输出格式，记录得越细，聚合越能保证统计正确，报告才可信。</li>
+                <li>可能认为管道只有一个环节，实际上它是由多个环节组成的加工链。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>固定随机种子</td><td>模拟数据管道需要固定随机种子保证每局输入可控，否则聚合结果会混入随机噪声。</td></tr>
+                <tr><td>数据聚合</td><td>模拟数据管道的输出是数据聚合的结果，而数据聚合的准确性依赖记录环节是否完整且无偏。</td></tr>
+                <tr><td>数据模式演进</td><td>数据模式演进会推动管道各环节的契约同步更新，否则记录、聚合和报告会因字段不一致而断裂。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何设计记录格式，让聚合阶段能灵活支持新的分析维度？</li>
+                <li>管道中某一环节发生数据模式变化时，如何保证上下游的兼容性？</li>
+                <li>模拟数据管道是应该使用流式处理还是批量处理，不同选择的优缺点是什么？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="data-schema-evolution">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>数据模式演进</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>数据模式（schema）就是数据的“图纸”，它规定了一条记录里有哪些字段、什么类型、怎么嵌套。随着需求变化，数据结构需要调整，比如给记录增加一个“受击来源”字段，或者把“命中位置”从二维坐标变成三维坐标。数据模式演进就是有意识、有纪律地管理这种变化，让所有依赖它的代码和文档同步更新，而不是悄悄改字段导致下游崩溃。在Git提交中，我们能看到schema文档和代码同批更新，这正是演进过程中的“契约同步”。
+
+想象学校通讯录一开始只有姓名和电话。后来需要加紧急联系人，你直接拿笔在每个人的名字旁边加了一栏。但发给打印店时，印刷模板不知道这一栏，结果很多人的紧急联系人被挤到了备注栏，信息错乱。正确的做法是：先更新通讯录模板，再添加数据，同时让所有人都知道新格式。数据模式演进就是先改“图纸”，再改“产品”，并且记录每次图纸变更。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>数据模式定义了数据结构的契约，所有依赖方都遵循这个契约。</li>
+                <li>结构变化时，如果没有同步更新所有依赖方，下游解析就会出错。</li>
+                <li>演进需要显式管理版本、兼容性和迁移，确保从旧结构平滑过渡到新结构。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>tiny-sea-war的提交中，`simulation_data_schema.md`增加了31行，同时`battle_recorder.gd`和`simulation_aggregator.gd`也相应修改。因为记录的事件里新增了“AI决策原因”字段，所以记录器要写这个字段，聚合器要读这个字段，schema文档要描述这个字段，三者必须同时更新。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为演进就是随意加字段。实际上，演进最怕的是“悄悄改”：如果只有代码改了数据结构，而schema文档没更新，其他团队按旧文档对接就会出错。</li>
+                <li>认为演进只是代码层面的事情，实际上文档、脚本、构建工具等都可能需要同步调整。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>模拟数据管道</td><td>数据模式演进是模拟数据管道保持长期可维护性的关键，因为管道各环节依赖同一份schema。</td></tr>
+                <tr><td>文档-代码同步演进</td><td>schema文档是代码与数据之间的契约，必须同步修改，避免契约撕裂。</td></tr>
+                <tr><td>工作项追踪</td><td>数据模式演进需要工作项追踪来管理跨文件变更，确保所有关联部分都在同一个工作包内完成。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何设计schema的版本管理，让多个schema的版本能够一一对应而不错位？</li>
+                <li>数据契约联动是否必然意味着数据和构建脚本也要同步修改？什么情况下不一定？</li>
+                <li>在代码先行还是文档先行之间如何选择，才能让演进过程更平滑？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念构成一条递进关系：固定随机种子让每次模拟的随机输入可控，解决‘可比较性’；模拟数据管道把可控输入下产生的大量事件按‘记录-聚合-报告’加工成统计结论，解决‘可用性’；数据模式演进则为管道各环节定义统一数据契约，并在需求变化时同步更新实现与文档，解决‘可持续性’。三者合在一起，回答了一个实际工程问题：如何让AI优化的效果被可信地衡量并长期维护。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">固定随机种子不是让随机消失，而是让随机序列可复播，为AI测试提供一个稳定的对照基准。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如果只固定种子，但测试代码中调用了外部时间或环境变量，还能保证可复现吗？</li>
+            <li>模拟数据管道中，记录格式如何设计才能灵活支持新的分析维度？</li>
+            <li>数据模式演进时，如何设计schema的版本管理，让多个版本能够一一对应而不错位？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
