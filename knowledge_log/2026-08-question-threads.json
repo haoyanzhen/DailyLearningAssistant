@@ -3,6 +3,96 @@
   "year_month": "2026-08",
   "threads": [
     {
+      "id": "2026-08-18-ref-e9fc4806c6",
+      "question": "如果一个远端 ref 的 SHA 变了，能否必然说明该分支有新的提交？为什么？",
+      "source_date": "2026-08-18",
+      "source_concept": "远端 ref 指针",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-18T06:05:22.480880+08:00",
+      "updated_at": "2026-08-18T06:05:22.480880+08:00"
+    },
+    {
+      "id": "2026-08-18-ref-dcac20dae1",
+      "question": "为什么 Git 不把分支名直接写成最新的 commit 哈希，而是要单独用 ref 指针来间接指向？",
+      "source_date": "2026-08-18",
+      "source_concept": "远端 ref 指针",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-18T06:05:22.480880+08:00",
+      "updated_at": "2026-08-18T06:05:22.480880+08:00"
+    },
+    {
+      "id": "2026-08-18-ref-83b4be5458",
+      "question": "git ls-remote 可以列出远端所有 ref，这些 ref 除了 heads 之外还有 tags 和 pull 请求等，它们之间的主要区别是什么？",
+      "source_date": "2026-08-18",
+      "source_concept": "远端 ref 指针",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-18T06:05:22.480880+08:00",
+      "updated_at": "2026-08-18T06:05:22.480880+08:00"
+    },
+    {
+      "id": "2026-08-18-concept-ef35aa58e2",
+      "question": "如果开发者使用 git commit --amend 或 rebase 改变了提交时间，窗口归属应如何重新判断？",
+      "source_date": "2026-08-18",
+      "source_concept": "检查窗口与提交归属",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-08-18T06:05:22.480880+08:00",
+      "updated_at": "2026-08-18T06:05:22.480880+08:00"
+    },
+    {
+      "id": "2026-08-18-concept-8537a92dec",
+      "question": "如果两次 ls-remote 之间发生了先推送后强制回推，外界应该如何补齐中间过程以便进行审计？",
+      "source_date": "2026-08-18",
+      "source_concept": "证据粒度",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-08-18T06:05:22.480880+08:00",
+      "updated_at": "2026-08-18T06:05:22.480880+08:00"
+    },
+    {
+      "id": "2026-08-18-concept-8117041eb9",
+      "question": "当一条提交的时间戳正好落在观察窗口的边界上，应该如何判定它属于窗口内还是窗口外？",
+      "source_date": "2026-08-18",
+      "source_concept": "检查窗口与提交归属",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-08-18T06:05:22.480880+08:00",
+      "updated_at": "2026-08-18T06:05:22.480880+08:00"
+    },
+    {
+      "id": "2026-08-18-concept-56f6f03eed",
+      "question": "如何设计自动化日报系统，让它同时展示提交的自然日期、观察窗口和目标日期，避免时间语义混淆？",
+      "source_date": "2026-08-18",
+      "source_concept": "检查窗口与提交归属",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-08-18T06:05:22.480880+08:00",
+      "updated_at": "2026-08-18T06:05:22.480880+08:00"
+    },
+    {
+      "id": "2026-08-18-concept-167b849513",
+      "question": "在什么业务场景下，粗粒度的 ref 级监控比 commit 级监控更可靠、更可维护？",
+      "source_date": "2026-08-18",
+      "source_concept": "证据粒度",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-08-18T06:05:22.480880+08:00",
+      "updated_at": "2026-08-18T06:05:22.480880+08:00"
+    },
+    {
+      "id": "2026-08-18-concept-1646a3619f",
+      "question": "怎样设计一个从 ref 级触发到 fetch 级取证的渐进式流程，在监控成本和证据充分性之间取得平衡？",
+      "source_date": "2026-08-18",
+      "source_concept": "证据粒度",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-08-18T06:05:22.480880+08:00",
+      "updated_at": "2026-08-18T06:05:22.480880+08:00"
+    },
+    {
       "id": "2026-08-17-concept-889ec686d6",
       "question": "如何设计记录格式，让聚合阶段能灵活支持新的分析维度？",
       "source_date": "2026-08-17",
