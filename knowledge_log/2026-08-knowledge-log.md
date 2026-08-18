@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-08/2026-08-19-learning-report.html">2026-08-19</a>
+      </td>
+      <td>间接引用层与可变命名</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★</td>
+      <td>间接引用层让分支名如同一个可改写的书签，名称稳定不变，目标可以随时移动。</td>
+      <td>下一次可以深入讲解 Git 的引用命名空间：refs/heads、refs/tags、refs/remotes 等不同前缀的生命周期和更新语义，以及 packed-refs 的存储优化。</td>
+    </tr>
+    <tr>
+      <td>引用变化与新增提交的非等价性</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★</td>
+      <td>ref SHA 变了只说明指针移动，不等于新提交出现，必须检查它指向的对象是否之前从未存在过。</td>
+      <td>下一次可以深入讲解如何用 `git fetch` 和 `git rev-list` 比较两个 ref 状态之间的对象差异，以及怎样区分新增、重写和回退。</td>
+    </tr>
+    <tr>
+      <td>引用级观测的瞬态丢失与审计补偿</td>
+      <td>软件工程 / 计算机科学</td>
+      <td>★★★★</td>
+      <td>引用级采样只能看到离散时间点的状态，两次采样之间可能发生过瞬态变化，必须用事件日志等补偿机制补全时间线。</td>
+      <td>下一次可以深入讲解“事件流 + 状态指纹”双通道监控方案：用 push hook 和 reflog 记录事件流，用 ls-remote 做状态核对，并设计从 ref 级触发到 fetch 级取证的渐进式审计流程。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-08/2026-08-18-learning-report.html">2026-08-18</a>
       </td>
       <td>远端 ref 指针</td>
