@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-08-20 学习笔记日报</title>
+    <meta name="description" content="今天从引用的物理存储切入，理解打包引用的松散优先模型；接着深入对象级取证，用抓取与版本列表区分新增、回退与重写；最后借助服务端钩子和外部补偿通道补全审计盲区。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260820-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-08-20</p>
+        <h1>从引用存储到对象取证与审计日志</h1>
+        <p>今天从引用的物理存储出发，理解打包引用的组织方式；再进入对象级取证，学会区分新增、回退与重写；最后用事件日志与外部通道补全审计盲区。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>Git 引用审计</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>ref 的物理存储形态与…</strong>
+                <small>更新 ref 就像贴新标签，总目录…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>从 ref 状态信号到对象…</strong>
+                <small>门牌号变了只是信号，进屋数楼梯才是…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>服务端 push 钩子的事…</strong>
+                <small>post-receive 是快递站…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念形成一条从存储到观测再到审计的链条。存储层决定 ref 如何被读取；观测层把 SHA 信号升级为提交图上的对象证据；事件层用钩子或外部通道补充状态快照之间的瞬态。三者的共同目标是回答同一个审计问题：这个 ref 在什么时候、从哪次提交移到了哪次提交。对象生命周期则在幕后决定旧提交还能被审计方找回多久，这是后续恢复与仓库维护的伏笔。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["Git 引用审计"])
+  concept1["ref 的物理存储形态与 packed-refs 的松散优先覆盖模型"]
+  hub --&gt; concept1
+  concept2["从 ref 状态信号到对象级证据的取证路径"]
+  hub --&gt; concept2
+  concept3["服务端 push 钩子的事件日志与外部补偿通道"]
+  hub --&gt; concept3
+  related1["ls-remote"]
+  concept1 --&gt; related1
+  related2["对象图"]
+  concept1 --&gt; related2
+  related3["post-receive 钩子"]
+  concept1 --&gt; related3
+  related4["状态信号与事件日志"]
+  concept2 --&gt; related4
+  related5["对象生命周期"]
+  concept2 --&gt; related5
+  related6["存储层"]
+  concept2 --&gt; related6
+  concept3 --&gt; concept2
+  concept3 --&gt; related5
+  related7["ref 存储层"]
+  concept3 --&gt; related7
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4,related5,related6,related7 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="ref-storage">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>ref 的物理存储形态与 packed-refs 的松散优先覆盖模型</h3>
+              <p>Ref Storage &amp; Packed-refs Loose Precedence</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">更新 ref 就像贴新标签，总目录要等整理时才重抄。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>ref 通常是保存一个哈希的文本文件，路径如 .git/refs/heads/main。</li>
+                <li>packed-refs 把大量 ref 的名字和哈希聚合在一个大文件中，减少文件系统压力。</li>
+                <li>读取时先找松散文件，若不存在则从 packed-refs 查，即“松散优先”。</li>
+                <li>更新 ref 只写一个新的松散文件，不会立即修改 packed-refs。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="ref-storage" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="object-level-forensics">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>从 ref 状态信号到对象级证据的取证路径</h3>
+              <p>From Ref Status Signal to Object-level Evidence</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">门牌号变了只是信号，进屋数楼梯才是证据。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>ls-remote 返回轻量状态信号：ref 名与当前 SHA。</li>
+                <li>git fetch 将新 SHA 及相关对象下载到本地。</li>
+                <li>用 git rev-list old..new 与 new..old 做集合差，用 merge-base 找共同祖先。</li>
+                <li>根据集合差与共同祖先区分快进新增、回退、重写与无关历史。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="object-level-forensics" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="post-receive-audit">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>服务端 push 钩子的事件日志与外部补偿通道</h3>
+              <p>Server-side post-receive Hook and External Compensation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">post-receive 是快递站登记本，webhook 和盘点就是摄像头与闭店清点。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>post-receive 在更新完成后从标准输入读取 &lt;旧SHA&gt; &lt;新SHA&gt; &lt;ref名&gt;。</li>
+                <li>旧 SHA 全零表示创建，新 SHA 全零表示删除。</li>
+                <li>post-receive 只能审计，不能拦截；pre-receive/update 才能拦截。</li>
+                <li>平台不支持钩子时，可用 webhook、镜像仓库、审计 API 与状态指纹组合补偿。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="post-receive-audit" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="ref-storage">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>ref 的物理存储形态与 packed-refs 的松散优先覆盖模型</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>可以把 ref 理解成贴在仓库里的一排书签。普通情况下，一个分支 ref 在磁盘上就是个很小的文本文件：文件路径是 `.git/refs/heads/main`，文件内容只有一行，写着当前指向的提交哈希。读 ref 就是读这个文件，简单直接。
+
+但当仓库越来越大，分支和标签可能有几百上千个。每个 ref 都用一个几字节的小文件来存，文件系统会背上很多目录项和 inode 压力。Git 的解决方案是 `packed-refs`：它像一个总目录，把大量 ref 的名字和哈希集中写在一个大文件里，每一行像 `a1b2c3... refs/heads/feature`。
+
+关键是读取规则：Git 先找松散文件，如果 `.git/refs/heads/main` 存在，就以它为准；只有不存在这个松散文件时，才去 `packed-refs` 里查。这个规则叫“松散优先”。新建或更新一个 ref 时，Git 只写一个松散文件，旧值可能还被 `packed-refs` 留着，但已经不会被读到。只有当执行 `git pack-refs --all` 这类整理时，Git 才会把现存的松散 ref 合并进打包文件，让读取路径重新变干净。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>普通 ref 是文本文件，内容为一行哈希。</li>
+                <li>packed-refs 聚合大量 ref，读取时松散优先。</li>
+                <li>更新时写松散文件，旧行暂时留在 packed-refs 中，直到重新 pack。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设仓库里有 200 个标签，全部被 git pack-refs 收进 .git/packed-refs。现在要更新 refs/heads/main 从 111... 到 222...。Git 会直接创建 .git/refs/heads/main，里面写 222...。之后 git rev-parse refs/heads/main 返回 222...，不会去读 packed-refs 里的旧行。再过一段时间执行 git pack-refs --all，才会把 222... 合并进 packed-refs 并删掉这个松散文件。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>很多人以为分支更新等于改写 packed-refs 里的那一行。实际上，更新一个已经打包的 ref 时，Git 通常不会立刻改 packed-refs，而是写一个新的松散文件来覆盖它。只要松散文件存在，packed-refs 里的旧行就会被忽略，直到重新 pack-refs 才会被更新或删除。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>ls-remote</td><td>松散优先的读取规则意味着，ls-remote 返回的 SHA 不会因为 ref 是松散文件还是 packed-refs 而改变，所以取证路径可以完全不关心底层存储差异。</td></tr>
+                <tr><td>对象图</td><td>无论松散 ref 还是 packed-refs，本质上都是对象图的入口；入口集合决定了哪些提交对象仍然可达。</td></tr>
+                <tr><td>post-receive 钩子</td><td>post-receive 钩子记录的是更新动作，存储层决定的是读取结果；两者配合才能重建“哪一次更新改变了哪个 ref”的完整时间线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>为什么 Git 不直接用符号链接或数据库来存储 ref，而是选择普通文本文件加 packed-refs？</li>
+                <li>当同一个 ref 同时出现在松散文件和 packed-refs 中时，为什么读取结果不会产生歧义？</li>
+                <li>在什么情况下，packed-refs 中的某一行需要被重写或删除？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="object-level-forensics">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>从 ref 状态信号到对象级证据的取证路径</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>`git ls-remote` 是一个非常轻量的远端观测工具，它只做一件事：列出远端 ref 的名字和当前 SHA。所以它给出的是“状态信号”——此刻某个分支的门牌号是什么。门牌号变了，只能说明“箭头移动了”，不能说明这次移动是向前长出一个新提交，还是向后退回旧提交，或是把整段历史重写了。
+
+要把变化分类，需要进入对象级证据层。第一步先保存基线 SHA；第二次 `ls-remote` 发现不同后，用 `git fetch` 把新 SHA 及其相关对象抓到本地。对象到本地后，就可以用两个方向的集合差来判断。`git rev-list old..new` 列出从 new 可达、但从 old 不可达的提交；`git rev-list new..old` 则相反。再用 `git merge-base old new` 找共同祖先。
+
+分类规则是：如果只有 `old..new` 有提交，且共同祖先就是 old，说明是快进新增；如果只有 `new..old` 有提交，说明是回退；如果两个方向都有提交，且共同祖先不是两端，说明历史被重写；如果 merge-base 找不到共同祖先，则两边是互不相干的历史。整个过程是典型的渐进式取证：低成本的签名信号负责触发，高成本的对象下载和提交图分析负责给出证据。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>保存基线 SHA 后，第二次 ls-remote 发现不同触发取证。</li>
+                <li>git fetch 将新对象下载到本地，使提交图可见。</li>
+                <li>通过 rev-list 集合差与 merge-base 共同祖先按规则分类。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>设基线 SHA 是 `abc111`，第二次看到远端 main 变成 `def222`。执行 `git fetch origin main` 后：`git rev-list --count abc111..def222` 返回 3，`git rev-list --count def222..abc111` 返回 0，`git merge-base abc111 def222` 返回 `abc111`。这说明 `abc111` 是 `def222` 的祖先，远端只是沿原历史向前新增了 3 个提交，是快进新增。如果第一个方向返回 0、第二个方向返回 2、共同祖先仍是新 SHA，那就是回退。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>只看到两次 ls-remote 的 SHA 不同，就断定本次 push 带来了新提交，这是把“指针变化”和“新增提交”混为一谈。必须比较提交图上的可达集合，才能知道新提交是否真的出现。</li>
+                <li>另一个常见误区是认为 git fetch 会改动本地工作区；实际上 fetch 只把远端对象下载到对象库并更新远端跟踪 ref，不会碰工作区。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>状态信号与事件日志</td><td>状态信号是离散快照，事件日志是连续流；事件日志能捕捉两次快照之间的瞬态，状态信号能校验事件日志是否完整。</td></tr>
+                <tr><td>对象生命周期</td><td>如果取证判定为回退或重写，原来被 ref 指向的提交会失去引用，变成悬空对象，进一步影响对象生命周期。</td></tr>
+                <tr><td>存储层</td><td>取证路径不依赖 ref 是松散文件还是 packed-refs，因为 ls-remote 得到的是同一语义的 SHA；存储层支撑观测。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>为什么必须先用 git fetch 把对象下载到本地，才能用 rev-list 判断新增、回退或重写？</li>
+                <li>在 git rev-list old..new 与 git rev-list new..old 都非空时，为什么还需要 merge-base 才能区分重写和无关历史？</li>
+                <li>如何把“SHA 不同则 fetch 并分析”设计成一个脚本，并避免把无关历史误判为重写？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="post-receive-audit">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>服务端 push 钩子的事件日志与外部补偿通道</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>Git 仓库的服务端可以在 push 成功之后运行 `post-receive` 钩子。这个钩子从标准输入逐行收到 `&lt;旧SHA&gt; &lt;新SHA&gt; &lt;ref名&gt;`。每行代表一个 ref 的更新事件。如果旧 SHA 全是 0，表示这个 ref 刚被创建；如果新 SHA 全是 0，表示这个 ref 被删除。把每一行加上时间和操作者，追加到日志文件，就得到了一条审计事件流。
+
+关键点在于钩子的时机。`pre-receive` 和 `update` 在更新发生之前运行，因此可以拒绝推送，适合做准入控制；`post-receive` 在更新已经完成之后运行，不能再阻止任何事，但它能看到旧值和新值，所以特别适合做审计记录。
+
+如果托管平台不允许安装自定义钩子，就需要外部补偿。常见做法包括：用平台提供的 push webhook 接收 before、after、ref、pusher 等事件；维护一个镜像仓库并定时 fetch，用镜像的 reflog 留下观测到的变化；调用平台审计 API 获取操作者和时间；同时保留定时 `ls-remote` 状态指纹作为独立校验。事件流回答“期间发生过什么”，状态指纹回答“最终状态和事件流是否一致”。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>post-receive 钩子从标准输入接收每行更新记录。</li>
+                <li>记录时间与操作者，追加为审计日志。</li>
+                <li>外部补偿通道包括 webhook、镜像仓库、审计 API 和状态指纹。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在 `hooks/post-receive` 中读取标准输入，把时间戳、旧 SHA、新 SHA、ref 名追加到日志文件。一次强行回推会留下 `2026-08-20T10:15:00+08:00 111... 222... refs/heads/main` 这样的记录。即使稍后又被推回 `111...`，这条日志仍然记录着中间发生过一次更新，这正是 ls-remote 状态指纹无法恢复的瞬态。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>很多人以为 post-receive 能阻止坏人推送，其实它发生在更新之后，拦不住；要拦截必须用 pre-receive 或 update。</li>
+                <li>另一个误区是认为两次 ls-remote 结果相同就说明没有 push 发生；实际上先推后回推会让状态指纹回到原样，只有事件日志能暴露这次瞬态。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>状态信号</td><td>事件流与状态信号互补：post-receive 或 webhook 提供连续事件，ls-remote 提供独立状态指纹，两者可以互相校验。</td></tr>
+                <tr><td>对象生命周期</td><td>事件日志记录的旧 SHA 在强制回退后格外有用；只要旧对象尚未被 gc 清理，审计方就能用旧 SHA 重新指向悬空对象并恢复证据。</td></tr>
+                <tr><td>ref 存储层</td><td>钩子记录的是更新动作，ref 存储层决定读取结果；二者配合才能重建完整的 ref 更新时间线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>post-receive、pre-receive 和 update 三个钩子分别在什么时机运行？哪些能阻止推送，哪些只能做审计？</li>
+                <li>如果收到一条 0000000000000000000000000000000000000000 222... refs/heads/main，这条日志说明了什么？</li>
+                <li>在无法安装钩子的托管平台上，如何用 webhook、审计 API 和定时 ls-remote 组成一条可校验的审计链？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念形成一条从存储到观测再到审计的链条。存储层决定 ref 如何被读取；观测层把 SHA 信号升级为提交图上的对象证据；事件层用钩子或外部通道补充状态快照之间的瞬态。三者的共同目标是回答同一个审计问题：这个 ref 在什么时候、从哪次提交移到了哪次提交。对象生命周期则在幕后决定旧提交还能被审计方找回多久，这是后续恢复与仓库维护的伏笔。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">存储层决定如何读取，事件层决定如何记录，取证层决定如何判断。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>为什么 Git 不直接用符号链接或数据库来存储 ref，而是选择普通文本文件加 packed-refs？</li>
+            <li>如何把“SHA 不同则 fetch 并分析”设计成一个脚本，并避免把无关历史误判为重写？</li>
+            <li>在无法安装钩子的托管平台上，如何用 webhook、审计 API 和定时 ls-remote 组成一条可校验的审计链？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>

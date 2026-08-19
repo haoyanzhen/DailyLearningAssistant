@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-08/2026-08-20-learning-report.html">2026-08-20</a>
+      </td>
+      <td>ref 的物理存储形态与 packed-refs 的松散优先覆盖模型</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★</td>
+      <td>分支 ref 在磁盘上是可以改写的一行哈希，packed-refs 则是把许多行哈希合并成的总目录，读取时新贴的松散文件永远优先于旧总册。</td>
+      <td>下一次可以继续深入 ref 的命名空间和生命周期：refs/heads、refs/tags、refs/remotes 各自的更新语义，以及 reflog 如何记录一个 ref 在本地仓库中的完整移动历史。</td>
+    </tr>
+    <tr>
+      <td>从 ref 状态信号到对象级证据的取证路径</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★</td>
+      <td>ls-remote 只给出“门牌号变了”的信号，要判断是新增、回退还是重写，必须 fetch 后拿提交图做集合差和共同祖先分析。</td>
+      <td>下一次可以继续深入 git fetch 的协商与传输过程，以及如何用 git log --left-right --cherry-pick 等工具进一步区分重写中的等价提交与真正改动。</td>
+    </tr>
+    <tr>
+      <td>服务端 push 钩子的事件日志与外部补偿通道</td>
+      <td>软件工程 / 计算机科学</td>
+      <td>★★★★</td>
+      <td>post-receive 钩子就像服务端的强制登记本，每次 ref 更新都按旧值、新值、ref 名逐行记下；装不了登记本时，就用 webhook、镜像仓库、审计 API 和状态指纹从外部补做记录。</td>
+      <td>下一次可以继续深入审计日志的防篡改设计，例如用哈希链把每条事件绑定到上一条，以及如何在不同平台之间统一 webhook 事件格式。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-08/2026-08-19-learning-report.html">2026-08-19</a>
       </td>
       <td>间接引用层与可变命名</td>
