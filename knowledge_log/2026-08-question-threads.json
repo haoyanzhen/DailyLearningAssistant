@@ -3,6 +3,96 @@
   "year_month": "2026-08",
   "threads": [
     {
+      "id": "2026-08-21-ref-8fccc3f384",
+      "question": "一个 tag 如果被强制移动，对已经克隆了该标签的其他人会造成什么影响？",
+      "source_date": "2026-08-21",
+      "source_concept": "ref 命名空间的语义分层与生命周期",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-21T06:06:17.643291+08:00",
+      "updated_at": "2026-08-21T06:06:17.643291+08:00"
+    },
+    {
+      "id": "2026-08-21-ref-2a77de400d",
+      "question": "为什么 refs/pull/* 需要由托管平台合成，而不能像普通分支一样由用户更新？",
+      "source_date": "2026-08-21",
+      "source_concept": "ref 命名空间的语义分层与生命周期",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-21T06:06:17.643291+08:00",
+      "updated_at": "2026-08-21T06:06:17.643291+08:00"
+    },
+    {
+      "id": "2026-08-21-ref-07b64d893f",
+      "question": "refs/remotes/origin/main 与 origin/main 在命令中的写法有什么关系？",
+      "source_date": "2026-08-21",
+      "source_concept": "ref 命名空间的语义分层与生命周期",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-21T06:06:17.643291+08:00",
+      "updated_at": "2026-08-21T06:06:17.643291+08:00"
+    },
+    {
+      "id": "2026-08-21-packed-refs-bda3894d8c",
+      "question": "git pack-refs --all --prune 会删除所有松散 ref 吗？如果有正在进行的并发更新会怎样？",
+      "source_date": "2026-08-21",
+      "source_concept": "packed-refs 的维护时机：打包、重写与陈旧行清除",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-21T06:06:17.643291+08:00",
+      "updated_at": "2026-08-21T06:06:17.643291+08:00"
+    },
+    {
+      "id": "2026-08-21-packed-refs-5171c7a06d",
+      "question": "陈旧行会影响 git show-ref 的输出吗？如何验证一个 ref 当前值来自松散文件还是 packed-refs？",
+      "source_date": "2026-08-21",
+      "source_concept": "packed-refs 的维护时机：打包、重写与陈旧行清除",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-21T06:06:17.643291+08:00",
+      "updated_at": "2026-08-21T06:06:17.643291+08:00"
+    },
+    {
+      "id": "2026-08-21-packed-refs-06b52673ed",
+      "question": "为什么 Git 不每次更新 ref 都重写 packed-refs？这种延迟清理策略在崩溃时可能带来什么一致性问题？",
+      "source_date": "2026-08-21",
+      "source_concept": "packed-refs 的维护时机：打包、重写与陈旧行清除",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-21T06:06:17.643291+08:00",
+      "updated_at": "2026-08-21T06:06:17.643291+08:00"
+    },
+    {
+      "id": "2026-08-21-merge-base-9e5812dd69",
+      "question": "criss-cross merge 中产生多个最佳共同祖先时，Git 怎么选择一个 base，或者如何合并多个 base？",
+      "source_date": "2026-08-21",
+      "source_concept": "merge-base 的计算机制与共同祖先选择",
+      "domain": "数学 / 计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-21T06:06:17.643291+08:00",
+      "updated_at": "2026-08-21T06:06:17.643291+08:00"
+    },
+    {
+      "id": "2026-08-21-merge-base-9dd40da0fe",
+      "question": "如果 merge-base 输出为空，Git 的三方合并会把空树当成 base 吗？--allow-unrelated-histories 在这个基础上做了什么？",
+      "source_date": "2026-08-21",
+      "source_concept": "merge-base 的计算机制与共同祖先选择",
+      "domain": "数学 / 计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-21T06:06:17.643291+08:00",
+      "updated_at": "2026-08-21T06:06:17.643291+08:00"
+    },
+    {
+      "id": "2026-08-21-merge-base-97569ffc68",
+      "question": "多个共同祖先出现时，Git 的 best common ancestor 选择算法具体如何排除被支配的候选？",
+      "source_date": "2026-08-21",
+      "source_concept": "merge-base 的计算机制与共同祖先选择",
+      "domain": "数学 / 计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-21T06:06:17.643291+08:00",
+      "updated_at": "2026-08-21T06:06:17.643291+08:00"
+    },
+    {
       "id": "2026-08-20-ref-packed-refs-ef7f46dc27",
       "question": "当同一个 ref 同时出现在松散文件和 packed-refs 中时，为什么读取结果不会产生歧义？",
       "source_date": "2026-08-20",

@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-08/2026-08-21-learning-report.html">2026-08-21</a>
+      </td>
+      <td>ref 命名空间的语义分层与生命周期</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★</td>
+      <td>ref 命名空间是 Git 给指针贴上的“用途标签”：heads 是可移动开发线，tags 是固定发布锚点，remotes 是远端镜像，pull 是平台只读入口。</td>
+      <td>下一次可以继续讲 HEAD 与 detached HEAD 在 ref 体系中的特殊位置，以及为什么 HEAD 不是普通 ref，却也会在 reflog 中留下独特记录。</td>
+    </tr>
+    <tr>
+      <td>packed-refs 的维护时机：打包、重写与陈旧行清除</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★</td>
+      <td>packed-refs 不是每次更新都重写的实时文件：更新已打包 ref 时用松散文件覆盖，删除时重写文件，重新打包时才把被覆盖的陈旧行真正清掉。</td>
+      <td>下一次可以深入 git gc 的完整对象生命周期，看 reflog 过期、不可达对象清理和 packed-refs 重建如何被统一调度。</td>
+    </tr>
+    <tr>
+      <td>merge-base 的计算机制与共同祖先选择</td>
+      <td>数学 / 计算机科学 / 软件工程</td>
+      <td>★★★★</td>
+      <td>merge-base 是在提交族谱上找双方共同祖先的图算法：有共同祖先说明同源，没有说明无关，多个候选时会选择不被其他共同祖先支配的最佳祖先。</td>
+      <td>下一次可以深入 criss-cross merge 与 best common ancestor 的选择规则，结合三方合并看多个共同祖先如何影响 base 的稳定性。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-08/2026-08-20-learning-report.html">2026-08-20</a>
       </td>
       <td>ref 的物理存储形态与 packed-refs 的松散优先覆盖模型</td>

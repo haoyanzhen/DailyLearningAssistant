@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-08-21 学习笔记日报</title>
+    <meta name="description" content="今日复习 Git 引用机制：从 ref 命名空间的语义分层，到 packed-refs 的写入维护与陈旧行清除，再到 merge-base 的共同祖先判定，串起引用角色、状态维护与历史关系三条主线。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260821-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-08-21</p>
+        <h1>Git 引用机制：命名、维护与历史判定</h1>
+        <p>今天放慢节奏，从命名空间、文件维护与图算法三个角度重新理解 Git 引用，把散落的机制串成一条完整链路。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>Git 引用机制的核心三重奏</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>ref 命名空间的语义分层…</strong>
+                <small>书签要分类：分支随开发移动，标签定…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>packed-refs 的…</strong>
+                <small>更新贴便利贴，删除划名单，大扫除重…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>merge-base 的计…</strong>
+                <small>找共同祖先要找最近的，不是最老的；…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念层层递进。ref 命名空间是身份层，packed-refs 是当前状态维护层，merge-base 是历史关系判定层。命名空间决定 ref 的更新频率和更新方式，更新频率反过来影响 packed-refs 何时需要重写、哪些行会变成陈旧行；而 packed-refs 提供的有效 SHA 又是 merge-base 的计算起点。没有前两层，merge-base 的判定就缺少可靠输入；没有 merge-base，前两层只能告诉我们“ref 现在在哪”，不能告诉我们“这个变化是新增、分叉、重写还是无关历史”。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["Git 引用机制的核心三重奏"])
+  concept1["ref 命名空间的语义分层与生命周期"]
+  hub --&gt; concept1
+  concept2["packed-refs 的维护时机：打包、重写与陈旧行清除"]
+  hub --&gt; concept2
+  concept3["merge-base 的计算机制与共同祖先选择"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["Git 引用机制的核心三重奏"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="ref-namespace-semantics">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>ref 命名空间的语义分层与生命周期</h3>
+              <p>Ref Namespace Semantics</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">书签要分类：分支随开发移动，标签定住不放，远端只是镜子，PR由平台只读合成。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>命名空间前缀决定 ref 的更新语义和生命周期。</li>
+                <li>refs/heads 是可移动开发线，refs/tags 是固定发布锚点，refs/remotes 是远端镜像，refs/pull 是平台只读入口。</li>
+                <li>同一存储层可以存成一行哈希，但上层命令根据前缀决定谁能移动、怎么移动、能不能被普通更新改写。</li>
+                <li>分支频繁诞生/移动/删除，标签希望长期稳定，远端镜像只应跟随 fetch 变化，pull 引用只在 PR 生命周期内存在。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="ref-namespace-semantics" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="packed-refs-maintenance">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>packed-refs 的维护时机：打包、重写与陈旧行清除</h3>
+              <p>Packed-refs Maintenance</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">更新贴便利贴，删除划名单，大扫除重新誊清。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>松散文件优先是读取规则，不是写入规则。</li>
+                <li>更新已打包 ref：写新松散文件覆盖，packed-refs 旧行成为陈旧行。</li>
+                <li>删除已打包 ref：必须重写 packed-refs 删除对应行，否则旧值会复活。</li>
+                <li>陈旧行在下次 git pack-refs 或 git gc 时被物理清除。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="packed-refs-maintenance" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="merge-base-common-ancestor">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>merge-base 的计算机制与共同祖先选择</h3>
+              <p>Merge-base Computation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">找共同祖先要找最近的，不是最老的；有共同祖先同源，没有就是无关。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>提交历史是 DAG，merge-base 在图中找共同可达祖先。</li>
+                <li>共同祖先是三方合并的基准；没有共同祖先说明历史无关。</li>
+                <li>多个共同祖先时，选择不被其他共同祖先支配的最佳共同祖先。</li>
+                <li>merge-base 是判断重写、分叉和无关历史的关键依据。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="merge-base-common-ancestor" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="ref-namespace-semantics">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>ref 命名空间的语义分层与生命周期</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>你可以把 ref 想象成贴在提交快照上的书签。Git 每次想知道分支最新提交在哪，就去读对应书签。但书签不能全都一样对待：有些要跟着开发走，有些要钉死，有些只是镜子。Git 用 refs/ 下的路径前缀区分这些书签。refs/heads/* 是本地分支，commit、merge、rebase 会让它自动前移；refs/tags/* 是发布标签，通常创建后就不该再动；refs/remotes/* 是远端追踪引用，只记录“上次从远端看到的位置”，一般由 fetch 更新；refs/pull/* 是托管平台合成的只读引用，表示某个 PR 的最新提交。关键不是路径上多写几个字，而是命名空间决定更新语义。Git 的存储层可以一视同仁地存成一行哈希，但上层命令会根据前缀决定谁能移动、怎么移动、能不能被普通更新改写。生命周期也因此不同：分支可以频繁诞生、移动、删除；标签希望长期稳定；远端镜像只应跟随 fetch 变化；pull 引用只在 PR 生命周期内存在。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>命名空间是引用角色的语义标签，决定更新规则。</li>
+                <li>不同命名空间有不同生命周期：heads 活跃、tags 稳定、remotes 跟随 fetch、pull 只读且生命周期短。</li>
+                <li>存储层统一为哈希行，指令层按前缀解释。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在本地仓库中，git commit 只会让 refs/heads/main 前进，不会移动 refs/tags/v1.0.0；git fetch origin 会更新 refs/remotes/origin/main，而不会直接改动本地 main；当你打开 GitHub 的 PR 页面时，平台会提供一个 refs/pull/123/head 的引用，它通常只读。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为 refs/heads、refs/tags 只是文件夹，放在哪里都行。</li>
+                <li>实际上 Git 的许多命令会按前缀判断语义，例如 push 默认推送 heads 而不是 tags，fetch 会把远端 heads 写到 remotes 下；把 tag 当 branch 用，或手动改写 remote ref，都会破坏“哪些引用可变、哪些引用固定”的约定。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>packed-refs 的维护时机</td><td>分支更新频繁、标签更新少，这种差异直接决定 packed-refs 的维护压力：活跃分支容易留下很多松散覆盖文件，稳定标签更适合长期躺在打包文件里。</td></tr>
+                <tr><td>merge-base 的计算机制</td><td>merge-base 不关心输入 ref 属于哪个命名空间，只拿到提交对象，因此同一个共同祖先算法可以统一定义分支、标签、远端镜像之间的历史关系。</td></tr>
+                <tr><td>Git 引用机制的核心三重奏</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>为什么 refs/pull/* 需要由托管平台合成，而不能像普通分支一样由用户更新？</li>
+                <li>一个 tag 如果被强制移动，对已经克隆了该标签的其他人会造成什么影响？</li>
+                <li>refs/remotes/origin/main 与 origin/main 在命令中的写法有什么关系？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="packed-refs-maintenance">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>packed-refs 的维护时机：打包、重写与陈旧行清除</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>松散 ref 文件就是一个目录下的小文件，一个 ref 一个文件。ref 少的时候没问题，多了会让文件系统压力变大，所以 Git 会把它们合并进 packed-refs 这一个文件。合并后读取规则是松散优先，但写入规则不是这么简单。更新一个已经被打包的 ref，Git 不会去改 packed-refs 里的旧行，而是先写一个新的松散文件。因为读取时松散文件优先，新值立刻生效，packed-refs 里那行旧值还在，只是暂时被遮住，成为陈旧行。删除一个已经被打包的 ref，Git 必须重写 packed-refs，把那行真正删掉；否则只删松散文件，旧值会从打包文件里重新冒出来。陈旧行什么时候消失？等下一次 git pack-refs 或 git gc 执行时，Git 按松散优先规则收集所有当前有效 ref，重建一份 packed-refs；旧文件里的陈旧行就被物理清除了。这个设计像用便利贴更新公告栏：平时改日期不用撕掉整张海报，贴一张新便利贴就行；有人离开时必须把旧名字从名单上划掉；大扫除时再誊清一份干净名单。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>松散文件优先读取，保证新值立即生效。</li>
+                <li>更新已打包 ref 时写松散覆盖，避免频繁重写整个 packed-refs。</li>
+                <li>删除已打包 ref 必须重写，防止旧值从打包文件复活。</li>
+                <li>重新打包时按当前有效状态重建，消除陈旧行。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设 packed-refs 中有一行 111... refs/heads/main，本地没有松散文件。你提交后，Git 生成新提交 222...，并写一个松散文件 refs/heads/main 内容为 222...。此刻 git rev-parse refs/heads/main 读到 222，grep 111... .git/packed-refs 仍能看到旧行。接着再执行 git pack-refs，由于 111 被 222 覆盖，新版 packed-refs 只写 222，旧行消失。如果此时删除 main，Git 不仅删松散文件 222，还会重写 packed-refs 去掉 111，否则删除后 111 会从打包文件里重新冒出来。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为 packed-refs 里出现的旧值就是当前值，或看到同一 ref 同时出现在两个文件里就以为仓库异常。实际上，松散优先是读取规则，重叠是更新后尚未重新打包的正常中间态。</li>
+                <li>真正需要担心的是删除已打包 ref 后不重写文件，导致引用“复活”。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>ref 命名空间的语义分层与生命周期</td><td>ref 命名空间决定分支更新频繁、标签更新少，因此频繁更新的 heads 会不断制造新的松散覆盖，长期稳定的 tags 更适合久驻 packed-refs，维护压力因此不同。</td></tr>
+                <tr><td>merge-base 的计算机制与共同祖先选择</td><td>merge-base 需要读取 ref 的当前有效 SHA；如果陈旧行没有被正确清理或覆盖关系出错，历史判定就会基于过期值。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>为什么 Git 不每次更新 ref 都重写 packed-refs？这种延迟清理策略在崩溃时可能带来什么一致性问题？</li>
+                <li>git pack-refs --all --prune 会删除所有松散 ref 吗？如果有正在进行的并发更新会怎样？</li>
+                <li>陈旧行会影响 git show-ref 的输出吗？如何验证一个 ref 当前值来自松散文件还是 packed-refs？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="merge-base-common-ancestor">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 计算机科学 / 软件工程</p>
+                <h3>merge-base 的计算机制与共同祖先选择</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>Git 的提交历史不是一条直线，而是一张有向无环图：每个提交都保存父提交的引用，所以从一个提交往前走，可以追溯到它的祖先。merge-base 要做的事，是给定两个提交，找出从它们都能到达的共同祖先。为什么需要共同祖先？因为三方合并使用共同祖先作为“原始版本”：左边改了什么、右边改了什么，都是相对它来计算的。如果没有共同祖先，两个提交就像来自两个完全无关的世界，Git 不知道该以谁为基准合并。判断重写和无关历史也一样：有共同祖先，说明两条线同源；没有共同祖先，说明它们根本没有共同的起点。如果共同祖先不止一个呢？Git 不会随便挑一个最老的。它要找的是不被其他共同祖先支配的最佳共同祖先。通俗地说，Git 会排除那些“太老”的候选，选择离双方更近、包含更多历史信息的共同祖先。git merge-base --all 可以把这些并列最佳的共同祖先全部列出来。这个选择为什么重要？如果选了一个太老的 base，三方合并会认为许多两边都已经做过的改动是冲突或重复；如果选了一个错误的 base，重写判定也会失真。所以 merge-base 不是简单找“某个交点”，而是在提交图上找“最近且最有代表性的共同祖先”。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>提交历史是有向无环图，祖先关系可沿父指针追溯。</li>
+                <li>共同祖先是三方合并的基准，用于计算双方相对原始版本的改动。</li>
+                <li>多个共同祖先时，Git 选择不被其他共同祖先支配的最佳候选，避免选择过老祖先导致合并失真。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设共同祖先 C 是两个分支的起点：main 之后有 F、G，feature 之后有 D、E。git merge-base main feature 输出 C。如果 feature 被 rebase 到 main 上，新 feature 基于 main 的最新提交，此时 git merge-base main feature 很可能输出 main 本身；这个变化是取证中判断 feature 是否被重写的重要信号。两个完全独立的仓库第一次尝试合并时，merge-base 找不到共同祖先，命令返回非零，提示两者历史无关。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>只靠 git rev-list old..new 和 git rev-list new..old 判断。两个范围都非空，只能说明双方各有对方没有的提交；可能是从共同祖先两边分叉，也可能是两段无关历史。必须再用 merge-base 问“有没有共同祖先”，才能把“重写/分叉”和“无关历史”区分开。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>ref 命名空间的语义分层与生命周期</td><td>merge-base 不关心 ref 是 heads、tags 还是 remotes，只要传入提交对象，它就对所有命名空间给出统一的历史关系判定。</td></tr>
+                <tr><td>packed-refs 的维护时机</td><td>merge-base 的输入 SHA 来自松散文件或 packed-refs 的当前状态；如果 packed-refs 维护产生过期值，共同祖先计算就会建立在错误证据上。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>多个共同祖先出现时，Git 的 best common ancestor 选择算法具体如何排除被支配的候选？</li>
+                <li>如果 merge-base 输出为空，Git 的三方合并会把空树当成 base 吗？--allow-unrelated-histories 在这个基础上做了什么？</li>
+                <li>criss-cross merge 中产生多个最佳共同祖先时，Git 怎么选择一个 base，或者如何合并多个 base？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念层层递进。ref 命名空间是身份层，packed-refs 是当前状态维护层，merge-base 是历史关系判定层。命名空间决定 ref 的更新频率和更新方式，更新频率反过来影响 packed-refs 何时需要重写、哪些行会变成陈旧行；而 packed-refs 提供的有效 SHA 又是 merge-base 的计算起点。没有前两层，merge-base 的判定就缺少可靠输入；没有 merge-base，前两层只能告诉我们“ref 现在在哪”，不能告诉我们“这个变化是新增、分叉、重写还是无关历史”。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">ref 命名空间决定角色，packed-refs 维护当前状态，merge-base 判定历史关系——三者构成一条理解 Git 引用的完整链路。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>为什么 refs/pull/* 需要由托管平台合成，而不能像普通分支一样由用户更新？</li>
+            <li>为什么 Git 不每次更新 ref 都重写 packed-refs？这种延迟清理策略在崩溃时可能带来什么一致性问题？</li>
+            <li>多个共同祖先出现时，Git 的 best common ancestor 选择算法具体如何排除被支配的候选？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
