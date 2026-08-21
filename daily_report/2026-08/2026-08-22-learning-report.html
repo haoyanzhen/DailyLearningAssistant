@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-08-22 学习笔记日报</title>
+    <meta name="description" content="今日无变更，围绕 Git ref 更新事件流展开边界复习：全零 SHA 编码生命周期、tag 强制移动的传播效应、服务端三钩子的决策顺序。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260822-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-08-22</p>
+        <h1>ref 更新事件流：编码、传播与拦截</h1>
+        <p>今天是复习日，无新提交。我们从最近七天的问题中挑选三个边界概念，把复习方向推向 ref 更新事件流的“表示、传播与拦截”。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>ref 更新事件流：表示、传播与拦截</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>全零 SHA 与 ref…</strong>
+                <small>旧零创建，新零删除，全零只代表不存…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>tag 强制移动的传播效应…</strong>
+                <small>普通 fetch 不覆盖 tag…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>pre-receive /…</strong>
+                <small>pre 整批拒绝，update 单…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念并不是彼此孤立的。全零 SHA 提供了事件的语言，tag 强制移动是事件的一个典型场景，三个钩子是控制事件的关卡。你可以把整条知识链想象成一次推送的生命周期：先有 ref 的变化需要用三元组表示；如果变化发生在 tags 命名空间，还要考虑标签对象本身的可变性问题；服务端钩子则在变化生效前检查这些三元组，决定放行还是拒绝。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["ref 更新事件流：表示、传播与拦截"])
+  concept1["全零 SHA 与 ref 生命周期边界事件的编码语义"]
+  hub --&gt; concept1
+  concept2["tag 强制移动的传播效应与标签对象差异"]
+  hub --&gt; concept2
+  concept3["pre-receive / update / post-receive 的推送决策顺序"]
+  hub --&gt; concept3
+  related1["pre-receive / update / post-receive 钩子"]
+  concept1 --&gt; related1
+  concept1 --&gt; concept2
+  related2["服务端钩子"]
+  concept2 --&gt; related2
+  concept2 --&gt; concept1
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="zero-sha-and-ref-lifecycle">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>全零 SHA 与 ref 生命周期边界事件的编码语义</h3>
+              <p>All-Zero SHA and Ref Lifecycle Boundary Event Encoding</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">旧零创建，新零删除，全零只代表不存在。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>全零 SHA 是一排 40 个（SHA-256 下 64 个）0，不是真实对象。</li>
+                <li>ref 更新事件用“旧值 新值 ref 名”三元组记录。</li>
+                <li>旧值为全零表示创建，新值为全零表示删除。</li>
+                <li>全零 SHA 不参与对象图遍历，不能作为普通哈希使用。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="zero-sha-and-ref-lifecycle" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="forced-tag-move-and-tag-objects">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>tag 强制移动的传播效应与标签对象差异</h3>
+              <p>Propagation Effects of Forced Tag Move and Tag Object Differences</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">普通 fetch 不覆盖 tag，强制同步要加 force；轻量只改针，附注留新标。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>tag 是固定发布锚点，普通 fetch 不会覆盖本地已存在的同名 tag。</li>
+                <li>强制移动远端 tag 后，下游需要 git fetch --force 或先删后拉才能同步。</li>
+                <li>轻量标签直接改指到新提交，旧提交可能变成悬空对象。</li>
+                <li>附注标签会创建新 tag 对象，旧 tag 对象仍留在对象库中。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="forced-tag-move-and-tag-objects" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="hook-decision-order">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>pre-receive / update / post-receive 的推送决策顺序</h3>
+              <p>Decision Order of pre-receive / update / post-receive</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">pre 整批拒绝，update 单个拦截，post 只能旁观记录。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>pre-receive 在整批推送到达后、任何 ref 改变前运行一次，非零退出则拒绝整批。</li>
+                <li>update 在每个将要更新的 ref 之前分别运行，非零退出只拒绝该 ref。</li>
+                <li>post-receive 在所有 ref 更新成功后运行，退出码不影响已完成的更新。</li>
+                <li>三者的决策能力递减：整批拒绝、单个拒绝、事后记录。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="hook-decision-order" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="zero-sha-and-ref-lifecycle">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>全零 SHA 与 ref 生命周期边界事件的编码语义</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>全零 SHA 就是一排 40 个 0（如果仓库使用 SHA-256，则是 64 个 0）。你可能会想：它是不是一个特殊的 Git 对象？不是。Git 对象库里没有任何对象的哈希是全零，它只是一个“占位符”，专门用来表示“这里什么都没有”。Git 把每一次 ref 变化都写成一行三列的记录：旧值、新值、ref 名。一个 ref 从没有到有，叫做创建；从有到没有，叫做删除。创建时，旧值没有真实哈希可写，于是用全零 SHA 占位；删除时，新值没有真实哈希可写，也用全零 SHA 占位。所以看到“全零 → 非零”就是创建，看到“非零 → 全零”就是删除。全零 SHA 不能当普通提交哈希使用，它不会出现在对象图里，不能参与合并计算，只用来描述生命周期边界。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Git 将每次 ref 变化编码为一行三列：旧值、新值、ref 名。</li>
+                <li>创建 ref 时不存在旧值，用全零 SHA 占位；删除 ref 时不存在新值，也用全零 SHA 占位。</li>
+                <li>全零 SHA 只是“不存在”的标记，不指向任何对象，因此不能被当作普通提交哈希使用。</li>
+                <li>通过检查三元组的哪一端为全零，即可判断该 ref 是创建还是删除。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在一份 post-receive 日志中看到：0000000000000000000000000000000000000000 3f2a1b... refs/heads/main。旧值全零，说明 main 分支在这一刻被创建。反过来：3f2a1b... 0000000000000000000000000000000000000000 refs/heads/main。新值全零，说明 main 分支在这一刻被删除。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>有人以为全零 SHA 是 Git 的初始提交或空树，其实空树哈希是另一个固定值，全零 SHA 与它完全不同。</li>
+                <li>还有人以为可以用 git show 查看全零 SHA，实际上对象库里没有这个对象，所以会报错。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>pre-receive / update / post-receive 钩子</td><td>全零 SHA 为创建和删除提供了统一的事件流格式，是解读 pre-receive、update、post-receive 钩子日志的基础。</td></tr>
+                <tr><td>tag 强制移动</td><td>tag 如果采用删除再重建的方式强制移动，事件流中会出现“非零→全零”和“全零→非零”两条边界记录，因此全零 SHA 也能帮助识别 tag 的完整生命周期操作。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>在 SHA-256 仓库中，全零 SHA 变成 64 个 0，它判断创建和删除的规则是否仍然适用？</li>
+                <li>reflog 中每次 ref 变化都有条目，如何从 reflog 中找出一个分支的精确创建时间和删除时间？</li>
+                <li>如果一条记录中旧值和新值都是全零，它还有意义吗？应该怎样处理？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="forced-tag-move-and-tag-objects">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>tag 强制移动的传播效应与标签对象差异</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>tag 的英文原意是“标签”，Git 设计它时希望它像一个出版物的版本号：v1.0 一旦贴上去，就不应该再移动。但 Git 也给了你强制手段：git tag -f 或先删除再重建。强制移动后，远端仓库的 refs/tags/v1.0 确实变成了新哈希，但已经克隆过这个 tag 的其他仓库不会自动更新。原因是普通 git fetch 有一条保守规则：如果本地已经有一个同名 tag，Git 不会用远端的新值覆盖它。为什么要这样？因为 tag 被当作“固定锚点”，假设你不会轻易改动它；如果每次 fetch 都悄悄改 tag，那 tag 的可靠性就没了。所以 tag 的强制移动需要下游显式地 git fetch --force，或者先删掉本地 tag 再拉取，才能同步。轻量标签和附注标签在强制移动时表现不同。轻量标签只是 refs/tags/v1.0 这个引用直接指向某个提交对象，强制移动就是把这个引用改指到另一个提交，旧提交可能变成悬空对象。附注标签则不同：它指向一个额外的 tag 对象，这个 tag 对象里写着标签名、打标签者、邮箱、时间、消息，并且 tag 对象再指向目标提交。由于 Git 对象内容不可变，你无法修改旧 tag 对象；强制移动附注标签时，Git 会创建一个全新的 tag 对象，新的 refs/tags/v1.0 指向这个新 tag 对象，旧 tag 对象仍然留在对象库里。因此，下游即使后来拿到新 tag，也仍然能通过旧哈希找到原来的标签信息。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>tag 被设计为固定锚点，因此普通 fetch 对已存在的同名 tag 采用保守的不覆盖策略。</li>
+                <li>轻量标签只是 refs/tags/* 直接指向提交对象，强制移动即修改引用指针。</li>
+                <li>附注标签通过额外的 tag 对象指向提交，由于对象不可变，强制移动会创建新 tag 对象，旧 tag 对象被保留。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>你维护开源库，发布 v1.0 指向提交 A。后来发现 A 有严重 bug，于是执行 git tag -f v1.0 B，然后 git push origin v1.0 --force。远端的 tags/v1.0 从 A 变成 B。你的朋友小明早已 clone 过仓库，他的本地 tags/v1.0 仍指向 A。他执行 git fetch origin，Git 不会用 B 覆盖他的 v1.0，所以他依然在旧版本上。他只有执行 git fetch --force --tags，本地 tags/v1.0 才会指向 B；如果 v1.0 是附注标签，他的对象库里还会保留旧的 tag 对象，旧标签的说明、时间和打标签者信息都可以通过旧哈希查看到。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>最大的误区是“tag 和分支一样会同步”：以为远端 tag 被强制移动后，自己本地 git fetch 就会自动跟着变。实际上 Git 默认不会让 fetch 覆盖已存在的本地 tag，所以 tag 的强制移动不会平滑传播到所有克隆仓库。</li>
+                <li>另一个误区是把轻量标签和附注标签的区别只理解为“有没有备注”；在对象模型上，附注标签多出一个独立的 tag 对象，这个对象有自己的哈希和不可变性，导致强制移动时的对象层行为完全不同。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>服务端钩子</td><td>tag 强制移动会作为 refs/tags/* 的旧值→新值更新进入服务端钩子，update 钩子可以单独拒绝某个 tag 的强制移动。</td></tr>
+                <tr><td>全零 SHA</td><td>如果强制移动采用先删除再重建的方式，事件流中会出现全零 SHA 边界记录，说明 tag 生命周期经历了从有到无、再从无到有的完整切换。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>为什么普通 fetch 不覆盖已存在的本地 tag？这样设计是为了防止什么问题？</li>
+                <li>轻量标签被强制移动后，原来指向的旧提交会立即被删除吗？它什么时候才会被清理？</li>
+                <li>如何用 git ls-remote 和 git fetch --force 安全地同步一个被强制移动的远端 tag？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="hook-decision-order">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>pre-receive / update / post-receive 的推送决策顺序</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>当开发者把本地提交推送到远端的 Git 仓库时，远端的 receive-pack 进程会按固定顺序调用三个钩子。可以把它们理解成三个不同权限的检查站。第一个是 pre-receive。它只在整批推送刚刚到达、任何 ref 还没有改变时运行一次。它从标准输入读取所有将要被更新的行，每行格式是“旧值 新值 ref 名”。只要这个钩子以非零状态退出，整批推送都会被拒绝，一个 ref 都不会更新。它适合做全仓库级别的策略检查，例如禁止包含某个文件、检查提交信息规范。第二个是 update。它会在每一个将要被更新的 ref 之前分别运行一次。它拿到的信息是同一个三元组：ref 名、旧值、新值。如果某个 ref 对应的 update 钩子以非零状态退出，只有这一个 ref 会被拒绝，其他 ref 仍然可以更新。它适合做分支或标签级别的精细策略，例如保护 refs/heads/main、禁止删除特定 tag。第三个是 post-receive。它在所有 ref 更新成功之后运行一次，同样拿到一批“旧值 新值 ref 名”三元组，但这些更新已经生效，无法再反悔。post-receive 即使退出非零，也不能回滚已成功的更新。它适合做通知、审计、触发 CI 等事后动作。所以三者的决策能力是递减的：pre-receive 一票否决整批，update 单独拦截某个 ref，post-receive 只能看着结果并记录。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>receive-pack 按固定顺序调用钩子：pre-receive → 多个 update → post-receive。</li>
+                <li>pre-receive 读取整批三元组，基于全仓库状态做整体决策。</li>
+                <li>update 按 ref 逐个执行，实现分支/标签级别的精细控制。</li>
+                <li>post-receive 在更新生效后执行，用于通知和审计，不能反悔。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一次推送同时更新 refs/heads/main（从 A 到 B）和 refs/tags/v2.0（从 C 到 D）。pre-receive 先运行，拿到两行三元组；如果它退出非零，两个 ref 都不会更新。如果 pre-receive 通过，Git 在更新 main 前调用一次 update，在更新 v2.0 前再调用一次 update。假设 v2.0 的 update 返回非零，那么 main 成功变为 B，v2.0 保持 C。最后 post-receive 运行，它只能看到已经真正生效的更新：main 从 A 变为 B。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>最常见的误区是以为 post-receive 与 pre-receive 一样可以拒绝推送，只是时机稍晚。实际上 post-receive 在更新生效后运行，退出码不影响已完成的 ref 更新，不能阻止任何东西。</li>
+                <li>另一个误区是以为 update 钩子会对整批 ref 做整体裁决；实际上 update 是逐 ref 运行的，一个 ref 被拒不影响其他 ref。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>全零 SHA</td><td>三个钩子的输入都围绕“旧值 新值 ref 名”三元组工作，全零 SHA 决定了创建和删除如何在这些三元组中被识别。</td></tr>
+                <tr><td>tag 强制移动</td><td>tag 强制移动作为 refs/tags/* 更新进入钩子链时，pre-receive 可以整批拒绝，update 可以单独拒绝，post-receive 只能记录结果。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>pre-receive 和 update 同时配置时，先整体后逐个的决策链会不会带来部分成功、部分失败的状态？客户端如何知道哪些 ref 成功？</li>
+                <li>post-receive 的退出码是否会影响客户端收到的推送结果？如果它失败，需要手动补偿吗？</li>
+                <li>receive-pack 在 pre-receive 运行时是否已经把所有推送对象存入对象库？quarantine 机制对钩子检查有什么影响？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念并不是彼此孤立的。全零 SHA 提供了事件的语言，tag 强制移动是事件的一个典型场景，三个钩子是控制事件的关卡。你可以把整条知识链想象成一次推送的生命周期：先有 ref 的变化需要用三元组表示；如果变化发生在 tags 命名空间，还要考虑标签对象本身的可变性问题；服务端钩子则在变化生效前检查这些三元组，决定放行还是拒绝。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">旧零创建，新零删除，全零只代表不存在。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何用 reflog 把分支的多次生命周期事件串成完整审计时间线？</li>
+            <li>tag 强制移动后，下游仓库在什么情况下会出现不可感知的版本漂移？</li>
+            <li>receive-pack 的 quarantine 机制如何影响钩子检查时能看到的对象范围？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>

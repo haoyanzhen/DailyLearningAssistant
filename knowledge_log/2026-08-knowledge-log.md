@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-08/2026-08-22-learning-report.html">2026-08-22</a>
+      </td>
+      <td>全零 SHA 与 ref 生命周期边界事件的编码语义</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★</td>
+      <td>全零 SHA 是 Git 事件流中表示“不存在”的占位符号：创建 ref 时旧值为它，删除 ref 时新值为它。</td>
+      <td>下一次可以深入讲解 reflog 的文件格式与过期清理，以及如何用 reflog 把 ref 的多次生命周期事件串成完整审计时间线。</td>
+    </tr>
+    <tr>
+      <td>tag 强制移动的传播效应与标签对象差异</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★</td>
+      <td>tag 强制移动会改变远端固定锚点，但下游普通 fetch 不会自动跟随；轻量标签直接改指针，附注标签则会产生新的 tag 对象并留下旧对象。</td>
+      <td>下一次可以深入讲解 git fetch 对 tag 的自动跟随策略，包括 --tags、--force、tagOpt 配置，以及 receive.denyTagPush 等服务端保护措施。</td>
+    </tr>
+    <tr>
+      <td>pre-receive / update / post-receive 的推送决策顺序</td>
+      <td>软件工程 / 计算机科学</td>
+      <td>★★★★</td>
+      <td>pre-receive 整批把关、update 逐个把关、post-receive 事后记录，三个钩子组成从“能否推”到“谁能推”再到“推后观察”的不可逆决策链。</td>
+      <td>下一次可以深入讲解 receive-pack 的对象隔离（quarantine）机制：推送对象何时进入主对象库，钩子中的检查在哪个状态下运行，以及这对审计链设计的影响。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-08/2026-08-21-learning-report.html">2026-08-21</a>
       </td>
       <td>ref 命名空间的语义分层与生命周期</td>

@@ -3,6 +3,96 @@
   "year_month": "2026-08",
   "threads": [
     {
+      "id": "2026-08-22-tag-c3f65344a2",
+      "question": "轻量标签被强制移动后，原来指向的旧提交会立即被删除吗？它什么时候才会被清理？",
+      "source_date": "2026-08-22",
+      "source_concept": "tag 强制移动的传播效应与标签对象差异",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-22T06:05:14.046466+08:00",
+      "updated_at": "2026-08-22T06:05:14.046466+08:00"
+    },
+    {
+      "id": "2026-08-22-tag-afc44b6510",
+      "question": "如何用 git ls-remote 和 git fetch --force 安全地同步一个被强制移动的远端 tag？",
+      "source_date": "2026-08-22",
+      "source_concept": "tag 强制移动的传播效应与标签对象差异",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-22T06:05:14.046466+08:00",
+      "updated_at": "2026-08-22T06:05:14.046466+08:00"
+    },
+    {
+      "id": "2026-08-22-tag-68dd75073a",
+      "question": "为什么普通 fetch 不覆盖已存在的本地 tag？这样设计是为了防止什么问题？",
+      "source_date": "2026-08-22",
+      "source_concept": "tag 强制移动的传播效应与标签对象差异",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-22T06:05:14.046466+08:00",
+      "updated_at": "2026-08-22T06:05:14.046466+08:00"
+    },
+    {
+      "id": "2026-08-22-sha-ref-cd49422b7c",
+      "question": "在 SHA-256 仓库中，全零 SHA 变成 64 个 0，它判断创建和删除的规则是否仍然适用？",
+      "source_date": "2026-08-22",
+      "source_concept": "全零 SHA 与 ref 生命周期边界事件的编码语义",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-22T06:05:14.046466+08:00",
+      "updated_at": "2026-08-22T06:05:14.046466+08:00"
+    },
+    {
+      "id": "2026-08-22-sha-ref-72e19e88c9",
+      "question": "reflog 中每次 ref 变化都有条目，如何从 reflog 中找出一个分支的精确创建时间和删除时间？",
+      "source_date": "2026-08-22",
+      "source_concept": "全零 SHA 与 ref 生命周期边界事件的编码语义",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-22T06:05:14.046466+08:00",
+      "updated_at": "2026-08-22T06:05:14.046466+08:00"
+    },
+    {
+      "id": "2026-08-22-sha-ref-4ffa74be1a",
+      "question": "如果一条记录中旧值和新值都是全零，它还有意义吗？应该怎样处理？",
+      "source_date": "2026-08-22",
+      "source_concept": "全零 SHA 与 ref 生命周期边界事件的编码语义",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-22T06:05:14.046466+08:00",
+      "updated_at": "2026-08-22T06:05:14.046466+08:00"
+    },
+    {
+      "id": "2026-08-22-pre-receive-update-post-receive-e8a1e53dbc",
+      "question": "pre-receive 和 update 同时配置时，先整体后逐个的决策链会不会带来部分成功、部分失败的状态？客户端如何知道哪些 ref 成功？",
+      "source_date": "2026-08-22",
+      "source_concept": "pre-receive / update / post-receive 的推送决策顺序",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-08-22T06:05:14.046466+08:00",
+      "updated_at": "2026-08-22T06:05:14.046466+08:00"
+    },
+    {
+      "id": "2026-08-22-pre-receive-update-post-receive-b266340df8",
+      "question": "receive-pack 在 pre-receive 运行时是否已经把所有推送对象存入对象库？quarantine 机制对钩子检查有什么影响？",
+      "source_date": "2026-08-22",
+      "source_concept": "pre-receive / update / post-receive 的推送决策顺序",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-08-22T06:05:14.046466+08:00",
+      "updated_at": "2026-08-22T06:05:14.046466+08:00"
+    },
+    {
+      "id": "2026-08-22-pre-receive-update-post-receive-25723d76ea",
+      "question": "post-receive 的退出码是否会影响客户端收到的推送结果？如果它失败，需要手动补偿吗？",
+      "source_date": "2026-08-22",
+      "source_concept": "pre-receive / update / post-receive 的推送决策顺序",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-08-22T06:05:14.046466+08:00",
+      "updated_at": "2026-08-22T06:05:14.046466+08:00"
+    },
+    {
       "id": "2026-08-21-ref-8fccc3f384",
       "question": "一个 tag 如果被强制移动，对已经克隆了该标签的其他人会造成什么影响？",
       "source_date": "2026-08-21",
