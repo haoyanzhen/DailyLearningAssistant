@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-08-23 学习笔记日报</title>
+    <meta name="description" content="今日从 reflog 生命周期时间线、fetch 对 tag 的强制同步语义，到对象可达性与悬空对象清理时机，理解 ref 变化之后的完整生命周期。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260823-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-08-23</p>
+        <h1>reflog 日记、fetch 闸门、GC 清扫：ref 变化后的完整生命周期</h1>
+        <p>今天继续深入 ref 生命周期的配合机制，看事件如何记录、如何传播、旧对象如何存续。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>ref 生命周期机制之间的配合</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>reflog 生命周期时间线</strong>
+                <small>reflog 是 ref 的日记本…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>git fetch 对 t…</strong>
+                <small>tag 是固定锚点，普通 fetc…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>对象可达性与悬空对象的清理…</strong>
+                <small>悬空对象不会立即消失，ref/re…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念围绕 “ref 变化之后的完整生命周期” 展开。reflog 是本地仓库的审计日志，保证即使标签被移动也能追溯之前的状态；fetch 的 tag 跟随策略是远端变化是否进入本地的闸门，默认不覆盖以保护发布锚点；对象可达性与清理时机决定失去引用的旧对象还能存活多久。reflog 作为 GC 根之一影响清理时间，fetch 是否更新本地 tag 决定旧提交是否失去最后一个引用，GC 的可达性扫描把三者连成一个整体。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["ref 生命周期机制之间的配合"])
+  concept1["reflog 生命周期时间线"]
+  hub --&gt; concept1
+  concept2["git fetch 对 tag 的自动跟随策略与强制同步语义"]
+  hub --&gt; concept2
+  concept3["对象可达性与悬空对象的清理时机"]
+  hub --&gt; concept3
+  concept1 --&gt; concept3
+  related1["pre-receive / update / post-receive 的推送决策顺序"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="reflog-lifecycle-timeline">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>reflog 生命周期时间线</h3>
+              <p>Reflog Lifecycle Timeline</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">reflog 是 ref 的日记本，全零 SHA 是出生和死亡的标记。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>reflog 是追加式日记，记录每个 ref 的旧指针、新指针、时间、操作人、原因。</li>
+                <li>通过全零 SHA 的出现位置可定位 ref 的创建或删除事件。</li>
+                <li>reflog 只存在于本地仓库，服务端远端 ref 没有 reflog。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="reflog-lifecycle-timeline" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="git-fetch-tag-follow-and-force-sync">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>git fetch 对 tag 的自动跟随策略与强制同步语义</h3>
+              <p>Tag Auto-following and Forced Sync Semantics in git fetch</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">tag 是固定锚点，普通 fetch 不覆盖；强制同步要带加号。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>普通 fetch 会自动跟随分支上的 tag，但不会覆盖本地已有同名 tag。</li>
+                <li>强制同步需要显式使用 --tags --force 或带加号 refspec。</li>
+                <li>服务端可通过 receive.denyTagPush 和 receive.denyDeleteTag 从源头禁止强移或删除 tag。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="git-fetch-tag-follow-and-force-sync" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="object-reachability-and-dangling-object-cleanup">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>对象可达性与悬空对象的清理时机</h3>
+              <p>Object Reachability and Dangling Object Cleanup Timing</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">悬空对象不会立即消失，ref/reflog 不可达且超过保留窗口才被清理。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>失去引用的对象成为悬空对象，不会立即消失。</li>
+                <li>git gc 从 ref 和 reflog 等根出发做可达性扫描，不可达对象不会立即删除。</li>
+                <li>gc.pruneExpire 默认保留两周，过期才真正清理。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="object-reachability-and-dangling-object-cleanup" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="reflog-lifecycle-timeline">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>reflog 生命周期时间线</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>reflog 可以理解成每个 ref 的“日记本”。每次分支或标签的指针发生变化——新建、切换、提交、重置、删除——Git 都会在对应的日记本里追加一行，记下旧指针、新指针、操作人、时间和操作原因。因为它是“追加式”的，条目按时间顺序排列，所以你可以像回放录像一样逐条查看某个 ref 的全部移动历史。想找分支的出生时间，就找“旧值是全零 SHA”的那条记录；想找删除时间，就找“新值是全零 SHA”的那条记录。需要特别注意的是，reflog 只存在于本地仓库，服务端远端 ref 没有 reflog，所以远端审计要靠钩子日志或外部系统。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>追加式日志：每次 ref 变化追加一行，按时间排序。</li>
+                <li>全零 SHA 作为边界符号：创建时旧值为零，删除时新值为零。</li>
+                <li>本地性：reflog 仅存在于本地，服务端没有。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>运行 git reflog show main 查看 main 分支的日志。如果找到一条记录的旧值是 0000000000000000000000000000000000000000，那么这条记录对应的就是分支创建事件，它的时间戳就是创建时间。如果某条记录的新值是全零 SHA，那么它对应的就是分支删除事件，时间戳就是删除时间。reflog 中全零 SHA 出现的含义，正是昨天强调过的“不存在”的占位符号。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>常见误区是认为 reflog 是永久保存的。实际上 reflog 有保留时间，超过 core.reflogExpire 配置的旧条目会被清理，所以它是一条有寿命的审计路径，不是永久档案。</li>
+                <li>另一个误区是以为远端仓库也有 reflog，其实远端 ref 没有 reflog，服务端审计只能靠钩子日志或外部观测系统。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>对象可达性与悬空对象的清理时机</td><td>reflog 是 GC 的可达根之一，未过期的 reflog 条目能让旧对象继续存活，因此与对象清理时机直接相关。</td></tr>
+                <tr><td>pre-receive / update / post-receive 的推送决策顺序</td><td>reflog 记录的是 ref 更新成功后的结果，而 receive-pack 的隔离区是 ref 更新成功前对象的暂存状态，两者分别是事后记录与事前验证。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>reflog 条目超过保留时间后会被清理，如何配置 core.reflogExpire 来平衡审计需求与仓库体积？</li>
+                <li>远端 ref 没有 reflog，如果想对服务端 ref 变化做完整审计，可以用哪些外部手段补全操作者和时间字段？</li>
+                <li>同一个操作可能同时更新多个 ref，比如 git push --mirror，如何把 reflog 中的多条条目关联成一组事务？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="git-fetch-tag-follow-and-force-sync">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>git fetch 对 tag 的自动跟随策略与强制同步语义</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>tag 在 Git 里通常被视为“固定发布锚点”，一旦打上标签，就代表一个不可变的版本。普通 git fetch origin 只会拉取你关心的分支对应的提交，如果这些提交恰好也有 tag 指向它们，那么这些 tag 会被“自动跟随”下载。但是，如果本地已经存在同名的 tag，Git 默认不会覆盖它，而是保留本地版本。这样设计是为了防止远端 tag 被强制移动后，下游仓库被静默篡改。要强制同步被移动的远端 tag，必须显式告诉 Git“允许覆盖”，比如使用 git fetch --tags --force，或者使用带加号的 refspec：git fetch origin "+refs/tags/*:refs/tags/*"。加号的意思是：即使这会覆盖本地已有 tag，也照做。服务端还可以设置 receive.denyTagPush 和 receive.denyDeleteTag，从源头拒绝 tag 的强制更新或删除。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>tag 作为固定发布锚点，本地已有同名 tag 默认受保护。</li>
+                <li>--tags 只改变自动跟随范围，不改变覆盖保护。</li>
+                <li>带加号 refspec 表示强制覆盖。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设远端有人把轻量 tag v1.0 从提交 A 强制移到提交 B。你在本地运行 git fetch origin，通常不会更新你已经存在的 v1.0 标签。如果你执行 git fetch origin --tags --force，那么本地 v1.0 会被强制指向提交 B。如果你只想覆盖这一个 tag，可以运行 git fetch origin "+refs/tags/v1.0:refs/tags/v1.0"，加号表示这次更新允许强制覆盖。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>常见误区是认为 git fetch --tags 会强制覆盖本地已有 tag。实际上 --tags 只是把自动跟随的规则改成“拉取所有远端 tag”，但依然遵守“不覆盖已有本地 tag”的保护。要强制覆盖，需要加上 --force，或者使用带加号的 refspec。</li>
+                <li>另一个误区是认为远端 tag 移动后，所有下游仓库会自动看到新 tag；实际上下游不会自动更新，必须显式执行强制同步。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>reflog 生命周期时间线</td><td>fetch 的 tag 跟随决定远端新 tag 是否进入本地，而本地 tag 被更新这件事本身又会在 reflog 中留下记录，因此两者共同构成 tag 更新的可见性。</td></tr>
+                <tr><td>对象可达性与悬空对象的清理时机</td><td>tag 被强制移动后，原来指向的旧提交可能失去引用成为悬空对象，它是否会被清理取决于对象可达性与 GC 保留窗口。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何配置 tagOpt 让每次 fetch 都自动拉取所有远端 tag？</li>
+                <li>receive.denyTagPush 和 receive.denyDeleteTag 保护的是服务端，客户端有没有类似的保护机制来防止本地 tag 被意外覆盖？</li>
+                <li>如果本地 tag 被强制更新，通过 reflog 能否找回被覆盖前的 tag 指向？具体应该怎么操作？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="object-reachability-and-dangling-object-cleanup">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>对象可达性与悬空对象的清理时机</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>Git 的对象库就像一个巨大的仓库，里面保存着所有提交、目录和文件。ref（分支、标签）就像指向某个对象的名牌。当你移动或删除一个标签，原来被它指着的对象并没有立刻“死掉”，它只是暂时没人点名了，被称为“悬空对象”。Git 不会立即把它扔出去，而是定期做一次大扫除（git gc）。大扫除时会从一组“根”出发，沿着对象之间的引用关系，把所有能走到的对象都标记为“有用”，走不到的就是垃圾。但是为了安全，垃圾也不是马上烧掉，而是再放一段时间，默认两周，由 gc.pruneExpire 控制。另外，reflog 也是“根”之一，只要一个对象出现在还没过期的 reflog 条目里，它就算“可达”，不会被清理。所以一个被强移 tag 抛弃的旧提交，实际存活时间往往比想象中长得多。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>ref 和未过期的 reflog 是可达根。</li>
+                <li>gc 做可达性扫描，不可达对象进入保留期。</li>
+                <li>gc.pruneExpire 控制保留窗口，默认两周。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一个轻量 tag v1.0 原来指向提交 abc123，有人强制移动它指向 def456。运行 git fsck --lost-found 时，你可能会看到 dangling commit abc123。这说明提交 abc123 还在对象库里，只是没有 ref 指向它。如果两周内没有任何操作让它重新可达，它才会被自动 gc 或手动 git gc --prune=now 清除。在这之前，你甚至可以用 git show abc123 直接访问这个“没人要”的提交。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>常见误区是认为“删除 ref 或强移 tag 后，旧提交立即从 Git 仓库中消失”。实际上它还会作为悬空对象存在，甚至可以通过 git fsck --lost-found 被找回。</li>
+                <li>另一个误区是认为 git gc 会立刻删除所有不可达对象；实际上还有保留窗口和 reflog 因素，所以清理不是即时的。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>reflog 生命周期时间线</td><td>reflog 是 GC 的可达根之一，因此未过期的 reflog 条目能让旧对象继续存活，这直接延长了 tag 强移后旧提交的生命周期。</td></tr>
+                <tr><td>git fetch 对 tag 的自动跟随策略与强制同步语义</td><td>fetch 的 tag 跟随策略决定远端的移动是否进入本地；一旦本地 tag 被强制更新，原指向的提交就可能变成悬空对象并进入 GC 的清理周期。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何配置 gc.pruneExpire 来缩短或延长悬空对象的保留时间？</li>
+                <li>git fsck 与 git gc 分别扮演什么角色？为什么 git fsck --lost-found 可以找回丢失的提交？</li>
+                <li>packfile 中的对象和松散对象在清理时机上有什么不同？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念围绕 “ref 变化之后的完整生命周期” 展开。reflog 是本地仓库的审计日志，保证即使标签被移动也能追溯之前的状态；fetch 的 tag 跟随策略是远端变化是否进入本地的闸门，默认不覆盖以保护发布锚点；对象可达性与清理时机决定失去引用的旧对象还能存活多久。reflog 作为 GC 根之一影响清理时间，fetch 是否更新本地 tag 决定旧提交是否失去最后一个引用，GC 的可达性扫描把三者连成一个整体。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">tag 被强移后旧提交不会立即删除，只有既不被 ref 或 reflog 可达、又超过 gc.pruneExpire 保留窗口后才会被真正清理。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何配置 core.reflogExpire 来平衡审计需求与仓库体积？</li>
+            <li>如何配置 tagOpt 让每次 fetch 都自动拉取所有远端 tag？</li>
+            <li>如何配置 gc.pruneExpire 来缩短或延长悬空对象的保留时间？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>

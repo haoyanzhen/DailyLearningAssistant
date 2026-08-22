@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-08/2026-08-23-learning-report.html">2026-08-23</a>
+      </td>
+      <td>reflog 生命周期时间线</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★</td>
+      <td>reflog 就是每个 ref 的追加式“日记本”，通过全零 SHA 这个特殊记号，可以反推分支的精确出生和死亡时间。</td>
+      <td>下一次可以深入 reflog 的文件格式与过期清理策略，以及如何用 reflog 结合服务端钩子日志构建完整的审计链路。</td>
+    </tr>
+    <tr>
+      <td>git fetch 对 tag 的自动跟随策略与强制同步语义</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★</td>
+      <td>普通 fetch 不会覆盖本地已存在的 tag，因为 tag 是发布锚点；要同步被强移的远端 tag，必须显式使用 --tags --force 或带加号 refspec。</td>
+      <td>下一次可以深入 fetch 的协议协商过程，探讨 tag 自动跟随在 HTTP 和 SSH 传输下是否有差异，以及如何设计多仓库的 tag 同步策略。</td>
+    </tr>
+    <tr>
+      <td>对象可达性与悬空对象的清理时机</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★★</td>
+      <td>Git 不会在 ref 移开后立即删除旧对象，而是通过从 ref 和 reflog 出发的可达性扫描，加上默认两周的保留窗口，决定悬空对象何时被真正清理。</td>
+      <td>下一次可以深入 git gc 的完整调度过程，结合 packfile 压缩、reflog 过期和对象可达性扫描，讲清楚仓库体积到底是怎么被释放的。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-08/2026-08-22-learning-report.html">2026-08-22</a>
       </td>
       <td>全零 SHA 与 ref 生命周期边界事件的编码语义</td>

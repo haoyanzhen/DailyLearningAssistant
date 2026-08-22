@@ -3,6 +3,96 @@
   "year_month": "2026-08",
   "threads": [
     {
+      "id": "2026-08-23-reflog-ef20243962",
+      "question": "远端 ref 没有 reflog，如果想对服务端 ref 变化做完整审计，可以用哪些外部手段补全操作者和时间字段？",
+      "source_date": "2026-08-23",
+      "source_concept": "reflog 生命周期时间线",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-23T06:03:34.223704+08:00",
+      "updated_at": "2026-08-23T06:03:34.223704+08:00"
+    },
+    {
+      "id": "2026-08-23-reflog-d46aaacece",
+      "question": "reflog 条目超过保留时间后会被清理，如何配置 core.reflogExpire 来平衡审计需求与仓库体积？",
+      "source_date": "2026-08-23",
+      "source_concept": "reflog 生命周期时间线",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-23T06:03:34.223704+08:00",
+      "updated_at": "2026-08-23T06:03:34.223704+08:00"
+    },
+    {
+      "id": "2026-08-23-reflog-43147727c0",
+      "question": "同一个操作可能同时更新多个 ref，比如 git push --mirror，如何把 reflog 中的多条条目关联成一组事务？",
+      "source_date": "2026-08-23",
+      "source_concept": "reflog 生命周期时间线",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-23T06:03:34.223704+08:00",
+      "updated_at": "2026-08-23T06:03:34.223704+08:00"
+    },
+    {
+      "id": "2026-08-23-git-fetch-tag-b526ae9fea",
+      "question": "如果本地 tag 被强制更新，通过 reflog 能否找回被覆盖前的 tag 指向？具体应该怎么操作？",
+      "source_date": "2026-08-23",
+      "source_concept": "git fetch 对 tag 的自动跟随策略与强制同步语义",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-23T06:03:34.223704+08:00",
+      "updated_at": "2026-08-23T06:03:34.223704+08:00"
+    },
+    {
+      "id": "2026-08-23-git-fetch-tag-26442ee211",
+      "question": "如何配置 tagOpt 让每次 fetch 都自动拉取所有远端 tag？",
+      "source_date": "2026-08-23",
+      "source_concept": "git fetch 对 tag 的自动跟随策略与强制同步语义",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-23T06:03:34.223704+08:00",
+      "updated_at": "2026-08-23T06:03:34.223704+08:00"
+    },
+    {
+      "id": "2026-08-23-git-fetch-tag-0ed4c73240",
+      "question": "receive.denyTagPush 和 receive.denyDeleteTag 保护的是服务端，客户端有没有类似的保护机制来防止本地 tag 被意外覆盖？",
+      "source_date": "2026-08-23",
+      "source_concept": "git fetch 对 tag 的自动跟随策略与强制同步语义",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-23T06:03:34.223704+08:00",
+      "updated_at": "2026-08-23T06:03:34.223704+08:00"
+    },
+    {
+      "id": "2026-08-23-concept-726b62fa9e",
+      "question": "git fsck 与 git gc 分别扮演什么角色？为什么 git fsck --lost-found 可以找回丢失的提交？",
+      "source_date": "2026-08-23",
+      "source_concept": "对象可达性与悬空对象的清理时机",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-23T06:03:34.223704+08:00",
+      "updated_at": "2026-08-23T06:03:34.223704+08:00"
+    },
+    {
+      "id": "2026-08-23-concept-467a686b8c",
+      "question": "packfile 中的对象和松散对象在清理时机上有什么不同？",
+      "source_date": "2026-08-23",
+      "source_concept": "对象可达性与悬空对象的清理时机",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-23T06:03:34.223704+08:00",
+      "updated_at": "2026-08-23T06:03:34.223704+08:00"
+    },
+    {
+      "id": "2026-08-23-concept-25a4968be9",
+      "question": "如何配置 gc.pruneExpire 来缩短或延长悬空对象的保留时间？",
+      "source_date": "2026-08-23",
+      "source_concept": "对象可达性与悬空对象的清理时机",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-23T06:03:34.223704+08:00",
+      "updated_at": "2026-08-23T06:03:34.223704+08:00"
+    },
+    {
       "id": "2026-08-22-tag-c3f65344a2",
       "question": "轻量标签被强制移动后，原来指向的旧提交会立即被删除吗？它什么时候才会被清理？",
       "source_date": "2026-08-22",
