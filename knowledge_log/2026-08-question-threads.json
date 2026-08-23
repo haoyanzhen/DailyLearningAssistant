@@ -3,6 +3,96 @@
   "year_month": "2026-08",
   "threads": [
     {
+      "id": "2026-08-24-receive-pack-push-fb9f534ef4",
+      "question": "receive-pack 的 ok/ng 状态报告在 pkt-line 协议中如何编码，客户端如何把它和进度信息区分开？",
+      "source_date": "2026-08-24",
+      "source_concept": "receive-pack 状态报告协议与 push 的部分成功语义",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-24T06:05:35.031511+08:00",
+      "updated_at": "2026-08-24T06:05:35.031511+08:00"
+    },
+    {
+      "id": "2026-08-24-receive-pack-push-ac060ef155",
+      "question": "当服务端配置 receive.denyNonFastForwards 时，内置拒绝和 update 钩子拒绝在状态报告文本与退出行为上有什么不同？",
+      "source_date": "2026-08-24",
+      "source_concept": "receive-pack 状态报告协议与 push 的部分成功语义",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-24T06:05:35.031511+08:00",
+      "updated_at": "2026-08-24T06:05:35.031511+08:00"
+    },
+    {
+      "id": "2026-08-24-receive-pack-push-0594fcbcd5",
+      "question": "多 ref 推送在部分成功时，quarantine 隔离区里那些未被接受的对象会如何迁移、保留或丢弃？",
+      "source_date": "2026-08-24",
+      "source_concept": "receive-pack 状态报告协议与 push 的部分成功语义",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-24T06:05:35.031511+08:00",
+      "updated_at": "2026-08-24T06:05:35.031511+08:00"
+    },
+    {
+      "id": "2026-08-24-git-fsck-lost-found-e893f0bf0f",
+      "question": "在服务端没有 reflog 的托管平台上，如何结合 webhook 或定时 ls-remote 的审计记录，确认 fsck --lost-found 找到的旧提交就是被强移前的状态？",
+      "source_date": "2026-08-24",
+      "source_concept": "git fsck --lost-found 与悬空对象的重新锚定",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-24T06:05:35.031511+08:00",
+      "updated_at": "2026-08-24T06:05:35.031511+08:00"
+    },
+    {
+      "id": "2026-08-24-git-fsck-lost-found-797d6fdc2b",
+      "question": "git fsck 和 git gc 都做对象可达性扫描，为什么一个用于检查与恢复，另一个用于清理与压缩？",
+      "source_date": "2026-08-24",
+      "source_concept": "git fsck --lost-found 与悬空对象的重新锚定",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-24T06:05:35.031511+08:00",
+      "updated_at": "2026-08-24T06:05:35.031511+08:00"
+    },
+    {
+      "id": "2026-08-24-git-fsck-lost-found-385732c00c",
+      "question": "悬空 commit、悬空 tree、悬空 blob 在恢复时各自有什么不同的处理方式和风险？",
+      "source_date": "2026-08-24",
+      "source_concept": "git fsck --lost-found 与悬空对象的重新锚定",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-24T06:05:35.031511+08:00",
+      "updated_at": "2026-08-24T06:05:35.031511+08:00"
+    },
+    {
+      "id": "2026-08-24-base-allow-unrelated-histories-627ea5f25d",
+      "question": "空树 base 在这种合并中会让所有文件都表现为新增，它与普通合并的 diff 计算路径有什么不同？",
+      "source_date": "2026-08-24",
+      "source_concept": "无共同祖先时的合并机制：空树 base 与 --allow-unrelated-histories 的机械实现",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-24T06:05:35.031511+08:00",
+      "updated_at": "2026-08-24T06:05:35.031511+08:00"
+    },
+    {
+      "id": "2026-08-24-base-allow-unrelated-histories-29bf7b5277",
+      "question": "如果两个根提交中有同名的目录但内部文件不同，空树 base 会如何逐路径地做合并决策？",
+      "source_date": "2026-08-24",
+      "source_concept": "无共同祖先时的合并机制：空树 base 与 --allow-unrelated-histories 的机械实现",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-24T06:05:35.031511+08:00",
+      "updated_at": "2026-08-24T06:05:35.031511+08:00"
+    },
+    {
+      "id": "2026-08-24-base-allow-unrelated-histories-135fa4ebbe",
+      "question": "在有多个共同祖先的 criss-cross 合并中，best common ancestor 算法如何排除被支配的候选，保证合并结果稳定？",
+      "source_date": "2026-08-24",
+      "source_concept": "无共同祖先时的合并机制：空树 base 与 --allow-unrelated-histories 的机械实现",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-24T06:05:35.031511+08:00",
+      "updated_at": "2026-08-24T06:05:35.031511+08:00"
+    },
+    {
       "id": "2026-08-23-reflog-ef20243962",
       "question": "远端 ref 没有 reflog，如果想对服务端 ref 变化做完整审计，可以用哪些外部手段补全操作者和时间字段？",
       "source_date": "2026-08-23",

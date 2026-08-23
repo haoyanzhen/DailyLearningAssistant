@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-08/2026-08-24-learning-report.html">2026-08-24</a>
+      </td>
+      <td>无共同祖先时的合并机制：空树 base 与 --allow-unrelated-histories 的机械实现</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★</td>
+      <td>当两段历史没有共同祖先时，Git 用一个空树当虚拟 base，把两边的文件都当成新增内容来做三方合并。</td>
+      <td>下一次可以深入多个共同祖先时的 best common ancestor 选择算法：候选不止一个时，Git 如何排除被支配节点，防止合并 base 抖动。</td>
+    </tr>
+    <tr>
+      <td>git fsck --lost-found 与悬空对象的重新锚定</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★★</td>
+      <td>git fsck --lost-found 把当前不可达的悬空对象收集到 .git/lost-found/，只要对象还没被 GC 清除，新建分支或 tag 就能把它重新锚定回可见历史。</td>
+      <td>下一次可以深入 git gc 的完整调度过程：可达性扫描、reflog 过期、packfile 压缩如何协同，以及 gc.pruneExpire 怎样控制悬空对象的保留窗口。</td>
+    </tr>
+    <tr>
+      <td>receive-pack 状态报告协议与 push 的部分成功语义</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★★</td>
+      <td>receive-pack 将每个 ref 的更新结果通过 ok/ng 状态报告逐个回传，所以一次 git push 可以部分成功，客户端也能知道具体哪个分支失败。</td>
+      <td>下一次可以深入对象隔离区 quarantine 与部分成功状态报告的组合语义：推送对象在钩子检查期间被隔离，部分成功时哪些对象被移入主对象库、哪些被丢弃。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-08/2026-08-23-learning-report.html">2026-08-23</a>
       </td>
       <td>reflog 生命周期时间线</td>

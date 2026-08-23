@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-08-24 学习笔记日报</title>
+    <meta name="description" content="今日复习 Git 对象与 ref 生命周期的三个边界场景：空树 base 合并、fsck --lost-found 恢复悬空对象、receive-pack 部分成功状态报告，串联入口、边界与出口。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260824-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-08-24</p>
+        <h1>Git 边界场景三幕：连接、找回与回执</h1>
+        <p>无变更复习日，用三个边界场景串起 Git 对象与 ref 的生命周期：历史如何连接、断链如何找回、推送结果如何被看见。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>Git 对象与 ref 生命周期的…</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>无共同祖先时的合并机制：空…</strong>
+                <small>两班都没有共同纪念册？那就拿空白册…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>git fsck --lo…</strong>
+                <small>目录被删不等于书被销毁，失物待领架…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>receive-pack…</strong>
+                <small>每个分支的录取通知是单独寄出的。</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">这些概念被放在同一天复习，是因为它们共同描述了 ref 和对象生命周期的三个关键环节：入口、边界和出口。receive-pack 状态报告站在入口，判断一次推送中哪些 ref 更新被接纳；空树 base 站在边界，让两段原本不相交的历史通过一个虚拟的空白起点完成合并；fsck --lost-found 站在出口，在对象失去引用后提供一条恢复路径。三者都来自同一套基础模型：ref 是锚点，对象是被锚定的内容，对象图的可达性决定历史是否可见。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["Git 对象与 ref 生命周期的边界场景"])
+  concept1["无共同祖先时的合并机制：空树 base 与 --allow-unrelated-histories 的机械实现"]
+  hub --&gt; concept1
+  concept2["git fsck --lost-found 与悬空对象的重新锚定"]
+  hub --&gt; concept2
+  concept3["receive-pack 状态报告协议与 push 的部分成功语义"]
+  hub --&gt; concept3
+  related1["merge-base 的计算机制与共同祖先选择"]
+  concept1 --&gt; related1
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related2["服务端审计链"]
+  concept2 --&gt; related2
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  related3["服务端 push 钩子的事件日志与外部补偿通道"]
+  concept3 --&gt; related3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="empty-tree-base-merge">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>无共同祖先时的合并机制：空树 base 与 --allow-unrelated-histories 的机械实现</h3>
+              <p>Merge with Empty Tree Base (--allow-unrelated-histories)</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">两班都没有共同纪念册？那就拿空白册子当起点，把两边内容都当新增。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>普通合并依赖共同祖先做三方合并，遇到无共同祖先时 merge-base 为空。</li>
+                <li>--allow-unrelated-histories 的机械实现是引入空树作为虚拟共同祖先，让两个根提交的所有文件都相对空树表现为“新增”。</li>
+                <li>路径重叠且内容不同才会冲突；路径不重叠时合并很顺，合并提交会保留两个父提交。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="empty-tree-base-merge" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="git-fsck-lost-found">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>git fsck --lost-found 与悬空对象的重新锚定</h3>
+              <p>git fsck --lost-found</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">目录被删不等于书被销毁，失物待领架就是找回它的桥梁。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>悬空对象是由 ref 移开引起的不可达对象，不会立刻被删除，GC 有保留窗口。</li>
+                <li>git fsck 从当前所有 ref 出发扫描对象图，找出不可达对象；--lost-found 把它们集中放到 .git/lost-found/。</li>
+                <li>恢复动作就是新建一个 ref 指向该对象，使它从不可达变回可达。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="git-fsck-lost-found" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="receive-pack-status-report">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>receive-pack 状态报告协议与 push 的部分成功语义</h3>
+              <p>receive-pack Status Report</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">每个分支的录取通知是单独寄出的。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>push 时 receive-pack 用 pre-receive 和 update 钩子把关，update 可逐 ref 放行或拒绝。</li>
+                <li>receive-pack 通过 pkt-line 协议向客户端回传 ok/ng 状态报告，使客户端能逐条显示各 ref 结果。</li>
+                <li>Git 以 ref 为更新粒度，部分成功不是异常；post-receive 的退出码不影响已完成的更新。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="receive-pack-status-report" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="empty-tree-base-merge">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>无共同祖先时的合并机制：空树 base 与 --allow-unrelated-histories 的机械实现</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>要理解这个机制，我们先看普通合并是怎么回事。Git 合并两个分支时，会先找双方的共同祖先，也就是两个分支从哪个提交开始分道扬镳的那个点。三方合并就是以共同祖先做基准，比较两边各自改了什么。如果两个提交完全没有共同祖先呢？那就相当于两个人的家族史毫无交集，根本找不到共同起点。这时 merge-base 输出为空，Git 不知道拿什么当基准。--allow-unrelated-histories 的机械实现，就是人为造一个虚拟起点：空树。空树代表一个什么都没有的空白目录。把空树当作 base，左边根提交的所有文件和右边根提交的所有文件，相对于空树都等于‘新增文件’。于是三方合并有了可比较的基础：两边都新增了同一个路径且内容不同，就冲突；两边新增的路径不同，就各自保留。这样一来，原本毫无关系的两段历史也能完成合并。一个具体例子是：假设仓库里有两个根提交 A 和 B，A 分支上有 src/a.c 和 README.md，B 分支上有 src/b.c 和 README.md。执行 `git merge B --allow-unrelated-histories` 时，Git 把空树、A 的树、B 的树放进三方合并。src/a.c 只在 A 出现，src/b.c 只在 B 出现，于是都直接加入；README.md 两边都有且内容不同，所以产生冲突，需要手工解决。解决后的合并提交会带有 A 和 B 两个父提交，成为连接两段历史的新节点。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>普通三方合并需要共同祖先作为基准；无共同祖先时 merge-base 为空。</li>
+                <li>--allow-unrelated-histories 解除默认限制，并将空树（空白目录）作为虚拟共同祖先。</li>
+                <li>两个根提交的所有文件相对空树都视为新增，于是进入标准三方合并流程：路径不同则并存，路径相同且内容不同则冲突。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设仓库里有两个根提交 A 和 B，A 分支上有 src/a.c 和 README.md，B 分支上有 src/b.c 和 README.md。执行 `git merge B --allow-unrelated-histories` 时，Git 把空树、A 的树、B 的树放进三方合并。src/a.c 只在 A 出现，src/b.c 只在 B 出现，于是都直接加入；README.md 两边都有且内容不同，所以产生冲突，需要手工解决。解决后的合并提交会带有 A 和 B 两个父提交，成为连接两段历史的新节点。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为 --allow-unrelated-histories 是“不管三七二十一硬拼历史”的开关；实际上仍走三方合计算法，只是把 base 换成空树。</li>
+                <li>误以为无共同祖先合并一定冲突遍地；其实只有路径都新增且内容不同才冲突，路径不重叠时合并很顺。</li>
+                <li>误以为这个开关专门用来“接盘”外部仓库；其实它只是一个解除默认限制的合并选项，底层机制始终是空树 base。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>merge-base 的计算机制与共同祖先选择</td><td>当 merge-base 为空时，这个机制用空树做虚拟 base，让无共同祖先的历史也能进入三方合并流程。</td></tr>
+                <tr><td>git fsck --lost-found 与悬空对象的重新锚定</td><td>合并用空树 base 为两个不相交的历史建立正向连接，fsck 则负责发现对象图中已经断开的连接。</td></tr>
+                <tr><td>receive-pack 状态报告协议与 push 的部分成功语义</td><td>两者都处在“某个提交能否进入当前历史”的判定边界，只是合并由 merge-base 决定，推送由 update 钩子决定。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>空树 base 在这种合并中会让所有文件都表现为新增，它与普通合并的 diff 计算路径有什么不同？</li>
+                <li>如果两个根提交中有同名的目录但内部文件不同，空树 base 会如何逐路径地做合并决策？</li>
+                <li>在有多个共同祖先的 criss-cross 合并中，best common ancestor 算法如何排除被支配的候选，保证合并结果稳定？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="git-fsck-lost-found">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>git fsck --lost-found 与悬空对象的重新锚定</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>我们先建立一张图。Git 仓库里的对象像图书馆里的书，ref（分支和 tag）像目录索引。能从某个 ref 出发、顺着提交图走到的对象，叫可达对象；走不到的对象叫不可达对象，也就是悬空对象。悬空对象很常见：分支被 reset 回退、tag 被强制移动、rebase 后旧提交失去引用，都会制造出它们。它们不会立刻被删，因为 Git 的 gc 还留有保护期。git fsck 的工作，就是从当前所有 ref 出发扫一遍对象图，找出那些目录里已经查不到的书。--lost-found 则把这些书集中放到一个待认领架——.git/lost-found/ 目录。恢复动作本身很简单：确认某个悬空提交确实是你要找的旧状态，然后用 `git branch recover &lt;SHA&gt;` 或 `git tag old &lt;SHA&gt;` 新建一个引用指向它。引用一旦建立，这个对象就从不可达变回可达，重新出现在正常历史里，可以被 checkout、diff、继续开发。一个具体例子：假设你执行了 `git reset --hard HEAD~3`，原来指向的最新提交变成了悬空提交。运行 `git fsck --lost-found` 后，Git 会在 .git/lost-found/commit/ 下写入一个文件，里面就是那个提交的 SHA。你用 `git show &lt;SHA&gt;` 确认它确实是回退前的状态，然后执行 `git branch recover &lt;SHA&gt;`。新建的 recover 分支指向那个提交，该提交立即重新变成可达对象；之后你可以继续在它上面开发，或把它 merge 回主分支。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>对象可达性由从 ref 出发的遍历决定；失去引用的对象成为悬空对象。</li>
+                <li>悬空对象有保留窗口，在 GC 清理前仍存在于对象库。</li>
+                <li>git fsck 扫描对象图并列出不可达对象，--lost-found 将它们汇总到 .git/lost-found；新建 ref 即可重新锚定。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设你执行了 `git reset --hard HEAD~3`，原来指向的最新提交变成了悬空提交。运行 `git fsck --lost-found` 后，Git 会在 .git/lost-found/commit/ 下写入一个文件，里面就是那个提交的 SHA。你用 `git show &lt;SHA&gt;` 确认它确实是回退前的状态，然后执行 `git branch recover &lt;SHA&gt;`。新建的 recover 分支指向那个提交，该提交立即重新变成可达对象；之后你可以继续在它上面开发，或把它 merge 回主分支。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为 git fsck --lost-found 会自动修复仓库；它只负责找出不可达对象并整理到 lost-found，不会自动修改任何 ref。</li>
+                <li>误以为悬空对象会马上被清掉；实际上有保留窗口，这段时间正是恢复窗口。</li>
+                <li>误以为只有 --lost-found 才能恢复悬空提交；其实只要拿到 SHA，手动 git branch 或 git tag 同样可以重新锚定，--lost-found 只是集中列出候选。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>服务端审计链</td><td>审计链记录 ref 曾经指向的旧 SHA，当旧值因强移或误删变成不可达对象时，fsck --lost-found 提供找回并重新锚定的操作路径。</td></tr>
+                <tr><td>无共同祖先时的合并机制：空树 base 与 --allow-unrelated-histories 的机械实现</td><td>合并是在两个独立历史之间建立新的正向连接，fsck 则是发现历史断开后把对象重新连接回当前仓库。</td></tr>
+                <tr><td>receive-pack 状态报告协议与 push 的部分成功语义</td><td>两者分别位于对象生命周期的入口和出口：推送的 ok/ng 决定对象能否被接纳，fsck --lost-found 决定失去引用的对象能否被重新接纳。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>git fsck 和 git gc 都做对象可达性扫描，为什么一个用于检查与恢复，另一个用于清理与压缩？</li>
+                <li>悬空 commit、悬空 tree、悬空 blob 在恢复时各自有什么不同的处理方式和风险？</li>
+                <li>在服务端没有 reflog 的托管平台上，如何结合 webhook 或定时 ls-remote 的审计记录，确认 fsck --lost-found 找到的旧提交就是被强移前的状态？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="receive-pack-status-report">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>receive-pack 状态报告协议与 push 的部分成功语义</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>我们知道 git push 会把本地分支的更新发送到远端，远端由 receive-pack 进程负责接收。接收时有两个钩子把关：pre-receive 先整批看一遍，可以拒绝整个推送；update 对每个 ref 单独检查，可以只拒绝其中某几个。因此一次 push 可以同时包含 main 和 dev 两个分支的更新，dev 被拒了，main 却成功了。Git 如何让客户端知道这个结果？答案是 receive-pack 的状态报告。它对每个 ref 生成一行结果：ok 表示该 ref 已经更新，ng 表示被拒绝并附带原因；这些结果通过 pkt-line 协议回传给本地 git。于是客户端能逐条显示 main 已更新、dev 被拒绝。要特别记住：部分成功不是异常，而是 Git 以 ref 为更新粒度的正常现象。两个 ref 之间没有事务性捆绑，一个失败不会拖累另一个的成功。另外，post-receive 钩子在 ref 更新完成后才运行，它的退出码不会改变已经发生的更新结果；客户端看到的状态报告在 post-receive 之前就已确定。一个具体例子：执行 `git push origin main dev`，远端 update 钩子允许 main 更新、拒绝 dev 更新。receive-pack 返回的状态报告类似：`ok refs/heads/main`、`ng refs/heads/dev (update hook declined)`。本地终端会显示 main 推送成功、dev 被远端拒绝，同时 Git 命令的退出码是 1。CI 系统读取这些输出后，仍然可以针对 main 启动构建，因为状态报告已明确 main 成功了。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>receive-pack 接收 push，pre-receive 整批把关，update 逐 ref 检查。</li>
+                <li>receive-pack 对每个 ref 生成 ok/ng 状态报告，通过 pkt-line 回传客户端。</li>
+                <li>状态报告在 post-receive 之前确定，post-receive 不影响更新结果；部分成功是正常的。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>执行 `git push origin main dev`，远端 update 钩子允许 main 更新、拒绝 dev 更新。receive-pack 返回的状态报告类似：`ok refs/heads/main`、`ng refs/heads/dev (update hook declined)`。本地终端会显示 main 推送成功、dev 被远端拒绝，同时 Git 命令的退出码是 1。CI 系统读取这些输出后，仍然可以针对 main 启动构建，因为状态报告已明确 main 成功了。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为 git push 是全有或全无；实际多 ref 推送中部分成功是正常状态。</li>
+                <li>误以为客户端进程退出码非零就推断所有 ref 都失败；必须配合状态报告才能知道具体哪个 ref 成功。</li>
+                <li>误以为 post-receive 执行失败会撤销推送或让客户端显示失败；实际上 ref 更新已完成后 post-receive 只是通知器。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>服务端 push 钩子的事件日志与外部补偿通道</td><td>状态报告是当前结果，审计链是事后历史记录，两者是同一批 ref 更新事件的两个视角。</td></tr>
+                <tr><td>无共同祖先时的合并机制：空树 base 与 --allow-unrelated-histories 的机械实现</td><td>两者共同回答某个提交能否进入当前历史：推送时由 receive-pack 和 update 钩子接受或拒绝，合并时由 merge-base 和空树 base 决定两段历史能否连接。</td></tr>
+                <tr><td>git fsck --lost-found 与悬空对象的重新锚定</td><td>两者分别站在对象生命周期的入口和出口：push 是对象进入仓库的常规入口，fsck --lost-found 是对象失去引用后的恢复出口。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>多 ref 推送在部分成功时，quarantine 隔离区里那些未被接受的对象会如何迁移、保留或丢弃？</li>
+                <li>receive-pack 的 ok/ng 状态报告在 pkt-line 协议中如何编码，客户端如何把它和进度信息区分开？</li>
+                <li>当服务端配置 receive.denyNonFastForwards 时，内置拒绝和 update 钩子拒绝在状态报告文本与退出行为上有什么不同？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">这些概念被放在同一天复习，是因为它们共同描述了 ref 和对象生命周期的三个关键环节：入口、边界和出口。receive-pack 状态报告站在入口，判断一次推送中哪些 ref 更新被接纳；空树 base 站在边界，让两段原本不相交的历史通过一个虚拟的空白起点完成合并；fsck --lost-found 站在出口，在对象失去引用后提供一条恢复路径。三者都来自同一套基础模型：ref 是锚点，对象是被锚定的内容，对象图的可达性决定历史是否可见。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">部分成功不是异常，而是 Git 以 ref 为更新粒度的正常现象。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>空树 base 在这种合并中会让所有文件都表现为新增，它与普通合并的 diff 计算路径有什么不同？</li>
+            <li>git fsck 和 git gc 都做对象可达性扫描，为什么一个用于检查与恢复，另一个用于清理与压缩？</li>
+            <li>多 ref 推送在部分成功时，quarantine 隔离区里那些未被接受的对象会如何迁移、保留或丢弃？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
