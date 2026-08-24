@@ -1,6 +1,12 @@
 {
   "reports": [
     {
+      "date": "2026-08-25",
+      "title": "2026-08-25 学习笔记日报",
+      "summary": "从git push出发，看pkt-line如何分帧状态报告，quarantine如何隔离对象，fsck与gc如何决定对象去留，串起对象生命周期。",
+      "path": "./daily_report/2026-08/2026-08-25-learning-report.html"
+    },
+    {
       "date": "2026-08-24",
       "title": "2026-08-24 学习笔记日报",
       "summary": "今日复习 Git 对象与 ref 生命周期的三个边界场景：空树 base 合并、fsck --lost-found 恢复悬空对象、receive-pack 部分成功状态报告，串联入口、边界与出口。",

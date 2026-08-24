@@ -3,6 +3,96 @@
   "year_month": "2026-08",
   "threads": [
     {
+      "id": "2026-08-25-quarantine-e879331c7b",
+      "question": "post-receive钩子运行时，对象是否已经进入主对象库？它能否看到被拒绝ref的对象？",
+      "source_date": "2026-08-25",
+      "source_concept": "quarantine 对象隔离区在部分成功推送中的迁移与丢弃规则",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-25T06:04:56.166191+08:00",
+      "updated_at": "2026-08-25T06:04:56.166191+08:00"
+    },
+    {
+      "id": "2026-08-25-quarantine-e441252c84",
+      "question": "如果pre-receive和update都通过，quarantine中的对象何时以何种方式合并进主对象库？",
+      "source_date": "2026-08-25",
+      "source_concept": "quarantine 对象隔离区在部分成功推送中的迁移与丢弃规则",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-25T06:04:56.166191+08:00",
+      "updated_at": "2026-08-25T06:04:56.166191+08:00"
+    },
+    {
+      "id": "2026-08-25-quarantine-71443eab52",
+      "question": "quarantine目录具体位于哪里？多个并发推送的quarantine如何互相隔离？",
+      "source_date": "2026-08-25",
+      "source_concept": "quarantine 对象隔离区在部分成功推送中的迁移与丢弃规则",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-25T06:04:56.166191+08:00",
+      "updated_at": "2026-08-25T06:04:56.166191+08:00"
+    },
+    {
+      "id": "2026-08-25-pkt-line-receive-pack-c64ea9c0f5",
+      "question": "客户端在解析receive-pack报告时，如何区分`unpack ok`和每个ref的ok/ng？",
+      "source_date": "2026-08-25",
+      "source_concept": "pkt-line 分帧与 receive-pack 状态报告的传输层结构",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-25T06:04:56.166191+08:00",
+      "updated_at": "2026-08-25T06:04:56.166191+08:00"
+    },
+    {
+      "id": "2026-08-25-pkt-line-receive-pack-c35b58e852",
+      "question": "pkt-line的长度上限为什么是65535字节？如果一条消息超过这个长度，Git如何切分？",
+      "source_date": "2026-08-25",
+      "source_concept": "pkt-line 分帧与 receive-pack 状态报告的传输层结构",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-25T06:04:56.166191+08:00",
+      "updated_at": "2026-08-25T06:04:56.166191+08:00"
+    },
+    {
+      "id": "2026-08-25-pkt-line-receive-pack-c05edc0e54",
+      "question": "side-band通道除了band 1和band 2，还有哪些编号各自代表什么含义？",
+      "source_date": "2026-08-25",
+      "source_concept": "pkt-line 分帧与 receive-pack 状态报告的传输层结构",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-25T06:04:56.166191+08:00",
+      "updated_at": "2026-08-25T06:04:56.166191+08:00"
+    },
+    {
+      "id": "2026-08-25-git-fsck-git-gc-eb03ee919d",
+      "question": "除了悬空对象，fsck还能发现哪些类型的问题？比如缺失对象、损坏对象、错配的tag对象，它们各自的修复路径是什么？",
+      "source_date": "2026-08-25",
+      "source_concept": "git fsck 与 git gc 的双重角色",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-25T06:04:56.166191+08:00",
+      "updated_at": "2026-08-25T06:04:56.166191+08:00"
+    },
+    {
+      "id": "2026-08-25-git-fsck-git-gc-aa47bb459a",
+      "question": "fsck和gc同时运行会不会产生竞态？比如fsck正在读取对象时gc删掉它，Git如何避免崩溃？",
+      "source_date": "2026-08-25",
+      "source_concept": "git fsck 与 git gc 的双重角色",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-25T06:04:56.166191+08:00",
+      "updated_at": "2026-08-25T06:04:56.166191+08:00"
+    },
+    {
+      "id": "2026-08-25-git-fsck-git-gc-2ca71a7a27",
+      "question": "为什么gc默认保留两周而不是一天或一年？背后的误删风险和仓库体积权衡是怎样的？",
+      "source_date": "2026-08-25",
+      "source_concept": "git fsck 与 git gc 的双重角色",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-25T06:04:56.166191+08:00",
+      "updated_at": "2026-08-25T06:04:56.166191+08:00"
+    },
+    {
       "id": "2026-08-24-receive-pack-push-fb9f534ef4",
       "question": "receive-pack 的 ok/ng 状态报告在 pkt-line 协议中如何编码，客户端如何把它和进度信息区分开？",
       "source_date": "2026-08-24",

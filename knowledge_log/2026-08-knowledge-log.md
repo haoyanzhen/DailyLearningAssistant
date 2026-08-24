@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-08/2026-08-25-learning-report.html">2026-08-25</a>
+      </td>
+      <td>pkt-line 分帧与 receive-pack 状态报告的传输层结构</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★</td>
+      <td>pkt-line是一种在每个数据包前加4位十六进制长度前缀的分帧方式，让Git能精确切分状态报告，并用side-band把进度信息与状态结果分离传输。</td>
+      <td>下一次可以深入Git protocol v2中ls-refs、fetch等命令如何使用pkt-line协商参数，以及side-band多路复用如何扩展更多通道。</td>
+    </tr>
+    <tr>
+      <td>quarantine 对象隔离区在部分成功推送中的迁移与丢弃规则</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★★</td>
+      <td>quarantine是推送对象的临时隔离区：整批被拒时整体丢弃，部分被拒时对象包仍会进入主对象库，未被引用的对象变成悬空对象。</td>
+      <td>下一次可以深入quarantine与receive-pack配置的关系，例如receive.advertiseAtomic、receive.unpackLimit如何影响对象处理流程，以及如何用钩子日志重建推送的完整审计链。</td>
+    </tr>
+    <tr>
+      <td>git fsck 与 git gc 的双重角色</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★★★</td>
+      <td>fsck和gc共用对象可达性扫描，但fsck把不可达对象当作需要检查恢复的线索，gc把不可达对象当作可以清理压缩的垃圾。</td>
+      <td>下一次可以深入git gc的完整调度过程：可达性扫描、reflog过期、packfile压缩如何协同，以及`gc.pruneExpire`和`core.reflogExpire`怎样共同控制仓库的“遗忘”速度。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-08/2026-08-24-learning-report.html">2026-08-24</a>
       </td>
       <td>无共同祖先时的合并机制：空树 base 与 --allow-unrelated-histories 的机械实现</td>

@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-08-25 学习笔记日报</title>
+    <meta name="description" content="从git push出发，看pkt-line如何分帧状态报告，quarantine如何隔离对象，fsck与gc如何决定对象去留，串起对象生命周期。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260825-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-08-25</p>
+        <h1>推送对象的一生：从 pkt-line 到 gc</h1>
+        <p>今天是2026-08-25，一个无变更复习日。我们沿着最近几天的 open 问题，看一次 git push 如何从传输帧走向仓库维护。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>Git 对象的传输、隔离与生命周期</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>pkt-line 分帧与…</strong>
+                <small>先写长度再传内容，pkt-line…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>quarantine 对象…</strong>
+                <small>后厨先做菜不端上桌，整桌退就全倒掉…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>git fsck 与 gi…</strong>
+                <small>同一个可达性扫描，fsck 当医生…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">这三个概念正好串成一条“推送对象生命周期”链路：pkt-line决定客户端能看到的逐条结果，quarantine决定对象是否进入主对象库，fsck与gc决定进入后的对象如何被检查或清理。概念间的关联也很自然：一次推送先在传输层用pkt-line交换命令与状态，再在quarantine中安置或丢弃对象；quarantine中被拒绝ref产生的悬空对象，正是fsck列出来、gc按窗口清理的工作对象。状态报告与reflog一样都按ref逐条暴露，没有全局事务ID，所以部分成功与多ref操作只能靠逐条信息重建；而reflog中未过期的条目又会被gc当作可达性根，保护相关对象不被清理。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["Git 对象的传输、隔离与生命周期"])
+  concept1["pkt-line 分帧与 receive-pack 状态报告的传输层结构"]
+  hub --&gt; concept1
+  concept2["quarantine 对象隔离区在部分成功推送中的迁移与丢弃规则"]
+  hub --&gt; concept2
+  concept3["git fsck 与 git gc 的双重角色"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  related1["reflog 逻辑事务边界"]
+  concept1 --&gt; related1
+  related2["pkt-line 状态报告"]
+  concept2 --&gt; related2
+  concept2 --&gt; concept3
+  concept3 --&gt; concept2
+  related3["reflog 生命周期"]
+  concept3 --&gt; related3
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="pkt-line-framing">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>pkt-line 分帧与 receive-pack 状态报告的传输层结构</h3>
+              <p>pkt-line Framing and receive-pack Status Report</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">先写长度再传内容，pkt-line 让协议消息不靠换行也能精确分割。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>pkt-line 每条消息由“4位十六进制长度前缀 + 实际内容”组成，0000 表示消息流结束。</li>
+                <li>receive-pack 用 pkt-line 返回每个 ref 的更新结果：ok 表示接受，ng 表示拒绝并附带原因。</li>
+                <li>传输进度信息通过 side-band 通道传输，与状态报告分离，客户端可按通道号区分。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="pkt-line-framing" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="quarantine-object-migration">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>quarantine 对象隔离区在部分成功推送中的迁移与丢弃规则</h3>
+              <p>Quarantine Object Migration and Discard Rules in Partial Push Success</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">后厨先做菜不端上桌，整桌退就全倒掉，只退一盘就留下待处理的剩菜。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>receive-pack 先将推送对象写入 quarantine 临时隔离区，钩子检查时不会污染主对象库。</li>
+                <li>pre-receive 整批拒绝则 quarantine 整体丢弃；update 部分拒绝则对象包仍迁移进主对象库，被拒 ref 的对象成为悬空对象。</li>
+                <li>悬空对象不会马上删除，留给 fsck 检查或 gc 按保留窗口清理。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="quarantine-object-migration" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="fsck-gc-dual-role">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★★★</span>
+              </div>
+              <h3>git fsck 与 git gc 的双重角色</h3>
+              <p>The Dual Roles of git fsck and git gc</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">同一个可达性扫描，fsck 当医生报告异常，gc 当保洁清理垃圾。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>两者都从 refs、reflog、index 出发对对象图做可达性扫描，但目的相反：fsck 体检，gc 保洁。</li>
+                <li>fsck 将不可达对象报告为悬空对象，可用 --lost-found 恢复；gc 将超过保留窗口的悬空对象清理掉。</li>
+                <li>默认保留约两周，未过期的 reflog 条目也被视为根，所以删除分支后的提交在保留期内仍被保护。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="fsck-gc-dual-role" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="pkt-line-framing">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>pkt-line 分帧与 receive-pack 状态报告的传输层结构</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象两个人传便条，每张便条上都用固定格式先写明“这张便条有多长”，接收者先读前4个字符，按长度精确取出内容，就不会因为便条里有没有换行而搞混。Git的pkt-line就是这么做的：每条消息由“4位十六进制长度前缀 + 实际内容”组成，而`0000`表示“没有更多消息了”。在推送时，receive-pack用这种格式返回每个ref的更新结果：`ok refs/heads/main`表示接受，`ng refs/heads/dev &lt;原因&gt;`表示拒绝。这些状态行不是普通文本流，而是按pkt-line帧切好的协议数据。另一方面，传输对象时的进度信息（比如“Counting objects”）会放在side-band通道里：带side-band的包会在数据区第一个字节写上通道号，band 1是进度，band 2是错误信息。这样客户端可以根据通道号和行前缀把“正在传输对象”的进度和“分支是否被接受”的状态报告准确区分开。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>长度前缀分帧：每条消息自带长度，接收方按长度精确读取，无需依赖换行符做边界。</li>
+                <li>多路复用：side-band 通过通道号（band 1/2）将进度、错误与主状态流分离，避免相互干扰。</li>
+                <li>逐 ref 报告：receive-pack 对每个 ref 发送独立 pkt-line 帧，客户端逐条解析，从而支持部分成功。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>运行 `git push origin main dev` 时，客户端先收到进度（如“Enumerating objects”）走 side-band band 1；推送结束后，receive-pack 在主 pkt-line 流发送“ok refs/heads/main”或“ng refs/heads/dev hook declined”等帧，客户端解析长度前缀后展示成功或 `! [remote rejected]`。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把 ok/ng 状态报告当普通文本按换行读取，忽略长度前缀，遇到内容中的特殊字符会出错。</li>
+                <li>以为进度信息和状态报告混在同一流中，其实它们走了不同通道，由 side-band 的通道号区分。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>quarantine 对象隔离区</td><td>同属于一次 receive-pack 会话：pkt-line 先交换命令与状态，随后 receive-pack 在 quarantine 中安置对象。</td></tr>
+                <tr><td>reflog 逻辑事务边界</td><td>pkt-line 状态报告按 ref 逐条暴露信息，reflog 条目也按 ref 记录，两者都没有全局事务 ID，只能逐条重建整体操作。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>pkt-line 的长度上限为什么是 65535 字节？如果一条消息超过这个长度，Git 如何切分？</li>
+                <li>side-band 通道除了 band 1 和 band 2，还有哪些编号各自代表什么含义？</li>
+                <li>客户端在解析 receive-pack 报告时，如何区分 unpack ok 和每个 ref 的 ok/ng？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="quarantine-object-migration">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>quarantine 对象隔离区在部分成功推送中的迁移与丢弃规则</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>receive-pack 接收推送对象时，不会马上把它们写进主对象库，而是先放进一个临时隔离目录，叫 quarantine。钩子脚本（pre-receive 和 update）运行时，看到的是这个临时对象库，而不是主对象库，因此未经检查的对象不会污染正式仓库。如果 pre-receive 整批拒绝，说明整个推送不被接受，receive-pack 会直接把隔离目录整体丢弃，一个对象都不进主对象库。如果 pre-receive 通过，但某个 ref 被 update 钩子拒绝，事情变成部分成功：receive-pack 仍会把整个对象包迁移进主对象库，因为协议已经进入接受流程；那个被拒绝的 ref 虽然不会被更新，但它所依赖的新对象已经进了库，只是没有任何 ref 引用它们，成为悬空对象。这些悬空对象不会马上被删，而是等待 fsck 检查或 gc 按保留窗口清理。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>隔离优先：推送对象先进入临时目录，使钩子检查在安全环境中进行，未通过检查的对象不进入主对象库。</li>
+                <li>整批与逐个决策分离：pre-receive 控制整批是否可接受，update 控制单个 ref，导致部分成功时对象包已经迁移。</li>
+                <li>无引用对象成为悬空对象，进入对象库维护流程，由 fsck/gc 后续处理。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>本地执行 `git push origin main dev`，receive-pack 把两笔新提交先写入 quarantine。pre-receive 运行后返回 0（通过）。接着 update 钩子对 main 返回 0，对 dev 返回非 0（拒绝）。最终 main 被更新，dev 被拒绝，但整个 quarantine 对象包已经进入主对象库。运行 `git fsck` 会看到 dev 对应的提交显示为 `dangling commit &lt;sha&gt;`。如果 pre-receive 一开始就返回非 0，则两个分支都不会更新，对象包也被丢弃，主对象库中不会出现任何新对象。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为 pre-receive 拒绝后，推送对象还会留在对象库里等待 gc 清理；实际上 quarantine 目录被整体丢弃，对象从未进入主对象库。</li>
+                <li>以为某个 ref 被 update 拒绝后，它所指向的对象不会入库；实际上对象包已经整体迁移进主对象库，只是没有 ref 引用它们，所以表现为悬空对象。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>pkt-line 状态报告</td><td>同处于一次推送会话：客户端通过 pkt-line 一条条看到 ref 的 ok/ng，服务端同时根据钩子决定 quarantine 中对象的迁移或丢弃。</td></tr>
+                <tr><td>git fsck 与 git gc</td><td>update 拒绝产生的悬空对象，正是之后 fsck 可以检查、gc 可以按窗口清理的对象。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>quarantine 目录具体位于哪里？多个并发推送的 quarantine 如何互相隔离？</li>
+                <li>如果 pre-receive 和 update 都通过，quarantine 中的对象何时以何种方式合并进主对象库？</li>
+                <li>post-receive 钩子运行时，对象是否已经进入主对象库？它能否看到被拒绝 ref 的对象？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="fsck-gc-dual-role">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>git fsck 与 git gc 的双重角色</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>git fsck 和 git gc 都从一组“根”出发——refs、reflog、index——对对象图做可达性扫描。两者跑的是同一套遍历逻辑，但目的完全相反。fsck 像体检医生：它把不可达对象当作需要报告的异常，会列出悬空提交、悬空树、悬空 blob，还能用 `--lost-found` 把悬空对象从对象库里捡出来，放到 `.git/lost-found/` 目录，让用户可以重新用分支或 tag 锚定它们。gc 像保洁员：它把不可达对象当作可以清理的垃圾，在打包、压缩对象的同时，把超过保留窗口的悬空对象删掉。gc 默认不会立即删除，而是通过 `gc.pruneExpire` 保留大概两周，给用户留下反悔时间。此外，未过期的 reflog 条目也会被视为根，所以即使分支被删，只要 reflog 还指向那个提交，gc 就不会把它当垃圾清掉。这说明“可达性”是相对于当前根集合而言的，根集合不同，结论就不同。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>共享可达性扫描基座：从当前根集合出发遍历对象图，可到达的对象被视为活跃，不可到达的为垃圾。</li>
+                <li>态度相反：fsck 将不可达对象视为异常，用于报告与恢复；gc 将不可达对象视为垃圾，用于压缩与删除。</li>
+                <li>保留窗口与保护：gc 默认保留两周，未过期的 reflog 条目也作为根，避免误删，给用户恢复时间。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>你删除了一个叫做 `tmp` 的分支。`git fsck` 显示 `dangling commit &lt;sha&gt;`，说明这个提交目前没有被任何 ref 引用。如果你运行 `git fsck --lost-found`，它会把这个 commit 写入 `.git/lost-found/other/`，然后你可以用 `git branch recovered &lt;sha&gt;` 重新锚定它。但如果你先运行 `git gc --prune=now`（强制清空所有保留窗口），这个提交可能就永久消失了。在默认配置下，gc 会保留它两周，留给你发现和恢复的时间。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把 fsck 和 gc 看作两个完全不同的算法，以为 fsck 专门查坏文件、gc 专门删文件；其实它们共用可达性扫描基座，区别在对不可达对象的态度。</li>
+                <li>以为 gc 会立刻删光所有悬空对象；实际上默认有约两周保留窗口，且未过期的 reflog 对象仍被当作可达保护。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>quarantine 对象隔离区</td><td>quarantine 中被拒绝 ref 产生的悬空对象，正是 fsck 列出、gc 清理的对象来源。</td></tr>
+                <tr><td>reflog 生命周期</td><td>未过期的 reflog 条目会被 gc 当作可达性根，因此一条多 ref 操作的 reflog 记录会保护该操作涉及的对象不被清理。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>为什么 gc 默认保留两周而不是一天或一年？背后的误删风险和仓库体积权衡是怎样的？</li>
+                <li>fsck 和 gc 同时运行会不会产生竞态？比如 fsck 正在读取对象时 gc 删掉它，Git 如何避免崩溃？</li>
+                <li>除了悬空对象，fsck 还能发现哪些类型的问题？比如缺失对象、损坏对象、错配的 tag 对象，它们各自的修复路径是什么？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">这三个概念正好串成一条“推送对象生命周期”链路：pkt-line决定客户端能看到的逐条结果，quarantine决定对象是否进入主对象库，fsck与gc决定进入后的对象如何被检查或清理。概念间的关联也很自然：一次推送先在传输层用pkt-line交换命令与状态，再在quarantine中安置或丢弃对象；quarantine中被拒绝ref产生的悬空对象，正是fsck列出来、gc按窗口清理的工作对象。状态报告与reflog一样都按ref逐条暴露，没有全局事务ID，所以部分成功与多ref操作只能靠逐条信息重建；而reflog中未过期的条目又会被gc当作可达性根，保护相关对象不被清理。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">这三个概念合在一起，解释了Git在一场不完美的推送中如何保持仓库一致性和可恢复性。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>pkt-line 的长度上限为什么是 65535 字节？如果一条消息超过这个长度，Git 如何切分？</li>
+            <li>quarantine 目录具体位于哪里？多个并发推送的 quarantine 如何互相隔离？</li>
+            <li>为什么 gc 默认保留两周而不是一天或一年？背后的误删风险和仓库体积权衡是怎样的？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
