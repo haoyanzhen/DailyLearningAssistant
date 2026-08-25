@@ -1,6 +1,12 @@
 {
   "reports": [
     {
+      "date": "2026-08-26",
+      "title": "2026-08-26 学习笔记日报",
+      "summary": "今日无新增提交，以推送生命周期为主线，复习临时对象库隔离、钩子可见性与检查整理并发保护。",
+      "path": "./daily_report/2026-08/2026-08-26-learning-report.html"
+    },
+    {
       "date": "2026-08-25",
       "title": "2026-08-25 学习笔记日报",
       "summary": "从git push出发，看pkt-line如何分帧状态报告，quarantine如何隔离对象，fsck与gc如何决定对象去留，串起对象生命周期。",

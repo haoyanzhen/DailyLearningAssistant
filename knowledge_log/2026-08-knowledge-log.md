@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-08/2026-08-26-learning-report.html">2026-08-26</a>
+      </td>
+      <td>quarantine 临时对象库的物理布局与并发隔离</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★</td>
+      <td>quarantine 是为每次推送准备的独立临时对象仓库，让未完成的对象在验收前不污染主对象库。</td>
+      <td>下一次可以深入 quarantine 与 receive-pack 配置的关系，例如 `receive.advertiseAtomic`、`receive.unpackLimit` 如何影响对象处理流程，以及如何用钩子日志重建推送的完整审计链。</td>
+    </tr>
+    <tr>
+      <td>post-receive 钩子的对象可见性与部分成功推送的事后审计</td>
+      <td>软件工程 / 计算机科学</td>
+      <td>★★★★</td>
+      <td>post-receive 在对象入库后运行，能读到全部推送对象，但 stdin 只报告实际更新成功的 ref。</td>
+      <td>下一次可以深入远端 ref 审计的外部补偿通道：webhook、审计 API 与定时 ls-remote 如何组合成可校验的审计链。</td>
+    </tr>
+    <tr>
+      <td>fsck 与 gc 并发执行时的对象生命周期保护</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★★★</td>
+      <td>fsck 与 gc 并发时，Git 通过对象不可变、保留窗口、文件描述符语义和 packfile 写新删旧来避免仓库损坏。</td>
+      <td>下一次可以深入 `gc.pruneExpire` 与 `core.reflogExpire` 对仓库“遗忘”速度的共同控制，以及它们如何配合决定悬空对象和过期 reflog 的真正清理时机。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-08/2026-08-25-learning-report.html">2026-08-25</a>
       </td>
       <td>pkt-line 分帧与 receive-pack 状态报告的传输层结构</td>

@@ -3,6 +3,96 @@
   "year_month": "2026-08",
   "threads": [
     {
+      "id": "2026-08-26-quarantine-fb47aba25b",
+      "question": "Git 是通过哪个环境变量让钩子感知临时对象库位置的？这个变量在钩子脚本中如何使用？",
+      "source_date": "2026-08-26",
+      "source_concept": "quarantine 临时对象库的物理布局与并发隔离",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-26T06:04:14.345844+08:00",
+      "updated_at": "2026-08-26T06:04:14.345844+08:00"
+    },
+    {
+      "id": "2026-08-26-quarantine-e8f1687003",
+      "question": "`incoming-*` 目录的命名规则由什么决定？是否与进程 PID 或随机数有关？",
+      "source_date": "2026-08-26",
+      "source_concept": "quarantine 临时对象库的物理布局与并发隔离",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-26T06:04:14.345844+08:00",
+      "updated_at": "2026-08-26T06:04:14.345844+08:00"
+    },
+    {
+      "id": "2026-08-26-quarantine-daf6ce89da",
+      "question": "如果 receive-pack 在迁移 quarantine 对象时崩溃，那些 `incoming-*` 目录会怎样被清理？",
+      "source_date": "2026-08-26",
+      "source_concept": "quarantine 临时对象库的物理布局与并发隔离",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-26T06:04:14.345844+08:00",
+      "updated_at": "2026-08-26T06:04:14.345844+08:00"
+    },
+    {
+      "id": "2026-08-26-post-receive-cf017afa08",
+      "question": "post-receive 能否通过读取对象库来识别被拒绝 ref 的提交？如果可以，具体怎样操作？",
+      "source_date": "2026-08-26",
+      "source_concept": "post-receive 钩子的对象可见性与部分成功推送的事后审计",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-08-26T06:04:14.345844+08:00",
+      "updated_at": "2026-08-26T06:04:14.345844+08:00"
+    },
+    {
+      "id": "2026-08-26-post-receive-b44d3e2fec",
+      "question": "如何在 post-receive 中安全地遍历对象，而不意外触发昂贵的 GC 或对象打包？",
+      "source_date": "2026-08-26",
+      "source_concept": "post-receive 钩子的对象可见性与部分成功推送的事后审计",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-08-26T06:04:14.345844+08:00",
+      "updated_at": "2026-08-26T06:04:14.345844+08:00"
+    },
+    {
+      "id": "2026-08-26-post-receive-286fad63d6",
+      "question": "post-receive 与 pre-receive 在对象可见性上有哪些关键差异？这些差异如何影响钩子的设计？",
+      "source_date": "2026-08-26",
+      "source_concept": "post-receive 钩子的对象可见性与部分成功推送的事后审计",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-08-26T06:04:14.345844+08:00",
+      "updated_at": "2026-08-26T06:04:14.345844+08:00"
+    },
+    {
+      "id": "2026-08-26-fsck-gc-9129a08f59",
+      "question": "如果 fsck 真的遇到 missing object，如何判断它是并发竞态造成的，还是仓库本来就损坏了？",
+      "source_date": "2026-08-26",
+      "source_concept": "fsck 与 gc 并发执行时的对象生命周期保护",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-26T06:04:14.345844+08:00",
+      "updated_at": "2026-08-26T06:04:14.345844+08:00"
+    },
+    {
+      "id": "2026-08-26-fsck-gc-387eeeaec3",
+      "question": "fsck 和 gc 并发时，packfile 重写如何保证持有旧包文件描述符的进程能完整读取？",
+      "source_date": "2026-08-26",
+      "source_concept": "fsck 与 gc 并发执行时的对象生命周期保护",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-26T06:04:14.345844+08:00",
+      "updated_at": "2026-08-26T06:04:14.345844+08:00"
+    },
+    {
+      "id": "2026-08-26-fsck-gc-04edf1533a",
+      "question": "`gc.pruneExpire` 的具体取值如何影响并发下的对象删除时机？调短会带来什么风险？",
+      "source_date": "2026-08-26",
+      "source_concept": "fsck 与 gc 并发执行时的对象生命周期保护",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-26T06:04:14.345844+08:00",
+      "updated_at": "2026-08-26T06:04:14.345844+08:00"
+    },
+    {
       "id": "2026-08-25-quarantine-e879331c7b",
       "question": "post-receive钩子运行时，对象是否已经进入主对象库？它能否看到被拒绝ref的对象？",
       "source_date": "2026-08-25",

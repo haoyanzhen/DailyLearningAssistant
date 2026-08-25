@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-08-26 学习笔记日报</title>
+    <meta name="description" content="今日无新增提交，以推送生命周期为主线，复习临时对象库隔离、钩子可见性与检查整理并发保护。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260826-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-08-26</p>
+        <h1>机制如何运转：隔离→可见→维护</h1>
+        <p>今天没有新增提交，我们沿着一次推送在服务端的生命周期，深入理解 quarantine 隔离、post-receive 可见性和 fsck/gc 并发保护，感受 Git 在并发与崩溃场景下的设计智慧。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>服务端对象生命周期：隔离、可见与维护</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>quarantine 临时…</strong>
+                <small>一次推送一个 incoming 临…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>post-receive…</strong>
+                <small>对象全可见，结果只报成功；登记员能…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>fsck 与 gc 并发执…</strong>
+                <small>没有全局锁，靠不可变和保留窗口，让…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念共同描述了一次推送之后，服务端对象库如何被组织、观察和维护。quarantine 是入口层，用临时目录为每次推送建立隔离区，保证未完成的对象不污染主库；post-receive 是事件观察层，在对象入库后提供审计视角，但也只能记录而无法改变结果；fsck/gc 是维护层，在无全局锁的前提下，通过不可变性、保留窗口和文件描述符语义保护对象生命周期。这三者不是孤立的：quarantine 的隔离状态决定了 post-receive 能看到什么，post-receive 之后未被引用的对象又成为 fsck/gc 的处理候选。它们共同构成一条“隔离→可见→维护”的链条，也体现了 Git 在并发与崩溃场景下用工程权衡换取一致性的典型思路。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["服务端对象生命周期：隔离、可见与维护"])
+  concept1["quarantine 临时对象库的物理布局与并发隔离"]
+  hub --&gt; concept1
+  concept2["post-receive 钩子的对象可见性与部分成功推送的事后审计"]
+  hub --&gt; concept2
+  concept3["fsck 与 gc 并发执行时的对象生命周期保护"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  related1["packed-refs 延迟重写"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept2
+  concept3 --&gt; related1
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="quarantine-isolation">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>quarantine 临时对象库的物理布局与并发隔离</h3>
+              <p>Quarantine Temporary Object Store</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">一次推送一个 incoming 临时棚，验收前互不混放。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>每次推送会创建独立的 `incoming-*` 临时目录，通常位于主对象库之下。</li>
+                <li>多个并发推送各有独立隔离目录，互不干扰。</li>
+                <li>钩子运行期间通过环境变量感知临时对象库，主对象库作为只读后备。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="quarantine-isolation" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="post-receive-visibility">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>post-receive 钩子的对象可见性与部分成功推送的事后审计</h3>
+              <p>Post-receive Hook Object Visibility</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">对象全可见，结果只报成功；登记员能看到所有答卷，但只登记及格名单。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>post-receive 在所有 ref 更新完成后运行，此时对象已全部进入主对象库。</li>
+                <li>它的 stdin 只列出实际成功更新的 ref，被拒绝的 ref 不会出现。</li>
+                <li>它适合做通知与审计，不能改变推送结果。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="post-receive-visibility" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="fsck-gc-lifecycle">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★★★</span>
+              </div>
+              <h3>fsck 与 gc 并发执行时的对象生命周期保护</h3>
+              <p>Object Lifecycle Protection during Concurrent fsck and gc</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">没有全局锁，靠不可变和保留窗口，让检查与整理互不拆台。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>对象文件写入后不可变，fsck 读取内容不会受 gc 影响。</li>
+                <li>gc 默认有 `gc.pruneExpire` 保留窗口，通常两周，不会立即删除新对象。</li>
+                <li>在文件描述符未关闭前，即使对象文件被 unlink，fsck 仍可读取；packfile 重写采用写新删旧。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="fsck-gc-lifecycle" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="quarantine-isolation">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>quarantine 临时对象库的物理布局与并发隔离</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象一个大型仓库的收货区。每次收到一批货物，先不直接放进主仓库，而是放在一个标着“incoming-”的临时棚子里。多个送货员同时送货，各有各的棚子，互不干扰。只有验收通过后，货物才被移入主仓库；验收不合格，整个棚子直接清空。Git 的 receive-pack 就是这样的收货员：它为每次推送创建一个独立的临时对象目录，名字以 `incoming-*` 开头，通常位于主对象库之下。钩子运行期间，Git 通过环境变量让新对象只对这些临时目录可见，同时保留主对象库作为可读后备。这样多个并发推送各自持有独立的隔离目录，谁也不会看到谁的半成品对象。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>receive-pack 收到推送时，先将对象写入独立的 `incoming-*` 临时目录，而不是主对象库。</li>
+                <li>每次 push 生成一个独立的临时目录，从物理上隔离并发推送。</li>
+                <li>通过环境变量让钩子等进程只能看到临时目录中的新对象，主对象库仅作为只读后备。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>两位开发者几乎同时执行 git push。服务端 receive-pack 创建了两个独立的临时目录，比如 incoming-1234 和 incoming-5678。开发者 A 的 pre-receive 钩子检查自己的新对象，开发者 B 的钩子完全看不到 A 的临时目录。即使 A 推送成功、对象被移入主对象库，B 的隔离区里也没有 A 的任何对象。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误区：以为 quarantine 目录在仓库外面。实际它在主对象库内部。</li>
+                <li>误区：以为所有推送共用一个隔离区。实际每次 push 都有独立的 `incoming-*` 目录。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>post-receive 钩子的对象可见性</td><td>时间先后与可见性变化：quarantine 是对象进入主库前的隔离区，post-receive 是对象进入主库后的观察点。</td></tr>
+                <tr><td>packed-refs 延迟重写</td><td>两者都用暂存/延迟换取性能，同时维持语义正确性。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果 receive-pack 在迁移 quarantine 对象时崩溃，那些 `incoming-*` 目录会怎样被清理？</li>
+                <li>Git 是通过哪个环境变量让钩子感知临时对象库位置的？这个变量在钩子脚本中如何使用？</li>
+                <li>`incoming-*` 目录的命名规则由什么决定？是否与进程 PID 或随机数有关？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="post-receive-visibility">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>post-receive 钩子的对象可见性与部分成功推送的事后审计</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>post-receive 是服务端推送流程中最后一个钩子，它在所有 ref 更新完成后运行。到这时，quarantine 对象已经迁移进主对象库，所以 post-receive 能够读取本次推送上传的全部对象，包括那些因 update 被拒绝而没有被任何 ref 引用的对象。但是，post-receive 的 stdin 只列出实际被更新的 ref，每行是“旧值 新值 ref名”。被拒绝的 ref 不会出现在这个列表中。于是形成了一种不对称：对象库全可见，结果列表只含成功项。因此，post-receive 适合做通知、记录和审计，而不能改变推送结果，因为 ok/ng 状态报告在它运行之前已经确定并回传给客户端了。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>post-receive 在所有 ref 更新完成后运行，对象已从 quarantine 迁移进主对象库。</li>
+                <li>stdin 只包含实际成功更新的 ref 行（旧值 新值 ref名）。</li>
+                <li>被拒绝的 ref 不会出现在 stdin，但其对象可能已存在于对象库中，形成不对称。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一次推送同时更新 main 和 dev 两个分支，但 dev 被 update 钩子拒绝。post-receive 运行时，对象库中其实已经有 dev 新提交对应的对象了，只是没有任何 ref 指向它。post-receive 的 stdin 只显示 main 的旧值、新值和 ref 名。外部审计系统如果只读 post-receive 日志，会以为本次推送只更新了 main；只有进一步检查对象库，才能发现那个被拒绝的提交对象依然以悬空形式存在。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>有人以为 post-receive 的退出码可以影响客户端的推送结果。实际上客户端在 post-receive 运行前已收到 ok/ng 状态报告，退出码不影响协议结果。</li>
+                <li>有人以为 post-receive 的 stdin 会包含被拒绝的 ref。实际上不会。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>quarantine 临时对象库</td><td>可见性变化：隔离期看不到完整对象库，post-receive 阶段才能看到完整对象库。</td></tr>
+                <tr><td>fsck 与 gc</td><td>对象状态延续：post-receive 后未被引用的对象成为悬空对象，后续 fsck 可将它们作为检查恢复对象，gc 可将它们作为清理候选。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>post-receive 能否通过读取对象库来识别被拒绝 ref 的提交？如果可以，具体怎样操作？</li>
+                <li>post-receive 与 pre-receive 在对象可见性上有哪些关键差异？这些差异如何影响钩子的设计？</li>
+                <li>如何在 post-receive 中安全地遍历对象，而不意外触发昂贵的 GC 或对象打包？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="fsck-gc-lifecycle">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>fsck 与 gc 并发执行时的对象生命周期保护</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>fsck 负责检查对象库，gc 负责清理和压缩对象库，它们如果同时运行会怎样？Git 并没有在两者之间设置全局互斥锁，而是依靠几个底层机制来避免仓库损坏。第一，对象文件一旦写入就不可变，fsck 读到的对象内容不会变。第二，gc 默认有 `gc.pruneExpire` 保留窗口，通常保留两周内不可达对象，所以它不会刚创建完对象就立刻删除。第三，在 POSIX 系统上，即使对象文件被 unlink，已经打开的文件描述符仍然可以继续读取，所以 fsck 只要先打开了文件，就能读完。第四，gc 重写 packfile 时先写新包再删旧包，让持有旧包文件描述符的进程可以读完。即使在极端情况下对象真的消失，fsck 也会报告 missing object 而不是崩溃。所以准确地说，Git 不是消除竞态，而是把竞态风险压低到可恢复的范围。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>对象文件不可变，保证 fsck 读取内容一致。</li>
+                <li>`gc.pruneExpire` 保留不可达对象一段时间，避免新对象被立即清除。</li>
+                <li>已打开的文件描述符在 unlink 后仍可读，packfile 写新删旧，保证持有者能读完。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>管理员在终端运行 git fsck，同时另一个进程自动触发 git gc。gc 决定删除一个不可达的松散对象文件。如果 fsck 已经打开该文件，即使 gc 删除了目录项，fsck 仍能通过已打开的文件描述符读取内容；如果 fsck 还没打开，它可能会报告 missing object，但不会崩溃。由于默认保留窗口是两周，这种情况实际很少发生。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>很多人以为 Git 会用锁来让 fsck 和 gc 互斥，或者两者绝对不能同时运行。实际上它们可以并发。</li>
+                <li>有人以为 fsck 遇到 missing object 会崩溃。实际上 fsck 会报告而不是崩溃。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>post-receive 钩子</td><td>对象状态延续：post-receive 后未被引用的对象成为悬空对象，gc 可能将其作为清理候选。</td></tr>
+                <tr><td>packed-refs 延迟重写</td><td>仓库维护一致性主题：两者都在不设全局锁的前提下维持一致性，对象侧靠不可变性与保留窗口，ref 侧靠 lockfile 与松散覆盖。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>fsck 和 gc 并发时，packfile 重写如何保证持有旧包文件描述符的进程能完整读取？</li>
+                <li>`gc.pruneExpire` 的具体取值如何影响并发下的对象删除时机？调短会带来什么风险？</li>
+                <li>如果 fsck 真的遇到 missing object，如何判断它是并发竞态造成的，还是仓库本来就损坏了？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念共同描述了一次推送之后，服务端对象库如何被组织、观察和维护。quarantine 是入口层，用临时目录为每次推送建立隔离区，保证未完成的对象不污染主库；post-receive 是事件观察层，在对象入库后提供审计视角，但也只能记录而无法改变结果；fsck/gc 是维护层，在无全局锁的前提下，通过不可变性、保留窗口和文件描述符语义保护对象生命周期。这三者不是孤立的：quarantine 的隔离状态决定了 post-receive 能看到什么，post-receive 之后未被引用的对象又成为 fsck/gc 的处理候选。它们共同构成一条“隔离→可见→维护”的链条，也体现了 Git 在并发与崩溃场景下用工程权衡换取一致性的典型思路。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">Git 不是消除竞态，而是把竞态风险压低到可恢复的范围。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>quarantine 临时目录在 receive-pack 崩溃时如何被清理？</li>
+            <li>post-receive 能否通过读取对象库来识别被拒绝 ref 的提交？</li>
+            <li>fsck 与 gc 并发时，packfile 重写如何保证持有旧包文件描述符的进程能完整读取？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
