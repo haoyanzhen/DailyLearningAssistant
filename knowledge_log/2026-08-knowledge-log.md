@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-08/2026-08-27-learning-report.html">2026-08-27</a>
+      </td>
+      <td>GIT_QUARANTINE_PATH 环境变量与钩子进程的环境契约</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★</td>
+      <td>GIT_QUARANTINE_PATH是Git通过环境变量向钩子传递“本次推送临时对象库位置”的进程契约，让钩子在隔离区中安全完成检查。</td>
+      <td>下一次可以深入receive-pack如何设置该环境变量、隔离区目录的创建与清理时机，以及如何用钩子日志结合隔离区对象重建完整推送审计链。</td>
+    </tr>
+    <tr>
+      <td>post-receive 带外失败与推送结果解耦</td>
+      <td>软件工程 / 计算机科学</td>
+      <td>★★★★</td>
+      <td>post-receive的失败发生在推送结果已经确定之后，退出码不能改变任何ref，只能靠外部补偿通道补齐审计链。</td>
+      <td>下一次可以深入post-receive与side-band通道的关系，以及如何将钩子输出反馈给客户端的同时不破坏结果解耦的语义。</td>
+    </tr>
+    <tr>
+      <td>missing object 的并发竞态判定与仓库损坏诊断路径</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★★★</td>
+      <td>面对fsck报出的missing object，应先假定是并发竞态，通过复现测试和现场检查区分瞬时不可见与持久损坏，再决定是否修复。</td>
+      <td>下一次可以深入git fsck的完整检查矩阵：缺失对象、损坏对象、错配tag对象各自的修复路径，以及gc.pruneExpire与core.reflogExpire对对象“遗忘”速度的控制。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-08/2026-08-26-learning-report.html">2026-08-26</a>
       </td>
       <td>quarantine 临时对象库的物理布局与并发隔离</td>

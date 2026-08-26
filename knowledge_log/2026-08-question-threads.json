@@ -3,6 +3,96 @@
   "year_month": "2026-08",
   "threads": [
     {
+      "id": "2026-08-27-post-receive-5451835598",
+      "question": "post-receive钩子的stdin格式与退出码分别承担什么角色？如何从钩子中区分哪些ref更新成功、哪些被拒绝？",
+      "source_date": "2026-08-27",
+      "source_concept": "post-receive 带外失败与推送结果解耦",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-08-27T06:04:15.700245+08:00",
+      "updated_at": "2026-08-27T06:04:15.700245+08:00"
+    },
+    {
+      "id": "2026-08-27-post-receive-0b3f09c670",
+      "question": "post-receive运行期间，如果其他进程执行git gc并删除了某些对象，会对post-receive的审计产生什么影响？",
+      "source_date": "2026-08-27",
+      "source_concept": "post-receive 带外失败与推送结果解耦",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-08-27T06:04:15.700245+08:00",
+      "updated_at": "2026-08-27T06:04:15.700245+08:00"
+    },
+    {
+      "id": "2026-08-27-post-receive-0824784d78",
+      "question": "如果post-receive失败，有哪些可行的外部补偿通道？如何保证补偿的幂等性和可靠性？",
+      "source_date": "2026-08-27",
+      "source_concept": "post-receive 带外失败与推送结果解耦",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-08-27T06:04:15.700245+08:00",
+      "updated_at": "2026-08-27T06:04:15.700245+08:00"
+    },
+    {
+      "id": "2026-08-27-missing-object-dd02186fe3",
+      "question": "git fsck报告的missing object可能由哪些并发操作导致？如何用锁文件或进程列表判断？",
+      "source_date": "2026-08-27",
+      "source_concept": "missing object 的并发竞态判定与仓库损坏诊断路径",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-27T06:04:15.700245+08:00",
+      "updated_at": "2026-08-27T06:04:15.700245+08:00"
+    },
+    {
+      "id": "2026-08-27-missing-object-c02172a44e",
+      "question": "alternates机制如何影响missing object的判断？外部对象库不可读时如何诊断？",
+      "source_date": "2026-08-27",
+      "source_concept": "missing object 的并发竞态判定与仓库损坏诊断路径",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-27T06:04:15.700245+08:00",
+      "updated_at": "2026-08-27T06:04:15.700245+08:00"
+    },
+    {
+      "id": "2026-08-27-missing-object-26a18bb37d",
+      "question": "如果missing object稳定复现，有哪些非破坏性的修复路径？可以如何结合git fsck --lost-found？",
+      "source_date": "2026-08-27",
+      "source_concept": "missing object 的并发竞态判定与仓库损坏诊断路径",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-27T06:04:15.700245+08:00",
+      "updated_at": "2026-08-27T06:04:15.700245+08:00"
+    },
+    {
+      "id": "2026-08-27-git-quarantine-path-e3ce4f7e57",
+      "question": "GIT_QUARANTINE_PATH在哪些服务端钩子中一定存在，在哪些钩子中可能不存在？为什么？",
+      "source_date": "2026-08-27",
+      "source_concept": "GIT_QUARANTINE_PATH 环境变量与钩子进程的环境契约",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-27T06:04:15.700245+08:00",
+      "updated_at": "2026-08-27T06:04:15.700245+08:00"
+    },
+    {
+      "id": "2026-08-27-git-quarantine-path-9f01ce86e8",
+      "question": "钩子如何利用这个环境变量，只对本次推送新增的对象执行检查而不影响主对象库中的既有对象？",
+      "source_date": "2026-08-27",
+      "source_concept": "GIT_QUARANTINE_PATH 环境变量与钩子进程的环境契约",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-27T06:04:15.700245+08:00",
+      "updated_at": "2026-08-27T06:04:15.700245+08:00"
+    },
+    {
+      "id": "2026-08-27-git-quarantine-path-3a15b96d11",
+      "question": "当推送部分成功时，隔离区对象迁移规则是怎样的？如果迁移过程被kill掉，下一次推送如何清理残留对象？",
+      "source_date": "2026-08-27",
+      "source_concept": "GIT_QUARANTINE_PATH 环境变量与钩子进程的环境契约",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-27T06:04:15.700245+08:00",
+      "updated_at": "2026-08-27T06:04:15.700245+08:00"
+    },
+    {
       "id": "2026-08-26-quarantine-fb47aba25b",
       "question": "Git 是通过哪个环境变量让钩子感知临时对象库位置的？这个变量在钩子脚本中如何使用？",
       "source_date": "2026-08-26",

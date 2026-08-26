@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-08-27 学习笔记日报</title>
+    <meta name="description" content="今天从推送钩子的隔离区感知机制，到post-receive失败与推送结果的解耦，再到missing object的并发竞态诊断，完整理解Git服务端在无全局锁下的确定性与可验证性。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260827-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-08-27</p>
+        <h1>Git 服务端的确定性、失败边界与损坏判定</h1>
+        <p>无变更复习日，顺着未解决问题的视角，从三个候选概念理解Git如何让外部进程、管理员和合并算法获得确定且可验证的结果。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>Git 服务端的确定性与可诊断性</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>GIT_QUARANTIN…</strong>
+                <small>环境变量就是贴在临时备菜间门上的便…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>post-receive…</strong>
+                <small>短信通知没发出去，包裹也已经入库了…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>missing objec…</strong>
+                <small>图书馆管理员告诉你书不在，可能是还…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">这三个概念看似分别讲钩子、失败处理、损坏诊断，实际上有一条共同的逻辑：对象可见性与时序的关系。GIT_QUARANTINE_PATH定义了钩子在推送过程中何时看到哪些对象，post-receive定义了钩子在推送完成后看到最终状态却无法改变结果，missing object诊断则是当对象视图出现缺口时，判断这个缺口是时间窗口造成的瞬态还是永久性丢失。理解三者，就理解了Git在部分失败和并发环境下如何维持“可验证性”。概念之间也有直接关联：quarantine迁移中途崩溃会留下孤儿对象，可能表现为missing object；post-receive失败后的补偿审计也可能因为gc或迁移尚未完成而遇到对象缺失。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["Git 服务端的确定性与可诊断性"])
+  concept1["GIT_QUARANTINE_PATH 环境变量与钩子进程的环境契约"]
+  hub --&gt; concept1
+  concept2["post-receive 带外失败与推送结果解耦"]
+  hub --&gt; concept2
+  concept3["missing object 的并发竞态判定与仓库损坏诊断路径"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["Git 服务端的确定性与可诊断性"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="git-quarantine-path">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>GIT_QUARANTINE_PATH 环境变量与钩子进程的环境契约</h3>
+              <p>GIT_QUARANTINE_PATH Environment Contract</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">环境变量就是贴在临时备菜间门上的便利贴，钩子一看就知道该去哪里检查食材。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>receive-pack在启动钩子前，把隔离区目录路径注入GIT_QUARANTINE_PATH环境变量，钩子通过读取该变量获得位置。</li>
+                <li>钩子看到的是“主对象库 + 本次推送隔离区”的组合视图，写操作可进入隔离区，读操作仍能看到主对象库。</li>
+                <li>如果推送被拒绝，隔离区会被整体丢弃，主对象库不受影响。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="git-quarantine-path" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="post-receive-out-of-band">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>post-receive 带外失败与推送结果解耦</h3>
+              <p>Out-of-band Failure of post-receive</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">短信通知没发出去，包裹也已经入库了；post-receive的失败无法让已成功的推送回到你手里。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>post-receive运行时，ref更新结果已经通过协议报告发送给客户端，推送结果已成定局。</li>
+                <li>post-receive的退出码只表示通知是否失败，不能导致ref回滚或改变客户端看到的推送结果。</li>
+                <li>失败后必须依靠外部补偿通道，如日志、webhook、定时巡检，来补齐审计链。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="post-receive-out-of-band" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="missing-object-race">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★★★</span>
+              </div>
+              <h3>missing object 的并发竞态判定与仓库损坏诊断路径</h3>
+              <p>Concurrent Race Diagnosis of Missing Object</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">图书馆管理员告诉你书不在，可能是还书车还没归架；先等等再查一次，而不是立刻报警失窃。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>missing object可能由gc prune、quarantine迁移、alternates不可读等并发操作导致瞬时缺失。</li>
+                <li>诊断路径：记录现场 → 检查并发进程 → 检查对象文件 → 检查alternates → 多次fsck确认是否稳定复现。</li>
+                <li>只有稳定复现的缺失才判定为持久损坏，避免误删或误判。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="missing-object-race" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="git-quarantine-path">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>GIT_QUARANTINE_PATH 环境变量与钩子进程的环境契约</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>当一次推送到达Git服务器，服务端的receive-pack进程不会马上把收到的对象存入主对象库，而是先放进一个临时隔离区（quarantine），就像“待检验区”。在钩子（比如pre-receive和update）运行期间，对象还在隔离区里，还没有成为主对象库的正式成员。钩子是独立启动的脚本进程，它怎么知道隔离区在哪？Git通过环境变量GIT_QUARANTINE_PATH来传递。receive-pack在启动钩子之前，会把隔离区的目录路径放进这个环境变量。钩子脚本读取这个变量，就能定位隔离区。这样设计有什么好处？钩子不必硬编码路径，也不会猜错位置；同时钩子可以把新对象写入隔离区，而读取时仍然能看到主对象库（通过备用对象目录机制）。换句话说，钩子看到的是一套“主对象库 + 本次推送隔离区”的组合视图。这个机制的本质是进程间契约：Git用环境变量告诉钩子“你正在隔离区工作”，钩子遵守这个约定来检查推送内容，而不会污染主对象库。如果推送被拒绝，隔离区会被整体丢弃，主对象库毫发无伤。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>对象先进入隔离区，钩子运行期间对象尚未成为主对象库正式成员。</li>
+                <li>receive-pack通过环境变量传递隔离区路径，形成进程间的显式契约。</li>
+                <li>钩子拥有组合视图：既能读主对象库，也能写隔离区，检查失败时可以整体丢弃。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>pre-receive钩子通过GIT_QUARANTINE_PATH定位隔离区，并在其中搜索密钥文件。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为钩子运行时推送对象已经全部进入主对象库，实际上对象还在隔离区。</li>
+                <li>误以为钩子需要自己去.git/objects下挖掘临时目录，实际上Git已通过环境变量明确告知。</li>
+                <li>误以为GIT_QUARANTINE_PATH是客户端环境变量，实际上它由服务端注入钩子进程。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>post-receive 带外失败与推送结果解耦</td><td>pre-receive和update运行在隔离区阶段，可以拒绝推送；post-receive运行在隔离区迁移完成后，无法改变结果。</td></tr>
+                <tr><td>missing object 的并发竞态判定与仓库损坏诊断路径</td><td>receive-pack迁移隔离区时崩溃可能留下孤儿对象，理解GIT_QUARANTINE_PATH有助于判断对象是否仍留在临时目录。</td></tr>
+                <tr><td>Git 服务端的确定性与可诊断性</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>GIT_QUARANTINE_PATH在哪些服务端钩子中一定存在，在哪些钩子中可能不存在？为什么？</li>
+                <li>钩子如何利用这个环境变量，只对本次推送新增的对象执行检查而不影响主对象库中的既有对象？</li>
+                <li>当推送部分成功时，隔离区对象迁移规则是怎样的？如果迁移过程被kill掉，下一次推送如何清理残留对象？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="post-receive-out-of-band">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>post-receive 带外失败与推送结果解耦</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>一次推送在服务端的处理顺序是：先运行pre-receive整批检查，然后对每个ref运行update钩子检查，接着更新ref，再运行post-receive。关键在时序：客户端通过协议收到的ref更新结果是基于“ref是否更新成功”，这个状态报告在post-receive运行之前就已经发送了。也就是说，post-receive运行时，推送结果已经“木已成舟”。post-receive的stdin会列出实际更新成功的ref的旧值、新值、ref名，但它不能改变这些ref。它的退出码如果非零，只会让receive-pack知道“事后通知失败了”，但不会让已经成功的推送变成失败，更不会让ref回滚。这就是“带外”失败：失败发生在主流程之外，主流程已经结束。那么post-receive失败之后怎么办？必须依靠外部补偿通道：比如把输出写入日志文件、发送webhook、由外部定时巡检系统比较状态，或调用审计API记录。所以设计钩子时，应该把post-receive当作不可靠的通知机制，而不是关键决策点。它的职责是“通知/记录”，职责的成败不能改变业务事实。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>ref更新成功与否的状态报告在post-receive运行前已发给客户端。</li>
+                <li>post-receive的stdin列出实际更新成功的ref，但只能读取不能修改。</li>
+                <li>post-receive失败属于带外信号，需要通过外部补偿通道处理。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>post-receive调用webhook失败，客户端已显示推送成功，仓库分支已创建，但CI没收到通知。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为post-receive的退出码会影响客户端看到的推送结果。</li>
+                <li>误以为post-receive失败后可以重跑钩子来回滚ref，实际上post-receive没有回滚能力。</li>
+                <li>混淆pre-receive和post-receive的失败语义：前者失败会终止推送，后者失败只是通知失败。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>GIT_QUARANTINE_PATH 环境变量与钩子进程的环境契约</td><td>pre-receive/update在隔离区阶段可以拒绝推送，post-receive在对象入库后运行无法影响结果，两者覆盖钩子的能力边界。</td></tr>
+                <tr><td>missing object 的并发竞态判定与仓库损坏诊断路径</td><td>post-receive失败后的补偿审计可能通过fsck检查对象，若对象已被gc清理或尚未迁移完成，会遇到对象缺失，需要区分竞态与损坏。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>post-receive钩子的stdin格式与退出码分别承担什么角色？如何从钩子中区分哪些ref更新成功、哪些被拒绝？</li>
+                <li>如果post-receive失败，有哪些可行的外部补偿通道？如何保证补偿的幂等性和可靠性？</li>
+                <li>post-receive运行期间，如果其他进程执行git gc并删除了某些对象，会对post-receive的审计产生什么影响？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="missing-object-race">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>missing object 的并发竞态判定与仓库损坏诊断路径</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>git fsck是Git的完整性检查工具，它从refs出发遍历对象图，发现某个对象找不到时，会报告missing object。很多人一看missing object就认为仓库坏了。但实际上，对象“暂时找不到”可能来自并发操作。比如：1. git gc正在执行prune，清理不可达对象；如果某个对象被判断为不可达并删除，而另一个进程还试图读取它，就会瞬时缺失。2. push过程还在quarantine阶段，对象还没迁移到主对象库；此时如果外部检查引用指向那个对象，也会找不到。3. 对象其实在alternates（备用对象目录）引用的外部仓库中，但alternates配置暂时不可读或路径不完整。4. 甚至可能是文件系统缓存、网络文件系统延迟等。因此诊断路径应该是：第一，记录现场，包括报错的对象哈希、涉及的ref、时间点。第二，检查是否有并发的gc、prune、push进程在运行，比如查看.git/gc.pid锁文件或进程列表。第三，检查对象确实不存在：查看.git/objects/xx/xxx文件、packfile及其.idx索引。第四，检查alternates文件指向的路径。第五，重新运行git fsck多次，看是否稳定复现。如果第二次就好了，说明是瞬时竞态；如果每次都在同样位置失败，才判定为持久损坏。这个诊断路径背后的理念是：在无全局锁的分布式系统中，异常可能是并发导致的假象，区分“瞬态”和“持久态”是可靠运维的第一步。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Git对象库处于动态变化中：gc在删、push在加、quarantine在迁移，fsck的报错可能是瞬时状态。</li>
+                <li>诊断必须从非破坏性检查开始：记录现场、检查并发、确认对象文件是否存在。</li>
+                <li>通过多次fsck复现测试，区分瞬时竞态与持久损坏。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>管理员看到missing blob后先查看进程列表，发现git gc正在运行，等待结束后再次fsck无报错，判定为瞬时竞态。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>看到missing object就认定仓库损坏，立即删除对象目录或重新clone，可能造成更大破坏。</li>
+                <li>忽视并发进程的存在，在没有检查gc/push的情况下就判断为损坏。</li>
+                <li>把fsck的输出当作静态事实，不理解对象库处于动态变化中。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>GIT_QUARANTINE_PATH 环境变量与钩子进程的环境契约</td><td>quarantine迁移崩溃会让incoming-*临时目录中的对象残留，之后引用指向它们时会表现为missing object。</td></tr>
+                <tr><td>post-receive 带外失败与推送结果解耦</td><td>post-receive失败后的补偿审计可能通过fsck检查对象，而gc清理或quarantine迁移未完成会让补偿时遇到对象缺失，需要通过诊断区分竞态与损坏。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>git fsck报告的missing object可能由哪些并发操作导致？如何用锁文件或进程列表判断？</li>
+                <li>如果missing object稳定复现，有哪些非破坏性的修复路径？可以如何结合git fsck --lost-found？</li>
+                <li>alternates机制如何影响missing object的判断？外部对象库不可读时如何诊断？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">这三个概念看似分别讲钩子、失败处理、损坏诊断，实际上有一条共同的逻辑：对象可见性与时序的关系。GIT_QUARANTINE_PATH定义了钩子在推送过程中何时看到哪些对象，post-receive定义了钩子在推送完成后看到最终状态却无法改变结果，missing object诊断则是当对象视图出现缺口时，判断这个缺口是时间窗口造成的瞬态还是永久性丢失。理解三者，就理解了Git在部分失败和并发环境下如何维持“可验证性”。概念之间也有直接关联：quarantine迁移中途崩溃会留下孤儿对象，可能表现为missing object；post-receive失败后的补偿审计也可能因为gc或迁移尚未完成而遇到对象缺失。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">在没有全局锁的分布式系统中，异常可能是并发导致的假象，区分“瞬态”和“持久态”是可靠运维的第一步。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>quarantine迁移中途崩溃留下的孤儿对象，如何通过GIT_QUARANTINE_PATH定位并安全清理？</li>
+            <li>post-receive失败后，如何设计幂等的外部补偿通道来补齐审计链？</li>
+            <li>在gc并发执行时，如何用锁文件或进程列表快速判断missing object是竞态还是真实损坏？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
