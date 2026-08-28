@@ -3,6 +3,186 @@
   "year_month": "2026-08",
   "threads": [
     {
+      "id": "2026-08-29-pkt-line-side-band-7d503c3b6c",
+      "question": "Git protocol v2 中，side-band 通道的协商和用法与 v0 有哪些不同？",
+      "source_date": "2026-08-29",
+      "source_concept": "pkt-line 分帧与 side-band 通道编号的多路复用",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-29T06:03:10.309920+08:00",
+      "updated_at": "2026-08-29T06:03:10.309920+08:00"
+    },
+    {
+      "id": "2026-08-29-pkt-line-side-band-5f08d62035",
+      "question": "pkt-line 的长度上限为什么是 65535 字节？如果一条消息超过这个长度，Git 是如何把它切分成多个帧的？",
+      "source_date": "2026-08-29",
+      "source_concept": "pkt-line 分帧与 side-band 通道编号的多路复用",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-29T06:03:10.309920+08:00",
+      "updated_at": "2026-08-29T06:03:10.309920+08:00"
+    },
+    {
+      "id": "2026-08-29-pkt-line-side-band-35e7349242",
+      "question": "band 1、band 2、band 3 分别承载什么信息？如果出现未知通道编号，客户端应该怎么处理？",
+      "source_date": "2026-08-29",
+      "source_concept": "pkt-line 分帧与 side-band 通道编号的多路复用",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-29T06:03:10.309920+08:00",
+      "updated_at": "2026-08-29T06:03:10.309920+08:00"
+    },
+    {
+      "id": "2026-08-29-fsck-gc-packfile-ccb2f3a591",
+      "question": "在 Windows 平台上，由于文件锁机制不同，这种“打开后删除仍可读”的语义是否会受影响？Git 如何适配？",
+      "source_date": "2026-08-29",
+      "source_concept": "fsck 与 gc 并发时的 packfile 描述符保护",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-29T06:03:10.309920+08:00",
+      "updated_at": "2026-08-29T06:03:10.309920+08:00"
+    },
+    {
+      "id": "2026-08-29-fsck-gc-packfile-7886fd5851",
+      "question": "除了 fsck，还有哪些 Git 命令会在并发 gc 时依赖 packfile 描述符保护来安全读取对象？",
+      "source_date": "2026-08-29",
+      "source_concept": "fsck 与 gc 并发时的 packfile 描述符保护",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-29T06:03:10.309920+08:00",
+      "updated_at": "2026-08-29T06:03:10.309920+08:00"
+    },
+    {
+      "id": "2026-08-29-fsck-gc-packfile-352b5a2db2",
+      "question": "如果 fsck 在 gc 重命名之后才打开某个 packfile，它应该看到新包还是旧包？原子重命名如何保证这一点？",
+      "source_date": "2026-08-29",
+      "source_concept": "fsck 与 gc 并发时的 packfile 描述符保护",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-29T06:03:10.309920+08:00",
+      "updated_at": "2026-08-29T06:03:10.309920+08:00"
+    },
+    {
+      "id": "2026-08-29-concept-f87d5aa2f9",
+      "question": "客户端聚合出部分成功或全失败后，不同 Git 命令的退出码分别是什么？",
+      "source_date": "2026-08-29",
+      "source_concept": "客户端对部分成功推送的聚合判定规则",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-08-29T06:03:10.309920+08:00",
+      "updated_at": "2026-08-29T06:03:10.309920+08:00"
+    },
+    {
+      "id": "2026-08-29-concept-e77f565332",
+      "question": "当 pre-receive 整体拒绝和 update 逐 ref 拒绝同时存在时，客户端的状态报告会是什么样子？它如何区分这两种拒绝？",
+      "source_date": "2026-08-29",
+      "source_concept": "客户端对部分成功推送的聚合判定规则",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-08-29T06:03:10.309920+08:00",
+      "updated_at": "2026-08-29T06:03:10.309920+08:00"
+    },
+    {
+      "id": "2026-08-29-concept-09c08514cb",
+      "question": "如果服务端返回的状态行顺序有变，客户端是否应该依赖顺序？为什么聚合规则不依赖顺序？",
+      "source_date": "2026-08-29",
+      "source_concept": "客户端对部分成功推送的聚合判定规则",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-08-29T06:03:10.309920+08:00",
+      "updated_at": "2026-08-29T06:03:10.309920+08:00"
+    },
+    {
+      "id": "2026-08-28-receive-pack-unpack-ok-ref-ok-ng-c4680d5747",
+      "question": "状态报告在 pkt-line 协议中如何编码？客户端如何把状态行和进度信息区分开？",
+      "source_date": "2026-08-28",
+      "source_concept": "receive-pack 状态报告的两级状态：unpack ok 与 ref ok/ng",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-28T06:06:25.697223+08:00",
+      "updated_at": "2026-08-28T06:06:25.697223+08:00"
+    },
+    {
+      "id": "2026-08-28-receive-pack-unpack-ok-ref-ok-ng-78c5f3567d",
+      "question": "当一次推送的多个 ref 有成功有失败时，客户端应该根据什么规则给用户最终提示？",
+      "source_date": "2026-08-28",
+      "source_concept": "receive-pack 状态报告的两级状态：unpack ok 与 ref ok/ng",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-28T06:06:25.697223+08:00",
+      "updated_at": "2026-08-28T06:06:25.697223+08:00"
+    },
+    {
+      "id": "2026-08-28-receive-pack-unpack-ok-ref-ok-ng-665859dc05",
+      "question": "为什么 unpack ok 不能作为推送成功的依据？",
+      "source_date": "2026-08-28",
+      "source_concept": "receive-pack 状态报告的两级状态：unpack ok 与 ref ok/ng",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-28T06:06:25.697223+08:00",
+      "updated_at": "2026-08-28T06:06:25.697223+08:00"
+    },
+    {
+      "id": "2026-08-28-post-receive-stdin-ref-f8f3539669",
+      "question": "如果 post-receive 想重建被拒绝 ref 的审计信息，还有哪些证据源可以使用？",
+      "source_date": "2026-08-28",
+      "source_concept": "post-receive stdin 的 ref 状态迁移记录：只包含成功更新",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-28T06:06:25.697223+08:00",
+      "updated_at": "2026-08-28T06:06:25.697223+08:00"
+    },
+    {
+      "id": "2026-08-28-post-receive-stdin-ref-4e5d2774ed",
+      "question": "新建引用和删除引用时，post-receive stdin 中的旧值/新值分别是什么？",
+      "source_date": "2026-08-28",
+      "source_concept": "post-receive stdin 的 ref 状态迁移记录：只包含成功更新",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-28T06:06:25.697223+08:00",
+      "updated_at": "2026-08-28T06:06:25.697223+08:00"
+    },
+    {
+      "id": "2026-08-28-post-receive-stdin-ref-15bd5e7f58",
+      "question": "post-receive 如何区分‘ref 被拒绝’和‘ref 原本就不在这次推送中’？",
+      "source_date": "2026-08-28",
+      "source_concept": "post-receive stdin 的 ref 状态迁移记录：只包含成功更新",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-28T06:06:25.697223+08:00",
+      "updated_at": "2026-08-28T06:06:25.697223+08:00"
+    },
+    {
+      "id": "2026-08-28-alternates-missing-object-ba3e70981c",
+      "question": "alternates 中的相对路径和绝对路径分别如何解析？仓库迁移时为什么容易出现路径失效？",
+      "source_date": "2026-08-28",
+      "source_concept": "alternates 对象库路径与 missing object 误报边界",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-28T06:06:25.697223+08:00",
+      "updated_at": "2026-08-28T06:06:25.697223+08:00"
+    },
+    {
+      "id": "2026-08-28-alternates-missing-object-583bcf648c",
+      "question": "如何查看并验证仓库的 alternates 配置，确认每个外部对象库路径都可读？",
+      "source_date": "2026-08-28",
+      "source_concept": "alternates 对象库路径与 missing object 误报边界",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-28T06:06:25.697223+08:00",
+      "updated_at": "2026-08-28T06:06:25.697223+08:00"
+    },
+    {
+      "id": "2026-08-28-alternates-missing-object-441f550d71",
+      "question": "当 fsck 报 missing object 时，完整的排查顺序应该是什么？",
+      "source_date": "2026-08-28",
+      "source_concept": "alternates 对象库路径与 missing object 误报边界",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-28T06:06:25.697223+08:00",
+      "updated_at": "2026-08-28T06:06:25.697223+08:00"
+    },
+    {
       "id": "2026-08-27-post-receive-5451835598",
       "question": "post-receive钩子的stdin格式与退出码分别承担什么角色？如何从钩子中区分哪些ref更新成功、哪些被拒绝？",
       "source_date": "2026-08-27",

@@ -14,6 +14,54 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-08/2026-08-29-learning-report.html">2026-08-29</a>
+      </td>
+      <td>pkt-line 分帧与 side-band 通道编号的多路复用</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★</td>
+      <td>pkt-line 是 Git 协议里给每个数据包加上长度标签的分帧方式，side-band 再在包内标出通道号，让状态、进度和错误信息能在同一条流里各走各的道。</td>
+      <td>下一次可以深入 Git protocol v2 中 side-band 通道的扩展方式，以及客户端如何通过协商选择使用哪些通道。</td>
+    </tr>
+    <tr>
+      <td>客户端对部分成功推送的聚合判定规则</td>
+      <td>软件工程 / 计算机科学</td>
+      <td>★★★★</td>
+      <td>客户端把所有 ref 的 ok/ng 结果收集起来，按“全成功、部分成功、全失败”三类汇总，再决定给用户什么提示。</td>
+      <td>下一次可以深入 receive.denyNonFastForwards 内置拒绝与 update 钩子拒绝在协议输出上的差异，以及客户端如何根据这些差异给出更精细的提示。</td>
+    </tr>
+    <tr>
+      <td>fsck 与 gc 并发时的 packfile 描述符保护</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★★★</td>
+      <td>gc 通过“写新包、原子重命名、旧包让持有描述符的进程继续读”的方式，让并发的 fsck 不会因为 packfile 被替换而中断。</td>
+      <td>下一次可以深入 gc.pruneExpire 与悬空对象保留窗口，讲解 gc 在什么条件下才会真正物理删除对象，以及如何调整保留期来平衡恢复能力与仓库体积。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
+        <a href="../daily_report/2026-08/2026-08-28-learning-report.html">2026-08-28</a>
+      </td>
+      <td>receive-pack 状态报告的两级状态：unpack ok 与 ref ok/ng</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★</td>
+      <td>receive-pack 的状态报告分两层：unpack ok 只说明对象包到了，逐 ref 的 ok/ng 才是每个引用真正的结局。</td>
+      <td>下一次可以深入 side-band 通道编号，看状态报告和进度信息如何通过不同通道传回客户端，以及客户端如何从多路复用流中精确切分出状态行。</td>
+    </tr>
+    <tr>
+      <td>post-receive stdin 的 ref 状态迁移记录：只包含成功更新</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★</td>
+      <td>post-receive 的 stdin 是一张只登记成功更新的 ref 状态迁移记录，被拒绝的 ref 不会出现在这张表上。</td>
+      <td>下一次可以深入 update 钩子与 post-receive 的配合，讲解如何把每个 ref 的接受/拒绝原因和最终更新结果串联成可审计的事件链。</td>
+    </tr>
+    <tr>
+      <td>alternates 对象库路径与 missing object 误报边界</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★★</td>
+      <td>alternates 是 Git 对象库的‘分馆地址列表’，当分馆地址失效时，明明存在的对象也会被 fsck 报成 missing object。</td>
+      <td>下一次可以深入 git fsck 的完整检查矩阵，对比 missing object、损坏对象和悬空对象的不同修复路径，并讨论 gc.pruneExpire 如何影响这些诊断结果。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-08/2026-08-27-learning-report.html">2026-08-27</a>
       </td>
       <td>GIT_QUARANTINE_PATH 环境变量与钩子进程的环境契约</td>

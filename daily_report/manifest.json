@@ -1,6 +1,12 @@
 {
   "reports": [
     {
+      "date": "2026-08-29",
+      "title": "2026-08-29 学习笔记日报",
+      "summary": "从pkt-line分帧与side-band通道，到客户端聚合判定，再到fsck与gc的packfile描述符保护，串联推送从传送到清理的可靠链路。",
+      "path": "./daily_report/2026-08/2026-08-29-learning-report.html"
+    },
+    {
       "date": "2026-08-27",
       "title": "2026-08-27 学习笔记日报",
       "summary": "今天从推送钩子的隔离区感知机制，到post-receive失败与推送结果的解耦，再到missing object的并发竞态诊断，完整理解Git服务端在无全局锁下的确定性与可验证性。",
