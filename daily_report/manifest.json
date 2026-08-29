@@ -1,6 +1,12 @@
 {
   "reports": [
     {
+      "date": "2026-08-30",
+      "title": "2026-08-30 学习笔记日报",
+      "summary": "今日围绕协议与平台边界，讲解receive-pack状态行无序下的客户端聚合、protocol v2的side-band协商、以及packfile原子重命名的跨平台依赖。",
+      "path": "./daily_report/2026-08/2026-08-30-learning-report.html"
+    },
+    {
       "date": "2026-08-29",
       "title": "2026-08-29 学习笔记日报",
       "summary": "从pkt-line分帧与side-band通道，到客户端聚合判定，再到fsck与gc的packfile描述符保护，串联推送从传送到清理的可靠链路。",

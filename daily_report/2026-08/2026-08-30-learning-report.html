@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-08-30 学习笔记日报</title>
+    <meta name="description" content="今日围绕协议与平台边界，讲解receive-pack状态行无序下的客户端聚合、protocol v2的side-band协商、以及packfile原子重命名的跨平台依赖。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260830-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-08-30</p>
+        <h1>约定与容错：Git 在边界条件下的生存法则</h1>
+        <p>当协议版本、操作系统和实现方式各不相同，Git 如何通过明确约定与稳健容错，在边界条件下依然做出可信判断？今天我们从协议状态行、传输通道和对象存储三个层面，拆解这套生存策略。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>协议与平台的边界条件</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>receive-pack…</strong>
+                <small>不看第几行，只看写的是谁；顺序可以…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>Git protocol…</strong>
+                <small>先说好支持什么，再决定怎么传；能力…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>packfile 原子重命…</strong>
+                <small>先写新包再改名，旧文件让打开的人继…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">receive-pack 状态行的顺序无关性处于最上层，它是客户端与用户之间的“结果判定层”：协议不保证 ok/ng 行的顺序，客户端必须按 ref 名称匹配，才能在乱序、增删或实现差异面前仍然给出全成功、部分成功、全失败的准确汇总。
+
+side-band 协商处于传输层，它决定了状态行、进度和错误信息通过哪些通道传回客户端。v0 用固定编号隐式约定通道语义，v2 用 capability 显式协商，双方能力交集决定最终启用的通道组合。这条线把“通道从哪里来”讲清楚了，也让状态行解析有了更稳固的传输基础。
+
+packfile 原子重命名与跨平台语义则沉到对象存储层：gc 通过写新包、原子重命名替换旧包，让持有旧包文件描述符的进程继续读取。但这依赖操作系统“打开后删除仍可读”的语义，Windows 默认文件锁不同，需要 FILE_SHARE_DELETE 才能复现同样的并发安全。三层概念合在一起，勾勒出 Git 在协议、操作系统和钩子系统的边界上如何用“明确约定 + 稳健容错”来保证部分成功、并发维护和多平台部署下的可信状态判断。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["协议与平台的边界条件"])
+  concept1["receive-pack 状态行的顺序无关性与客户端聚合健壮性"]
+  hub --&gt; concept1
+  concept2["Git protocol v2 中 side-band 通道的协商与多路复用扩展"]
+  hub --&gt; concept2
+  concept3["packfile 原子重命名与“打开后删除仍可读”的跨平台语义"]
+  hub --&gt; concept3
+  related1["pre-receive 整体拒绝与 update 逐 ref 拒绝"]
+  concept1 --&gt; related1
+  related2["side-band 通道协商"]
+  concept1 --&gt; related2
+  related3["receive-pack 状态行解析"]
+  concept2 --&gt; related3
+  related4["文件系统层的删除共享语义"]
+  concept2 --&gt; related4
+  related5["fsck 与 gc 并发时的 packfile 描述符保护"]
+  concept3 --&gt; related5
+  related6["协议层能力协商"]
+  concept3 --&gt; related6
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4,related5,related6 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="receive-pack-status-line-order-independence">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>receive-pack 状态行的顺序无关性与客户端聚合健壮性</h3>
+              <p>Receive-pack Status Line Order Independence</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">不看第几行，只看写的是谁；顺序可以乱，结果不能错。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>服务端 receive-pack 逐条返回 ok/ng 状态行，协议不保证顺序。</li>
+                <li>客户端按 ref 名称匹配状态行，而不是按出现顺序。</li>
+                <li>这样即使乱序、增删或实现差异，也能正确聚合为全成功、部分成功或全失败。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="receive-pack-status-line-order-independence" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="git-protocol-v2-side-band-negotiation">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>Git protocol v2 中 side-band 通道的协商与多路复用扩展</h3>
+              <p>Side-band Negotiation and Multiplexing Extension in Git Protocol v2</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">先说好支持什么，再决定怎么传；能力交集决定通道组合。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>v2 采用能力协商机制，客户端声明支持的能力，服务端取交集决定启用哪些通道。</li>
+                <li>side-band-all 等能力允许在同一条数据流中多路复用多个通道。</li>
+                <li>未知通道编号有明确容错规则，使协议演进保持向后兼容。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="git-protocol-v2-side-band-negotiation" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="packfile-atomic-rename-and-cross-platform-semantics">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>packfile 原子重命名与“打开后删除仍可读”的跨平台语义</h3>
+              <p>Atomic Rename of Packfiles and Cross-platform Semantics of Open-delete-read</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">先写新包再改名，旧文件让打开的人继续读；跨平台要显式请求共享删除。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>gc 用“写新包 + 原子重命名”替换旧包，避免删除旧包时出现读不到的问题。</li>
+                <li>原子重命名保证并发进程要么看到旧名字要么看到新名字，不会出现中间态。</li>
+                <li>Unix 默认支持“打开后删除仍可读”，Windows 需要用 FILE_SHARE_DELETE 等效机制弥补。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="packfile-atomic-rename-and-cross-platform-semantics" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="receive-pack-status-line-order-independence">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>receive-pack 状态行的顺序无关性与客户端聚合健壮性</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>当客户端推送代码到服务端时，服务端的 receive-pack 进程会逐个处理每个分支的更新请求，并且逐条返回结果：成功就返回“ok &lt;分支名&gt;”，失败就返回“ng &lt;分支名&gt; &lt;原因&gt;”。这些状态行是客户端判断“推送到底成没成功”的直接依据。
+
+关键点在于：协议规范并没有保证这些状态行的返回顺序。服务端可能先返回最后一个分支的结果，也可能先返回第一个分支的结果；不同版本、不同钩子实现都可能产生不同顺序。如果客户端按“第几行对应第几个分支”来解读，就很容易出错。
+
+所以客户端被设计为按分支名称来匹配，而不是按出现顺序。也就是说，客户端拿到一行状态，先看它说的是哪个分支，再看结果是 ok 还是 ng。这样即使状态行乱序、增删或者服务端实现有差异，客户端也能把每个分支的结果正确归位，最终给出全成功、部分成功、全失败的判定。
+
+这背后是一个重要的工程原则：协议规范没有保证的东西，客户端就不能依赖。服务端返回顺序今天是这个顺序，明天换了实现可能就变了。面向规范而不是面向偶然实现，才能避免服务端升级导致客户端行为突变。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>协议规范未保证顺序，客户端不能依赖偶然实现。</li>
+                <li>按 ref 名称匹配使结果归位不依赖传输顺序。</li>
+                <li>面向规范而非面向实现，避免升级导致行为突变。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>想象一个老师给全班同学发成绩单。老师把成绩单打乱了顺序发给学生，有的学生先拿到自己的，有的同学最后才看到。但每个学生只需要看自己那一栏——“我的数学是 A，语文是 B”，而不是关心“成绩单上第几行写的是谁”。Git 客户端也是这样：它不在乎 ok/ng 行出现的顺序，只在乎每一行说的是哪个分支、结果是什么。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为 ok/ng 状态行一定按推送顺序排列。</li>
+                <li>把状态行乱序当作需要修复的 bug，其实这是协议允许的正常现象。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>pre-receive 整体拒绝与 update 逐 ref 拒绝</td><td>状态行顺序无关性保证了客户端在两种拒绝并存时也能正确识别哪些分支被拒、哪些分支成功。</td></tr>
+                <tr><td>side-band 通道协商</td><td>side-band 通道协商决定了状态行通过什么传输通道到达客户端，而顺序无关性决定了客户端如何解读这些行。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>receive-pack 为什么不保证状态行顺序？这与服务端并行处理 ref 更新有关吗？</li>
+                <li>客户端按 ref 名称匹配状态行时，如果同一 ref 出现多行状态（例如先 ng 后又 ok），应该如何处置？</li>
+                <li>除了顺序无关性，客户端还有哪些针对协议未保证事项的容错设计？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="git-protocol-v2-side-band-negotiation">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>Git protocol v2 中 side-band 通道的协商与多路复用扩展</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象一个工作团队要用对讲机沟通，但频道用途没有统一规定。在 Git 的早期协议（v0）里，大家事先约定了频道编号：1 号频道只传状态信息，2 号频道只传进度信息。这种固定约定简单粗暴，缺点是双方必须提前知道对方支持哪些频道，不能灵活扩展。
+
+到了 protocol v2，Git 采用了“能力协商”机制。客户端先告诉服务端自己支持哪些能力，比如“我支持 side-band-all，也就是你可以在同一条数据流里同时打开多个通道”。服务端收到后，对比自己支持的能力，取交集，然后决定要不要使用这些额外通道。
+
+这就像打电话：以前大家约定好“只能用 1 号线和 2 号线”，现在电话接通后先互相问一句“你支持视频吗？支持的话我们开视频，不支持就语音”。双方的能力交集决定了最终怎么通信。
+
+v2 中未知通道编号的容错规则也更明确：客户端遇到不认识的通道编号时，不能因为一个未知通道就中断整个通信流，而是按协议定义的规则跳过或忽略。这让协议在演进过程中保持向后兼容——将来新增通道编号时，旧客户端不会被新通道卡死。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>v0 用固定编号隐式约定，v2 用 capability 显式协商。</li>
+                <li>客户端声明能力，服务端根据交集决定最终行为，双方能力必须匹配。</li>
+                <li>未知通道的容错规则允许旧客户端不被新通道卡死，保持向后兼容。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设你是一个快递公司的老员工。以前快递单上有个固定的“备注栏”，所有信息都往里面写，大家都按老规矩办事。后来公司升级系统，新版快递单允许在寄件时额外勾选“需要冷链”“需要保价”这样的服务。但前提是：快递员要先确认一下送件方有没有这些新服务。如果送件方是新系统，就能用冷链；如果还是旧系统，就按最基础的配送方式来。Git protocol v2 的 side-band 协商就是这样：客户端先声明自己的能力，服务端只启用双方都支持的功能。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为 v2 中 side-band 的通道编号语义与 v0 完全相同，实际上由能力协商决定。</li>
+                <li>认为协商是双方完全对等的，实际上客户端声明，服务端根据交集决定。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>receive-pack 状态行解析</td><td>side-band 协商决定了状态行通过哪些通道传回客户端，为状态行解析提供传输层基础。</td></tr>
+                <tr><td>文件系统层的删除共享语义</td><td>协议层的能力协商与文件系统层的删除共享语义类似，都需要参与方明确声明并处理不支持的场景。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>protocol v2 中除了 side-band-all，还有哪些能力协商项会影响推送和拉取的行为？</li>
+                <li>当客户端声明支持某个能力但服务端不支持时，协议如何保证降级后的行为仍然正确？</li>
+                <li>未知 side-band 通道编号在 v2 中的容错规则具体是如何定义的？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="packfile-atomic-rename-and-cross-platform-semantics">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>packfile 原子重命名与“打开后删除仍可读”的跨平台语义</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>Git 在执行 gc（垃圾回收）时，会把多个小包合并成一个大包，然后替换掉旧包。这个替换过程不是“先删除旧包再写新包”，而是“先写新包，再通过原子重命名一步替换”。为什么？因为可能有其他进程（比如 fsck）正拿着旧包的文件描述符在读数据。如果先删旧包再写新包，就会有一个窗口期旧包读不到、新包还没写完。
+
+“原子重命名”的意思是：操作系统保证 rename 这个操作要么旧名字还在，要么新名字已经就位，不会出现“名字指向一个写了一半的文件”这种中间状态。所以并发进程只要在重命名之前打开了旧包的文件描述符，就能继续读旧包；新进程打开的是新包。两边互不干扰。
+
+但这里藏着一个依赖：进程打开旧包后，即使目录项被删除，文件内容仍然可读。这是 Unix 的语义。Windows 默认却不一样：一个文件被打开时，其他进程默认不能删除它，因为 Windows 的文件锁默认不允许删除共享。Git 在 Windows 上的解决办法是使用 FILE_SHARE_DELETE 之类的共享标志——在打开文件时就明确告诉系统“请允许其他进程在我打开期间删除这个文件”，这样 gc 的重命名在 Windows 上也能工作。
+
+这个跨平台差异直接影响到并发安全边界：在 Unix 上，Git 只需要依赖默认的文件描述符语义；在 Windows 上，必须显式请求删除共享。如果做不到，持有旧包描述符的进程就可能在 gc 重命名时被禁止访问。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>重命名只是更新目录项，旧文件只要有文件描述符就仍可读。</li>
+                <li>原子性确保并发进程不会看到写了一半的文件。</li>
+                <li>Windows 默认文件锁不一样，必须用 FILE_SHARE_DELETE 显式允许删除共享。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>想象一个图书馆。管理员要换新版图书，但有个读者正捧着一本旧版书在看。在 Unix 风格的管理规则下，管理员可以直接把书架上的旧书替换成新书，读者手里的旧书还能继续看，看完再还——旧书内容不会消失。但在 Windows 风格的规则下，读者只要还在看，管理员就不能动那本书，否则读者会抗议。Git 的解决办法是：在读者打开书时就签一份“允许管理员随时替换”的协议，这样管理员替换时不违反规则，读者手里的书也还能继续看。这就是 FILE_SHARE_DELETE 做的事情。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把原子重命名理解为旧文件被立即物理删除，实际上内容仍被持有描述符的进程读取。</li>
+                <li>觉得跨平台差异只是性能差别，实际上 Windows 默认文件锁会让 gc 重命名失败。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>fsck 与 gc 并发时的 packfile 描述符保护</td><td>描述符保护依赖“打开后删除仍可读”语义，Windows 需要额外机制。</td></tr>
+                <tr><td>协议层能力协商</td><td>文件系统层的删除共享语义与协议层的能力协商类似，都需要双方对条件达成明确约定。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>Windows 上除了 FILE_SHARE_DELETE，Git 还使用哪些方式处理文件锁差异？</li>
+                <li>如果某个网络文件系统不提供打开后删除仍可读的语义，git gc 的并发安全会受影响吗？</li>
+                <li>创建 packfile 时使用临时文件名再到 rename，这中间的崩溃恢复是如何保证仓库一致性的？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">receive-pack 状态行的顺序无关性处于最上层，它是客户端与用户之间的“结果判定层”：协议不保证 ok/ng 行的顺序，客户端必须按 ref 名称匹配，才能在乱序、增删或实现差异面前仍然给出全成功、部分成功、全失败的准确汇总。
+
+side-band 协商处于传输层，它决定了状态行、进度和错误信息通过哪些通道传回客户端。v0 用固定编号隐式约定通道语义，v2 用 capability 显式协商，双方能力交集决定最终启用的通道组合。这条线把“通道从哪里来”讲清楚了，也让状态行解析有了更稳固的传输基础。
+
+packfile 原子重命名与跨平台语义则沉到对象存储层：gc 通过写新包、原子重命名替换旧包，让持有旧包文件描述符的进程继续读取。但这依赖操作系统“打开后删除仍可读”的语义，Windows 默认文件锁不同，需要 FILE_SHARE_DELETE 才能复现同样的并发安全。三层概念合在一起，勾勒出 Git 在协议、操作系统和钩子系统的边界上如何用“明确约定 + 稳健容错”来保证部分成功、并发维护和多平台部署下的可信状态判断。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">把“想当然成立”的条件，变成“明确说好，并且万一不成立也能处理”的硬规则。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>receive-pack 为什么不保证状态行顺序？这与服务端并行处理 ref 更新有关吗？</li>
+            <li>protocol v2 中除了 side-band-all，还有哪些能力协商项会影响推送和拉取的行为？</li>
+            <li>Windows 上除了 FILE_SHARE_DELETE，Git 还使用哪些方式处理文件锁差异？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>

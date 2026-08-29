@@ -3,6 +3,96 @@
   "year_month": "2026-08",
   "threads": [
     {
+      "id": "2026-08-30-receive-pack-84f9c59f37",
+      "question": "客户端按 ref 名称匹配状态行时，如果同一 ref 出现多行状态（例如先 ng 后又 ok），应该如何处理？",
+      "source_date": "2026-08-30",
+      "source_concept": "receive-pack 状态行的顺序无关性与客户端聚合健壮性",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-30T06:04:43.654582+08:00",
+      "updated_at": "2026-08-30T06:04:43.654582+08:00"
+    },
+    {
+      "id": "2026-08-30-receive-pack-5c55a8d583",
+      "question": "receive-pack 为什么不保证状态行顺序？这与服务端并行处理 ref 更新有关吗？",
+      "source_date": "2026-08-30",
+      "source_concept": "receive-pack 状态行的顺序无关性与客户端聚合健壮性",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-30T06:04:43.654582+08:00",
+      "updated_at": "2026-08-30T06:04:43.654582+08:00"
+    },
+    {
+      "id": "2026-08-30-receive-pack-3ccf4502b7",
+      "question": "除了顺序无关性，客户端还有哪些针对协议未保证事项的容错设计？",
+      "source_date": "2026-08-30",
+      "source_concept": "receive-pack 状态行的顺序无关性与客户端聚合健壮性",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-30T06:04:43.654582+08:00",
+      "updated_at": "2026-08-30T06:04:43.654582+08:00"
+    },
+    {
+      "id": "2026-08-30-packfile-acef1fb63d",
+      "question": "创建 packfile 时使用临时文件名再到 rename，这中间的崩溃恢复是如何保证仓库一致性的？",
+      "source_date": "2026-08-30",
+      "source_concept": "packfile 原子重命名与“打开后删除仍可读”的跨平台语义",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-30T06:04:43.654582+08:00",
+      "updated_at": "2026-08-30T06:04:43.654582+08:00"
+    },
+    {
+      "id": "2026-08-30-packfile-951b76cd2b",
+      "question": "如果某个网络文件系统不提供打开后删除仍可读的语义，git gc 的并发安全会受影响吗？",
+      "source_date": "2026-08-30",
+      "source_concept": "packfile 原子重命名与“打开后删除仍可读”的跨平台语义",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-30T06:04:43.654582+08:00",
+      "updated_at": "2026-08-30T06:04:43.654582+08:00"
+    },
+    {
+      "id": "2026-08-30-packfile-82df9a76d8",
+      "question": "Windows 上除了 FILE_SHARE_DELETE，Git 还使用哪些方式处理文件锁差异？",
+      "source_date": "2026-08-30",
+      "source_concept": "packfile 原子重命名与“打开后删除仍可读”的跨平台语义",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-30T06:04:43.654582+08:00",
+      "updated_at": "2026-08-30T06:04:43.654582+08:00"
+    },
+    {
+      "id": "2026-08-30-git-protocol-v2-side-band-ea0387c40e",
+      "question": "未知 side-band 通道编号在 v2 中的容错规则具体是如何定义的？",
+      "source_date": "2026-08-30",
+      "source_concept": "Git protocol v2 中 side-band 通道的协商与多路复用扩展",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-30T06:04:43.654582+08:00",
+      "updated_at": "2026-08-30T06:04:43.654582+08:00"
+    },
+    {
+      "id": "2026-08-30-git-protocol-v2-side-band-c386bb01ec",
+      "question": "protocol v2 中除了 side-band-all，还有哪些能力协商项会影响推送和拉取的行为？",
+      "source_date": "2026-08-30",
+      "source_concept": "Git protocol v2 中 side-band 通道的协商与多路复用扩展",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-30T06:04:43.654582+08:00",
+      "updated_at": "2026-08-30T06:04:43.654582+08:00"
+    },
+    {
+      "id": "2026-08-30-git-protocol-v2-side-band-b29e1197f0",
+      "question": "当客户端声明支持某个能力但服务端不支持时，协议如何保证降级后的行为仍然正确？",
+      "source_date": "2026-08-30",
+      "source_concept": "Git protocol v2 中 side-band 通道的协商与多路复用扩展",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-30T06:04:43.654582+08:00",
+      "updated_at": "2026-08-30T06:04:43.654582+08:00"
+    },
+    {
       "id": "2026-08-29-pkt-line-side-band-7d503c3b6c",
       "question": "Git protocol v2 中，side-band 通道的协商和用法与 v0 有哪些不同？",
       "source_date": "2026-08-29",

@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-08/2026-08-30-learning-report.html">2026-08-30</a>
+      </td>
+      <td>receive-pack 状态行的顺序无关性与客户端聚合健壮性</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★</td>
+      <td>receive-pack 的 ok/ng 状态行不保证顺序，客户端按 ref 名称匹配而不是按出现位置，因此在乱序下也能正确判定推送结果。</td>
+      <td>下一次可以深入服务端拒绝的两种形态——pre-receive 整体拒绝与 update 逐 ref 拒绝——看它们如何在状态报告中留下可区分的证据，以及客户端如何据此给出更精细的提示。</td>
+    </tr>
+    <tr>
+      <td>Git protocol v2 中 side-band 通道的协商与多路复用扩展</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★</td>
+      <td>Git protocol v2 通过能力协商让 side-band 通道从“固定编号的硬编码”变成“双方能力交集决定的灵活选择”。</td>
+      <td>下一次可以深入 ls-refs、fetch 等 v2 子命令如何分别使用 pkt-line 协商参数，以及多个能力协商项之间的依赖关系。</td>
+    </tr>
+    <tr>
+      <td>packfile 原子重命名与“打开后删除仍可读”的跨平台语义</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★★</td>
+      <td>gc 通过写新包与原子重命名安全替换旧 packfile，但这一安全依赖操作系统“打开后删除仍可读”的语义，Windows 上需要 FILE_SHARE_DELETE 才能复现。</td>
+      <td>下一次可以深入 gc.pruneExpire 与悬空对象保留窗口，讲解 gc 在什么条件下才会真正物理删除对象，以及如何调整保留期来平衡恢复能力与仓库体积。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-08/2026-08-29-learning-report.html">2026-08-29</a>
       </td>
       <td>pkt-line 分帧与 side-band 通道编号的多路复用</td>
