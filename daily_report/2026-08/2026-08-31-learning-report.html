@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-08-31 学习笔记日报</title>
+    <meta name="description" content="无变更复习日，聚焦 Git 边界设计：悬空对象保留窗口、packfile 临时文件原子发布、criss-cross 合并最佳共同祖先选择。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260831-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-08-31</p>
+        <h1>2026-08-31 学习日报：Git 的确定性边界</h1>
+        <p>今日无新增工程事实，我们回到最近 7 天的问题背后，用三个概念复习 Git 如何把不确定性变成确定性。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>Git 在对象清理、包发布与合并基…</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>gc.pruneExpir…</strong>
+                <small>两周内是财产，两周后是垃圾。</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>packfile 临时文件…</strong>
+                <small>没写完的草稿不会被当成正式文件，写…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>criss-cross 合…</strong>
+                <small>合并基准不靠运气，靠支配关系筛选和…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念都在应对同一种模糊场景：“可能还没删、可能还没发布、可能同时有好几个祖先”。gc.pruneExpire 将删除变成带时间阈值的策略；packfile 临时文件把发布变成由原子 rename 刻画的临界点；best common ancestor 用支配关系决定唯一合并基。三者都避免依赖偶然因素，也不把中间态误当成最终态。它们还互相咬合：criss-cross 合并后产生的悬空对象会进入保留窗口，新提交打包时又依赖临时文件与原子发布流程。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["Git 在对象清理、包发布与合并基选择中的确定性设计"])
+  concept1["gc.pruneExpire 与悬空对象保留窗口"]
+  hub --&gt; concept1
+  concept2["packfile 临时文件命名与崩溃恢复"]
+  hub --&gt; concept2
+  concept3["criss-cross 合并中 best common ancestor 的支配关系"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  concept2 --&gt; concept1
+  related1["能力协商降级"]
+  concept2 --&gt; related1
+  concept3 --&gt; concept1
+  concept3 --&gt; related1
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="gc-prune-expire-dangling-objects">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>gc.pruneExpire 与悬空对象保留窗口</h3>
+              <p>gc.pruneExpire &amp; Dangling Object Retention Window</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">两周内是财产，两周后是垃圾。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>git gc 不会立刻物理删除所有不可达对象，悬空对象需经历 gc.pruneExpire 设置的时间窗口。</li>
+                <li>默认保留期约两周，期间可通过 git fsck --lost-found、reflog 或旧引用找回。</li>
+                <li>调短保留期会缩小并发安全读取窗口和事后审计证据范围。</li>
+                <li>保留窗口是并发安全的一部分，避免其他进程读取时对象被过早删除。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="gc-prune-expire-dangling-objects" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="packfile-temp-file-crash-recovery">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>packfile 临时文件命名与崩溃恢复</h3>
+              <p>packfile Temporary File Naming and Crash Recovery</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">没写完的草稿不会被当成正式文件，写完才盖章。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>packfile 先写临时文件 `tmp_pack_*`，完成后原子 rename 到正式路径。</li>
+                <li>对象查找只认正式命名，`tmp_*` 不会被当成有效 pack。</li>
+                <li>崩溃在 rename 前，正式路径无变化；rename 后则新包已发布，不会出现半截文件。</li>
+                <li>残留临时文件由后续 `git gc` 等维护操作清理。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="packfile-temp-file-crash-recovery" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="criss-cross-merge-best-common-ancestor">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 计算机科学</span>
+                <span class="tag warm">★★★★★</span>
+              </div>
+              <h3>criss-cross 合并中 best common ancestor 的支配关系</h3>
+              <p>Dominance Relation of Best Common Ancestor in Criss-Cross Merge</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">合并基准不靠运气，靠支配关系筛选和虚拟基合成。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>criss-cross 历史可能产生多个共同祖先，且互不包含。</li>
+                <li>随便选一个会导致同一对分支的合并结果不稳定。</li>
+                <li>Git 先剔除被支配的共同祖先（另一个祖先是其后代）。</li>
+                <li>若仍有多个 best candidate，recursive/ort 合并先合成虚拟合并基，再用它做三方合并。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="criss-cross-merge-best-common-ancestor" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="gc-prune-expire-dangling-objects">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>gc.pruneExpire 与悬空对象保留窗口</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>很多人以为运行 `git gc` 之后，不要的分支和提交就会立刻被删掉。其实不是。`git gc` 先压缩对象，再清理不可达对象，但清理时要看这些对象已经“悬空”了多久。悬空对象就是当前没有任何分支、标签、reflog 或 HEAD 能到达的提交、树和文件。`gc.pruneExpire` 控制一个时间窗口，默认大约是两周。只要对象还没超过这个窗口，它就仍然待在对象库里，能通过 `git fsck --lost-found`、reflog 或旧引用被找回来；超过窗口后，`git prune` 才会真正把它们物理删除。这个窗口不是随便定的：太短，误删了就找不回；太长，仓库会一直膨胀。它也是并发安全的一部分——如果其他进程正想读取一个对象，过早物理删除会让读取失败，而保留窗口让这种风险变得更可控。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>`git gc` 先压缩对象，再清理不可达对象，但清理时检查悬空时间。</li>
+                <li>悬空对象 = 当前没有任何引用能到达的提交、树和文件。</li>
+                <li>`gc.pruneExpire` 控制时间窗口，默认约两周。</li>
+                <li>窗口内对象可通过 `git fsck --lost-found`、reflog 或旧引用找回；超过窗口后 `git prune` 物理删除。</li>
+                <li>窗口太短误删风险高，太长仓库膨胀；同时是并发安全的一部分，避免过早删除导致其他进程读取失败。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>想象你在团队分支上做了三天的一个重要提交，结果误操作强推覆盖了分支，提交似乎“消失”了。你立刻想到 `git fsck --lost-found`，在 `.git/lost-found/` 里找回了那个提交——因为 `gc.pruneExpire` 默认留了两周，它还没有被真正删除。如果这个仓库把保留期调成了 1 天，而你已经过了两天才发现，那这个提交就真的再也找不回来了。保留窗口就像给旧对象开了一个“失物招领处”，过了认领期才会销毁。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>`git gc` 后面仓库立刻变小，或者所有不可达对象都会被立即清空。实际上 `git gc` 只清理“超过保留期”的不可达对象；两周内的悬空对象依然存在，并且是 `git fsck` 可以列出来的。</li>
+                <li>认为调短 `gc.pruneExpire` 只是省空间，但它同时会缩短并发进程安全读取对象的时间窗口，缩小事后审计的可用证据范围。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>packfile 临时文件</td><td>gc.pruneExpire 决定旧对象何时死亡，packfile 临时文件流程决定新 pack 何时正式发布；两者都遵循“正式路径出现之前不算有效”的约定。</td></tr>
+                <tr><td>criss-cross 合并</td><td>合并完成后，被替代的旧提交可能变成不可达对象，随后进入 gc.pruneExpire 的保留窗口，等待被清理或恢复。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>gc.pruneExpire 的默认值为什么是两周而不是一天或一年？它背后的误删风险与仓库体积权衡是什么样的？</li>
+                <li>如果有进程已经持有某个对象所在 packfile 的文件描述符，即使过了 gc.pruneExpire，它还能继续读旧对象吗？</li>
+                <li>调短 gc.pruneExpire 后，如何通过 reflog、git fsck 或备份策略来弥补恢复窗口变小的风险？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="packfile-temp-file-crash-recovery">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>packfile 临时文件命名与崩溃恢复</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>Git 在创建 packfile 时，并不会直接写一个最终文件 `pack-&lt;hash&gt;.pack`，而是先写一个 `tmp_pack_*` 这样的临时文件。所有写入都先落到这个临时文件里，等数据完整、校验通过之后，再用一次原子性的 rename 把它移动到正式的最终路径。对象查找的代码只认正式命名的 pack 文件，所以 `tmp_*` 文件即使存在于对象库目录中，也不会被当成有效 pack。这就产生了一个很干净的崩溃恢复性质：如果在 rename 之前进程崩溃，正式路径上什么都不存在，旧的 pack 依然完整；如果在 rename 之后崩溃，新 pack 已经正式发布，也不会有半截文件被别人读到。残留的 `tmp_*` 只是垃圾，会在后续 `git gc` 等维护操作中被清理。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>先写临时文件 `tmp_pack_*`，完成后再原子 rename 到 `pack-&lt;hash&gt;.pack`。</li>
+                <li>对象查找只认正式命名，`tmp_*` 不被识别为有效 pack。</li>
+                <li>rename 前崩溃：正式路径无变化，旧 pack 完整。</li>
+                <li>rename 后崩溃：新 pack 已发布，没有半截文件。</li>
+                <li>残留 `tmp_*` 是垃圾，由后续 `git gc` 清理。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>这就像你写文章时先写一个名为“草稿.tmp”的文件，一字一字敲完，确认没有错别字，再点击“另存为”变成“正式稿.md”。如果中途电脑断电，桌面上只会留下“草稿.tmp”，而“正式稿.md”要么不存在，要么是完整的旧版本，绝不会出现一个只写了一半的“正式稿.md”。别人看到“正式稿.md”时，它一定是完整内容；那个 `.tmp` 文件哪怕留着，也不会被当作正式稿来引用。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>担心 `tmp_pack_*` 残留会导致 `git fsck` 报错或误当成本地对象。不会，Git 对象查找只扫描正式 pack 和松散对象，`tmp_*` 不在识别范围。</li>
+                <li>认为 rename 不是原子的，可能在重命名过程中出现半个包；在同一文件系统内 rename 是原子性的，最终路径上要么是旧文件，要么是新文件，没有中间状态。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>gc.pruneExpire</td><td>`tmp_*` 在正式路径出现前不可见，悬空对象在保留窗口内同样“可见但待清理”，两者都用“最终命名达成”作为状态有效的标志。</td></tr>
+                <tr><td>能力协商降级</td><td>临时文件在 rename 前不可假定，正如能力在协商成功前不可假定；二者都要求参与方不要把中间态当成可用的最终态。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果崩溃发生在 rename 之后的瞬间，此时 `pack-&lt;hash&gt;.pack` 已存在但 `pack-&lt;hash&gt;.idx` 还没到位，Git 如何保证对象查找不会看到不一致？</li>
+                <li>`tmp_*` 的清理时机具体由哪些维护命令触发？人工删除滞留临时文件是否安全？</li>
+                <li>在文件系统不支持原子 rename 的平台上，Git 的 packfile 发布策略是否会退化，或者仍然有等价保证？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="criss-cross-merge-best-common-ancestor">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 计算机科学</p>
+                <h3>criss-cross 合并中 best common ancestor 的支配关系</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>普通分支合并时，可以找到唯一的共同祖先，三方合并直接以它为 base。但有一种历史叫 criss-cross：两个分支反复互相合并，导致历史上同时出现多个共同祖先，而且它们之间可能互不包含。如果随便选一个共同祖先作为合并基，那么对同一对分支做两次合并，结果可能因为“碰巧选到哪个祖先”而不同，这显然不能接受。Git 解决这个问题的办法是：先算出所有共同祖先，然后剔除那些“被支配”的共同祖先——所谓被支配，就是另一个共同祖先是它的后代。被支配的那个更老、信息更少，不适合当合并基。剩下的不被任何其他共同祖先支配的候选，就是 best common ancestor。如果 best candidate 仍然不止一个，Git 的 recursive 或 ort 合并策略会先把这些候选合并成一个虚拟合并基，再用这个虚拟基去合并两个分支。这样，合并结果只由提交图结构决定，不依赖遍历路径或偶然选到的祖先。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>先找出所有共同祖先。</li>
+                <li>剔除“被支配”的共同祖先：即存在另一个共同祖先是它的后代，被支配者信息更少，不适合当 base。</li>
+                <li>剩下的为 best common ancestor。</li>
+                <li>若 best candidate 仍不止一个，recursive/ort 合并先合成一个虚拟合并基，再用虚拟基做三方合并。</li>
+                <li>最终合并结果只由提交图结构决定，不依赖遍历路径或偶然选到的祖先。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>想象两个程序员 A 和 B 合作写代码。A 先合入了一次 B 的代码，B 后来又合入了一次 A 的代码，结果两人的分支上都有对方的合并痕迹。到了下一次合并时，公共历史里出现了两个都可能当“基准点”的提交。如果 A 记得的是第一次合并后的样子，B 记得的是第二次合并后的样子，那结果可能完全不同。Git 的做法是：先淘汰掉那个明显更旧的基准（被另一个基准包含的），如果剩下两个都差不多新，就把它们先合成一个“折中基准”，再拿这个唯一基准去做三方合并。这样谁都不必靠“记忆里的那个偶然基准”来决定结果。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为 Git 会比较共同祖先的提交时间，选“最近的那个”。实际上 Git 不看时间戳，只看提交图上的祖先关系。</li>
+                <li>认为多个共同祖先就一定会导致合并冲突或不确定结果；只要有支配关系筛选和虚拟合并基机制，Git 仍能获得稳定合并基。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>gc.pruneExpire</td><td>criss-cross 合并一旦完成，被替代的旧提交可能变成不可达对象，随后进入 gc.pruneExpire 的保留窗口，等待清理或恢复。</td></tr>
+                <tr><td>能力协商降级</td><td>合并面对“共同祖先不唯一”时选择支配关系，协议面对“能力可能不支持”时选择降级路径；两者都避免把结果交给偶然因素。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>在 best common ancestor 不止一个时，recursive 和 ort 合并策略分别如何把多个候选合成一个虚拟合并基？</li>
+                <li>如果两个最佳共同祖先合并时产生冲突，Git 会怎样处理？冲突会传播到最终合并吗？</li>
+                <li>能否举例说明，如果不做支配关系筛选，同一对分支在不同的 merge-base 遍历顺序下会得到不同的合并结果？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念都在应对同一种模糊场景：“可能还没删、可能还没发布、可能同时有好几个祖先”。gc.pruneExpire 将删除变成带时间阈值的策略；packfile 临时文件把发布变成由原子 rename 刻画的临界点；best common ancestor 用支配关系决定唯一合并基。三者都避免依赖偶然因素，也不把中间态误当成最终态。它们还互相咬合：criss-cross 合并后产生的悬空对象会进入保留窗口，新提交打包时又依赖临时文件与原子发布流程。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">Git 面对不确定状态时，靠显式约定和确定性算法把模糊变成确定。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>gc.pruneExpire 的默认值为什么是两周而不是一天或一年？它背后的误删风险与仓库体积权衡是什么样的？</li>
+            <li>如果崩溃发生在 rename 之后的瞬间，此时 pack-&lt;hash&gt;.pack 已存在但 pack-&lt;hash&gt;.idx 还没到位，Git 如何保证对象查找不会看到不一致？</li>
+            <li>在 best common ancestor 不止一个时，recursive 和 ort 合并策略分别如何把多个候选合成一个虚拟合并基？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>

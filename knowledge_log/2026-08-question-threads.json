@@ -3,6 +3,96 @@
   "year_month": "2026-08",
   "threads": [
     {
+      "id": "2026-08-31-packfile-d217940c96",
+      "question": "如果崩溃发生在 rename 之后的瞬间，此时 `pack-<hash>.pack` 已存在但 `pack-<hash>.idx` 还没到位，Git 如何保证对象查找不会看到不一致？",
+      "source_date": "2026-08-31",
+      "source_concept": "packfile 临时文件命名与崩溃恢复",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-31T06:05:58.663270+08:00",
+      "updated_at": "2026-08-31T06:05:58.663270+08:00"
+    },
+    {
+      "id": "2026-08-31-packfile-b51eead9fe",
+      "question": "`tmp_*` 的清理时机具体由哪些维护命令触发？人工删除滞留临时文件是否安全？",
+      "source_date": "2026-08-31",
+      "source_concept": "packfile 临时文件命名与崩溃恢复",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-31T06:05:58.663270+08:00",
+      "updated_at": "2026-08-31T06:05:58.663270+08:00"
+    },
+    {
+      "id": "2026-08-31-packfile-594ce1443e",
+      "question": "在文件系统不支持原子 rename 的平台上，Git 的 packfile 发布策略是否会退化，或者仍然有等价保证？",
+      "source_date": "2026-08-31",
+      "source_concept": "packfile 临时文件命名与崩溃恢复",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-31T06:05:58.663270+08:00",
+      "updated_at": "2026-08-31T06:05:58.663270+08:00"
+    },
+    {
+      "id": "2026-08-31-gc-pruneexpire-c20b3a6422",
+      "question": "调短 `gc.pruneExpire` 后，如何通过 reflog、`git fsck` 或备份策略来弥补恢复窗口变小的风险？",
+      "source_date": "2026-08-31",
+      "source_concept": "gc.pruneExpire 与悬空对象保留窗口",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-31T06:05:58.663270+08:00",
+      "updated_at": "2026-08-31T06:05:58.663270+08:00"
+    },
+    {
+      "id": "2026-08-31-gc-pruneexpire-b36f6d4838",
+      "question": "`gc.pruneExpire` 的默认值为什么是两周而不是一天或一年？它背后的误删风险与仓库体积权衡是什么样的？",
+      "source_date": "2026-08-31",
+      "source_concept": "gc.pruneExpire 与悬空对象保留窗口",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-31T06:05:58.663270+08:00",
+      "updated_at": "2026-08-31T06:05:58.663270+08:00"
+    },
+    {
+      "id": "2026-08-31-gc-pruneexpire-106cfaad2e",
+      "question": "如果有进程已经持有某个对象所在 packfile 的文件描述符，即使过了 `gc.pruneExpire`，它还能继续读旧对象吗？",
+      "source_date": "2026-08-31",
+      "source_concept": "gc.pruneExpire 与悬空对象保留窗口",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-08-31T06:05:58.663270+08:00",
+      "updated_at": "2026-08-31T06:05:58.663270+08:00"
+    },
+    {
+      "id": "2026-08-31-criss-cross-best-common-ancestor-eeac55c6d2",
+      "question": "如果两个最佳共同祖先合并时产生冲突，Git 会怎样处理？冲突会传播到最终合并吗？",
+      "source_date": "2026-08-31",
+      "source_concept": "criss-cross 合并中 best common ancestor 的支配关系",
+      "domain": "数学 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-08-31T06:05:58.663270+08:00",
+      "updated_at": "2026-08-31T06:05:58.663270+08:00"
+    },
+    {
+      "id": "2026-08-31-criss-cross-best-common-ancestor-569d548b9f",
+      "question": "能否举例说明，如果不做支配关系筛选，同一对分支在不同的 `merge-base` 遍历顺序下会得到不同的合并结果？",
+      "source_date": "2026-08-31",
+      "source_concept": "criss-cross 合并中 best common ancestor 的支配关系",
+      "domain": "数学 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-08-31T06:05:58.663270+08:00",
+      "updated_at": "2026-08-31T06:05:58.663270+08:00"
+    },
+    {
+      "id": "2026-08-31-criss-cross-best-common-ancestor-3f15537de0",
+      "question": "在 best common ancestor 不止一个时，recursive 和 ort 合并策略分别如何把多个候选合成一个虚拟合并基？",
+      "source_date": "2026-08-31",
+      "source_concept": "criss-cross 合并中 best common ancestor 的支配关系",
+      "domain": "数学 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-08-31T06:05:58.663270+08:00",
+      "updated_at": "2026-08-31T06:05:58.663270+08:00"
+    },
+    {
       "id": "2026-08-30-receive-pack-84f9c59f37",
       "question": "客户端按 ref 名称匹配状态行时，如果同一 ref 出现多行状态（例如先 ng 后又 ok），应该如何处理？",
       "source_date": "2026-08-30",

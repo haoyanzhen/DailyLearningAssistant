@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-08/2026-08-31-learning-report.html">2026-08-31</a>
+      </td>
+      <td>gc.pruneExpire 与悬空对象保留窗口</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★</td>
+      <td>git gc 不会立刻清掉不可达对象，而是给它们一个默认约两周的“留观期”，过了这个窗口才真正物理删除。</td>
+      <td>下一次可以深入 `pack-*.idx` 与 `multi-pack-index` 在对象查找中的作用，看对象被定位到哪个 pack 的过程如何影响删除与清理策略；也可以结合 `core.reflogExpire` 一起讲清楚 reflog 和悬空对象两个“遗忘”通道的配合。</td>
+    </tr>
+    <tr>
+      <td>packfile 临时文件命名与崩溃恢复</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★★</td>
+      <td>Git 用 tmp_* 临时文件写 pack，最后用原子 rename 发布，残留的临时文件不会被当成有效 pack，只会在后续维护中清理。</td>
+      <td>下一次可以深入 pack 索引文件 `pack-*.idx` 与 `multi-pack-index` 如何帮助对象查找，让新建的 pack 被快速定位；也可以讨论如何通过文件系统监控或维护脚本主动发现和清理异常滞留的 tmp 文件。</td>
+    </tr>
+    <tr>
+      <td>criss-cross 合并中 best common ancestor 的支配关系</td>
+      <td>数学 / 计算机科学</td>
+      <td>★★★★★</td>
+      <td>在多个共同祖先的 criss-cross 合并里，Git 通过去掉“被支配”的共同祖先，必要时合成虚拟合并基，把不唯一的祖先选择变成唯一的稳定合并基。</td>
+      <td>下一次可以深入 recursive/ort 合并策略如何分步构造 virtual merge base，以及在遇到边界情况（如标注意外、tree 冲突）时如何保持合并基稳定；也可以结合 `git merge-base --all` 的实际输出做实验验证。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-08/2026-08-30-learning-report.html">2026-08-30</a>
       </td>
       <td>receive-pack 状态行的顺序无关性与客户端聚合健壮性</td>
