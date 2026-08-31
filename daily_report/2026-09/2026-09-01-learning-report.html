@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-09-01 学习笔记日报</title>
+    <meta name="description" content="今日复习围绕三个角度：quarantine迁移失败、pack与idx发布顺序、虚拟合并基冲突传播，理解Git在中间态如何保持确定性。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260901-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-09-01</p>
+        <h1>中间态、失败态、不确定态：Git 的确定性之道</h1>
+        <p>无变更复习日，通过三个角度复习已讲概念，观察 Git 在中间态下的确定性设计。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>中间态下的确定性</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>quarantine 对象…</strong>
+                <small>隔离区就像快递站的待检区，没上架的…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>pack 与 idx 的发…</strong>
+                <small>没有索引的 pack 就像没有目录…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>虚拟合并基构造中的冲突传播…</strong>
+                <small>虚拟合并基里的冲突不会被吞掉，它们…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念都围绕 Git 在复杂中间态下保持确定性的设计：quarantine 让残留不污染正式视图，pack/idx 顺序避免半状态，虚拟合并基冲突传播避免掩盖历史分歧。它们共同说明：Git 宁可显式保留中间痕迹，也不让外部看到无法解释的随机状态。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["中间态下的确定性"])
+  concept1["quarantine 对象迁移失败后的残留清理与推送幂等恢复"]
+  hub --&gt; concept1
+  concept2["pack 与 idx 的发布顺序：索引缺失窗口中的对象查找一致性"]
+  hub --&gt; concept2
+  concept3["虚拟合并基构造中的冲突传播与处理"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  related1["post-receive 补偿"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept2
+  related2["quarantine 幂等恢复"]
+  concept3 --&gt; related2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="quarantine-migration-failure">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>quarantine 对象迁移失败后的残留清理与推送幂等恢复</h3>
+              <p>Quarantine Migration Failure Recovery</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">隔离区就像快递站的待检区，没上架的书不会出现在书架上。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>推送对象先进入隔离目录，通过钩子检查后才迁移到主对象库。</li>
+                <li>迁移失败后，隔离目录残留不参与对象查找，主对象库视图保持干净。</li>
+                <li>迁移以“目标对象是否可达”为幂等标准，重复执行安全。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="quarantine-migration-failure" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="pack-idx-publication-order">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>pack 与 idx 的发布顺序：索引缺失窗口中的对象查找一致性</h3>
+              <p>Pack/Idx Publication Order</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">没有索引的 pack 就像没有目录卡的新书，读者在目录柜里找不到它。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>对象查找以 idx 为入口，pack 文件必须通过配套索引才能被定位。</li>
+                <li>发布顺序是先 pack 后 idx，且各自先写临时文件再改名。</li>
+                <li>即使 pack 已发布而 idx 尚未存在，该 pack 对任何查询都不可见。</li>
+                <li>因此外部观察者只能看到旧状态或新状态，不会看到“有数据无索引”的中间态。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="pack-idx-publication-order" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="virtual-merge-base-conflict">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 计算机科学</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>虚拟合并基构造中的冲突传播与处理</h3>
+              <p>Virtual Merge Base Conflict Propagation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">虚拟合并基里的冲突不会被吞掉，它们会像历史回声一样继续影响最终合并。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>criss-cross 结构可能导致多个同样接近的共同祖先。</li>
+                <li>Git 会把这些候选祖先合并成一个虚拟合并基。</li>
+                <li>虚拟合并基的构造过程本身可能产生冲突，这些冲突会被保留。</li>
+                <li>冲突作为虚拟合并基的一部分参与最终三路合并，不掩盖历史分歧。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="virtual-merge-base-conflict" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="quarantine-migration-failure">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>quarantine 对象迁移失败后的残留清理与推送幂等恢复</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>推送代码时，Git 的接收端不会立刻把新对象放进主对象库，而是先放到一个隔离目录（quarantine），有点像快递站的“待检区”。只有钩子检查通过后，这些对象才会被“迁移”进正式库。如果迁移过程被强制中断，隔离目录里会留下一些对象。这些残留会不会让仓库变脏？不会。因为所有正式的对象查找都只认主对象库，隔离区不在查找范围内。残留目录只是一堆暂时没人管的文件，对用户完全不可见，也不影响任何读取。下一次维护（比如 gc）会顺手清掉它们。更重要的是，迁移操作本身是幂等的：它只关心“目标对象是否已经在主对象库可达”，而不要求“源文件必须被删除”。所以哪怕重复执行迁移，也不会造成破坏。这就是“目标可达即成功”的恢复逻辑。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>receive-pack 先把对象放进隔离目录，隔离目录不属于正式对象查找路径。</li>
+                <li>正式对象查找只认主对象库，因此隔离区残留不可见。</li>
+                <li>迁移的完成标准是目标对象在主对象库可达，而不要求源文件删除。</li>
+                <li>因此即使迁移中断，重复执行迁移也是安全的。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>你执行 git push，receive-pack 先把所有新对象写入 objects 旁边的一个 quarantine 目录，然后运行 pre-receive 钩子。钩子通过后，receive-pack 开始把对象迁移到主对象库。如果迁移到一半进程被 kill -9，隔离目录里还有几个对象没搬走。下一次 push 不会看到它们，git gc 也会把它们当作垃圾清理掉。假如你重新执行一次迁移，只要主对象库里已经有了那些对象，迁移就认为已经完成，不会报错。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为迁移失败后，残留对象会污染主对象库，或者需要手动把残留对象重新复制进去。</li>
+                <li>实际上残留目录完全不参与对象查找，主对象库的视图始终干净；迁移重复执行也不依赖清理，而是以目标对象是否可达为准。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>pack 与 idx 的发布顺序</td><td>都体现了“中间态不参与正式视图”的原则。</td></tr>
+                <tr><td>post-receive 补偿</td><td>幂等性类似，都以目标状态为最终判定，不依赖重复执行的次数。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>隔离区对象在什么条件下会对其他并行进程可见？</li>
+                <li>Git 如何确定一个 quarantine 目录是否可以安全删除？</li>
+                <li>如果 quarantine 目录中的对象与主对象库已存在对象内容相同，迁移时是否会产生重复存储？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="pack-idx-publication-order">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>pack 与 idx 的发布顺序：索引缺失窗口中的对象查找一致性</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>Git 的对象库里，pack 文件只是数据的容器，真正用来定位对象的是配套的索引文件 idx。也就是说，客户端和服务端在找一个对象时，不会直接解压扫描每个 pack，而是先查 idx，从 idx 里得到偏移量再去读 pack。这就带来一个重要的发布顺序问题：Git 写 pack 时，会先写临时 pack，再写临时 idx，最后再把它们发布成正式文件名。如果崩溃恰好发生在正式 pack 已经出现、正式 idx 还没出现的瞬间，情况会怎样？因为我们查找对象时只从 idx 入口走，那个没有 idx 的 pack 就像“不存在”一样，不会被任何查找看到。所以外部观察者要么看到旧状态（idx 还不存在），要么看到新状态（idx 已出现后 pack 可查），永远不会看到“有 pack 但查不到对象”的中间半状态。这就是通过约定让系统保持一致的经典例子：不是保证两个文件同时出现，而是让“不可见”来兜底。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Git 查找对象时先查 idx，得到偏移量再读 pack，不会直接扫描 pack。</li>
+                <li>发布时先写 pack 临时文件，再写 idx 临时文件，最后分别改名为正式名。</li>
+                <li>若崩溃发生在 pack 已改名而 idx 尚未改名的窗口，该 pack 因缺少 idx 而不参与对象查找。</li>
+                <li>因此系统对外呈现的状态要么是旧状态，要么是新状态，不存在中间半状态。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>在 git repack 过程中，Git 会生成 tmp_pack_XXXX 和 tmp_idx_XXXX，然后分别重命名为 pack-&lt;hash&gt;.pack 和 pack-&lt;hash&gt;.idx。假设 repack 程序在重命名 pack 后、重命名 idx 前崩溃。此时 pack-&lt;hash&gt;.pack 文件已经存在，但 pack-&lt;hash&gt;.idx 不存在。任何 git log、git fsck 等命令都不会引用这个 pack，因为对象查找只遍历有效的 idx 文件。这个“孤儿 pack”只会被后续维护流程当作未引用文件清理。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为只要 pack 文件存在，Git 就会扫描它来寻找对象。</li>
+                <li>实际上常规对象查找依赖 idx（或 multi-pack-index），没有 idx 的 pack 不会参与对象定位。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>quarantine 对象迁移失败</td><td>都体现了中间态不参与正式视图的确定性原则。</td></tr>
+                <tr><td>虚拟合并基构造</td><td>同样需要确定性视图，避免外部看到偶然状态。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>Git 在 repack 时如何保证多个 pack 与 idx 的原子发布？</li>
+                <li>multi-pack-index 如何改变对象查找的入口，并影响 pack/idx 发布顺序的容错？</li>
+                <li>如果 idx 损坏但 pack 完好，有哪些恢复手段可以重建索引？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="virtual-merge-base-conflict">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 计算机科学</p>
+                <h3>虚拟合并基构造中的冲突传播与处理</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>当两个分支合并时，Git 需要找到它们的“共同祖先”作为基准。如果历史出现了 criss-cross 结构，也就是两个分支互相交错地引入过不同修改，可能不止一个共同祖先都“同样接近”。这时 Git 不会随便挑一个，而是把这些候选祖先合并成一个虚拟合并基。关键来了：这个合成过程本身也是一次合并，既然是合并，就可能产生冲突。Git 在构造虚拟合并基时，会不会把冲突悄悄忽略掉？不会。recursive 或 ort 策略会把合成过程中的冲突也保留下来，让这些冲突成为虚拟合并基的一部分，接着再参与最终的三路合并。这样，历史上两个分支之间已经存在的分歧就不会被掩盖，最终合并结果也不会因为“这次碰巧选了哪个祖先”而随机变化。换句话说，Git 选择了一种保守策略：让所有历史分歧都显式地浮出水面，而不是假装它们不存在。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>当多个共同祖先同等接近时，Git 不任意挑选，而是构建虚拟合并基。</li>
+                <li>构建虚拟合并基本身是一次合并，因此可能产生冲突。</li>
+                <li>这些冲突不会被自动解决，而是保留在虚拟合并基中。</li>
+                <li>虚拟合并基随后作为最终三路合并的基准，冲突因此传播到最终合并结果。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设有两个分支 A 和 B，它们都基于共同祖先 X 修改了同一个文件的不同位置，导致它们之间本身就有合并冲突。现在有一个分支 C 是从 B 分出来的，你想要合并 A 和 C。为了找到合并基准，Git 需要先构造 A 和 B 或相关的虚拟合并基。A 和 B 的合并冲突会带到虚拟合并基的构建中。最终合并 A 和 C 时，这个虚拟合并基中记录的冲突会被再次考虑，使得最终合并也会报告相关冲突，而不是静默选择某一方的修改。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为 Git 会“智能地”挑选一个共同祖先来避免冲突。</li>
+                <li>误以为构造虚拟合并基时自动解决冲突；实际上冲突会以冲突标记保留并影响最终合并。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>pack 与 idx 的发布顺序</td><td>虚拟合并基的确定性构造与 pack/idx 的确定性发布一样，都是为了避免外部看到偶然状态。</td></tr>
+                <tr><td>quarantine 幂等恢复</td><td>冲突传播与幂等恢复一样，都体现了不掩盖中间分歧的保守策略。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>recursive 策略如何将虚拟合并基中的冲突标记保存下来？</li>
+                <li>ort 策略与 recursive 策略在合并基构造和冲突处理上有什么不同？</li>
+                <li>如何用 git merge-base 观察虚拟合并基的构造结果？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念都围绕 Git 在复杂中间态下保持确定性的设计：quarantine 让残留不污染正式视图，pack/idx 顺序避免半状态，虚拟合并基冲突传播避免掩盖历史分歧。它们共同说明：Git 宁可显式保留中间痕迹，也不让外部看到无法解释的随机状态。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">只有当数据进入正式查找路径或明确的历史结构后，才能参与后续运算；否则，它就应该对系统不可见。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>隔离区对象在什么条件下会对其他并行进程可见？</li>
+            <li>Git 在 repack 时如何保证多个 pack 与 idx 的原子发布？</li>
+            <li>recursive 策略如何将虚拟合并基中的冲突标记保存下来？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>

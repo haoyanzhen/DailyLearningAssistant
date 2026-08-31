@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "year_month": "2026-09",
+  "threads": [
+    {
+      "id": "2026-09-01-quarantine-fe9d2cb710",
+      "question": "Git 如何确定一个 quarantine 目录是否可以安全删除？",
+      "source_date": "2026-09-01",
+      "source_concept": "quarantine 对象迁移失败后的残留清理与推送幂等恢复",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-01T06:03:40.465777+08:00",
+      "updated_at": "2026-09-01T06:03:40.465777+08:00"
+    },
+    {
+      "id": "2026-09-01-quarantine-e5d340e551",
+      "question": "隔离区对象在什么条件下会对其他并行进程可见？",
+      "source_date": "2026-09-01",
+      "source_concept": "quarantine 对象迁移失败后的残留清理与推送幂等恢复",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-01T06:03:40.465777+08:00",
+      "updated_at": "2026-09-01T06:03:40.465777+08:00"
+    },
+    {
+      "id": "2026-09-01-quarantine-1e4e83e8f9",
+      "question": "如果 quarantine 目录中的对象与主对象库已存在对象内容相同，迁移时是否会产生重复存储？",
+      "source_date": "2026-09-01",
+      "source_concept": "quarantine 对象迁移失败后的残留清理与推送幂等恢复",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-01T06:03:40.465777+08:00",
+      "updated_at": "2026-09-01T06:03:40.465777+08:00"
+    },
+    {
+      "id": "2026-09-01-pack-idx-e628d19a8a",
+      "question": "如果 idx 损坏但 pack 完好，有哪些恢复手段可以重建索引？",
+      "source_date": "2026-09-01",
+      "source_concept": "pack 与 idx 的发布顺序：索引缺失窗口中的对象查找一致性",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-01T06:03:40.465777+08:00",
+      "updated_at": "2026-09-01T06:03:40.465777+08:00"
+    },
+    {
+      "id": "2026-09-01-pack-idx-781e428b3f",
+      "question": "Git 在 repack 时如何保证多个 pack 与 idx 的原子发布？",
+      "source_date": "2026-09-01",
+      "source_concept": "pack 与 idx 的发布顺序：索引缺失窗口中的对象查找一致性",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-01T06:03:40.465777+08:00",
+      "updated_at": "2026-09-01T06:03:40.465777+08:00"
+    },
+    {
+      "id": "2026-09-01-pack-idx-687c312f60",
+      "question": "multi-pack-index 如何改变对象查找的入口，并影响 pack/idx 发布顺序的容错？",
+      "source_date": "2026-09-01",
+      "source_concept": "pack 与 idx 的发布顺序：索引缺失窗口中的对象查找一致性",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-01T06:03:40.465777+08:00",
+      "updated_at": "2026-09-01T06:03:40.465777+08:00"
+    },
+    {
+      "id": "2026-09-01-concept-e555e70e18",
+      "question": "如何用 git merge-base 观察虚拟合并基的构造结果？",
+      "source_date": "2026-09-01",
+      "source_concept": "虚拟合并基构造中的冲突传播与处理",
+      "domain": "数学 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-01T06:03:40.465777+08:00",
+      "updated_at": "2026-09-01T06:03:40.465777+08:00"
+    },
+    {
+      "id": "2026-09-01-concept-33f853b7c2",
+      "question": "recursive 策略如何将虚拟合并基中的冲突标记保存下来？",
+      "source_date": "2026-09-01",
+      "source_concept": "虚拟合并基构造中的冲突传播与处理",
+      "domain": "数学 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-01T06:03:40.465777+08:00",
+      "updated_at": "2026-09-01T06:03:40.465777+08:00"
+    },
+    {
+      "id": "2026-09-01-concept-1ed4c109ad",
+      "question": "ort 策略与 recursive 策略在合并基构造和冲突处理上有什么不同？",
+      "source_date": "2026-09-01",
+      "source_concept": "虚拟合并基构造中的冲突传播与处理",
+      "domain": "数学 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-01T06:03:40.465777+08:00",
+      "updated_at": "2026-09-01T06:03:40.465777+08:00"
+    }
+  ]
+}

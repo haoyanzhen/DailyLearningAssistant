@@ -1,6 +1,12 @@
 {
   "reports": [
     {
+      "date": "2026-09-01",
+      "title": "2026-09-01 学习笔记日报",
+      "summary": "今日复习围绕三个角度：quarantine迁移失败、pack与idx发布顺序、虚拟合并基冲突传播，理解Git在中间态如何保持确定性。",
+      "path": "./daily_report/2026-09/2026-09-01-learning-report.html"
+    },
+    {
       "date": "2026-08-31",
       "title": "2026-08-31 学习笔记日报",
       "summary": "无变更复习日，聚焦 Git 边界设计：悬空对象保留窗口、packfile 临时文件原子发布、criss-cross 合并最佳共同祖先选择。",
