@@ -3,6 +3,96 @@
   "year_month": "2026-09",
   "threads": [
     {
+      "id": "2026-09-02-pack-idx-94788d6fc5",
+      "question": "为什么 pack 文件本身足以重建 idx，而 idx 不足以重建 pack？",
+      "source_date": "2026-09-02",
+      "source_concept": "从 pack 重建缺失的 idx：派生索引与包数据的恢复关系",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-02T06:03:55.534815+08:00",
+      "updated_at": "2026-09-02T06:03:55.534815+08:00"
+    },
+    {
+      "id": "2026-09-02-pack-idx-3693a834c9",
+      "question": "重建 idx 时是否需要先校验 pack 的完整性？",
+      "source_date": "2026-09-02",
+      "source_concept": "从 pack 重建缺失的 idx：派生索引与包数据的恢复关系",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-02T06:03:55.534815+08:00",
+      "updated_at": "2026-09-02T06:03:55.534815+08:00"
+    },
+    {
+      "id": "2026-09-02-pack-idx-07c52c9443",
+      "question": "如果 pack 文件部分损坏，重建索引和对象恢复的边界在哪里？",
+      "source_date": "2026-09-02",
+      "source_concept": "从 pack 重建缺失的 idx：派生索引与包数据的恢复关系",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-02T06:03:55.534815+08:00",
+      "updated_at": "2026-09-02T06:03:55.534815+08:00"
+    },
+    {
+      "id": "2026-09-02-multi-pack-index-idx-db39eb1eeb",
+      "question": "multi-pack-index 如何记录对象到 pack 的映射，并在包集合变化后保持正确？",
+      "source_date": "2026-09-02",
+      "source_concept": "multi-pack-index：对象查找入口从单个 idx 到聚合索引的切换",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-02T06:03:55.534815+08:00",
+      "updated_at": "2026-09-02T06:03:55.534815+08:00"
+    },
+    {
+      "id": "2026-09-02-multi-pack-index-idx-9f3a52a0a4",
+      "question": "多包场景下，如果某个 pack 的 idx 缺失，multi-pack-index 还能定位它吗？",
+      "source_date": "2026-09-02",
+      "source_concept": "multi-pack-index：对象查找入口从单个 idx 到聚合索引的切换",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-02T06:03:55.534815+08:00",
+      "updated_at": "2026-09-02T06:03:55.534815+08:00"
+    },
+    {
+      "id": "2026-09-02-multi-pack-index-idx-34ec78732d",
+      "question": "repack 时先写新包还是先更新 multi-pack-index，才能避免对象查找瞬间失配？",
+      "source_date": "2026-09-02",
+      "source_concept": "multi-pack-index：对象查找入口从单个 idx 到聚合索引的切换",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-02T06:03:55.534815+08:00",
+      "updated_at": "2026-09-02T06:03:55.534815+08:00"
+    },
+    {
+      "id": "2026-09-02-concept-eaaae7cb03",
+      "question": "内容寻址的去重能力在推送、repack、垃圾回收中分别如何体现？",
+      "source_date": "2026-09-02",
+      "source_concept": "内容寻址对象库中的重复对象同一性：隔离区迁移的去重边界",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-02T06:03:55.534815+08:00",
+      "updated_at": "2026-09-02T06:03:55.534815+08:00"
+    },
+    {
+      "id": "2026-09-02-concept-2603cb3136",
+      "question": "隔离区迁移时，Git 如何高效判断目标对象 ID 是否已经存在于主对象库？",
+      "source_date": "2026-09-02",
+      "source_concept": "内容寻址对象库中的重复对象同一性：隔离区迁移的去重边界",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-02T06:03:55.534815+08:00",
+      "updated_at": "2026-09-02T06:03:55.534815+08:00"
+    },
+    {
+      "id": "2026-09-02-concept-216b3820a5",
+      "question": "对象 ID 相同是否一定能推出内容完全相同？",
+      "source_date": "2026-09-02",
+      "source_concept": "内容寻址对象库中的重复对象同一性：隔离区迁移的去重边界",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-02T06:03:55.534815+08:00",
+      "updated_at": "2026-09-02T06:03:55.534815+08:00"
+    },
+    {
       "id": "2026-09-01-quarantine-fe9d2cb710",
       "question": "Git 如何确定一个 quarantine 目录是否可以安全删除？",
       "source_date": "2026-09-01",

@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-09-02 学习笔记日报</title>
+    <meta name="description" content="今日围绕Git对象存储的确定性展开：内容寻址去重保证相同内容统一身份，idx可从pack重建，multi-pack-index提供多包聚合查找入口。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260902-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-09-02</p>
+        <h1>对象存储的确定性：去重、恢复与聚合索引</h1>
+        <p>从重复对象同一性到索引恢复，再到多包聚合查找，理解Git在异常状态下的可判定性。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>Git对象库的确定性、可恢复性与聚…</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>内容寻址对象库中的重复对象…</strong>
+                <small>内容相同，身份相同；身份相同，存储…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>从pack重建缺失的idx…</strong>
+                <small>pack是正文，idx是目录；目录…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>multi-pack-in…</strong>
+                <small>一册总目录，直达所有仓库。</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念共同回答对象存储下如何保持可判定性：内容寻址决定身份，使重复内容不新增数据源；pack与idx的不对称关系保证索引可再生；multi-pack-index把多个索引汇成统一入口，使包集合作为整体被识别。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["Git对象库的确定性、可恢复性与聚合索引"])
+  concept1["内容寻址对象库中的重复对象同一性：隔离区迁移的去重边界"]
+  hub --&gt; concept1
+  concept2["从pack重建缺失的idx：派生索引与包数据的恢复关系"]
+  hub --&gt; concept2
+  concept3["multi-pack-index：对象查找入口从单个idx到聚合索引的切换"]
+  hub --&gt; concept3
+  concept1 --&gt; concept3
+  concept1 --&gt; concept2
+  concept2 --&gt; concept3
+  related1["内容寻址对象去重"]
+  concept2 --&gt; related1
+  concept3 --&gt; concept2
+  concept3 --&gt; related1
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="content-addressable-dedup">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>内容寻址对象库中的重复对象同一性：隔离区迁移的去重边界</h3>
+              <p>Content-Addressable Deduplication Boundary</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">内容相同，身份相同；身份相同，存储唯一。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>Git对象库按内容寻址，相同内容必然有相同对象ID。</li>
+                <li>隔离区迁移时以对象ID判断目标对象是否已存在，主对象库已有同ID对象则不重复写入。</li>
+                <li>路径和文件名不参与对象ID计算，重复内容天然被合并。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="content-addressable-dedup" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="rebuild-idx-from-pack">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>从pack重建缺失的idx：派生索引与包数据的恢复关系</h3>
+              <p>Rebuilding Missing idx from pack</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">pack是正文，idx是目录；目录可重印，正文不可失。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>pack是源数据，idx是由pack派生的索引。</li>
+                <li>idx丢失但pack完好时，可以从pack重新生成idx。</li>
+                <li>pack丢失才是真正问题，idx缺失不等于对象损坏。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="rebuild-idx-from-pack" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="multi-pack-index">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>multi-pack-index：对象查找入口从单个idx到聚合索引的切换</h3>
+              <p>Multi-Pack-Index Aggregation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">一册总目录，直达所有仓库。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>多pack并存时，multi-pack-index提供统一查找入口，避免逐包扫描idx。</li>
+                <li>它是在单个idx之上再做聚合，不替代底层pack数据。</li>
+                <li>包集合发布一致性包含multi-pack-index的更新时机，先保包数据完整再切索引。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="multi-pack-index" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="content-addressable-dedup">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>内容寻址对象库中的重复对象同一性：隔离区迁移的去重边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>Git的对象库不是按文件路径或文件名来保存对象的，而是按内容本身来编号。一段内容无论放在哪个目录、叫什么文件名，Git都会根据这段内容算出一个对象ID，相同内容一定得到相同ID。隔离区是Git在接收新对象时先暂存它们的地方。迁移到主对象库时，Git要判断目标对象是否已经存在，这个判断以对象ID为准：如果主对象库里已经有这个ID，说明同内容对象已经在了，就不再写入新的对象文件。所以隔离区里即使有冗余副本，迁移后也不会在主对象库中形成重复存储。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>对象ID由内容计算得出，与路径、文件名无关。</li>
+                <li>隔离区迁移时按对象ID校验主对象库中的存在性。</li>
+                <li>重复内容因相同ID被合并，存储上只保有一个正式对象。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>主对象库已有内容为“hello”的对象，隔离区收到相同内容，Git计算ID后判断已存在，不再写入新文件。即使推送重试多次，主对象库仍只有这一个“hello”对象。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为去重是看文件路径或文件名是否相同。</li>
+                <li>误以为隔离区里有这个文件就代表它已存在于主对象库。实际上Git只看对象ID，且隔离区存在不等于主对象库存在。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>multi-pack-index</td><td>multi-pack-index负责在多个pack中定位对象，内容寻址负责确定对象身份；两者构成对象库的定位-标识双层结构。</td></tr>
+                <tr><td>从pack重建缺失的idx</td><td>从pack重建idx表明pack数据才是源，索引可被重新生成；内容寻址说明相同内容不需要两份独立源数据。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>对象ID相同是否一定能推出内容完全相同？</li>
+                <li>隔离区迁移时，Git如何高效判断目标对象ID是否已经存在于主对象库？</li>
+                <li>内容寻址的去重能力在推送、repack、垃圾回收中分别如何体现？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="rebuild-idx-from-pack">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>从pack重建缺失的idx：派生索引与包数据的恢复关系</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>pack是装着很多对象数据的压缩包，包含真正的对象内容和校验信息；idx是pack的索引，相当于目录，记录每个对象ID对应在pack里的位置，让Git不用把整个pack扫一遍就能找到对象。关键区别是pack是源数据，idx由pack派生。如果idx损坏或丢失但pack完好，可以从pack重新生成idx，恢复对象查找能力。就像一本书目录被撕掉但正文还在，重新翻一遍正文就能做出新目录。这个关系不对称：idx丢失可重建，pack丢失才是真正问题。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>pack承载对象数据，idx只存储对象到pack位置的映射。</li>
+                <li>idx可由pack完整重建，pack不可由idx重建。</li>
+                <li>对象查找以idx为入口，但数据本体在pack中。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>objects/pack目录里有一个pack文件但对应idx被误删，Git无法通过这个pack直接查找对象。只要pack本身完好，重新生成idx后，对象查找入口恢复，原来pack里的对象又能被看到。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把pack和idx当成不可分割的双胞胎，认为idx丢了对象也丢了。</li>
+                <li>把idx当成源数据，忘记它只是可再生的目录。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>multi-pack-index</td><td>multi-pack-index是多个pack的聚合索引，单个pack的idx是派生索引；二者都是可再生的索引层。</td></tr>
+                <tr><td>内容寻址对象去重</td><td>内容寻址保证相同内容有相同对象ID，pack索引重建只是重新生成定位信息，不改变对象内容。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>为什么pack文件本身足以重建idx，而idx不足以重建pack？</li>
+                <li>重建idx时是否需要先校验pack的完整性？</li>
+                <li>如果pack文件部分损坏，重建索引和对象恢复的边界在哪里？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="multi-pack-index">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>multi-pack-index：对象查找入口从单个idx到聚合索引的切换</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>当仓库只有一个pack时，对象查找从这一个pack的idx进入，很简单。但多个pack并存时，每个pack都有自己的idx，如果每找一个对象都逐个检查这些idx，效率会下降。multi-pack-index是为解决这个问题出现的聚合索引层。它把“对象位于哪个pack”的判定，从逐包扫描提升到统一索引。拥有multi-pack-index后，一组pack可以像一个整体被查找：先查聚合索引，知道对象在哪个pack，再去对应pack读取数据。这个变化还牵涉到发布一致性：多个pack并存时，multi-pack-index的更新时机同样重要。工程约定是先保证包数据完整，再切换索引层，这样对象查找才不会在切换瞬间看到不完整的包集合。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>多pack场景下，逐包检查idx效率低下，需要聚合索引入口。</li>
+                <li>multi-pack-index记录对象到pack的映射，查询时先查聚合索引再进具体pack。</li>
+                <li>包集合发布时，先保证包数据完整，再切multi-pack-index，最后清理旧包。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设仓库有pack A和pack B。没有multi-pack-index时查找对象X可能先查A的idx发现不在，再查B的idx；有了multi-pack-index，一次查询就知道X在pack B。当repack把A和B合并成C时，Git先让C的pack和idx完整就位，再更新multi-pack-index，最后清理旧包，避免切换中查不到对象。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为multi-pack-index会替代每个pack自己的idx，甚至不再需要单个idx。实际上它是在单个idx之上再做聚合。</li>
+                <li>以为multi-pack-index包含对象数据。实际上它只存映射，不存对象内容。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>从pack重建缺失的idx</td><td>重建缺失idx解决单个索引丢失后的恢复，multi-pack-index解决多个索引并存时的聚合入口，二者互补。</td></tr>
+                <tr><td>内容寻址对象去重</td><td>内容寻址回答“对象是什么”，multi-pack-index回答“对象在哪”；身份与位置分开才能稳定查找。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>multi-pack-index如何记录对象到pack的映射，并在包集合变化后保持正确？</li>
+                <li>repack时先写新包还是先更新multi-pack-index，才能避免对象查找瞬间失配？</li>
+                <li>多包场景下，如果某个pack的idx缺失，multi-pack-index还能定位它吗？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念共同回答对象存储下如何保持可判定性：内容寻址决定身份，使重复内容不新增数据源；pack与idx的不对称关系保证索引可再生；multi-pack-index把多个索引汇成统一入口，使包集合作为整体被识别。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">只要源数据还在，身份规则清晰，索引就可以被重建、聚合和切换。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>对象ID相同是否一定能推出内容完全相同？</li>
+            <li>为什么pack文件本身足以重建idx，而idx不足以重建pack？</li>
+            <li>repack时先写新包还是先更新multi-pack-index，才能避免对象查找瞬间失配？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>

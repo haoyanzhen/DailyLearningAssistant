@@ -1,6 +1,12 @@
 {
   "reports": [
     {
+      "date": "2026-09-02",
+      "title": "2026-09-02 学习笔记日报",
+      "summary": "今日围绕Git对象存储的确定性展开：内容寻址去重保证相同内容统一身份，idx可从pack重建，multi-pack-index提供多包聚合查找入口。",
+      "path": "./daily_report/2026-09/2026-09-02-learning-report.html"
+    },
+    {
       "date": "2026-09-01",
       "title": "2026-09-01 学习笔记日报",
       "summary": "今日复习围绕三个角度：quarantine迁移失败、pack与idx发布顺序、虚拟合并基冲突传播，理解Git在中间态如何保持确定性。",

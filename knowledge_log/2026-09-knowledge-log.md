@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-09/2026-09-02-learning-report.html">2026-09-02</a>
+      </td>
+      <td>内容寻址对象库中的重复对象同一性：隔离区迁移的去重边界</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★</td>
+      <td>Git 不按文件名或物理位置判定重复，而按内容算出的对象 ID 判定，相同内容的对象永远是同一个对象。</td>
+      <td>下一次可以沿着 receive-pack 的完整推送流程，讲 quarantine 中的对象 ID 检查与引用更新顺序。</td>
+    </tr>
+    <tr>
+      <td>从 pack 重建缺失的 idx：派生索引与包数据的恢复关系</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★</td>
+      <td>idx 只是 pack 的目录，目录丢了可以从正文重新写目录，真正不能丢的是 pack 数据。</td>
+      <td>下一次可以深入 git index-pack 的校验与恢复边界，讲 pack 完整性验证和薄包修复。</td>
+    </tr>
+    <tr>
+      <td>multi-pack-index：对象查找入口从单个 idx 到聚合索引的切换</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★★</td>
+      <td>多个 pack 就像多个分仓库，multi-pack-index 是总目录，它让 Git 先查总目录再进分仓库。</td>
+      <td>下一次可以讲 repack 与 multi-pack-index 的原子发布顺序，以及对象查找在包集合切换窗口中的一致性。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-09/2026-09-01-learning-report.html">2026-09-01</a>
       </td>
       <td>quarantine 对象迁移失败后的残留清理与推送幂等恢复</td>
