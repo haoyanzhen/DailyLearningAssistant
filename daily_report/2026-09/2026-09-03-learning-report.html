@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-09-03 学习笔记日报</title>
+    <meta name="description" content="对象ID是内容指纹而非内容本身，碰撞是概率假设；pack校验能发现损坏却不能自愈；midx必须靠原子替换跟随repack，才能让查找始终落到存在的对象上。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260903-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-09-03</p>
+        <h1>身份 · 完整性 · 索引：Git对象被找到的三道关</h1>
+        <p>对象ID是内容指纹，不是内容本身；pack校验能识别损坏却不能自我修复；multi-pack-index则必须用原子替换跟随repack。三层约束共同决定一个对象什么时候真正可用。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>对象库的三重不变量：指纹、校验与索引</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>对象 ID 的指纹本质：S…</strong>
+                <small>Git的对象ID是内容的定长指纹…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>pack 的尾部校验与对象…</strong>
+                <small>pack校验负责说“这里坏了”，修…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>multi-pack-in…</strong>
+                <small>midx必须像切换商场地图一样先备…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">今天的三个概念共同刻画了对象库“看起来能用”背后的三个不变量。第一，内容与ID之间靠指纹建立联系，Git用哈希把任意长的内容变成定长身份，并在工程上默认碰撞可以忽略；第二，pack字节与ID之间靠校验建立联系，任何位翻转、截断或delta链断裂都会被扫描发现，但发现后的修复需要外部备份或重建源；第三，总目录与真实pack集合之间靠原子发布建立联系，multi-pack-index必须与其所描述的包集合同步切换，否则即使对象内容和ID完好，查找路径也会失效。三者的关系可以概括为：pack校验用对象ID作为对账依据，multi-pack-index又用校验后的pack作为数据源。指纹本质决定“身份正确如何定义”，校验边界决定“身份对应的字节能否被信任”，原子替换则决定“信任的结果能否被稳定找到”。当这三层各自保持不变量时，一个对象才算真正进入可用状态。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["对象库的三重不变量：指纹、校验与索引"])
+  concept1["对象 ID 的指纹本质：SHA-1 碰撞与内容同一性的概率保证"]
+  hub --&gt; concept1
+  concept2["pack 的尾部校验与对象损坏的可检测边界：index-pack 能识别什么、不能恢复什么"]
+  hub --&gt; concept2
+  concept3["multi-pack-index 的映射数据与包集合的原子替换：一份总目录如何随 repack 保持正确"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["对象库的三重不变量：指纹、校验与索引"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="object-id-fingerprint">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 计算机科学</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>对象 ID 的指纹本质：SHA-1 碰撞与内容同一性的概率保证</h3>
+              <p>Object ID Fingerprint and Probabilistic Identity Guarantee</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">Git的对象ID是内容的定长指纹，不是内容本身；“同ID同内容”是建立在碰撞概率极低之上的工程约定。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>相同内容总会映射到同一个定长ID，Git用ID替代整段内容做去重、查找和迁移。</li>
+                <li>ID是压缩式指纹而非内容本身，输入空间远大于输出空间，理论上必然存在碰撞。</li>
+                <li>内容寻址的可靠性来自哈希空间的巨大规模和扩散性，而不是一一对应的数学保证。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="object-id-fingerprint" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="pack-tail-checksum">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>pack 的尾部校验与对象损坏的可检测边界：index-pack 能识别什么、不能恢复什么</h3>
+              <p>Pack Trailer Checksum and the Detectable Boundary of Object Corruption</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">pack校验负责说“这里坏了”，修复则需要冗余；可检测与可恢复的边界由是否存在第二份可用数据决定。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>每个对象在pack中是一条独立的zlib流，pack尾部写有整包的SHA-1校验和。</li>
+                <li>git index-pack会逐个解压对象、重算对象ID并与预期比对，因此能识别解压失败、长度不符、尾部校验和不一致等问题。</li>
+                <li>校验只能探测和定位损坏，不能修复字节；真正恢复依赖另一份副本、备份或重新传输。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="pack-tail-checksum" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="midx-atomic-replace">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>multi-pack-index 的映射数据与包集合的原子替换：一份总目录如何随 repack 保持正确</h3>
+              <p>Multi-Pack-Index Mapping and Atomic Replacement of Pack Sets</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">midx必须像切换商场地图一样先备好新世界、再更换总目录、最后拆旧店，否则按目录找对象会扑空。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>midx不是普通pack列表，而是一份逐对象映射表：每个对象ID对应一个pack编号和该pack内的偏移量。</li>
+                <li>repack会改变包集合，若midx未同步或新包未就绪，对象查找会落入旧路径、不存在的包或过期偏移。</li>
+                <li>正确发布顺序是先让新pack和索引完整落盘，再原子切换midx，最后删除无引用的旧pack。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="midx-atomic-replace" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="object-id-fingerprint">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 计算机科学</p>
+                <h3>对象 ID 的指纹本质：SHA-1 碰撞与内容同一性的概率保证</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象你要给许多箱子贴标签，箱子里可能装着任意大小和形状的内容，但标签是定长的。Git的做法是把对象内容送入一个哈希函数，算出一个较短的十六进制字符串作为对象ID。相同的内容在任何时间和地点都会算出同一个ID，因此Git可以用这个ID来去重、查找和迁移，而不需要逐字节比较整段内容。但这个ID并不是内容本身，它是内容的压缩式指纹。既然是压缩，就不可能把所有信息都装进定长ID里，所以理论上存在两个不同内容算出同一个ID的可能性，也就是碰撞。一旦发生碰撞，两个不同内容会共享一个标签，按标签取回的对象可能不是你以为的那个。Git在去重、迁移时实际上把“ID相同”当成了“内容相同”来使用。这不是数学上可证明的必然，而是一个概率上几乎不会失败的工程假设。理解这一点很重要：内容寻址的可靠性来自哈希空间的巨大和哈希函数的扩散性，而不是来自一一对应的数学保证。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>相同内容总是产生相同ID，因此ID可以代替整段内容完成去重、查找和迁移。</li>
+                <li>ID是定长指纹，输入空间远大于输出空间，因此不同内容可能碰撞；碰撞意味着按标签取回的对象可能不是预期的对象。</li>
+                <li>Git把“ID相同”当作“内容相同”使用，本质是基于哈希空间规模与扩散性的概率工程假设，而非逻辑必然。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设为了演示把哈希缩短成一位数字：内容“apple”算出1，内容“orange”也算出1，这时用ID等于1去仓库取对象就无法区分苹果和橙子。现实中SHA-1的输出空间非常大，碰撞概率低到常规工程可以直接忽略，但这个例子揭示了ID只是内容指纹这一根本原理。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把“哈希值相同”当作内容相同的充要条件。实际上内容相同可推出哈希相同，但哈希相同不能从数学上推出内容相同，只是碰撞概率低到工程可忽略。</li>
+                <li>认为SHA-1是完美的一一对应压缩，能把任意输入映射成不同定长输出；但输入空间远大于输出空间，碰撞一定存在。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>pack 的尾部校验</td><td>pack 校验会将解压后的对象内容重新哈希并与 ID 比对，实质是用指纹来验证存储字节是否与身份一致。</td></tr>
+                <tr><td>multi-pack-index 的映射数据</td><td>midx 以对象 ID 为查找键，只有默认 ID 在概率上代表内容，这张从 ID 到包偏移的总表才具有长期稳定语义。</td></tr>
+                <tr><td>对象库的三重不变量：指纹、校验与索引</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>为什么输入空间远大于输出空间时，一定会存在不同内容映射到同一哈希值的情况？</li>
+                <li>SHA-256对象格式相比SHA-1在抗碰撞保证上强在哪里，Git如何兼容两种哈希？</li>
+                <li>如果未来真的出现一次SHA-1碰撞，按内容寻址的Git对象库会发生什么奇怪现象？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="pack-tail-checksum">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>pack 的尾部校验与对象损坏的可检测边界：index-pack 能识别什么、不能恢复什么</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>Git会把许多对象打包成一个pack文件，省空间也省传输。pack不是把对象简单拼在一起，它有自己的结构：每个对象都会被单独压缩成一段zlib流，段内包含对象类型和长度；pack文件末尾还会对整个包内容计算一个SHA-1校验和。这个尾部校验和相当于给整包盖了一个章，只要任何字节发生变化，重新计算校验和就会与章不一致，Git就能知道包里出事了。当执行git index-pack时，Git不是只看文件，而是会逐个解压对象，把解压出的真实对象内容重新算成对象ID，并与预期ID比对，最后核对包尾校验和。因此它能识别很多问题：某段压缩流解不开、对象长度对不上、包尾校验和不符、对象内容与ID不一致等。但它的能力止步于识别和定位。校验和只包含摘要信息，无法反向推出原始字节；损坏的压缩流也不能从校验和中恢复。如果损坏对象以delta形式存在，而它依赖的基对象已经损坏或缺失，Git可以发现delta链断裂，却仍然不能凭空补出数据。要真正恢复，只能依赖另一个仓库副本、备份或重新传输。这是Git的边界设计：校验负责说“这里坏了”，而修复需要冗余。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>pack内每个对象被压缩成独立zlib流，包尾有整包的SHA-1校验和，任何字节变化都会导致最终校验不匹配。</li>
+                <li>index-pack的重建过程会解压每个对象、重算对象ID并与预期比对，因此能识别各类结构损坏并报告位置。</li>
+                <li>识别不等于修复：校验和与损坏流不包含可重建原始数据的冗余，修复必须依赖另一份可用数据，这就是可恢复性的边界。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一个pack里包含对象A、B、C，某天磁盘损坏导致B的压缩流无法解压。git index-pack运行时，先成功解压A，到B时开始报错，最后发现包尾校验和也不匹配。它能明确指出B对象坏了，但若没有另一份副本或远程备份，B的内容将永久丢失，修复方式只能是从健康仓库重新获取这个对象。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把“能校验pack完整性”等同于“能修复pack损坏”，忽略了重建idx时扫描发现问题不等于能把损坏对象救回来。</li>
+                <li>以为包尾SHA-1校验和能像纠错码一样纠正几个比特；实际上它只能探测变化，无法确定原始内容，更不能纠错。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>对象 ID 的指纹本质</td><td>pack校验用对象ID作为对账基准，若字节损坏导致解压内容与ID不一致，说明内容与指纹的约定遭到破坏。</td></tr>
+                <tr><td>multi-pack-index 的映射数据</td><td>midx记录对象落在哪个pack及偏移位置，但不复制数据；当被指到的pack损坏时，midx只能暴露坏对象位置，真正修复仍依赖其他副本。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>git index-pack在扫描时，如何区分“压缩流解压失败”和“解压成功但内容与对象ID不一致”这两种损坏？</li>
+                <li>如果一个对象以delta形式保存，而它的基对象在另一个pack中且那个pack损坏，index-pack会给出什么信息？</li>
+                <li>为什么SHA-1校验和不适合当作纠错码来修复pack？如果改用带纠错能力的编码，存储成本会上升多少？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="midx-atomic-replace">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>multi-pack-index 的映射数据与包集合的原子替换：一份总目录如何随 repack 保持正确</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>仓库对象很多时，Git会把对象分批打成pack。随着时间推移，pack越来越多，如果每次查找对象都要把每个pack的idx翻一遍，效率会很低。multi-pack-index（简称midx）就是为解决这个问题而出现的。它不是普通的文件列表，而是一张真正的映射表，记录每个对象ID位于第几个pack、在这个pack内部的偏移量是多少。有了midx，Git可以快速跳到目标pack的位置去读取对象。这也带来一个新问题：midx是基于某个时刻的pack集合生成的，当repack把多个旧pack合成一个新pack时，真实集合已经变了，midx里的映射可能过期。假设旧pack A包含对象X，新pack C也包含对象X；如果midx没有更新，它仍会说X在A中，而A可能已经被删除，于是对象X暂时找不到。反过来，如果C已经生成但midx还没写入，对象查找仍走旧路径，新包也就没有真正生效。出现麻烦的往往是中间状态：midx已改成指向C，但C或它的索引还没有完全就绪；或者旧包A还没有删除，但midx已不再包含A，这时并发进程读到新midx就可能跑到一个不存在的位置上。解决办法是让midx的更新像一次原子替换。合理顺序是先让新pack完整落盘并生成对应索引，再基于新的有效包集合生成midx并以一次替换生效，最后才删除无人引用的旧pack。这样每个读者要么看到旧版本的完整世界，要么看到新版本的完整世界，不会看到“新总目录配旧包”或“新包已存在但总目录没登记”的半成品状态。这个思路与数据库事务的原子提交很像：数据与目录要作为一个整体对外发布。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>midx是一份逐对象映射表，记录“对象ID → 包编号 + 偏移量”，用于在众多pack中快速定位目标对象。</li>
+                <li>repack改变包集合后，旧midx可能引用已删除的包，或新包尚未登记，任何中间状态都会导致查找失败或错位。</li>
+                <li>原子替换的顺序约束（先备好新包和索引 → 原子发布midx → 再删旧包）确保读者始终看到一致的世界版本，类似数据库事务的原子提交。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设仓库有两个pack，A和B，midx记录“对象X在A包偏移100”。repack决定把A和B合成pack C。正确流程是：先生成完整可读的C，再生成包含C的新midx并一次性替换旧midx，之后读者通过新midx找到X在C包偏移40，最后才删除旧包A和B。如果顺序反了，先删除A，那么旧midx仍在说X在A包偏移100，而A已经不存在，对象X就暂时找不到了。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把multi-pack-index当作普通的pack列表或元数据文件，以为它只登记仓库里有哪些pack；实际其内部保存的是逐对象ID到包编号和偏移量的映射。</li>
+                <li>认为repack后只要最后写一次midx就正确；忽略了包集合与midx必须按同一版本一致发布，任何中间状态都可能让查找落到不存在或过期位置。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>对象 ID 的指纹本质</td><td>midx以对象ID为映射键，默认接受ID稳定且几乎不碰撞的工程假设，总表才能具备长期可信基础。</td></tr>
+                <tr><td>pack 的尾部校验</td><td>midx描述对象在哪里，pack校验描述那里的数据是否完好；若pack损坏，即使midx指对了位置读取仍会失败，二者是前后两道独立防护。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>git multi-pack-index write在repack流程中的哪个阶段被调用，命令本身如何避免生成引用不存在pack的midx？</li>
+                <li>当repack删除了旧pack时，Git如何判断已经不会有进程使用旧的midx版本？</li>
+                <li>如果midx使用的pack编号会随删包而改变，新的映射表如何确保已经被写入的对象引用不失效？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">今天的三个概念共同刻画了对象库“看起来能用”背后的三个不变量。第一，内容与ID之间靠指纹建立联系，Git用哈希把任意长的内容变成定长身份，并在工程上默认碰撞可以忽略；第二，pack字节与ID之间靠校验建立联系，任何位翻转、截断或delta链断裂都会被扫描发现，但发现后的修复需要外部备份或重建源；第三，总目录与真实pack集合之间靠原子发布建立联系，multi-pack-index必须与其所描述的包集合同步切换，否则即使对象内容和ID完好，查找路径也会失效。三者的关系可以概括为：pack校验用对象ID作为对账依据，multi-pack-index又用校验后的pack作为数据源。指纹本质决定“身份正确如何定义”，校验边界决定“身份对应的字节能否被信任”，原子替换则决定“信任的结果能否被稳定找到”。当这三层各自保持不变量时，一个对象才算真正进入可用状态。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">当这三层各自保持不变量时，一个对象才算真正进入可用状态。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>为什么“同ID即同内容”只能是低碰撞概率下的工程假设，而不是数学必然？</li>
+            <li>当pack校验能指出损坏却无法修复，真正可靠的恢复来自哪里？</li>
+            <li>multi-pack-index的原子替换如何保证并发读者永远不会看到“新目录配旧包”的中间状态？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>

@@ -3,6 +3,96 @@
   "year_month": "2026-09",
   "threads": [
     {
+      "id": "2026-09-03-pack-index-pack-8d280f462a",
+      "question": "为什么SHA-1校验和不适合当作纠错码来修复pack？如果改用带纠错能力的编码，存储成本会上升多少？",
+      "source_date": "2026-09-03",
+      "source_concept": "pack 的尾部校验与对象损坏的可检测边界：index-pack 能识别什么、不能恢复什么",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-03T06:05:27.138829+08:00",
+      "updated_at": "2026-09-03T06:05:27.138829+08:00"
+    },
+    {
+      "id": "2026-09-03-pack-index-pack-8c50cd59f4",
+      "question": "如果一个对象以delta形式保存，而它的基对象在另一个pack中且那个pack损坏，index-pack会给出什么信息？",
+      "source_date": "2026-09-03",
+      "source_concept": "pack 的尾部校验与对象损坏的可检测边界：index-pack 能识别什么、不能恢复什么",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-03T06:05:27.138829+08:00",
+      "updated_at": "2026-09-03T06:05:27.138829+08:00"
+    },
+    {
+      "id": "2026-09-03-pack-index-pack-14b08fb211",
+      "question": "git index-pack在扫描时，如何区分“压缩流解压失败”和“解压成功但内容与对象ID不一致”这两种损坏？",
+      "source_date": "2026-09-03",
+      "source_concept": "pack 的尾部校验与对象损坏的可检测边界：index-pack 能识别什么、不能恢复什么",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-03T06:05:27.138829+08:00",
+      "updated_at": "2026-09-03T06:05:27.138829+08:00"
+    },
+    {
+      "id": "2026-09-03-multi-pack-index-repack-c4cabfc6de",
+      "question": "如果midx使用的pack编号会随删包而改变，新的映射表如何确保已经被写入的对象引用不失效？",
+      "source_date": "2026-09-03",
+      "source_concept": "multi-pack-index 的映射数据与包集合的原子替换：一份总目录如何随 repack 保持正确",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-03T06:05:27.138829+08:00",
+      "updated_at": "2026-09-03T06:05:27.138829+08:00"
+    },
+    {
+      "id": "2026-09-03-multi-pack-index-repack-6cff94770d",
+      "question": "当repack删除了旧pack时，Git如何判断已经不会有进程使用旧的midx版本？",
+      "source_date": "2026-09-03",
+      "source_concept": "multi-pack-index 的映射数据与包集合的原子替换：一份总目录如何随 repack 保持正确",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-03T06:05:27.138829+08:00",
+      "updated_at": "2026-09-03T06:05:27.138829+08:00"
+    },
+    {
+      "id": "2026-09-03-multi-pack-index-repack-69ee85d547",
+      "question": "git multi-pack-index write在repack流程中的哪个阶段被调用，命令本身如何避免生成引用不存在pack的midx？",
+      "source_date": "2026-09-03",
+      "source_concept": "multi-pack-index 的映射数据与包集合的原子替换：一份总目录如何随 repack 保持正确",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-03T06:05:27.138829+08:00",
+      "updated_at": "2026-09-03T06:05:27.138829+08:00"
+    },
+    {
+      "id": "2026-09-03-id-sha-1-e0f7f324b4",
+      "question": "为什么输入空间远大于输出空间时，一定会存在不同内容映射到同一哈希值的情况？",
+      "source_date": "2026-09-03",
+      "source_concept": "对象 ID 的指纹本质：SHA-1 碰撞与内容同一性的概率保证",
+      "domain": "数学 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-03T06:05:27.138829+08:00",
+      "updated_at": "2026-09-03T06:05:27.138829+08:00"
+    },
+    {
+      "id": "2026-09-03-id-sha-1-79ff0a008a",
+      "question": "如果未来真的出现一次SHA-1碰撞，按内容寻址的Git对象库会发生什么奇怪现象？",
+      "source_date": "2026-09-03",
+      "source_concept": "对象 ID 的指纹本质：SHA-1 碰撞与内容同一性的概率保证",
+      "domain": "数学 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-03T06:05:27.138829+08:00",
+      "updated_at": "2026-09-03T06:05:27.138829+08:00"
+    },
+    {
+      "id": "2026-09-03-id-sha-1-29692fbf7c",
+      "question": "SHA-256对象格式相比SHA-1在抗碰撞保证上强在哪里，Git如何兼容两种哈希？",
+      "source_date": "2026-09-03",
+      "source_concept": "对象 ID 的指纹本质：SHA-1 碰撞与内容同一性的概率保证",
+      "domain": "数学 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-03T06:05:27.138829+08:00",
+      "updated_at": "2026-09-03T06:05:27.138829+08:00"
+    },
+    {
       "id": "2026-09-02-pack-idx-94788d6fc5",
       "question": "为什么 pack 文件本身足以重建 idx，而 idx 不足以重建 pack？",
       "source_date": "2026-09-02",

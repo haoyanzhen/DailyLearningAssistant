@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-09/2026-09-03-learning-report.html">2026-09-03</a>
+      </td>
+      <td>对象 ID 的指纹本质：SHA-1 碰撞与内容同一性的概率保证</td>
+      <td>数学 / 计算机科学</td>
+      <td>★★</td>
+      <td>对象ID是内容的定长指纹而不是内容本身，Git把“同ID即同内容”当作极低碰撞概率下的工程约定来使用。</td>
+      <td>下一次可以沿着哈希迁移方向讲SHA-256对象格式与新旧对象库的共存机制，看Git如何把概率保证升级为更强的实际保障。</td>
+    </tr>
+    <tr>
+      <td>pack 的尾部校验与对象损坏的可检测边界：index-pack 能识别什么、不能恢复什么</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★</td>
+      <td>pack的校验和让Git能发现损坏并大致定位问题，但无法从校验和中倒推出原始内容；可检测与可恢复之间的空隙，决定了pack修复能力的上限。</td>
+      <td>下一次可以深入thin pack与--fix-thin的补全机制，看当对象以delta形式存在且基对象不在包中时，Git如何借助外部对象把数据补回来。</td>
+    </tr>
+    <tr>
+      <td>multi-pack-index 的映射数据与包集合的原子替换：一份总目录如何随 repack 保持正确</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★★</td>
+      <td>multi-pack-index是对每个对象ID记录“在哪个包、偏移多少”的总映射表，它必须像一次原子替换一样与repack后的真实pack集合同步，才能让查找始终落在一个存在且完整的数据位置上。</td>
+      <td>下一次可以讲git multi-pack-index的增量写入与过期pack清理机制，看Git如何在包集合持续变动时维护这张总表而不产生长时间错位。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-09/2026-09-02-learning-report.html">2026-09-02</a>
       </td>
       <td>内容寻址对象库中的重复对象同一性：隔离区迁移的去重边界</td>

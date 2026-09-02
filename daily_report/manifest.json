@@ -1,6 +1,12 @@
 {
   "reports": [
     {
+      "date": "2026-09-03",
+      "title": "2026-09-03 学习笔记日报",
+      "summary": "对象ID是内容指纹而非内容本身，碰撞是概率假设；pack校验能发现损坏却不能自愈；midx必须靠原子替换跟随repack，才能让查找始终落到存在的对象上。",
+      "path": "./daily_report/2026-09/2026-09-03-learning-report.html"
+    },
+    {
       "date": "2026-09-02",
       "title": "2026-09-02 学习笔记日报",
       "summary": "今日围绕Git对象存储的确定性展开：内容寻址去重保证相同内容统一身份，idx可从pack重建，multi-pack-index提供多包聚合查找入口。",
