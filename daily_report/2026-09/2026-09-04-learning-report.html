@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-09-04 学习笔记日报</title>
+    <meta name="description" content="今日沿可靠性链条讨论三层问题：身份层看 SHA-256 哈希迁移的对象寻址空间，字节校验层区分解压失败与内容哈希失配，依赖层看 delta 基对象缺失时的补全边界。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260904-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-09-04</p>
+        <h1>对象在，不等于能用：找到、验明、补齐的三问</h1>
+        <p>对象先要有一个稳定的身份，再要经过字节验证，最后依赖链还得完整。今天用三个剖面问完这串问题。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>对象可靠性的三层可信链条</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>SHA-256 对象格式与…</strong>
+                <small>更大的门牌号空间只是基础，保持一致…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>压缩流解压失败与内容哈希失…</strong>
+                <small>先问数据能不能还原，再问还原出来的…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>delta 对象的外部依赖…</strong>
+                <small>delta 对象是配方不是成品，基…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">概念一说明对象 ID 的可信度从哪里来，概念二把损坏信号定位到压缩管线的不同阶段，概念三揭示即使对象自身字节可靠，若 delta 基对象缺失仍会不可还原。合并成一条完整条件链：对象先要有稳定且碰撞概率极低的 ID；该 ID 指向的表示必须通过解压与内容哈希校验；如果该表示是 delta，则整条 delta 链必须完整。任何一个环节断裂，都会造成对象 ID 存在但内容无法获得。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["对象可靠性的三层可信链条"])
+  concept1["SHA-256 对象格式与哈希迁移后的对象寻址空间"]
+  hub --&gt; concept1
+  concept2["压缩流解压失败与内容哈希失配：pack 验证路径上的两类损坏信号"]
+  hub --&gt; concept2
+  concept3["delta 对象的外部依赖：基对象缺失时数据补全的边界"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["对象可靠性的三层可信链条"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept2
+  concept3 --&gt; concept1
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="sha256-object-format-and-address-space">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 计算机科学</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>SHA-256 对象格式与哈希迁移后的对象寻址空间</h3>
+              <p>SHA-256 object format and object address space after hash migration</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">更大的门牌号空间只是基础，保持一致的门牌规则才是迁移的真正难点。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>Git 用内容摘要作为对象 ID，摘要位数决定整个寻址空间，SHA-1 为 2^160，SHA-256 为 2^256。</li>
+                <li>对象格式是仓库级属性：使用 SHA-256 时对象 ID、父提交指针与校验和都按 256 位计算，同一对象库不能混用两种算法。</li>
+                <li>SHA-256 只是把碰撞概率下界从 2^80 量级提升到 2^128 量级，并不是绝对不碰撞；哈希迁移也不是简单加长旧 ID，而是要重建统一的新对象库。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="sha256-object-format-and-address-space" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="inflate-failure-vs-content-hash-mismatch">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>压缩流解压失败与内容哈希失配：pack 验证路径上的两类损坏信号</h3>
+              <p>Two corruption signals on pack verification: inflate failure vs content hash mismatch</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">先问数据能不能还原，再问还原出来的是不是他声称的自己。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>pack 对象的读取分两道关卡：第一道 zlib 解压，第二道按对象格式重新计算哈希并与预期对象 ID 比较。</li>
+                <li>解压失败是压缩流已经损坏到取不回原始字节；哈希失配是字节能解压出来，但内容与它自称的对象不一致。</li>
+                <li>两类错误所在阶段不同，修复方向也不同：前者要找回或重取压缩数据，后者要用正确副本覆盖错误对象。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="inflate-failure-vs-content-hash-mismatch" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="delta-external-dependency-base-missing">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>delta 对象的外部依赖：基对象缺失时数据补全的边界</h3>
+              <p>Delta object external dependency: boundary of material completion when the base object is missing</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">delta 对象是配方不是成品，基对象不在场时配方永远变不出成品。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>delta 对象保存生成指令而不是完整快照，要结合基对象里的字节才能还原真正内容。</li>
+                <li>自包含 pack 会把 delta 基对象也放在包内，但 thin pack 在传输时引用接收方可能已有的外部对象，必须先补全基对象才可用。</li>
+                <li>对象能不能还原取决于从它开始的整条 delta 链是否完整；对象文件存在只能说明配方还在，如果外部基对象缺失就无法拼出内容。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="delta-external-dependency-base-missing" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="sha256-object-format-and-address-space">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 计算机科学</p>
+                <h3>SHA-256 对象格式与哈希迁移后的对象寻址空间</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>Git 用固定长度的哈希为对象分配 ID，这个 ID 不是内容本身，而是把任意长度内容压缩成固定长度摘要。摘要位数决定了门牌号空间：SHA-1 输出 160 位，约提供 2^160 个门牌号；SHA-256 输出 256 位，约提供 2^256 个门牌号。两套空间的碰撞难度不同，SHA-1 的生日界约在 2^80 量级，SHA-256 约在 2^128 量级。仓库必须声明自己使用哪一种对象格式。使用 SHA-256 的仓库，对象 ID、树对象条目、父提交指针以及校验和都按 SHA-256 计算，对象 ID 写成 64 个十六进制字符。选择不是局部属性，而是整仓库格式属性。迁移到 SHA-256 不是给旧仓库逐个把 ID 拉长，而是从一个统一的 256 位门牌号体系重新建立对象库。已初始化为 SHA-1 的仓库不能在同一对象库里部分使用 SHA-256，因为同一份地址簿不能同时采用两套互不兼容的编号规则。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>对象 ID 是内容摘要，摘要输出长度决定寻址空间大小，SHA-256 让空间从 2^160 扩大为 2^256。</li>
+                <li>Git 把对象格式当作仓库级属性，任何对象 ID 的生成和解析必须与仓库声明一致。</li>
+                <li>哈希迁移需要整体切换对象格式，不能部分混用；大空间只是降低碰撞风险的手段，不是安全证明。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>用 SHA-1 初始化时，对象 ID 是 40 个十六进制字符；用 git init --object-format=sha256 初始化后，对象 ID 是 64 个十六进制字符。把一个 SHA-1 对象文件硬塞进 SHA-256 仓库，Git 不会把它当成同一地址空间里的合法对象。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为 SHA-256 能绝对保证不同对象永远不会得到同一 ID；实际上它只是把碰撞概率降到极低，现实规模下几乎不可能找到一个碰撞。</li>
+                <li>把哈希迁移理解成简单地把 SHA-1 对象 ID 加长；实际需要按新对象格式统一计算和解析对象，同一仓库不能混用 SHA-1 与 SHA-256 对象。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>压缩流解压失败与内容哈希失配</td><td>SHA-256 只降低对象 ID 碰撞概率，不保证压缩流可解压；对象自身字节是否可信交由概念二的 zlib 解压与内容哈希比对。pack 尾部校验和若也基于 SHA-256，只是让哈希失配的判定更强，并不会因此获得纠错能力。</td></tr>
+                <tr><td>delta 对象的外部依赖</td><td>对象 ID 只说明目标内容的身份，不说明内容是以完整快照还是 delta 配方存在；ID 正确与内容可还原并不等价。</td></tr>
+                <tr><td>对象可靠性的三层可信链条</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果未来真的出现一次 SHA-256 碰撞，Git 内容寻址机制会观察到什么现象？是先出现的对象被覆盖，还是第二个对象被拒绝？</li>
+                <li>把 SHA-1 仓库完整迁移到 SHA-256，除了重算所有对象 ID，还必须在哪些地方保持原子切换？</li>
+                <li>既然 256 位已经很难碰撞，为什么对象格式设计还要同时维护 SHA-1 兼容能力而不是强制一刀切？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="inflate-failure-vs-content-hash-mismatch">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>压缩流解压失败与内容哈希失配：pack 验证路径上的两类损坏信号</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>pack 对象读出来之前，通常不知道真实内容，它先表现为压缩数据，经过解压和校验。Git 验证路径像一个两关流水线：第一关 zlib 解压，第二关内容哈希比对。压缩数据可能因为磁盘坏道、传输截断或写入出错而损坏，zlib 解压器无法按规则继续读，此时 Git 在解压中途失败，报错指向数据流异常。这类损坏意味着压缩包已经破损到连原始字节都取不回来。另一类损坏发生在解压成功之后：zlib 把字节还原出来，但内容未必属于仓库声称的那个对象。Git 会把解压出的对象内容连同类型和长度按对象格式重新计算哈希，再与预期对象 ID 比较；不一致就说明内容层的字节与号牌不符，字节能被读出，但不是它所自称的对象。这个区别决定维修方向：前者需要找回原始压缩数据或重新获取对象，后者说明数据虽可读但内容错位，必须用正确副本覆盖。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>每个对象先以压缩流形式存在，读取时第一步必然是 zlib 解码。</li>
+                <li>解码失败意味着压缩流已被破坏到无法还原原始字节，属于第一类损坏。</li>
+                <li>解码成功只是数据可读，还需要按对象格式重算哈希并与对象 ID 比较，不一致时属于内容层失配。</li>
+                <li>两类损坏在验证路径上位置不同，因此排查与修复策略应分别对待。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>以登记内容为 hello world 的 blob 为例：如果压缩数据损坏，解压器可能在读到第 5 个字节时报数据流错误，到不了哈希比较；如果解压成功却得到 hello  world（多一个空格），重新计算得到的哈希就会与预期对象 ID 不匹配。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为 zlib 解压成功对象就验证通过；实际上解压成功只说明压缩流结构完整，还需要内容哈希与对象 ID 匹配。</li>
+                <li>把所有 Git 错误都归为对象损坏，不区分损坏发生在压缩层还是内容层；实际上两类信号在验证路径上的位置和修复策略都不同。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>SHA-256 对象格式与哈希迁移后的对象寻址空间</td><td>对象 ID 来自内容哈希，检测内容哈希失配正是用这个 ID 去验证解压出来的字节；如果哈希算法或对象格式不一致，同一段内容会得到不同 ID，比对就无法正常进行。</td></tr>
+                <tr><td>delta 对象的外部依赖</td><td>即使对象通过 zlib 解压和内容哈希校验，也只能说对象自身的字节可信；若它是 delta 形式，还要看依赖的基对象是否完整，这会把问题推向 delta 依赖层。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>在 git index-pack 的错误输出中，如何通过关键词区分 inflate 失败和 sha1 mismatch？</li>
+                <li>zlib 的压缩流本身就带有校验和，为什么 Git 还要在解压后逐对象重算内容哈希？</li>
+                <li>如果一个对象在盘上既无法解压，又在上游仓库中也没有副本，能否靠 pack 中其他对象的信息把它拼回来？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="delta-external-dependency-base-missing">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>delta 对象的外部依赖：基对象缺失时数据补全的边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>Git 为节省空间不总是把每个对象存成完整快照。当多个版本差异很小时，一个对象可能被存成 delta 对象：它不直接保存完整内容，而是保存一组指令，告诉 Git 如何从另一个对象——基对象——生成当前对象。指令加上基对象里的原始字节，才能还原真实文件内容。由于打包方式不同，delta 基对象可能和它放在同一个 pack 中，也可能位于 pack 之外。普通自包含 pack 会尽量让包内 delta 的基对象也在包内，包可以独立使用；但 thin pack 是网络传输时的瘦包，为了少传字节允许引用接收方可能已有的外部基对象，接收方必须先补全缺失的基对象，thin pack 才能正常使用。所以判断对象是否能完整还原，不能只看对象自身的字节是否完好，还要看从它开始向上追溯的整条 delta 链。一个对象文件存在只说明它的字节占据可寻址位置；如果需要的基对象已经缺失，它依然处于不可还原状态。Git 给出的信息会指向缺少基对象而非压缩流损坏，因为问题不在当前对象的物理字节，而在逻辑依赖断掉了。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Git 用 delta 压缩历史版本，把完整快照替换成生成指令加基对象。</li>
+                <li>基对象可能在包内也可能在包外，thin pack 会引用接收方未收到的外部对象。</li>
+                <li>对象自身字节完好不足以代表可还原，必须检查自当前 delta 对象向上的整条链。</li>
+                <li>基对象缺失时的错误指向是逻辑依赖断裂，而不是当前对象压缩流损坏。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>仓库有两个版本的 note.txt：版本 1 是 100 字节完整内容，版本 2 只改了一句，打包时版本 2 被存成 delta：前半部分从版本 1 复制并插入新字节，后半部分继续从版本 1 复制。版本 2 的对象 ID 已在索引里，但如果保存版本 1 的旧 pack 被删除，Git 再去还原版本 2 时就会因为找不到基对象而失败。这不是版本 2 压缩流坏了，而是版本 1 已经从依赖链中消失。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>一看到对象文件还在就认为内容一定可用；遇到 delta 对象时，文件只是生成配方，配方所依赖的基对象消失后内容依然拼不回来。</li>
+                <li>以为普通 pack 的校验和能防范这种缺失；校验和只能检测包内字节是否变化，而基对象可能处于另一个 pack、另一个对象库，甚至是被 repack 删除的过期包中。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>压缩流解压失败与内容哈希失配</td><td>概念二判断对象自身字节是否通过解压与内容哈希，而 delta 基对象缺失是自身没问题但依赖链断裂的另一种损坏，不能靠重算当前对象哈希解决。</td></tr>
+                <tr><td>SHA-256 对象格式与哈希迁移后的对象寻址空间</td><td>对象 ID 只说明目标内容的身份，不说明它是以完整快照还是 delta 配方存在；ID 正确与可还原并不等价。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当收到一个 thin pack 时，Git 查找 delta 基对象的顺序是什么？是先查包内，再查现有对象库，还是可以查 alternates 仓库？</li>
+                <li>如果两个 pack 中的 delta 对象互相引用对方为基对象，这种跨 pack 依赖会不会形成环？Git 如何打破它？</li>
+                <li>在 repack 删除过期 pack 之前，Git 需要怎样判断已没有任何仍在使用的对象以其中的对象为 delta 基？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">概念一说明对象 ID 的可信度从哪里来，概念二把损坏信号定位到压缩管线的不同阶段，概念三揭示即使对象自身字节可靠，若 delta 基对象缺失仍会不可还原。合并成一条完整条件链：对象先要有稳定且碰撞概率极低的 ID；该 ID 指向的表示必须通过解压与内容哈希校验；如果该表示是 delta，则整条 delta 链必须完整。任何一个环节断裂，都会造成对象 ID 存在但内容无法获得。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">delta 对象是一份生成配方而不是成品；配方文件本身完好，不代表基对象缺失时成品还能拼出来。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>当 Git 报告对象不可用时，如何借助错误信息快速判断缺口在 SHA-256 寻址、压缩流、内容哈希还是 delta 基对象？</li>
+            <li>git index-pack 的错误输出里，inflate 失败与 sha1 mismatch 分别出现在哪个阶段，有哪些关键词可以区分？</li>
+            <li>repack 删除过期 pack 之前，Git 要怎样证明没有任何仍在使用的对象以其中某个对象为 delta 基？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
