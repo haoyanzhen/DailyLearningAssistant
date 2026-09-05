@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-09-06 学习笔记日报</title>
+    <meta name="description" content="今日围绕状态中间态：pack/idx 未完成发布不等于损坏，旧 pack 要按读者生命周期延迟回收，推送 ok/ng 冲突则必须绑定逻辑命令而不能以最后一条为准。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260906-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-09-06</p>
+        <h1>状态中间态的分辨：pack/idx、旧包与推送 ok/ng</h1>
+        <p>状态从何时开始、被谁看见、如何判定——这个问题贯穿 pack/idx 的中间态、旧包延迟回收与推送 ok/ng 的冲突判定。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>中间状态的分辨：未完成、仍在读、不…</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>未完成发布不等于对象库损坏…</strong>
+                <small>pack 未配 idx，常是发布没…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>没有“删除后仍可读”时，旧…</strong>
+                <small>旧 pack 要让位，得等最后一位…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>同一 ref 的 ok/n…</strong>
+                <small>同一笔支付既说成功又说失败，不能按…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">把今天三个概念看成一台话剧：前两个概念合起来写完了对象库资源替换的完整生命周期——未完成发布负责“新文件集还没备齐”的前半段，旧 pack 延迟让位负责“旧文件集仍在被读”的后半段。第三个概念把同一套问题搬到推送协议：状态行不是可以按到达顺序排序的普通消息，必须绑定到逻辑命令身份；当 ok 与 ng 矛盾时，宁可判定不确定，也不能假装成功。真正的判断不是“表面是否整齐”或“谁最后到达”，而是：这个状态处在哪个生命周期阶段？它对应的逻辑主体是谁？</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["中间状态的分辨：未完成、仍在读、不确定"])
+  concept1["未完成发布不等于对象库损坏：中间态与真实损坏在完整性检查中的分类"]
+  hub --&gt; concept1
+  concept2["没有“删除后仍可读”时，旧 pack 如何延迟让位：从 unlink 到按读者生命周期删除"]
+  hub --&gt; concept2
+  concept3["同一 ref 的 ok/ng 冲突：为什么不能用“最后一条”而要绑定逻辑命令"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  related1["仓库格式的版本门槛"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  related2["退出码压缩"]
+  concept3 --&gt; related2
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="incomplete-publish-vs-corruption">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>未完成发布不等于对象库损坏：中间态与真实损坏在完整性检查中的分类</h3>
+              <p>Pack/Idx Incomplete Publish vs Corruption</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">pack 未配 idx，常是发布没走完；要等校验失败证据出现才能说损坏。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>Git 先发布 pack 正文，再发布 idx 索引，两步之间崩溃会留下 pack 在而 idx 缺失的中间态。</li>
+                <li>未完成发布是发布流程停在半路，不等于内容损坏；真实损坏是对象无法解析或按已发布引用找不到。</li>
+                <li>完整性检查应以“被正式引用指向的对象能否可靠解析”为准，而不是机械地要求 pack/idx 成对。</li>
+                <li>对所有不对称一律报损坏会形成误报，把维护工具的注意力从真正数据丢失引到可修复的半成品上。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="incomplete-publish-vs-corruption" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="delayed-old-pack-retirement">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>没有“删除后仍可读”时，旧 pack 如何延迟让位：从 unlink 到按读者生命周期删除</h3>
+              <p>Delayed Old Pack Retirement by Reader Lifecycle</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">旧 pack 要让位，得等最后一位读者合上文件；目录项删除不等于数据立刻消失。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>Linux/unix 的 unlink 只删除目录项，若进程仍打开该文件，inode 和内容会保留到最后一次关闭。</li>
+                <li>新 pack 生效后旧 pack 是否需要立即删除，取决于平台是否支持“打开后删除仍可读”。</li>
+                <li>不支持该语义时，旧 pack 回收必须延迟到所有可能打开它的文件描述符关闭，删除就变成围绕读者生命周期的过程。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="delayed-old-pack-retirement" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="same-ref-ok-ng-conflict">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★★★★</span>
+              </div>
+              <h3>同一 ref 的 ok/ng 冲突：为什么不能用“最后一条”而要绑定逻辑命令</h3>
+              <p>Same Ref OK/NG Conflict and Logical Command Binding</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">同一笔支付既说成功又说失败，不能按最后一条行动；推送 ok/ng 冲突应该当作“没有确认成功”。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>推送时可对同一 ref 出现多条状态行，协议并不保证到达顺序。</li>
+                <li>一次逻辑更新命令的身份是 ref 名 + 期望旧值 + 新值，不能只用 ref 名称代表。</li>
+                <li>同一逻辑命令上的 ok 与 ng 冲突时，不能挑选更顺眼的结论，而应不宣告成功。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="same-ref-ok-ng-conflict" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="incomplete-publish-vs-corruption">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>未完成发布不等于对象库损坏：中间态与真实损坏在完整性检查中的分类</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>Git 会把对象压缩进 pack 文件保存，pack 是正文，idx 是配套索引，负责告诉读者对象在 pack 里的位置。为了不让读者看到半份文件，Git 采用分步发布：先让 pack 出现在正式名字下，再发布对应的 idx。如果程序在两步之间崩溃，磁盘上就可能留下“正文在、索引还没到”的状态。这种状态看起来不整齐，却不等于内容损坏。真实损坏是对象内容已经无法解析，或者按已发布引用找不到它声称的对象；未完成发布只是发布动作停在半路，通常还能通过补齐索引或清理残留来恢复。因此，完整性检查的第一判断不应是“文件是否成对”，而是“被正式引用指向的对象还能不能可靠解析”。把未完成发布一律报成损坏，会造成误报；误报和漏报一样会误导后续修复动作。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Git 分两步发布 pack 与 idx：先让 pack 在正式名字下可见，再配 idx。</li>
+                <li>两步之间的崩溃产生 pack/idx 不成对，这是发布动作未完成，而非对象数据损坏。</li>
+                <li>完整性检查的判据是正式引用能否解析出可靠对象；用 index-pack 可从完整 pack 重建缺失 idx。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设崩溃后对象目录中出现了 pack-abc.pack 却没有 pack-abc.idx。若用 git index-pack pack-abc.pack 能成功扫描整个 pack、校验通过并生成 idx，说明它只是完成了一半的发布，不是损坏；若校验过程中出现解压失败或内容哈希不匹配，那才是真实损坏。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>看到 pack 文件没有对应 idx，就认为仓库已经损坏。</li>
+                <li>所有不对称都被报成损坏，会让维护工具忽略真正的数据丢失而聚焦在可修复的半成品上。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>没有“删除后仍可读”时，旧 pack 如何延迟让位</td><td>互补关系：未完成发布看新文件集还没补齐的窗口，旧 pack 让位看旧文件集还不能立即消失的窗口，两者共同覆盖一次 pack 替换的前后半场。</td></tr>
+                <tr><td>仓库格式的版本门槛</td><td>同构关系：格式声明也是一种发布物，不能把半套新规则提前暴露给仍按旧规则运行的读者。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>完整性检查应该怎样界定一个对象是“被已发布引用指向”的，而不是把所有无引用对象都当成问题？</li>
+                <li>从 pack 重建 idx 时，pack 的尾部校验和如何帮助判断包数据有没有被破坏？</li>
+                <li>在并发环境中清理未完成发布时，如何避免误删另一个刚发布到一半、但马上会补齐 idx 的有效 pack？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="delayed-old-pack-retirement">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>没有“删除后仍可读”时，旧 pack 如何延迟让位：从 unlink 到按读者生命周期删除</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>Linux/unix 中的 unlink 并不是“把文件从世界上抹掉”。它的准确效果是删掉目录项；如果还有进程已经打开这个文件，文件数据仍由 inode 保留，直到最后一个文件描述符关闭。正因如此，Git 在替换 pack 时可以先让新 pack 生效，再 unlink 旧 pack；已经打开旧 pack 的并发读者不会断粮。但“删除后仍可读”并不是所有平台都提供。Windows 常会阻止删除正在被打开的文件；某些网络文件系统也不保证这个语义。如果平台缺少这种能力，旧 pack 的回收就必须延迟：先发布新包，让新读者使用新包；旧读者继续读旧包；等到所有可能打开旧包的文件描述符关闭后，才能真正回收旧文件。于是，删除不再是调用一次 unlink 的瞬时动作，而是围绕“读者生命周期”安排的过程。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>unlink 只是删除目录项；文件数据是否常驻取决于是否仍有进程持有打开的文件描述符。</li>
+                <li>支持删除后仍可读的平台可以即时 unlink 旧 pack；不支持的平台需等待旧读者完全退出。</li>
+                <li>因此旧 pack 删除策略要从一次性 unlink，转化为基于读者生命周期的延迟回收队列。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一个仓库正在 repack，新的 pack-new.pack 已经可供新连接使用；但一个早先启动的 git archive 进程仍然打开了旧 pack-old.pack。在 Linux 上，gc 可以直接 unlink 旧包，archive 进程继续读旧 inode；在不支持“删除后仍可读”的文件系统上，gc 若立刻 unlink，archive 可能在读取中途找不到数据。正确顺序是等 archive 进程结束后再真正删除旧文件。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为 rm 就等于数据立刻销毁；在 Linux 上 rm 只删名字，已打开文件仍可通过描述符读取。</li>
+                <li>认为新包一发布，旧包就必须马上删除才算干净；在不支持删除后仍可读的平台，过早 unlink 会导致并发读者失去数据源。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>未完成发布不等于对象库损坏</td><td>互补关系：一个处理新文件集还没发布完整的窗口，一个处理旧文件集仍在被读的窗口；两者合成一次替换的完整生命周期。</td></tr>
+                <tr><td>同一 ref 的 ok/ng 冲突</td><td>类比关系：处理旧包要追踪真正使用旧文件的读者生命周期，处理推送状态要追踪真正产生状态行的逻辑命令身份；两者都不能被表面名字或到达顺序欺骗。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>等待旧读者退出时，如果读者不是短期进程，应该用什么机制通知它们提前关闭而不是无限期等待？</li>
+                <li>在支持删除后仍可读的平台上，如何判断旧 inode 真正没有引用，从而安全释放磁盘空间？</li>
+                <li>当多个仓库维护操作并发执行时，各自的旧 pack 延迟删除队列如何避免互相把对方仍然需要的文件清掉？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="same-ref-ok-ng-conflict">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>同一 ref 的 ok/ng 冲突：为什么不能用“最后一条”而要绑定逻辑命令</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>推送时，服务端会为每个 ref 返回状态行，比如 ok 或 ng。由于钩子或批量报告的存在，同一个 ref 有可能出现多行状态：先出现 ng，后来又出现 ok，或者反过来。客户端不能把这些行看成普通时间线，更不能认为“最后到达的才是结论”，因为协议并不保证状态行的到达顺序。更深层的问题是：这些状态行到底是对哪一次更新命令的回答？一个更新动作的身份不能只用 ref 名字代表，还要包含客户端声称的期望旧值和新值；ref 名、期望旧值、新值合在一起，才构成同一次逻辑命令。只有在同一逻辑命令上出现明确的 ok，这个 ref 才能被算作成功；一旦 ok 与 ng 互相冲突，安全策略不是挑一条看起来更好的，而是不宣告成功。这样可以避免把不确定状态误当成可编程的成功结果。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>协议不保证状态行的到达顺序，因此“最后到达的才是结论”不成立。</li>
+                <li>逻辑命令的身份由 ref 名 + 期望旧值 + 新值共同构成，单靠 ref 名不足以定位是哪一次更新。</li>
+                <li>ok 与 ng 在同一逻辑命令中冲突时，客户端应保守处理：不宣告成功，避免把不确定当作确定。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>客户端发出一次更新：refs/heads/main 的旧值是 abc123，新值是 def456。随后状态报告中出现 ok refs/heads/main 和 ng refs/heads/main update hook declined 两行。因为两条都可能属于同一个 ref 的同一逻辑命令，客户端不能因为 ok 在那里就不管 ng；它应当把该 ref 视为没有被明确确认成功，而不是当作成功继续执行。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为状态行先来的是旧消息、后来的是新消息，所以最后一条一定最准确。</li>
+                <li>认为同一个 ref 名字出现多个状态，就都可以当作同一次更新的证据。</li>
+                <li>认为只要出现过 ok 就可以宣告成功；但当同一逻辑命令也有 ng 时，证据冲突，不应宣告成功。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>退出码压缩</td><td>上下游关系：单 ref 的冲突状态先合并为成功或不成功，后续才能把多 ref 的部分成功压缩成进程退出码；单 ref 若含糊，整体退出码也会失真。</td></tr>
+                <tr><td>没有“删除后仍可读”时，旧 pack 如何延迟让位</td><td>类比关系：处理旧包时要追踪真正打开文件的读者生命周期，处理推送状态时要追踪真正产生状态行的逻辑命令身份；两者都不能被表面名字或到达顺序欺骗。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>状态行中如果没有直接携带 old/new 值，客户端应如何把状态行映射回自己发出的具体更新命令？</li>
+                <li>当同一个 ref 在一次推送中有多个候选命令时，按逻辑命令合并与按 ref 简单去重会得到哪些不同结论？</li>
+                <li>如果 ok/ng 冲突导致不宣告成功，脚本应有怎样的默认行为才能保证安全，而不是让用户误以为推送已被接受？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">把今天三个概念看成一台话剧：前两个概念合起来写完了对象库资源替换的完整生命周期——未完成发布负责“新文件集还没备齐”的前半段，旧 pack 延迟让位负责“旧文件集仍在被读”的后半段。第三个概念把同一套问题搬到推送协议：状态行不是可以按到达顺序排序的普通消息，必须绑定到逻辑命令身份；当 ok 与 ng 矛盾时，宁可判定不确定，也不能假装成功。真正的判断不是“表面是否整齐”或“谁最后到达”，而是：这个状态处在哪个生命周期阶段？它对应的逻辑主体是谁？</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">真正的判断不是“表面看起来是否整齐”或“谁最后到达”，而是：这个状态处在哪个生命周期阶段？它对应的逻辑主体是谁？</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>完整性检查应如何界定“被已发布引用指向”的对象，避免把所有无引用对象都当成问题？</li>
+            <li>在不支持“删除后仍可读”的文件系统上，如何设计旧 pack 的延迟删除队列，让并发读者不丢数据且不会误删新发布到一半的包？</li>
+            <li>推送状态行不保证到达顺序时，客户端应如何将多次 ok/ng 映射回同一条逻辑更新命令，并在冲突时安全地不宣告成功？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
