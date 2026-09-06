@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-09-07 学习笔记日报</title>
+    <meta name="description" content="从引用边界理解悬空对象，以引用可达性区分缺失与损坏，并探究并发维护中旧包回收的所有权资格，理清对象何时算被引用、何时该报错、何时可以安全消失。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260907-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-09-07</p>
+        <h1>Git 对象库中的引用边界与并发回收资格</h1>
+        <p>围绕对象库的发布、读取、删除和修复，看被引用边界如何决定一个对象是否必须可读，git fsck 如何区分 missing 与 corrupt，以及并发维护时谁才有资格安全回收旧 pack。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>对象库中的可见性、引用性和安全消失…</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>被引用边界与悬空对象：什么…</strong>
+                <small>文件在不在盘上，和文件是否被当前引…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>引用可达性决定“缺失”分类…</strong>
+                <small>missing 是引用链上“该有的…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>并发仓库维护中的旧 pac…</strong>
+                <small>旧 pack 能不能删，不是看它是…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">今天选出的三个概念形成一条完整链条：被引用边界给出了“哪些对象必须可读”的强制范围，是完整性检查的前提；引用可达性把这个范围变成 git fsck 的 missing 与 corrupt 具体判定；并发仓库维护中的回收所有权则处理对象所在的 pack 不再被需要之后，如何避免多个维护进程互相误删。三个概念共同回答“一个对象什么时候算被仓库引用、什么损坏必须报告、旧 pack 在什么条件下可以安全消失”。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["对象库中的可见性、引用性和安全消失条件"])
+  concept1["被引用边界与悬空对象：什么对象缺失才值得让完整性检查报错"]
+  hub --&gt; concept1
+  concept2["引用可达性决定“缺失”分类：git fsck 的 missing 与 corrupt 判定"]
+  hub --&gt; concept2
+  concept3["并发仓库维护中的旧 pack 回收所有权：谁可以安全删除仍在延迟让位的旧文件"]
+  hub --&gt; concept3
+  related1["引用可达性与可读性的独立维度"]
+  concept1 --&gt; related1
+  concept1 --&gt; concept2
+  concept2 --&gt; concept1
+  related2["错误关键词与故障层定位"]
+  concept2 --&gt; related2
+  concept3 --&gt; concept1
+  related3["读者通知机制与延迟让位协议"]
+  concept3 --&gt; related3
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="referenced-boundary-and-dangling-objects">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>被引用边界与悬空对象：什么对象缺失才值得让完整性检查报错</h3>
+              <p>Referenced Boundary and Dangling Objects — Which Missing Objects Deserve Integrity Report</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">文件在不在盘上，和文件是否被当前引用需要，是两个维度；只有当前承诺的书单上的书缺失才需要立即上报。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>完整性检查只关心“已发布引用可达的对象”，不会要求所有历史残留都可读。</li>
+                <li>悬空对象是没有任何分支或标签指向的残留，它们不完整不会触发完整性错误报告。</li>
+                <li>“是否被引用”与“是否可读”是两个独立维度，只有被已发布引用指向却无法解析的对象才值得报告。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="referenced-boundary-and-dangling-objects" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="ref-reachability-missing-vs-corrupt">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>引用可达性决定“缺失”分类：git fsck 的 missing 与 corrupt 判定</h3>
+              <p>Reachability-Determined Failure Classification: git fsck's Missing vs Corrupt</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">missing 是引用链上“该有的东西不存在”，corrupt 是东西在但身份对不上。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>git fsck 从已发布引用出发做可达遍历，而不是扫描对象库的所有文件。</li>
+                <li>在可达闭包内“应有却无”的对象报 missing；“有但内容与对象ID不一致”报 corrupt。</li>
+                <li>missing 与 corrupt 的修复路径不同，必须区分，不能统称“损坏”。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="ref-reachability-missing-vs-corrupt" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="concurrent-pack-recycle-ownership">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>并发仓库维护中的旧 pack 回收所有权：谁可以安全删除仍在延迟让位的旧文件</h3>
+              <p>Ownership of Reclaiming Old Packs in Concurrent Repository Maintenance</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">旧 pack 能不能删，不是看它是不是旧，而是看当前有效的包集合里还有没有它。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>旧 pack 删除不能由单个进程根据自己快照中的“不再需要”就执行，需所有权仲裁。</li>
+                <li>延迟让位在并发维护下尤其危险：其他维护进程可能仍把旧 pack 当作当前查找路径。</li>
+                <li>通过锁或原子切换“当前包集合”（如 multi-pack-index）等机制，使删除者拥有真正的回收资格。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="concurrent-pack-recycle-ownership" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="referenced-boundary-and-dangling-objects">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>被引用边界与悬空对象：什么对象缺失才值得让完整性检查报错</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象一个巨大的仓库，里面放着很多文件。但并不是仓库里每个文件都对客户有价值，只有写在当前商品目录里的那些才需要保证随时能拿出来。Git 对象库也是类似：分支和标签就是“已发布引用”，它们相当于对外承诺的商品目录；从这些引用能一路走到达的对象，才是仓库必须保证完整的东西。那些曾经被用过但现在没有任何分支或标签指向的对象，叫悬空对象。它们可能是历史操作留下的旧提交、临时写入的中间数据，它们不碍事，完整性检查也不会因为它们不完整而报错。换句话说，“文件在不在盘上”和“文件是否被当前引用需要”是两个完全独立的维度。完整性检查真正关心的是：被已发布引用指向的对象，必须能找到、能读、内容正确。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Git 以分支、标签等“已发布引用”作为对外承诺，从这些 refs 出发的图遍历定义了“必须完整可达的对象集合”。</li>
+                <li>悬空对象不在任何已发布引用的可达范围内，所以完整性检查不会把它们的损坏当作必须报告的仓库错误。</li>
+                <li>判断对象缺失是否值得报错，应先判断它是否落在已发布引用可达闭包内，而不是只看该对象文件是否存在。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一个仓库只有 main 分支指向提交 C。C 的目录树里引用了文件对象 B。另外，仓库里还有一个旧提交 X，那是几天前 main 还指向它时留下的，但现在没有分支或标签指向 X。如果 B 在对象库里缺失，fsck 会报错，因为 C 经过引用可达性需要 B；如果 X 这个提交对象本身发生损坏，fsck 不会把它当作仓库错误，因为 X 不在任何已发布引用的可达范围内，只是一个悬空对象。同一个文件丢失，会不会被报告，取决于它是否落在引用边界之内。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为完整性检查应保证仓库里没有多余对象，或每个对象文件都健康。</li>
+                <li>误以为“对象损坏”一律是问题，但无引用对象即使损坏，只要不在当前可达范围内，通常不会影响操作和报告。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>引用可达性与可读性的独立维度</td><td>两者组合出“被引用且可读、被引用却缺失、无引用但可读、无引用且不可读”四种情况；完整性检查只在引用可达边界内判断错误。</td></tr>
+                <tr><td>git fsck 的 missing 与 corrupt 判定</td><td>被引用边界先确定对象是否在可达闭包内，随后缺失才被报告为 missing 或 corrupt。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>悬空对象和 unreachable 对象在 Git 内部是否有区别？分别如何被清理？</li>
+                <li>reflog 中记录的对象算不算“被引用”？为什么日常 fsck 不把 reflog 当作必须可达的引用。</li>
+                <li>如果后来的分支重新指向了一个悬空对象，它会不会立即重新进入“被引用”状态？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="ref-reachability-missing-vs-corrupt">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>引用可达性决定“缺失”分类：git fsck 的 missing 与 corrupt 判定</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>git fsck 是一把“引用可达性扫描器”。它不会把对象库里所有文件都查一遍，而是从已发布引用出发，沿着提交指向树、树指向子树和文件、提交指向父提交这样的关系向前走，形成一个“必须能到达的对象集合”。在这个集合里，如果一个本应存在的对象找不到，fsck 会叫它 missing，意思是引用链在这里断了，仓库无法兑现它对外承诺的内容。如果对象文件存在，能读取，但读取后算出的内容哈希与对象 ID 对不上，fsck 会叫它 corrupt，意思是东西找到了，但不是它声称的那个。missing 和 corrupt 的修复方式也不同：missing 可能是因为索引没建好、pack 没完整发布，或者对象真的丢失了；corrupt 往往意味着数据物理损坏或内容被改写。所以，错误报告必须把两者分开，否则维护者会走错修复方向。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>扫描器从已发布引用出发，沿提交→树→blob 等关系形成“必须可达集合”。</li>
+                <li>若对象不应缺失却缺失，分类为 missing。</li>
+                <li>若对象能读取但内容哈希与对象ID不匹配，分类为 corrupt；两者对应不同修复路径。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设 fsck 从 main 指向的提交 C 开始遍历。C 的树对象 T 中记录了一个文件 blob，哈希编号是 abc123。如果对象库中没有 abc123 这个对象，fsck 会输出类似“missing blob abc123”，它说明 C 引用了这个 blob，但对象库里找不到它。另一个场景：对象库中存在一个文件也叫 abc123，但 git 读取并解压后计算 SHA-1，发现结果是 def456，不是 abc123，fsck 就会报告 corrupt。前者可以用从上游重新获取或恢复 pack 来解决，后者如果没有任何副本，通常无法靠 Git 自行恢复。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把 missing 和 corrupt 都笼统称为“对象损坏”，实际上 missing 是“应有却无”，corrupt 是“有但不对”。</li>
+                <li>以为 fsck 会检查所有对象文件，实际上它只检查从已发布引用可达的对象；不在可达闭包里的对象即使缺失也不报 missing。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>被引用边界</td><td>missing 与 corrupt 的判定依赖被引用边界；只有位于已发布引用可达闭包内的对象，其缺失或损坏才会被 fsck 报告。</td></tr>
+                <tr><td>错误关键词与故障层定位</td><td>报告后要根据具体关键词区分故障层：sha1 mismatch 指向内容身份冲突，inflate error 指向压缩流问题，从而引导修复方向。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>fsck 在遍历 delta 对象时，如果基对象缺失，它会报告 missing 还是 corrupt？为什么这样分类更准确？</li>
+                <li>dangling object 和 unreachable object 有什么区别？它们分别会不会进入 fsck 的 missing 分类？</li>
+                <li>如果一个对象文件本身存在但它的 idx 中没有记录，fsck 是否能发现它？它会被归类为哪种状态？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="concurrent-pack-recycle-ownership">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>并发仓库维护中的旧 pack 回收所有权：谁可以安全删除仍在延迟让位的旧文件</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>当 Git 执行 repack 或 gc 时，会把多个旧 pack 中的对象重新打包成一个新 pack，然后让旧 pack“延迟让位”。所谓延迟让位，是因为在 Linux 上删除一个文件后，已经打开它的进程还能继续读，所以可以马上删掉文件名；但在 Windows 或某些网络文件系统上，删除一个仍有进程打开的文件会失败，或会立即影响读者。于是一个安全策略是：先让旧 pack 保留一段时间，等所有读者都不再使用它之后，再真正删除。但这个策略在并发维护下会变得复杂：如果有两个维护命令同时运行，各自都会生成新的 pack，也会各自列出“我认为可以删除的旧 pack”。命令甲认为旧包 O 已经可以被清掉，因为它的新包 N 已经包含了所需对象；命令乙却可能还在使用 O 作为当前查找路径的一部分，或者它的新包 M 正在把 O 中的对象当成来源。如果甲直接删掉 O，乙就会读到一半找不到数据。安全回收必须解决“所有权”问题：在多个维护者并存的情况下，要有一个统一的机制（例如锁、读写计数、multi-pack-index 版本切换）来确定“当前有效包集合”到底是什么，以及“旧 pack 从这一刻起不再属于任何可观察的有效状态”。只有这样，执行删除的进程才能证明自己拥有回收权，而不是基于自己刚才看到的瞬间快照。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>repack 或 gc 生成新 pack 后，旧 pack 不能立即删，要按读者生命周期延迟让位。</li>
+                <li>并发维护命令可能仍以旧 pack 作为查找来源，某进程对“旧”的判断可能与其他进程冲突。</li>
+                <li>安全的回收需要先确定“当前包集合”的唯一有效状态——通过锁、原子索引切换或所有权机制——删除者才能行动。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>命令 A 执行 `git repack -ad`，它读到了旧 pack O，生成新 pack N，然后把 O 放进自己的“延迟删除候选列表”。与此同时，命令 B 执行 `git multi-pack-index write`，它基于自己启动时的对象库状态构建新的 multi-pack-index，这个新索引里仍然包含 O 中某个对象的位置。A 如果只看到“旧 pack O 已经不在 A 生成的新 pack 集合中”就认为可以删除 O，那么 B 写入的 multi-pack-index 就会指向一个已经被删除的 pack。后续所有查找该对象的读操作都会失败。正确设计是：A 与 B 必须先争夺同一个锁，让“谁先完成包集合切换”变成串行步骤；只有当一个维护操作已经把旧包从所有读者能观察到的当前索引中彻底移除之后，它才真正拥有删除旧包的权利。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为只要过了 gc.pruneExpire 时间窗口，旧 pack 就能安全删除；实际上时间窗口只对短暂读者有效，覆盖不了并发维护进程自己生成新索引的情况。</li>
+                <li>觉得每个维护命令都可以根据自己看到的“旧 pack 不再被需要”进行删除；其实一个维护者看到的“旧”可能是另一个维护者正在使用的“当前”，必须有共同认可的所有权仲裁。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>被引用边界</td><td>旧 pack 是否仍包含被已发布引用可达的对象，决定了它是否仍承载有效数据，不能只因“旧”就被回收。</td></tr>
+                <tr><td>读者通知机制与延迟让位协议</td><td>取得回收权后，还要让尚未退出的旧读者主动让出旧资源，才能完成真正安全的拆除。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>git repack 与 git multi-pack-index write 并发时，具体用哪些锁机制来避免“互相删除仍在使用的 pack”？</li>
+                <li>如果两个 repack 同时运行并各自生成新 pack，最终仓库会留下哪些 pack？重复对象如何合并？</li>
+                <li>在 Windows 上不允许删除被打开的文件时，Git 如何用 rename 和延迟 unlink 实现安全的旧 pack 回收？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">今天选出的三个概念形成一条完整链条：被引用边界给出了“哪些对象必须可读”的强制范围，是完整性检查的前提；引用可达性把这个范围变成 git fsck 的 missing 与 corrupt 具体判定；并发仓库维护中的回收所有权则处理对象所在的 pack 不再被需要之后，如何避免多个维护进程互相误删。三个概念共同回答“一个对象什么时候算被仓库引用、什么损坏必须报告、旧 pack 在什么条件下可以安全消失”。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">完整性检查不是要保证所有对象都可读，而是只保证“被已发布引用可达的对象”必须可解析。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>reflog 中记录的对象算不算“被引用”？为什么日常 fsck 不把 reflog 当作必须可达的引用。</li>
+            <li>fsck 在遍历 delta 对象时，如果基对象缺失，它会报告 missing 还是 corrupt？为什么这样分类更准确？</li>
+            <li>如果两个 repack 同时运行并各自生成新 pack，最终仓库会留下哪些 pack？重复对象如何合并？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>

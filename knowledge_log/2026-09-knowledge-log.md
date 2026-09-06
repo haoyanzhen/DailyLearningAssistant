@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-09/2026-09-07-learning-report.html">2026-09-07</a>
+      </td>
+      <td>被引用边界与悬空对象：什么对象缺失才值得让完整性检查报错</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★</td>
+      <td>完整性检查不是要求“所有对象都可读”，而是要求“被已发布引用可达的对象必须可解析”。</td>
+      <td>下次可以深入 git prune 与 gc 的隔离期机制，看 Git 如何保护未满两周的对象不被误清，以及 reflog、stash 等非 refs 引用如何影响对象的保留资格。</td>
+    </tr>
+    <tr>
+      <td>引用可达性决定“缺失”分类：git fsck 的 missing 与 corrupt 判定</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★</td>
+      <td>fsck 用引用可达性定义“必须存在”，找不到是 missing，内容与 ID 不一致是 corrupt。</td>
+      <td>下次可以继续比较 git fsck 与 git index-pack 对同一 pack 错误的报告差异，理解为什么 index-pack 会在验证阶段就发现某些 corrupt，而 fsck 要到可达遍历时才暴露 missing。</td>
+    </tr>
+    <tr>
+      <td>并发仓库维护中的旧 pack 回收所有权：谁可以安全删除仍在延迟让位的旧文件</td>
+      <td>软件工程 / 计算机科学</td>
+      <td>★★★★</td>
+      <td>旧 pack 能否删除，不是由单个维护进程“我觉得它旧了”决定，而是由系统内唯一有效的“当前包集合所有权”判定。</td>
+      <td>下次可以深入 multi-pack-index 的 expire 命令：它如何通过原子更新总索引，找出不再被任何 midx 引用的 pack 并清理，以及 expire 与 repack 之间的锁顺序。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-09/2026-09-06-learning-report.html">2026-09-06</a>
       </td>
       <td>未完成发布不等于对象库损坏：中间态与真实损坏在完整性检查中的分类</td>

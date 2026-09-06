@@ -3,6 +3,96 @@
   "year_month": "2026-09",
   "threads": [
     {
+      "id": "2026-09-07-pack-6f5e6d74bb",
+      "question": "git repack 与 git multi-pack-index write 并发时，具体用哪些锁机制来避免“互相删除仍在使用的 pack”？",
+      "source_date": "2026-09-07",
+      "source_concept": "并发仓库维护中的旧 pack 回收所有权：谁可以安全删除仍在延迟让位的旧文件",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-07T06:04:12.503402+08:00",
+      "updated_at": "2026-09-07T06:04:12.503402+08:00"
+    },
+    {
+      "id": "2026-09-07-pack-58719f6623",
+      "question": "如果两个 repack 同时运行并各自生成新 pack，最终仓库会留下哪些 pack？重复对象如何合并？",
+      "source_date": "2026-09-07",
+      "source_concept": "并发仓库维护中的旧 pack 回收所有权：谁可以安全删除仍在延迟让位的旧文件",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-07T06:04:12.503402+08:00",
+      "updated_at": "2026-09-07T06:04:12.503402+08:00"
+    },
+    {
+      "id": "2026-09-07-pack-1b497d4ad2",
+      "question": "在 Windows 上不允许删除被打开的文件时，Git 如何用 rename 和延迟 unlink 实现安全的旧 pack 回收？",
+      "source_date": "2026-09-07",
+      "source_concept": "并发仓库维护中的旧 pack 回收所有权：谁可以安全删除仍在延迟让位的旧文件",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-07T06:04:12.503402+08:00",
+      "updated_at": "2026-09-07T06:04:12.503402+08:00"
+    },
+    {
+      "id": "2026-09-07-git-fsck-missing-corrupt-2263b59905",
+      "question": "dangling object 和 unreachable object 有什么区别？它们分别会不会进入 fsck 的 missing 分类？",
+      "source_date": "2026-09-07",
+      "source_concept": "引用可达性决定“缺失”分类：git fsck 的 missing 与 corrupt 判定",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-07T06:04:12.503402+08:00",
+      "updated_at": "2026-09-07T06:04:12.503402+08:00"
+    },
+    {
+      "id": "2026-09-07-git-fsck-missing-corrupt-0fd83c428b",
+      "question": "fsck 在遍历 delta 对象时，如果基对象缺失，它会报告 missing 还是 corrupt？为什么这样分类更准确？",
+      "source_date": "2026-09-07",
+      "source_concept": "引用可达性决定“缺失”分类：git fsck 的 missing 与 corrupt 判定",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-07T06:04:12.503402+08:00",
+      "updated_at": "2026-09-07T06:04:12.503402+08:00"
+    },
+    {
+      "id": "2026-09-07-git-fsck-missing-corrupt-04d3b9ff66",
+      "question": "如果一个对象文件本身存在但它的 idx 中没有记录，fsck 是否能发现它？它会被归类为哪种状态？",
+      "source_date": "2026-09-07",
+      "source_concept": "引用可达性决定“缺失”分类：git fsck 的 missing 与 corrupt 判定",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-07T06:04:12.503402+08:00",
+      "updated_at": "2026-09-07T06:04:12.503402+08:00"
+    },
+    {
+      "id": "2026-09-07-concept-375156f61e",
+      "question": "如果后来的分支重新指向了一个悬空对象，它会不会立即重新进入“被引用”状态？",
+      "source_date": "2026-09-07",
+      "source_concept": "被引用边界与悬空对象：什么对象缺失才值得让完整性检查报错",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-07T06:04:12.503402+08:00",
+      "updated_at": "2026-09-07T06:04:12.503402+08:00"
+    },
+    {
+      "id": "2026-09-07-concept-1bbec4fc2d",
+      "question": "悬空对象和 unreachable 对象在 Git 内部是否有区别？分别如何被清理？",
+      "source_date": "2026-09-07",
+      "source_concept": "被引用边界与悬空对象：什么对象缺失才值得让完整性检查报错",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-07T06:04:12.503402+08:00",
+      "updated_at": "2026-09-07T06:04:12.503402+08:00"
+    },
+    {
+      "id": "2026-09-07-concept-0c20fc321f",
+      "question": "reflog 中记录的对象算不算“被引用”？为什么日常 fsck 不把 reflog 当作必须可达的引用。",
+      "source_date": "2026-09-07",
+      "source_concept": "被引用边界与悬空对象：什么对象缺失才值得让完整性检查报错",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-07T06:04:12.503402+08:00",
+      "updated_at": "2026-09-07T06:04:12.503402+08:00"
+    },
+    {
       "id": "2026-09-06-ref-ok-ng-f56fff7d7d",
       "question": "如果 ok/ng 冲突导致不宣告成功，脚本应有怎样的默认行为才能保证安全，而不是让用户误以为推送已被接受？",
       "source_date": "2026-09-06",
