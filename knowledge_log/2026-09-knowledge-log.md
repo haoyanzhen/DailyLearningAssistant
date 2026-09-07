@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-09/2026-09-08-learning-report.html">2026-09-08</a>
+      </td>
+      <td>悬空关系的瞬态性：分支重新指向后对象立即重新进入可达闭包</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★</td>
+      <td>对象不会天生悬空，它只是暂时失去引用边；只要分支或标签重新指向它，它就会瞬间回到正式可达集合。</td>
+      <td>下次可以沿着 gc 的保守窗口深入：为什么 Git 要等对象“悬空”满两周才清理，reflog 和 stash 等引用如何改变这个保留期。</td>
+    </tr>
+    <tr>
+      <td>物理存在但不被索引发现的对象：pack 无 idx 时 fsck 面对的是目录盲区</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★</td>
+      <td>fsck 不扫描硬盘上的所有字节，而是按索引目录查找对象；一个没有登记入口的 pack，即使物理存在也等于不可见。</td>
+      <td>下一次可以比较三种发布 pack 的方式：单独生成 idx、写入 multi-pack-index、repack 时原子替换包集合，观察它们分别让对象在什么时刻对并发读者可见。</td>
+    </tr>
+    <tr>
+      <td>并发写总索引时的锁边界：repack 与 multi-pack-index write 不能各自清点旧 pack</td>
+      <td>软件工程 / 计算机科学</td>
+      <td>★★★★</td>
+      <td>要让并发的 repack 安全，锁不是锁住 pack，而是锁住“改写总索引并清点旧 pack”的入口。</td>
+      <td>下一次可以研究 git multi-pack-index expire 的详细流程：它如何找出不再出现在新 midx 中的旧 pack，并用原子替换与延迟 unlink 在不打断读者的情况下清理它们。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-09/2026-09-07-learning-report.html">2026-09-07</a>
       </td>
       <td>被引用边界与悬空对象：什么对象缺失才值得让完整性检查报错</td>

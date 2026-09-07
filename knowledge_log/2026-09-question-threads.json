@@ -3,6 +3,96 @@
   "year_month": "2026-09",
   "threads": [
     {
+      "id": "2026-09-08-repack-multi-pack-index-write-pack-ffba07de59",
+      "question": "如果 repack 和 multi-pack-index write 没有共享同一把锁，而是使用了不同锁文件，是否仍能可靠防止互相误删？",
+      "source_date": "2026-09-08",
+      "source_concept": "并发写总索引时的锁边界：repack 与 multi-pack-index write 不能各自清点旧 pack",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-08T06:05:24.391280+08:00",
+      "updated_at": "2026-09-08T06:05:24.391280+08:00"
+    },
+    {
+      "id": "2026-09-08-repack-multi-pack-index-write-pack-fb0132f732",
+      "question": "在更新总索引之后，旧 pack 已经不再被任何索引引用，但仍有 Git 进程正打开着读取它。此时直接 unlink 是否安全？如果不安全，延迟删除策略如何工作？",
+      "source_date": "2026-09-08",
+      "source_concept": "并发写总索引时的锁边界：repack 与 multi-pack-index write 不能各自清点旧 pack",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-08T06:05:24.391280+08:00",
+      "updated_at": "2026-09-08T06:05:24.391280+08:00"
+    },
+    {
+      "id": "2026-09-08-repack-multi-pack-index-write-pack-864c2bf61a",
+      "question": "当两个 repack 同时运行时，谁负责阻止它们产生冲突的包集合？具体是锁文件还是原子目录交换机制？",
+      "source_date": "2026-09-08",
+      "source_concept": "并发写总索引时的锁边界：repack 与 multi-pack-index write 不能各自清点旧 pack",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-08T06:05:24.391280+08:00",
+      "updated_at": "2026-09-08T06:05:24.391280+08:00"
+    },
+    {
+      "id": "2026-09-08-pack-idx-fsck-c40cbe3d75",
+      "question": "如果保留了旧的 midx，却忘了更新 pack 目录，会不会让某个原本存在的对象从视图中消失？",
+      "source_date": "2026-09-08",
+      "source_concept": "物理存在但不被索引发现的对象：pack 无 idx 时 fsck 面对的是目录盲区",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-08T06:05:24.391280+08:00",
+      "updated_at": "2026-09-08T06:05:24.391280+08:00"
+    },
+    {
+      "id": "2026-09-08-pack-idx-fsck-703f5762a7",
+      "question": "当 pack 存在但没有 idx 时，是否运行 git index-pack 能直接从 pack 内容重建 idx？",
+      "source_date": "2026-09-08",
+      "source_concept": "物理存在但不被索引发现的对象：pack 无 idx 时 fsck 面对的是目录盲区",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-08T06:05:24.391280+08:00",
+      "updated_at": "2026-09-08T06:05:24.391280+08:00"
+    },
+    {
+      "id": "2026-09-08-pack-idx-fsck-6ce1813242",
+      "question": "为什么 Git 不设计成：每当 fsck 发现 pack 目录里有未登记文件，就自动扫描并把它纳入检查，而必须依靠显式索引？",
+      "source_date": "2026-09-08",
+      "source_concept": "物理存在但不被索引发现的对象：pack 无 idx 时 fsck 面对的是目录盲区",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-08T06:05:24.391280+08:00",
+      "updated_at": "2026-09-08T06:05:24.391280+08:00"
+    },
+    {
+      "id": "2026-09-08-concept-7c04d69025",
+      "question": "如果对象 A 被分支 B 移动后成为悬空，同时另一个分支 C 又快速指回对象 A，fsck 在并发运行时会看到哪种状态？",
+      "source_date": "2026-09-08",
+      "source_concept": "悬空关系的瞬态性：分支重新指向后对象立即重新进入可达闭包",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-08T06:05:24.391280+08:00",
+      "updated_at": "2026-09-08T06:05:24.391280+08:00"
+    },
+    {
+      "id": "2026-09-08-concept-39ae3e7491",
+      "question": "当一个悬空对象重新进入可达闭包后，它引用的父对象们是否也自动变得必须存在？如果父对象已经被 gc 删除怎么办？",
+      "source_date": "2026-09-08",
+      "source_concept": "悬空关系的瞬态性：分支重新指向后对象立即重新进入可达闭包",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-08T06:05:24.391280+08:00",
+      "updated_at": "2026-09-08T06:05:24.391280+08:00"
+    },
+    {
+      "id": "2026-09-08-concept-0c6b00c5a2",
+      "question": "git gc 为何要设置默认两周的保留窗口，而不在引用更新后立即清理所有悬空对象？",
+      "source_date": "2026-09-08",
+      "source_concept": "悬空关系的瞬态性：分支重新指向后对象立即重新进入可达闭包",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-08T06:05:24.391280+08:00",
+      "updated_at": "2026-09-08T06:05:24.391280+08:00"
+    },
+    {
       "id": "2026-09-07-pack-6f5e6d74bb",
       "question": "git repack 与 git multi-pack-index write 并发时，具体用哪些锁机制来避免“互相删除仍在使用的 pack”？",
       "source_date": "2026-09-07",

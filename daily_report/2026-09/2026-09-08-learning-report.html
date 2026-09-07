@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-09-08 学习笔记日报</title>
+    <meta name="description" content="今日围绕Git对象库完整性展开：悬空对象可因分支指向瞬态回归，无索引pack致fsck目录盲区，并发维护需总索引写锁守护，三者共构动态逻辑视图。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260908-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-09-08</p>
+        <h1>对象库的完整性边界：引用、索引与并发锁</h1>
+        <p>今天不再停留于对象"缺不缺"的静态定义，而是看它在引用关系、索引入口与维护锁之间如何被时间与并发改变。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>Git 对象库的动态完整性：悬空回…</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>悬空关系的瞬态性：分支重新…</strong>
+                <small>对象不会天生悬空，它只是暂时失去引…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>物理存在但不被索引发现的对…</strong>
+                <small>fsck 不扫描硬盘上的所有字节…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>并发写总索引时的锁边界：r…</strong>
+                <small>要让并发的 repack 安全，锁…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念从大到小形成了一个链条：引用图当前状态决定一个对象是否被正式需要；目录索引当前状态决定一个对象是否能够被找到；总索引写锁决定多个维护进程在改变包集合时是否能安全地知道“哪些 pack 仍被需要”。它们都指向一个共同结论：Git 对象库的完整性不是通过扫描文件系统就能判断的，而必须建立在当前 refs、当前索引和当前读者关系所形成的逻辑视图上。反过来，这也解释了为什么某些现象看起来矛盾：文件明明还在但 fsck 报 missing；旧 pack 没有被立即删除；悬空对象又突然回到正式集合。理解这些现象的关键，是不要把它们看成文件系统层面“在/不在”，而是看成 Git 内部“有没有被某个关系接纳、有没有被某个索引发布、有没有被某个锁保护”的状态。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["Git 对象库的动态完整性：悬空回归 · 索引盲区 · 总索引写锁"])
+  concept1["悬空关系的瞬态性：分支重新指向后对象立即重新进入可达闭包"]
+  hub --&gt; concept1
+  concept2["物理存在但不被索引发现的对象：pack 无 idx 时 fsck 面对的是目录盲区"]
+  hub --&gt; concept2
+  concept3["并发写总索引时的锁边界：repack 与 multi-pack-index write 不能各自清点旧 pack"]
+  hub --&gt; concept3
+  related1["被引用边界与悬空对象"]
+  concept1 --&gt; related1
+  concept1 --&gt; concept2
+  concept2 --&gt; concept3
+  related2["delta 对象的外部依赖"]
+  concept2 --&gt; related2
+  concept3 --&gt; concept2
+  related3["未完成发布不等于对象库损坏"]
+  concept3 --&gt; related3
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="dangling-relationship-transience">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>悬空关系的瞬态性：分支重新指向后对象立即重新进入可达闭包</h3>
+              <p>Transient dangling objects and re-entering reachable closure</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">对象不会天生悬空，它只是暂时失去引用边；只要分支或标签重新指向它，它就会瞬间回到正式可达集合。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>悬空对象本身完好，只是当前没有任何分支或标签引用它。</li>
+                <li>分支或标签重新指向该对象时，Git 立即将其纳入可达集合，无需重写对象文件。</li>
+                <li>对象是否悬空是随 refs 改变而不断更新的临时关系，不是固定属性。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="dangling-relationship-transience" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="physical-but-not-indexed">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>物理存在但不被索引发现的对象：pack 无 idx 时 fsck 面对的是目录盲区</h3>
+              <p>Physically existing but index-invisible objects: pack without idx as directory blind spot</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">fsck 不扫描硬盘上的所有字节，而是按索引目录查找对象；一个没有登记入口的 pack，即使物理存在也等于不可见。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>对象必须通过 idx 或 midx 登记后才能被 Git 查找，否则即使 pack 存在也如同不存在。</li>
+                <li>fsck 报告 missing 不一定是磁盘文件缺失，也可能是该对象没有可解析入口。</li>
+                <li>未生成 idx 的 pack 相当于“未发布”，会让 fsck 认为对象缺失。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="physical-but-not-indexed" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="concurrent-total-index-lock">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>并发写总索引时的锁边界：repack 与 multi-pack-index write 不能各自清点旧 pack</h3>
+              <p>Lock boundary for concurrent total-index updates: repack and multi-pack-index write must not independently prune old packs</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">要让并发的 repack 安全，锁不是锁住 pack，而是锁住“改写总索引并清点旧 pack”的入口。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>旧 pack 能否删除由总索引是否仍引用它决定，运维命令必须基于最新包集合判断。</li>
+                <li>repack 与 multi-pack-index write 若各自清点旧 pack，可能互相误删仍在使用的对象。</li>
+                <li>应将“写总索引 + 清点旧 pack + 删除不再被引用的 pack”放入同一把锁保护的临界区。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="concurrent-total-index-lock" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="dangling-relationship-transience">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>悬空关系的瞬态性：分支重新指向后对象立即重新进入可达闭包</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>先想象一张城市地图：对象是地图上的景点，分支和标签是官方旅游路线。一个景点如果没有被任何路线覆盖，它就是“游离”的，也就是悬空对象。但悬空并不是景点自身变坏了，它仍然是完好的，只是当前没有路线连到它。如果某一天官方路线改动了，把一条新路线指向这个景点，它立刻又成为当前正式路线的一部分。Git 的对象也是一样：一个提交对象成为悬空，往往是因为分支指针被移动、离开了它；但只要某个分支或标签重新指向这个提交，Git 会立刻把它纳入“当前可达”的集合。整个过程不需要重写对象、不需要移动文件、不需要修改对象 ID，变的只是引用关系这一条线。这个动态视角非常重要：如果你在某一个瞬间看到对象“没人引用”，不能因此断定它永远没用；它可能下一秒就被新分支捡回去。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>可达闭包由当前 refs 决定，refs 改变即改变对象是否被包含。</li>
+                <li>Git 不移动对象文件，仅通过添加或更新引用记录来扩展可达集合。</li>
+                <li>对象 ID 不变，内容寻址使重新引用无需修改对象本身。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一个剧本曾被导演剪出正片，但后来版本回退，这个片段变成了素材库里的“未采用片段”。某天续集导演在废片里发现了这段剧情，把它重新编入正片，它就从素材变成了当前故事线的一部分。片段本身一字未改，变化的是“哪一条官方时间线正在使用它”。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为“悬空对象”等于“坏对象”或“垃圾对象”，实际上悬空对象通常内容完好。</li>
+                <li>误以为从悬空变回被引用需要把对象“移回来”，其实只是引用文件里多了一行哈希。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>被引用边界与悬空对象</td><td>前一天定义了完整性检查只要求“被已发布引用可达的对象”必须存在，今天从时间维度说明这个边界随引用更新而动态变化。</td></tr>
+                <tr><td>物理存在但不被索引发现的对象</td><td>无索引的 pack 对象没有被发布，即使物理存在也不可见；悬空对象若被重新引用则立刻可见，两者都依赖当前逻辑视图而非文件存在。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果对象 A 被分支 B 移动后成为悬空，同时另一个分支 C 又快速指回对象 A，fsck 在并发运行时会看到哪种状态？</li>
+                <li>当一个悬空对象重新进入可达闭包后，它引用的父对象们是否也自动变得必须存在？如果父对象已经被 gc 删除怎么办？</li>
+                <li>git gc 为何要设置默认两周的保留窗口，而不在引用更新后立即清理所有悬空对象？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="physical-but-not-indexed">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>物理存在但不被索引发现的对象：pack 无 idx 时 fsck 面对的是目录盲区</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>在 Git 中，一个对象要被读取，必须先经过“查找表”。松散对象通过目录路径定位，pack 中的对象则通过 idx 或 multi-pack-index（midx）定位。idx 就像 pack 的目录清单，记录了这个 pack 里每个对象 ID 以及它在 pack 中的偏移量。若一个 pack 文件躺在 .git/objects/pack/ 里，却没有对应的 idx，也没有被 midx 登记，Git 在查找对象时根本不会去扫描这个 pack 的内部。于是，即使这个 pack 里保存着完整的数据，在 Git 的逻辑视图里它也像不存在一样。fsck 做完整性检查时，沿着引用图逐个遍历对象，每一步都要用查找表定位对象所在位置。如果某对象只存在于无 idx 的 pack 中，fsck 会报告“missing”。这不是说磁盘上的文件被删除了，而是说“在当前索引体系中找不到可解析入口”。这就像一间没有编目卡片的库房，书确实放在里面，但馆藏系统不知道，读者也检索不到。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Git 对象查找依赖索引表，不扫描目录内全部物理字节。</li>
+                <li>没有 idx 或 midx 登记的 pack 无法参与对象解析，形成目录盲区。</li>
+                <li>fsck 的 missing 表示在当前可解析入口中找不到，而非物理文件一定被删。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>图书馆大扫除时，管理员在书架背面发现一本没有登录到编目系统的旧书。馆藏系统里查不到它，读者按索书号找不到它，将来盘点时也不会把它算成馆藏。直到有人给这本书补做登记卡、录入系统，它才从“物理存在但馆藏缺失”变成真正可借阅的书。Git 的 pack 和 idx 就是这个关系：pack 是书，idx 是编目卡，缺了编目卡，fsck 就看不见这本书里的任何字。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把 fsck 报告 missing 直接理解为磁盘上没有任何数据。</li>
+                <li>以为 Git 会自动扫描无索引的 pack 并纳入检查，实际上需要显式索引。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>并发写总索引时的锁边界</td><td>pack 必须先通过索引发布才能被读到；写锁保证清点旧 pack 时看到的包集合是一个不发生跳变的视图。</td></tr>
+                <tr><td>delta 对象的外部依赖</td><td>基对象不在可解析集合时，即使字节存在也无法还原，本质都是对象未被当前可解析目录成功暴露。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当 pack 存在但没有 idx 时，能否运行 git index-pack 直接从 pack 内容重建 idx？</li>
+                <li>如果保留了旧的 midx，却忘了更新 pack 目录，会不会让某个原本存在的对象从视图中消失？</li>
+                <li>为什么 Git 不设计成每当 fsck 发现 pack 目录里有未登记文件就自动扫描并纳入检查？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="concurrent-total-index-lock">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>并发写总索引时的锁边界：repack 与 multi-pack-index write 不能各自清点旧 pack</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>一个 pack 文件能否被删除，不由它自己在磁盘上是否老旧决定，而由对象库的总索引决定。总索引维护着“当前有哪些 pack、每个对象在哪个 pack 的哪个偏移”的查找关系。若某个 pack 仍被总索引引用，它就有资格继续服务对象查找；若总索引已经切换到新集合，它才可能成为待回收对象。现在考虑两个维护命令同时运行：git repack 会生成新 pack，再更新总索引并清理不再需要的旧 pack；git multi-pack-index write 也会根据当前 pack 目录重写总索引。如果它们没有先获得同一把写锁，就可能发生危险：repack 认定某些旧 pack 不再需要并准备删除，而 multi-pack-index write 刚刚读到的目录状态显示这些旧 pack 仍在仓库中，于是把其中一个旧 pack 也写进新的总索引。最终，repack 删掉旧 pack，但新总索引还引用它，对象就永久丢失了。正确的做法是把“写总索引 + 清点旧 pack + 删除不再被引用的 pack”放入同一个临界区，由同一把锁保护。锁的边界不是单个 pack 文件，而是总索引的写入口。拿不到锁的命令必须等待，等拿到锁后再按最新状态清点，才不会误删另一个命令刚刚发布的内容。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>对象库维护的本质是安全地更新总索引而后回收废弃 pack，而不是直接操作文件。</li>
+                <li>若两个命令没有共享同一把锁，清点旧 pack 的决策会基于过期视图，导致误删。</li>
+                <li>锁必须覆盖“读当前状态、写新总索引、清点并删除”整体过程，才能原子切换包集合。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>自助餐厅的后厨有两位管理员同时修改今日菜单。管理员甲按照昨晚的旧菜单，准备把一盆牛肉丸当成“即将过期食材”清掉；管理员乙此时正打算把同一盆牛肉丸写进新的今日菜单。如果甲只给牛肉丸的盆子贴了标签“处理前需确认”，乙依然可以绕过这个标签更新菜单。真正有效的办法是规定：任何人要修改今日菜单，必须先拿到唯一一张“菜单修改卡”。甲拿到卡后统一清点食材，乙排队等待；甲完成后，乙再拿到卡时看到的是最新菜单，自然不会把已经被清掉的食材再写进去。Git 的 repack 和 multi-pack-index write 也需要这种“总索引写卡”。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为并发 repack 最多浪费磁盘，不会破坏数据；实际可能永久丢失对象。</li>
+                <li>以为锁应锁住 pack 文件本身；但其他命令可通过更新总索引引用该 pack，锁文件不能阻止视图变化。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>物理存在但不被索引发现的对象</td><td>pack 必须先通过索引发布才能被读到；写锁保证清点旧 pack 时看到的包集合是一个不发生跳变的视图。</td></tr>
+                <tr><td>未完成发布不等于对象库损坏</td><td>未完成发布与损坏都可能导致 transient 状态，但总索引写锁正是为了让发布过程原子化，避免中间态被误判或误删。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当两个 repack 同时运行时，谁负责阻止它们产生冲突的包集合？具体是锁文件还是原子目录交换机制？</li>
+                <li>在更新总索引之后，旧 pack 已经不再被任何索引引用，但仍有 Git 进程正打开着读取它。此时直接 unlink 是否安全？如果不安全，延迟删除策略如何工作？</li>
+                <li>如果 repack 和 multi-pack-index write 没有共享同一把锁，而是使用了不同锁文件，是否仍能可靠防止互相误删？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念从大到小形成了一个链条：引用图当前状态决定一个对象是否被正式需要；目录索引当前状态决定一个对象是否能够被找到；总索引写锁决定多个维护进程在改变包集合时是否能安全地知道“哪些 pack 仍被需要”。它们都指向一个共同结论：Git 对象库的完整性不是通过扫描文件系统就能判断的，而必须建立在当前 refs、当前索引和当前读者关系所形成的逻辑视图上。反过来，这也解释了为什么某些现象看起来矛盾：文件明明还在但 fsck 报 missing；旧 pack 没有被立即删除；悬空对象又突然回到正式集合。理解这些现象的关键，是不要把它们看成文件系统层面“在/不在”，而是看成 Git 内部“有没有被某个关系接纳、有没有被某个索引发布、有没有被某个锁保护”的状态。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">对象是否悬空是引用图上的一种临时关系，分支重新指向它时，它会立即重新进入当前可达闭包。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>为什么 Git 要等对象悬空满两周才清理？reflog 和 stash 等引用如何改变保留期？</li>
+            <li>除单独生成 idx 外，还有哪些发布 pack 的方式？它们分别在什么时刻让对象对并发读者可见？</li>
+            <li>git multi-pack-index expire 如何找出不再被新 midx 引用的旧 pack，并用原子替换与延迟 unlink 安全清理？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
