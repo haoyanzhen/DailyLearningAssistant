@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-09-09 学习笔记日报</title>
+    <meta name="description" content="复习日：从可达闭包出发，理解完整性检查与回收共用同一判定、不可达对象的时间缓冲，以及包文件需要显式索引才完成发布。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260909-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-09-09</p>
+        <h1>无变更日的三个核心边界：闭包、缓冲与索引</h1>
+        <p>今天不谈新提交，而是聚焦对象库中最容易混淆的判定问题：哪些对象必须存在，哪些对象还能找回，哪些文件才算正式发布。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>对象库维护中的可达闭包、保留窗口与…</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>同一个可达闭包的两个方向：…</strong>
+                <small>一张树根地图：fsck 问树根之内…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>不可达对象的时间缓冲：gc…</strong>
+                <small>删除不是即刻清空，reflog 是…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>显式索引是对象库的发布边界…</strong>
+                <small>没有目录的书不算正式藏书；pack…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">本次复习的核心关联点是，“对象是否应当存在”和“对象是否可以消失”并不是同一把尺子。第一个概念指出，fsck 与 gc 共用同一个从引用出发的可达闭包，一个要求闭包内对象必须可解析，一个只清理闭包外的对象；第二个概念给这个闭包加上时间维度，对象离开闭包后不会立刻删除，reflog 与保留窗口让不可达成为可恢复的临时状态；第三个概念把判定放回更基础的约束中，对象必须先经过显式索引的发布，才能进入 fsck 或 gc 的遍历视图，没有登记的文件只是磁盘上的中间产物。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["对象库维护中的可达闭包、保留窗口与显式索引发布边界"])
+  concept1["同一个可达闭包的两个方向：fsck 的要求存在集合与 gc 的可清理集合共享同一判定边界"]
+  hub --&gt; concept1
+  concept2["不可达对象的时间缓冲：gc 保留窗口让“悬空状态”成为可恢复的临时状态"]
+  hub --&gt; concept2
+  concept3["显式索引是对象库的发布边界：为什么 fsck 不靠扫描 pack 目录来发现对象"]
+  hub --&gt; concept3
+  concept1 --&gt; concept1
+  concept1 --&gt; concept2
+  concept2 --&gt; concept1
+  related1["旧 pack 延迟退出"]
+  concept2 --&gt; related1
+  concept3 --&gt; concept1
+  related2["并发 repack"]
+  concept3 --&gt; related2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="shared-reachable-closure-fsck-gc">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 计算机科学</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>同一个可达闭包的两个方向：fsck 的要求存在集合与 gc 的可清理集合共享同一判定边界</h3>
+              <p>Shared Reachable Closure Between fsck and gc</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">一张树根地图：fsck 问树根之内哪些必须活着，gc 问树根之外哪些可以清理。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>完整性检查从当前引用闭包出发，而不是从磁盘上的所有字节出发。</li>
+                <li>fsck 与 gc 使用同一个可达闭包，一个要求闭包内对象可解析，一个只清理闭包外的对象。</li>
+                <li>分支重新指向一个悬空对象时，该对象及其祖先会瞬间翻转到闭包内侧，变成必须存在的对象。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="shared-reachable-closure-fsck-gc" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="retention-window-for-unreachable-objects">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>不可达对象的时间缓冲：gc 保留窗口让“悬空状态”成为可恢复的临时状态</h3>
+              <p>Retention Window as Time Buffer for Unreachable Objects</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">删除不是即刻清空，reflog 是回收站，保留窗口是清空期限。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>引用移动或删除会让旧对象立刻离开当前可达闭包，但这不等于变成垃圾。</li>
+                <li>reflog 保留引用最近指向过的对象，类似回收站的记录；gc 默认有二周左右的保留窗口。</li>
+                <li>只有保留期结束且对象仍不可达，它才进入真正可清理的范围。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="retention-window-for-unreachable-objects" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="explicit-index-as-publishing-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>显式索引是对象库的发布边界：为什么 fsck 不靠扫描 pack 目录来发现对象</h3>
+              <p>Explicit Index as the Publishing Boundary</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">没有目录的书不算正式藏书；pack 没有 idx，fsck 就不认它。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>pack 文件落到目录中并不自动成为正式对象，必须有 idx 或 multi-pack-index 显式注册。</li>
+                <li>fsck 不是靠扫描目录寻找对象，而是只遍历索引已登记的对象，因此不会误判并发写入的中间态。</li>
+                <li>显式索引既是完整性检查的边界，也是并发 repack 中读者看到哪些 pack 的发布边界。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="explicit-index-as-publishing-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="shared-reachable-closure-fsck-gc">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 计算机科学</p>
+                <h3>同一个可达闭包的两个方向：fsck 的要求存在集合与 gc 的可清理集合共享同一判定边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>我们可以把 Git 对象库想象成一棵巨大的树。分支、标签等引用是树根，提交、树对象、 blob 是树上的节点，父子关系就是枝干的连接。fsck 做体检时，并不是要求园子里每一片叶子都必须健康，而是从树根出发，沿着所有能走到的路径，记录下“这棵树此刻应该包含哪些节点”。凡是这条路径上应该出现却找不到的节点，才是真正的 missing。gc 做清理时，用的也是同一张路径图，但它站在相反方向：凡是树根走不到的地方，才可能被当作枯枝扫掉。所以“必须存在”和“可以清理”不是两套独立标准，而是同一个可达闭包的一体两面。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Git 引用（分支、标签）是可达闭包的根，对象图由提交、树、blob 之间的边构成。</li>
+                <li>fsck 从当前引用出发递归遍历对象图，记录闭包内所有应存在的对象并验证可解析。</li>
+                <li>gc 从同一组引用出发，反向寻找闭包外的对象作为可回收候选。</li>
+                <li>闭包内外的归属会因引用更新而翻转，例如被重新分支指向的悬空对象立即回到闭包内。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设你有一个提交 A，它曾经被 main 指向，后来 main 移动到 B，A 变成悬空对象。此时 fsck 不会要求 A 必须存在，因为 A 不在当前可达闭包内；gc 也不会立刻删除 A，因为保留窗口还在。接着你创建一个新分支 fix 并指向 A。这一刻，A 重新进入可达闭包，fsck 立刻把 A 视为必须存在；而 A 的父提交 P 也因为 A 的引用而被同一递归遍历覆盖，同样进入必须存在集合。如果 P 恰好已在更早的 gc 中被清理，fsck 会在 P 处报告 missing。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为 fsck 会检查磁盘上所有对象，或 gc 会删除所有“当前不可达”对象。实际上 fsck 的缺失判定只从当前引用闭包出发，闭包外的文件不会被视为缺失，也不会被当作正式对象检查。</li>
+                <li>误以为对象一旦不可达就会在下一次 gc 被清理。实际上 gc 还要叠加 reflog、保留窗口等条件，不会一不可达就立刻清理。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>可达闭包</td><td>fsck 与 gc 共用同一个闭包判定：闭包内的对象必须存在并可解析，闭包外的对象才可能被回收。</td></tr>
+                <tr><td>保留窗口</td><td>对象可以通过引用更新瞬间进入闭包，但其从闭包外到被真正删除仍受保留窗口的时间约束。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果一个悬空提交被分支重新指向，它的父对象们是否自动成为必须存在的对象？</li>
+                <li>如果父对象已经被 gc 删除，重新指向子提交后 fsck 会遇到什么？</li>
+                <li>并发的 fsck 和 gc 各自读取不同时刻的引用快照，会不会产生不一致的结论？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="retention-window-for-unreachable-objects">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>不可达对象的时间缓冲：gc 保留窗口让“悬空状态”成为可恢复的临时状态</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>当我们移动或删除一个引用时，旧对象会离开当前可达闭包，但这不等于它立刻变成垃圾。Git 的设计者是知道用户会犯错的：你可能会误删分支，也可能会用 reset 把分支移到一个不该去的地方。为了让这类操作可以撤销，Git 不会在引用更新后的下一秒就清理所有不可达对象。它通过 reflog 记录引用最近指向过哪里，并给 gc 设置一个默认保留窗口，比如两周。在这段时间里，那个“悬空”的提交仍然安静地躺在对象库中，你可以随时找到它并重新用分支指向它。保留窗口结束后，它才真正进入可清理范围。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>引用空间的变更会让旧对象离开当前可达闭包，但 reflog 会记录其历史位置，保留找回线索。</li>
+                <li>gc 的默认保留窗口（常为两周）保护了刚离开闭包的对象，不立即当作过期垃圾。</li>
+                <li>在保留期内对象可以由 reflog 找回并重新挂到分支上；过期且不再可达才是可清理状态。</li>
+                <li>因此，‘不可达’在时间维度上分成仍可恢复和真正可清理两个阶段。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>你执行 git branch -D experiment 删除了一个包含重要提交 X 的分支。X 立即成为不可达对象，但你不用担心，因为 git reflog 仍会记录 experiment 曾经指向 X。你可以用 git reflog 找到 X 的哈希，然后执行 git branch experiment &lt;hash&gt;，X 便重新回到可达闭包。如果两周内你没有恢复它，之后某次 gc 运行才可能把 X 清理掉。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为一条引用不再指向某个提交，该提交就马上成为垃圾，下次 gc 就会清掉。</li>
+                <li>实际上 gc 默认不会清理刚不可达的对象，因为 reflog 仍保留引用；对象真正可清理的时刻是 reflog 条目过期且引用闭包仍不包含它之后。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>可达闭包</td><td>闭包外对象不会瞬间消失，保留窗口让它成为可恢复的临时状态，这是从“存在性”到“可回收”的时间过渡。</td></tr>
+                <tr><td>旧 pack 延迟退出</td><td>一个处理引用生命周期中的保留期，另一个处理文件读取者生命周期的延迟删除，两者互补地保护并发读者。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>为什么 gc 默认要保留不可达对象两周，而不是立即清理？</li>
+                <li>reflog 的过期时间如何与 gc 的保留期相互作用？</li>
+                <li>如果用户关闭 reflog，误删分支后的恢复窗口会怎样变化？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="explicit-index-as-publishing-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>显式索引是对象库的发布边界：为什么 fsck 不靠扫描 pack 目录来发现对象</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>Git 对象库里的 pack 文件，并不是一放到目录中就自动成为“正式对象”的。一个 pack 文件要能被读者找到，必须先有一个 idx 文件，或者被写进 multi-pack-index。idx 就像图书馆的目录卡片：pack 是书，idx 是目录。书放在书架上但目录里没有它，读者就查不到；如果图书馆管理员盘点时只看书架上的所有纸张而不看目录，就会把印刷厂刚送来的半成品、还没装订完的散页也当成正式藏书来检查，结果报告一堆“伪损坏”。fsck 也是同理：如果它自动扫描 pack 目录里的所有文件，就会把 repack 正在生成的临时 pack、尚未完成发布的中间状态当成正式对象，从而产生错误的 missing 或 corrupt 报告。所以 fsck 只处理已经通过 idx 或 midx 显式登记的对象。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>对象查找通过索引入口完成：先找 idx/multi-pack-index，再由对象 ID 定位到具体 pack 和偏移。</li>
+                <li>pack 文件写完磁盘是一种状态，被索引注册是另一种状态；只有后者才完成‘发布’。</li>
+                <li>fsck 基于当前显式索引建立对象视图，避免把并发生成中的临时 pack 当作正式对象。</li>
+                <li>索引的原子替换决定了新读者看到包集合的精确时机，也就是发布边界。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设一个 repack 进程正在合并多个旧 pack。它先写一个新 pack 文件，此时还没有为新 pack 生成 idx。另一边的 fsck 如果直接扫描目录，会看到一个“没有目录的包”，可能报告异常。但按照显式索引规则，fsck 只检查当前索引里登记的 pack。新 pack 尚未登记，fsck 对它视而不见；旧 pack 仍被旧索引登记，fsck 继续检查它们。等到新 pack 的 idx 完成并替换旧索引后，旧 pack 才从索引视图退出。这个过程里，fsck 的视图始终是“已发布对象”的视图。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>误以为只要 pack 文件出现在对象目录中，Git 就会自动发现并检查它。</li>
+                <li>事实上 pack 必须通过 idx 或 multi-pack-index 建立注册关系；没有登记的文件只是磁盘中间产物，不应进入 fsck 的完整性视图。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>可达闭包</td><td>想要遍历对象图，必须先通过索引把对象 ID 解析到文件中的位置；没有索引入口的 pack 无法进入 fsck 或 gc 的正常遍历集合。</td></tr>
+                <tr><td>并发 repack</td><td>显式索引刻画了已发布与未完成发布之间的边界，是并发读者在 repack 过程中安全切换包集合视图的保证。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果 fsck 自动扫描所有未登记 pack，会遇到哪些并发写入造成的伪损坏？</li>
+                <li>单独的 idx 与 multi-pack-index 在发布边界上有什么不同？</li>
+                <li>一个 pack 写了但 idx 尚未写完时，GC 会不会认为其中的对象是垃圾而提前删除？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">本次复习的核心关联点是，“对象是否应当存在”和“对象是否可以消失”并不是同一把尺子。第一个概念指出，fsck 与 gc 共用同一个从引用出发的可达闭包，一个要求闭包内对象必须可解析，一个只清理闭包外的对象；第二个概念给这个闭包加上时间维度，对象离开闭包后不会立刻删除，reflog 与保留窗口让不可达成为可恢复的临时状态；第三个概念把判定放回更基础的约束中，对象必须先经过显式索引的发布，才能进入 fsck 或 gc 的遍历视图，没有登记的文件只是磁盘上的中间产物。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">fsck 的“必须存在”与 gc 的“可以清理”共享同一个可达闭包判定：闭包内对象必须可解析，闭包外对象才可能被回收。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如果 fsck 与并发的 gc 各自读取不同时刻的引用快照，会产生不一致的结论吗？</li>
+            <li>reflog 的过期时间与 gc 的保留期如何共同决定对象最终被清理的时机？</li>
+            <li>一个 pack 文件已写入但 idx 尚未完成时，并发的 fsck 或 gc 会把它当垃圾吗？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>

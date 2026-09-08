@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-09/2026-09-09-learning-report.html">2026-09-09</a>
+      </td>
+      <td>同一个可达闭包的两个方向：fsck 的要求存在集合与 gc 的可清理集合共享同一判定边界</td>
+      <td>数学 / 计算机科学</td>
+      <td>★★★</td>
+      <td>一个对象是否“必须存在”与是否“可以清理”，来自同一张引用可达性地图，只是 fsck 看地图内，gc 看地图外。</td>
+      <td>下一次可以沿着 gc 的保守窗口深入，讲 reflog 和 stash 等引用如何改变闭包外对象的保留资格。</td>
+    </tr>
+    <tr>
+      <td>不可达对象的时间缓冲：gc 保留窗口让“悬空状态”成为可恢复的临时状态</td>
+      <td>软件工程 / 计算机科学</td>
+      <td>★★</td>
+      <td>对象离开引用闭包后不会立刻消失，reflog 与保留窗口给了用户一个撤销引用操作的时间窗口。</td>
+      <td>下一次可以深入 git prune 的隔离期机制，比较 gc 保留期、reflog 过期时间与 fsck 的缺失检查如何共同决定对象的最终命运。</td>
+    </tr>
+    <tr>
+      <td>显式索引是对象库的发布边界：为什么 fsck 不靠扫描 pack 目录来发现对象</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★</td>
+      <td>pack 文件写完不等于对象发布完成，只有被 idx 或 multi-pack-index 显式登记后，对象才会进入 Git 的查找与完整性检查视图。</td>
+      <td>下一次可以研究 git multi-pack-index write 的原子发布过程，观察新包集合在哪个精确时刻对并发读者可见。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-09/2026-09-08-learning-report.html">2026-09-08</a>
       </td>
       <td>悬空关系的瞬态性：分支重新指向后对象立即重新进入可达闭包</td>
