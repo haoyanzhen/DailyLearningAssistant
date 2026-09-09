@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-09-10 学习笔记日报</title>
+    <meta name="description" content="围绕远端 ref、提交对象图与工作树三条状态层讲清一个核心：ref 没变不等于没有发布，提交数为零不等于工作树没改，工具读不到不等于事件不存在。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260910-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-09-10</p>
+        <h1>三层状态中的证据边界：在哪里看见变化</h1>
+        <p>观察任何 Git 状态前，先问自己正在看哪一层；远端 ref、提交图与工作树彼此独立，只有让证据边界可见，才能得到可靠的结论。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>版本控制中的状态分层与证据边界</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>远端 ref 指针作为仓库…</strong>
+                <small>看远端有没有发布新版，只需看白板上…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>提交对象图与工作树是两层状态</strong>
+                <small>存档列表里没有新记录，不等于你正在…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>证据缺失不等于事件不存在</strong>
+                <small>书包拉链卡住了，不能证明作业没写。</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念形成一条方法论：观察任何 Git 状态前，先要知道自己在看哪一层。远端 ref 指针是远程仓库的发布入口，本地提交对象图是正式历史层，工作树是当前磁盘现场。三层之间不能互相替代；能确认的写确认，不能确认的标“待确认”，不要把“不可观测”翻译成“不存在”。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["版本控制中的状态分层与证据边界"])
+  concept1["远端 ref 指针作为仓库可观察边界"]
+  hub --&gt; concept1
+  concept2["提交对象图与工作树是两层状态"]
+  hub --&gt; concept2
+  concept3["证据缺失不等于事件不存在"]
+  hub --&gt; concept3
+  concept1 --&gt; concept3
+  concept1 --&gt; concept2
+  related1["版本控制中的状态分层与证据边界"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept3
+  concept2 --&gt; concept1
+  concept3 --&gt; concept2
+  concept3 --&gt; concept1
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="remote-ref-observable-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>远端 ref 指针作为仓库可观察边界</h3>
+              <p>Remote ref as observable boundary</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">看远端有没有发布新版，只需看白板上的版本号，不必进资料室逐页检查。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>ref 指针是远端仓库对外暴露的最小可观察接口。</li>
+                <li>main 的 ref 没变，只能说明远端没有发布新的 main 分支历史，不能证明远端仓库背后没有其他活动。</li>
+                <li>通常不需要 clone 或 fetch，只读 ref 就能完成“是否发布新历史”的初步判断。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="remote-ref-observable-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="commit-graph-worktree-layers">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>提交对象图与工作树是两层状态</h3>
+              <p>Commit graph vs worktree</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">存档列表里没有新记录，不等于你正在玩的画面没有推进。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>提交对象图保存正式历史，工作树保存当前现场。</li>
+                <li>“当日提交数 0”不代表工作树没有改动。</li>
+                <li>提交对象图和工作树彼此独立：HEAD 不变时工作树仍可能持续变化。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="commit-graph-worktree-layers" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="absence-of-evidence-not-absence-of-event">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>证据缺失不等于事件不存在</h3>
+              <p>Absence of evidence is not absence of events</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">书包拉链卡住了，不能证明作业没写。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>证据缺失不等于事件不存在，未知状态不能被自动翻译成否定结论。</li>
+                <li>当 git-lfs 缺失等工具故障导致工作区不可读时，应报告“工作区状态待确认”。</li>
+                <li>能确认的写确认，不能确认的标记待确认，保持未判定比匆忙下结论更安全。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="absence-of-evidence-not-absence-of-event" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="remote-ref-observable-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>远端 ref 指针作为仓库可观察边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>可以把一个远端 Git 仓库想象成一座只开了一个小窗口的档案楼。窗口里露出的信息很少：main 分支当前指向哪个提交。每个提交都有一个由内容与元数据算出的编号，Git 叫 commit ID，可以理解成这版资料的“指纹”。当你想知道远端有没有发布新版本时，不需要把整座档案楼搬回来对一遍，只需要问一声：你现在 main 的指纹是多少？如果与上次相同，说明远端没有把 main 这条已发布历史移动到新提交。这就是“远端 ref 指针作为仓库可观察边界”的含义：ref 是一个很短的选择器，却代表仓库对象库中一条可达链的入口。监控更新时，比较这个入口比比较全部对象内容便宜得多。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>每次提交都有由内容与元数据算出的 commit ID，可理解成资料的指纹。</li>
+                <li>ref 指针指向一个提交对象，是仓库对象库中一条可达链的入口。</li>
+                <li>比较 ref 的值即可判断 main 是否移动到新提交，不必比较全部对象内容。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>上午用 git ls-remote origin refs/heads/main 得到 a1b2c3d，与昨天记录的 main 相同，于是可以写：远端 main 没有发布新提交。下午再运行，得到 e5f6a7b，说明 main 已经被推送到新提交；这时才需要根据自己的需求执行 git fetch 去获取新对象。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为检查远端是否更新一定要 clone 或 fetch，把对象下载下来才能比较；其实只读 ref 就能完成初步判断。</li>
+                <li>把“main 的 ref 没变”夸大成“远端仓库完全没有变化”；其他分支、标签或未发布状态都可能没有反映在这一个 ref 上。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>证据缺失不等于事件不存在</td><td>远端 main ref 没变是单层可确认事实，不能据此否定其它分支或标签的变化存在。</td></tr>
+                <tr><td>提交对象图与工作树是两层状态</td><td>ref 指向的是提交对象图中的一个入口，而工作树的变化不一定会反映到该入口上。</td></tr>
+                <tr><td>版本控制中的状态分层与证据边界</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果一个远端仓库有多个分支，只观察 main 的 ref 会漏掉哪些更新信号？</li>
+                <li>git ls-remote 返回的 refs/heads/main 与实际下载对象之间是什么关系？为什么说 ref 是“可达链入口”？</li>
+                <li>当网络请求失败导致读不到 ref 时，自动化系统应该如何标记这次结果？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="commit-graph-worktree-layers">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>提交对象图与工作树是两层状态</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>Git 保存内容时至少分成两个层次。第一层是提交对象图，也叫正式历史：每次 git commit 产生一个提交节点，节点里有作者、时间、父提交和当时文件快照的入口。许多提交连起来形成一条历史链。第二层是工作树：你在磁盘上看到的、正在编辑的目录和文件。它是某个提交被取出来之后的“当前现场”。这两层不是同步变化的：你改了文件但没有提交，工作树已经与 HEAD 提交不一致，但提交对象图不会自动产生新节点。反过来，git log 显示没有新提交，只表示正式历史没有新节点，并不表示工作树没有改动。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>git commit 才会在提交对象图产生新节点，提交对象图保存正式历史。</li>
+                <li>编辑文件只影响工作树，工作树是某个提交被取出后的当前现场。</li>
+                <li>两层不自动同步：没有提交不代表工作树没改，HEAD 不变不代表现场不变。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一个仓库当前停在提交 c101f58f698e，检查窗口内没有任何新增提交。这只能说明：在提交对象图这一层，没有新的正式历史事件。同一个仓库的主工作区却可能已经与这个提交不一致：文件被修改或新增了内容，只是这些变化还没有提交成一个 commit。因此“c101f58f 仍是最新提交”与“工作区可能与当前提交不一致”可以同时成立。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>看到报告里写“当日提交数 0”，就说“今天没有代码工作”；这混淆了两层状态。</li>
+                <li>以为当前 HEAD 的提交号变了才算有改动；实际上工作树可以在 HEAD 完全不变的情况下持续变化。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>证据缺失不等于事件不存在</td><td>提交数 0 只是提交对象图这一层没有证据，不能推出工作树也没有变化。</td></tr>
+                <tr><td>远端 ref 指针作为仓库可观察边界</td><td>ref 指向提交对象图入口，工作树的状态不会通过 ref 展示，需要在本地单独检查。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>为什么 git checkout 切换分支前会检查未提交修改？它想避免哪一层状态被覆盖？</li>
+                <li>提交对象图中的一个提交对象保存的是文件快照还是文件差异？这对理解历史链有什么影响？</li>
+                <li>如果从未提交的工作树还原文件，git status 会怎样变化？这说明对象图和工作树的边界在哪里？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="absence-of-evidence-not-absence-of-event">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>证据缺失不等于事件不存在</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>工程判断里，需要区分三类状态：已确认存在、已确认不存在、还没能观测或证据不足。第三类不能自动滑向第二类。Git 审计中，某个窗口 git log 没有新提交，这是对提交对象图的可确认事实；但如果工作区内容因为外部工具缺失而读不到，那么“工作区是否有改动”就是未确认状态。你不能把“没有读到提交”说成“没有代码工作”，也不能把“工作区不可读”说成“没有关键文件变化”。证据缺失和否定结论之间有一道边界，保持未判定比匆忙下结论更安全。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>工程判断区分三类状态：已确认存在、已确认不存在、还没能观测或证据不足。</li>
+                <li>外部工具失败导致读不到状态时，该状态应标记为待确认，而非自动视为不存在。</li>
+                <li>自动化报告应让证据边界可见：不会把“没有读到”偷换成“没有变化”。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>某仓库检查窗口内没有新增提交，同时自动化脚本运行 git status 或 diff 时出现 git-lfs: command not found，因为 Git 需要外部过滤器才能还原或读取由 LFS 管理的文件内容。此时能确认的是“提交对象图没有新提交”，能确认的还有“工作区读取链路异常”；不能确认的是“仓库没有代码工作”。报告应当写：提交数 0；工作区状态待确认。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把“我没有发现异常”当成“异常不存在”，例如“提交数 0 加 status 读失败 = 当日无代码变化”。</li>
+                <li>反向夸大：读不到变化就说“一定藏了大量变化”；这同样没有证据，正确说法只能是“未知”。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>提交对象图与工作树是两层状态</td><td>无新增提交只覆盖提交图这一层，不能作为否定工作树变化的证据。</td></tr>
+                <tr><td>远端 ref 指针作为仓库可观察边界</td><td>单个 ref 不可读或未变化时，其它层的状态仍然可能独立存在，需要分开观测和判定。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>没有证据和有证据证明不存在，在自动化报告中分别应该用哪些状态字段表达？</li>
+                <li>当 git-lfs 安装恢复后，原先“待确认”的工作区状态应该如何重新判定？</li>
+                <li>除了外部过滤器，还有哪些情况会让 Git 审计工具读不到已存在的仓库状态？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念形成一条方法论：观察任何 Git 状态前，先要知道自己在看哪一层。远端 ref 指针是远程仓库的发布入口，本地提交对象图是正式历史层，工作树是当前磁盘现场。三层之间不能互相替代；能确认的写确认，不能确认的标“待确认”，不要把“不可观测”翻译成“不存在”。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">没有读到变化、读不到变化、确认没有变化是三件不同的事。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>多个远端分支时，只观察 main 的 ref 会漏掉哪些更新信号？</li>
+            <li>提交对象保存的是文件快照还是差异，这对历史链的理解有什么影响？</li>
+            <li>git-lfs 缺失导致工作区不可读时，自动化报告应如何标记并恢复重查？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
