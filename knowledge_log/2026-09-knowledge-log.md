@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-09/2026-09-13-learning-report.html">2026-09-13</a>
+      </td>
+      <td>只读远端监控与最小权限访问</td>
+      <td>软件工程 / 安全</td>
+      <td>★★</td>
+      <td>只读远端监控就是只用最小权限读取 ref 元数据，不下载仓库内容，从而在降低副作用的同时获得有限的指针变化信号。</td>
+      <td>下一次可以讲只读凭据生命周期：只读 deploy key、短期 token、SSH agent 失败时如何安全降级，并保留旧基线避免误报。</td>
+    </tr>
+    <tr>
+      <td>访问路径诊断与凭据边界（http_git / ssh_git）</td>
+      <td>软件工程 / 安全</td>
+      <td>★★★</td>
+      <td>访问路径诊断说明远端 ref 监控能否成功，取决于 http_git 或 ssh_git 与相应 key、agent、token 的组合，而报告必须把这些凭据脱敏并限定在最小权限内。</td>
+      <td>下一次可以讲只读凭据的生命周期管理：只读 deploy key、短期 token、凭据轮换与失败降级，以及访问失败时如何进入未判定而不是 unchanged。</td>
+    </tr>
+    <tr>
+      <td>ref 元数据证据范围限制</td>
+      <td>软件工程 / 计算机科学</td>
+      <td>★★★★</td>
+      <td>ref 元数据证据范围限制意味着 ref 监控只能证明被监控指针是否移动，不能证明仓库里发生了多少提交或哪些文件变化。</td>
+      <td>下一次可以讲从 ref 变化线索到按需下载的决策链：什么证据等级下才触发对象查询，如何标注未知、失败和部分成功。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-09/2026-09-12-learning-report.html">2026-09-12</a>
       </td>
       <td>首次观测基线</td>

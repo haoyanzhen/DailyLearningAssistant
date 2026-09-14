@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-09-13 学习笔记日报</title>
+    <meta name="description" content="主线是远端 ref 元数据变化检测：只读读取 ref 指针并比较历史与当前 SHA，经 http_git 或 ssh_git 访问且凭据脱敏，结论只限于被监控 ref 指针是否变化。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260913-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-09-13</p>
+        <h1>只读地看，谨慎地说：远端 ref 元数据变化检测及其证据边界</h1>
+        <p>系统只用最小权限读取远端 ref 元数据，把 SHA 变化信号与访问诊断记录下来。观测面缩小带来安全收益，也把可声明的结论压缩到 ref 指针这一层。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>远端 ref 元数据变化检测与证据…</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>只读远端监控与最小权限访问</strong>
+                <small>只看门牌号，不搬档案馆：只读 re…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>访问路径诊断与凭据边界（h…</strong>
+                <small>进门方式不是仓库的属性，而是协议…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>ref 元数据证据范围限制</strong>
+                <small>工具看得越少，话就要说得越谨慎。</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念可以串成一条链：只读远端监控与最小权限决定我们怎样安全地看；访问路径诊断与凭据边界决定我们能不能进去看；ref 元数据证据范围限制决定我们看完后能说什么。工具只读 ref，所以能拿到 SHA 比较信号，却拿不到提交详情。因此正确报告要同时说明动作和边界：历史 SHA 与当前 SHA 相同，说明被监控 ref 指针未变；访问成功，说明某条 http_git 或 ssh_git 路径在该环境下可用；但这都不等于仓库整体没有变化。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["远端 ref 元数据变化检测与证据边界"])
+  concept1["只读远端监控与最小权限访问"]
+  hub --&gt; concept1
+  concept2["访问路径诊断与凭据边界（http_git / ssh_git）"]
+  hub --&gt; concept2
+  concept3["ref 元数据证据范围限制"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["unchanged 判定与首次观测基线"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  related2["凭据脱敏与 SSH agent 依赖"]
+  concept2 --&gt; related2
+  related3["提交对象 SHA 标识与历史比较"]
+  concept2 --&gt; related3
+  concept2 --&gt; concept3
+  related4["unchanged 判定"]
+  concept3 --&gt; related4
+  concept3 --&gt; concept1
+  related5["首次观测基线"]
+  concept3 --&gt; related5
+  concept3 --&gt; concept2
+  related6["报告可靠性"]
+  concept3 --&gt; related6
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4,related5,related6 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="readonly-remote-monitoring">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 安全</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>只读远端监控与最小权限访问</h3>
+              <p>Read-only Remote Monitoring and Least Privilege Access</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">只看门牌号，不搬档案馆：只读 ref，最小权限。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>只通过 git ls-remote 读取 ref 元数据，不 clone、不 fetch，不下载提交对象、文件树或工作区内容，只关心被监控的 ref 指针有没有换位置。</li>
+                <li>最小权限只授予读 ref 所需的能力，收益是副作用小、凭据暴露面小、本地不会被大量对象和数据塞满。</li>
+                <li>代价是观测面天然很窄：只读不等于能看到仓库全部真相，不能因为只读就以为不存在安全边界。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="readonly-remote-monitoring" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="access-path-diagnosis">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 安全</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>访问路径诊断与凭据边界（http_git / ssh_git）</h3>
+              <p>Access Path Diagnosis and Credential Boundary (http_git / ssh_git)</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">进门方式不是仓库的属性，而是协议、环境与凭据的组合。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>访问诊断记录的不是简单的网络通了，而是某条访问路径和某套凭据在该环境下共同成立。</li>
+                <li>SSH 成功可能依赖本机 SSH key 或 SSH agent；HTTP(S) URL 中的用户名、token、密码会被脱敏，报告只保留成功方式和 SHA。</li>
+                <li>访问方式不是仓库的天生属性，而是协议、环境、凭据和配置的组合：换机器、换 key、token 过期或 agent 不可用都会改变结果。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="access-path-diagnosis" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="ref-metadata-evidence-limits">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>ref 元数据证据范围限制</h3>
+              <p>Evidence Boundary of Ref Metadata</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">工具看得越少，话就要说得越谨慎。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>历史 SHA 与当前 SHA 相同只能说明该 ref 指针没变，不能说明仓库整体没变化。</li>
+                <li>提交数量、作者、提交信息、文件列表与 diff 都不在 ref 元数据能证明的范围内，访问成功也不等于拿到提交详情。</li>
+                <li>报告措辞必须与证据等级匹配：说未发现被监控 ref 指针变化，而不是仓库没有更新。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="ref-metadata-evidence-limits" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="readonly-remote-monitoring">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 安全</p>
+                <h3>只读远端监控与最小权限访问</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>远端仓库就像一座档案馆，Git 的 ref 是档案架上的门牌号，SHA 是那一格当前指向的版本指纹。只读远端监控做的事情很克制：只通过 git ls-remote 读取 ref 元数据，不 clone、不 fetch，不下载提交对象、文件树或工作区内容。它只想知道被监控的 ref 指针有没有换位置。最小权限访问则是一个安全原则：完成监控只需要读 ref 元数据，那就只给这个能力，不额外给下载全部历史、改写远端或接触工作区的权限。这样做的收益是副作用小、凭据暴露面小、本地也不会被大量对象和数据塞满。代价是它天然只能看到很窄的一层，不能因为只读就以为能看到仓库全部真相。当天多个仓库由远端 Git ref 元数据生成总结，正好体现这种只读监控方式：读 ref，比较 SHA，得到 unchanged 或变化线索。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>ref 是档案架上的门牌号，SHA 是该格当前指向的版本指纹，因此只读 ref 元数据就足以判断指针有没有换位置。</li>
+                <li>监控目标只需要读 ref 元数据，按最小权限原则就不额外授予下载全部历史、改写远端或接触工作区的权限。</li>
+                <li>安全收益与证据强度是一枚硬币的两面：主动缩小观测面降低副作用与凭据暴露面，也必然降低可声明结论的等级。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>系统运行 git ls-remote origin refs/heads/main，返回当前 SHA 为 abc123；它把 abc123 与历史 SHA 比较，相同就输出 unchanged。整个过程没有 clone 也没有 fetch，本地不会出现新的提交对象和文件树。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为只读就等于不需要认证、完全没有风险或不会产生任何副作用；实际读取远端 ref 仍要经过网络和认证，可能依赖 SSH key、SSH agent 或 HTTP token，只读降低的是修改和下载范围，不是消除所有安全边界。</li>
+                <li>把只读监控得到的 unchanged 当成仓库整体没有变化，这已经越过了证据范围，属于证据边界问题而不是监控能力问题。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>访问路径诊断与凭据边界</td><td>只读访问也要通过 http_git 或 ssh_git 完成认证，凭据仍然需要管理和脱敏。</td></tr>
+                <tr><td>ref 元数据证据范围限制</td><td>主动缩小观测面带来安全收益，也直接导致结论只能限制在 ref 指针层。</td></tr>
+                <tr><td>unchanged 判定与首次观测基线</td><td>只读读到的当前 SHA 可以保存为后续比较的基线，与历史 SHA 相等时才会标记未变化。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何为只读远端监控设计最小权限凭据，例如只读 deploy key 或短期 token？</li>
+                <li>只读监控读取失败时，应该保留旧基线、标记未知，还是重试后再判断？</li>
+                <li>只读监控是否需要记录访问审计日志，以便区分访问故障和远端 ref 真正变化？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="access-path-diagnosis">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 安全</p>
+                <h3>访问路径诊断与凭据边界（http_git / ssh_git）</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>要读取远端 ref，先要进得去。当天材料记录了访问诊断：public-library 使用 ssh_git 成功，其余远端仓库多使用 http_git。这个诊断不是简单说网络通了，而是在说某条访问路径和某套凭据在该环境下共同成立。SSH 成功可能依赖本机 SSH key 或 SSH agent；HTTP(S) URL 中的用户名、token、密码会被脱敏。也就是说，监控报告要记录访问方式和成功 SHA，但不能把秘密原样写出来。访问方式不是仓库的天生属性，而是协议、环境、凭据和配置的组合。同一个仓库换一台机器、换一个 key、token 过期或 agent 不可用，成功率都可能变化。凭据边界要求我们分清两层：一层是让监控能读到 ref，另一层是保护这些凭据不被报告、日志或错误信息泄露。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>要读取远端 ref 必须先完成认证，所以访问诊断的粒度是访问路径加凭据组合，而不是笼统的网络连通性。</li>
+                <li>凭据边界分两层：一层让监控能读到 ref，另一层保护凭据不被报告、日志或错误信息泄露。</li>
+                <li>访问失败时 SHA 比较就没有输入，不能把失败当成 unchanged，只能进入未判定状态，而成功读取当前 SHA 才是历史比较的前提。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>public-library 用 ssh_git 成功，说明本机 SSH key 或 SSH agent 在该环境下可用；另一个仓库用 http_git，URL 中可能含 token，但报告只显示脱敏后的地址。换一台没有对应私钥的机器，public-library 的 ssh_git 访问可能失败，而系统不应把这种失败误判成远端 ref 未变化。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为 SSH 成功就说明仓库公开或没有权限要求，或者以为 http_git 与 ssh_git 是仓库固定不变的标签；实际 SSH 成功依赖本机 key 或 agent，HTTP token 也会过期或被撤销。</li>
+                <li>以为 URL 脱敏后 token 就不重要；脱敏只是报告层保护，凭据本身仍要安全存储、轮换并限制权限。</li>
+                <li>把访问成功等同于能读取全部内容，但只读监控拿到的仍然只是 ref 元数据。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>只读远端监控与最小权限访问</td><td>只读读取 ref 也需要通过某条访问路径完成认证，两者是最小权限的一体两面。</td></tr>
+                <tr><td>凭据脱敏与 SSH agent 依赖</td><td>诊断记录要保护秘密，同时清楚说明成功方式，便于排障又不泄露凭据。</td></tr>
+                <tr><td>提交对象 SHA 标识与历史比较</td><td>成功读取当前 SHA 是进行历史 SHA 与当前 SHA 比较的前提条件。</td></tr>
+                <tr><td>ref 元数据证据范围限制</td><td>即使访问成功，拿到的也只是元数据，不是提交对象、文件树或 diff。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何在不暴露私钥的情况下诊断 SSH key 或 SSH agent 是否可用？</li>
+                <li>HTTP token 脱敏怎样既避免泄露秘密，又保留足够信息用于排障？</li>
+                <li>当 http_git 和 ssh_git 都可用时，监控系统应如何选择、降级和重试？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="ref-metadata-evidence-limits">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>ref 元数据证据范围限制</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>只读 ref 监控拿到的只是门牌号和版本指纹，不是仓库内容。因此，它能证明的事情非常有限：只能说明被监控 ref 的 SHA 是否变化。若历史 SHA 与当前 SHA 相同，就标记为 unchanged；这只说明该 ref 指针没变，不能说明仓库整体没变化，也不能说明新增提交数量、作者、提交信息、文件列表或 diff。当天材料多个仓库监控 ref 数均为 1，也没有多 ref 聚合材料，所以更不能把单个 ref 的未变化扩大成整个仓库的结论。报告必须把话说在证据能支撑的范围内：说未发现被监控 ref 指针变化，而不是仓库没有更新。这就是可观察边界决定可声明事实的范围：工具看得越少，话就要说得越谨慎。它和只读监控、最小权限是同一枚硬币的两面：为了安全和低副作用主动缩小观测面，代价就是证据等级较低，需要明确标注。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>只读 ref 拿到的是门牌号和版本指纹而不是仓库内容，能证明的事实上限由此确定。</li>
+                <li>当天多个仓库监控 ref 数均为 1，也没有多 ref 聚合材料，单个 ref 的未变化不能被放大成整个仓库的结论。</li>
+                <li>证据范围限制不是偶然缺点，而是只读监控、最小权限与访问诊断共同形成的安全边界主动选择的结果，因此报告措辞必须与证据等级匹配。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>系统保存历史 SHA=abc123，今天读取当前 SHA=abc123，于是输出 unchanged。正确结论是被监控的 refs/heads/main 指针未变；不能写成仓库今天没有新提交，因为可能有其他未监控分支变化，也可能有本地未提交变更，而这些远端 ref 元数据都看不到。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把 unchanged 当成仓库没有变化，把单个 main ref 未变当成所有分支和 tag 都未变，或者把 ref 监控成功当成能知道提交详情。</li>
+                <li>把首次观测记录基线误读为新增提交。</li>
+                <li>把 tiny-sea-war 主工作区的未提交变更与 worktree 待确认线索当作已确认的提交事实，用来扩大 ref 监控的结论。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>unchanged 判定</td><td>SHA 相等只支持 ref 层未变化的结论，不支持仓库整体未变化。</td></tr>
+                <tr><td>只读远端监控与最小权限访问</td><td>观测面被主动缩小，证据范围也必然随之缩小，两者互为代价。</td></tr>
+                <tr><td>首次观测基线</td><td>首次看到某个 ref 只记录基线，不能把首次发现当作变化事件。</td></tr>
+                <tr><td>访问路径诊断与凭据边界</td><td>访问成功也不等于拿到了提交对象、文件树或 diff。</td></tr>
+                <tr><td>报告可靠性</td><td>报告措辞必须与证据等级匹配，否则会把有限观测说成全面事实。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何在自动化报告中显式标注证据等级，让读者知道结论只来自 ref 元数据？</li>
+                <li>ref 变化线索出现后，什么条件下才触发下一层对象下载或提交详情查询？</li>
+                <li>读取失败时如何区分未知与没有变化，避免把访问故障误报成 unchanged？</li>
+                <li>当未来监控多个 ref 时，如何聚合多个 ref 的比较结果而不夸大单个 ref 的证据强度？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念可以串成一条链：只读远端监控与最小权限决定我们怎样安全地看；访问路径诊断与凭据边界决定我们能不能进去看；ref 元数据证据范围限制决定我们看完后能说什么。工具只读 ref，所以能拿到 SHA 比较信号，却拿不到提交详情。因此正确报告要同时说明动作和边界：历史 SHA 与当前 SHA 相同，说明被监控 ref 指针未变；访问成功，说明某条 http_git 或 ssh_git 路径在该环境下可用；但这都不等于仓库整体没有变化。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">ref 元数据只能证明被监控 ref 指针是否变化，访问成功也只说明某条路径可用，都不等于仓库整体没有变化。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何为只读远端监控设计最小权限凭据，例如只读 deploy key 或短期 token，并让凭据安全轮换？</li>
+            <li>读取失败时如何区分未知与没有变化，避免把访问故障误报成 unchanged？</li>
+            <li>当未来监控多个 ref 时，如何聚合多个 ref 的比较结果而不夸大单个 ref 的证据强度？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>

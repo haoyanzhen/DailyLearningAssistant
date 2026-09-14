@@ -3,6 +3,106 @@
   "year_month": "2026-09",
   "threads": [
     {
+      "id": "2026-09-13-ref-e3cc78ab7d",
+      "question": "读取失败时如何区分“未知”与“没有变化”，避免把访问故障误报成 unchanged？",
+      "source_date": "2026-09-13",
+      "source_concept": "ref 元数据证据范围限制",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-14T12:21:24.637140+08:00",
+      "updated_at": "2026-09-14T12:21:24.637140+08:00"
+    },
+    {
+      "id": "2026-09-13-ref-7e672b3538",
+      "question": "当未来监控多个 ref 时，如何聚合多个 ref 的比较结果而不夸大单个 ref 的证据强度？",
+      "source_date": "2026-09-13",
+      "source_concept": "ref 元数据证据范围限制",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-14T12:21:24.637140+08:00",
+      "updated_at": "2026-09-14T12:21:24.637140+08:00"
+    },
+    {
+      "id": "2026-09-13-ref-2d22a117fa",
+      "question": "ref 变化线索出现后，什么条件下才触发下一层对象下载或提交详情查询？",
+      "source_date": "2026-09-13",
+      "source_concept": "ref 元数据证据范围限制",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-14T12:21:24.637140+08:00",
+      "updated_at": "2026-09-14T12:21:24.637140+08:00"
+    },
+    {
+      "id": "2026-09-13-ref-041ee3da60",
+      "question": "如何在自动化报告中显式标注证据等级，让读者知道结论只来自 ref 元数据？",
+      "source_date": "2026-09-13",
+      "source_concept": "ref 元数据证据范围限制",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-14T12:21:24.637140+08:00",
+      "updated_at": "2026-09-14T12:21:24.637140+08:00"
+    },
+    {
+      "id": "2026-09-13-http-git-ssh-git-c5c6355ceb",
+      "question": "如何在不暴露私钥的情况下诊断 SSH key 或 SSH agent 是否可用？",
+      "source_date": "2026-09-13",
+      "source_concept": "访问路径诊断与凭据边界（http_git / ssh_git）",
+      "domain": "软件工程 / 安全",
+      "status": "open",
+      "created_at": "2026-09-14T12:21:24.637140+08:00",
+      "updated_at": "2026-09-14T12:21:24.637140+08:00"
+    },
+    {
+      "id": "2026-09-13-http-git-ssh-git-a1d1af1fbd",
+      "question": "当 http_git 和 ssh_git 都可用时，监控系统应如何选择、降级和重试？",
+      "source_date": "2026-09-13",
+      "source_concept": "访问路径诊断与凭据边界（http_git / ssh_git）",
+      "domain": "软件工程 / 安全",
+      "status": "open",
+      "created_at": "2026-09-14T12:21:24.637140+08:00",
+      "updated_at": "2026-09-14T12:21:24.637140+08:00"
+    },
+    {
+      "id": "2026-09-13-http-git-ssh-git-5ebc16482f",
+      "question": "HTTP token 脱敏怎样既避免泄露秘密，又保留足够信息用于排障？",
+      "source_date": "2026-09-13",
+      "source_concept": "访问路径诊断与凭据边界（http_git / ssh_git）",
+      "domain": "软件工程 / 安全",
+      "status": "open",
+      "created_at": "2026-09-14T12:21:24.637140+08:00",
+      "updated_at": "2026-09-14T12:21:24.637140+08:00"
+    },
+    {
+      "id": "2026-09-13-concept-7a4ad5826c",
+      "question": "如何为只读远端监控设计最小权限凭据，例如只读 deploy key 或短期 token？",
+      "source_date": "2026-09-13",
+      "source_concept": "只读远端监控与最小权限访问",
+      "domain": "软件工程 / 安全",
+      "status": "open",
+      "created_at": "2026-09-14T12:21:24.637140+08:00",
+      "updated_at": "2026-09-14T12:21:24.637140+08:00"
+    },
+    {
+      "id": "2026-09-13-concept-3855b2e182",
+      "question": "只读监控是否需要记录访问审计日志，以便区分访问故障和远端 ref 真正变化？",
+      "source_date": "2026-09-13",
+      "source_concept": "只读远端监控与最小权限访问",
+      "domain": "软件工程 / 安全",
+      "status": "open",
+      "created_at": "2026-09-14T12:21:24.637140+08:00",
+      "updated_at": "2026-09-14T12:21:24.637140+08:00"
+    },
+    {
+      "id": "2026-09-13-concept-10ce95ff7f",
+      "question": "只读监控读取失败时，应该保留旧基线、标记未知，还是重试后再判断？",
+      "source_date": "2026-09-13",
+      "source_concept": "只读远端监控与最小权限访问",
+      "domain": "软件工程 / 安全",
+      "status": "open",
+      "created_at": "2026-09-14T12:21:24.637140+08:00",
+      "updated_at": "2026-09-14T12:21:24.637140+08:00"
+    },
+    {
       "id": "2026-09-12-ref-sha-85eeec9453",
       "question": "当历史 SHA 缺失或当前读取失败时，变化检测应该输出未知、沿用旧状态，还是标成待确认？",
       "source_date": "2026-09-12",
