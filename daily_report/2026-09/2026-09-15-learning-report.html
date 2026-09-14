@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-09-15 学习笔记日报</title>
+    <meta name="description" content="今天从数据驱动配置与配置注册出发，经配置校验与配置契约，落到有序 LLM provider 故障转移，理解可靠性如何把结构、检查与兜底提前。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260915-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-09-15</p>
+        <h1>契约与可靠性：从配置结构到有序故障转移</h1>
+        <p>今天用三个概念串成一条链路：先把数据和配置变成可检查的结构，再让校验在运行前把关，最后在运行时为失败准备一条有序的兜底路径。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>契约与可靠性</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>数据驱动配置与配置注册</strong>
+                <small>先有说明书，再有登记名单，最后才让…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>配置校验与配置契约</strong>
+                <small>把运行时才爆的错，提前到起飞前的检…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>有序 LLM provid…</strong>
+                <small>有顺序、有备用；一把钥匙打不开，才…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">数据驱动配置与配置注册、配置校验与配置契约共享同一种工程思想：先定义一份可检查的结构，再让代码、配置、测试围绕它协作。表现层通过 schema 和配置注册读取视觉参数，LLM 编排通过配置和校验确定 provider 是否可用，资产管线则通过契约检查判断角色资产是否符合规范。有序 LLM provider 故障转移把这种契约思想推进到运行时可靠性：provider 是抽象边界，ordered 表示候选链有顺序，failover 表示当前提供方不能完成调用时按顺序转移；而配置校验、状态检查和回归测试，分别负责进入前的合法性、运行中的可观察性和行为验证。三者还共同体现了证据分层：提交主题、文件变更、测试新增都是线索，但材料没有给出的细节不能编造。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["契约与可靠性"])
+  concept1["数据驱动配置与配置注册"]
+  hub --&gt; concept1
+  concept2["配置校验与配置契约"]
+  hub --&gt; concept2
+  concept3["有序 LLM provider 故障转移"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  related1["资产契约与契约检查"]
+  concept1 --&gt; related1
+  concept1 --&gt; concept3
+  concept2 --&gt; concept3
+  concept2 --&gt; concept1
+  concept2 --&gt; related1
+  concept3 --&gt; concept2
+  related2["状态设计与状态检查"]
+  concept3 --&gt; related2
+  related3["调用方适配与接口影响面"]
+  concept3 --&gt; related3
+  related4["回归测试与 failover 行为验证"]
+  concept3 --&gt; related4
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="data-driven-config-registry">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>数据驱动配置与配置注册</h3>
+              <p>Data-Driven Configuration &amp; Config Registry</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">先有说明书，再有登记名单，最后才让代码照着读。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>表现层不把每个视觉细节写死在代码里，而是先从一份“数据说明书”开始：schema 规定字段与类型，配置文件给出具体值，注册表把配置接入运行时。</li>
+                <li>当天材料中，`docs/25_presentation_data_schema.md` 描述表现数据应该长什么样，`presentation_settings.json` 是实际配置值，`config_registry.gd` 是配置注册入口，`ship_unit_view.gd` 读取配置影响显示，测试文件验证表现行为。</li>
+                <li>底层顺序是先定义数据结构、再注册可用配置、最后让代码读取并测试，这样改视觉参数时不必改代码。</li>
+                <li>材料只确认“潜艇深度作为表现维度被配置和呈现”，没有给出具体字段名、深度计算公式或物理模型，不能推断浮力、压强或潜艇动力学。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="data-driven-config-registry" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="config-validation-contract">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>配置校验与配置契约</h3>
+              <p>Configuration Validation &amp; Configuration Contract</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">把运行时才爆的错，提前到起飞前的检查单上。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>配置不是随便写的文本文件，而是被示例、文档和校验脚本共同约束的结构契约。</li>
+                <li>当天材料里 `config.example.json`、`docs/configuration.md` 和 `scripts/check_config.py` 同时出现变更线索，分别承担“告诉人怎么写”“解释为什么这样写”“用可执行方式检查是否符合约定”。</li>
+                <li>核心目标是把运行时错误前置：provider 顺序或表现设置一旦不符合约定，应在系统运行前报错，而不是等到某个 provider 失败或场景加载时才暴露。</li>
+                <li>材料确认了这些配置相关文件发生变更，但没有展开具体校验规则，因此不能编造“校验了哪些字段”或“失败后如何处理”。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="config-validation-contract" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="ordered-llm-provider-failover">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">大语言模型 / 软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>有序 LLM provider 故障转移</h3>
+              <p>Ordered LLM Provider Failover</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">有顺序、有备用；一把钥匙打不开，才按顺序试下一把。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>三个关键词：LLM provider 是抽象边界，把不同大模型服务当作可替换后端；ordered 表示它们不是无序集合，而是有顺序或优先级的候选链；failover 表示当前提供方不能完成调用时按顺序转移。</li>
+                <li>当天材料显示 `orchestrator/llm.py`、`orchestrator/check_status.py`、`config.example.json`、`docs/configuration.md`、`scripts/check_config.py`、agents 与 scripts 下多个调用方，以及新增的 `tests/test_llm_failover.py`，说明 failover 是配置契约、状态检查、调用方适配和回归验证共同组成的设计。</li>
+                <li>必须谨慎：材料没有给出 provider 列表、排序字段、失败分类、重试次数或最终兜底策略，只能确认“有序 failover”这个方向和文件范围。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="ordered-llm-provider-failover" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="data-driven-config-registry">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>数据驱动配置与配置注册</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>数据驱动配置与配置注册，可以理解成：游戏表现层不把每个视觉细节写死在代码里，而是先从一份“数据说明书”开始。当天材料里，`docs/25_presentation_data_schema.md` 是文档变更线索，用来描述表现数据应该长什么样；`presentation_settings.json` 是实际配置值；`config_registry.gd` 是配置注册入口，把配置接入运行时；`ship_unit_view.gd` 是表现层代码，读取这些配置并影响显示；`scene_presentation_test.gd` 和 `test_runner.gd` 则是测试线索，用来验证表现行为。底层逻辑是：先定义数据结构，再注册可用配置，最后让代码读取。schema 不是运行时逻辑本身，但它像一张表格模板，规定哪些字段存在、字段是什么类型、配置应该怎样组织。配置注册表则像“入口名单”，告诉运行时哪些配置可以被读取。这样改视觉参数时不必改代码，测试也能围绕同一份数据契约展开。当天材料确认了潜艇深度表现视觉、表现设置、配置注册和测试文件之间的线索，但没有给出具体字段名、深度计算公式或物理模型。因此这里应理解为“深度作为一个表现维度被配置和呈现”，不能推断浮力、压强或潜艇动力学。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>先定义结构：schema 像表格模板，规定哪些字段存在、字段是什么类型、配置怎样组织，它本身不是运行时逻辑，却是后续一切的前提。</li>
+                <li>再注册入口：配置注册表像“入口名单”，告诉运行时哪些配置可以被读取，没有注册的配置即使写在文件里也无法真正生效。</li>
+                <li>最后消费与验证：表现层代码按 schema 和注册表读取配置影响显示，测试围绕同一份数据契约检查行为，于是改视觉参数不必改代码。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>可以把 schema 想成餐厅菜单：菜单规定菜名、价格和辣度等级，厨房的登记表决定今天哪些菜可做，顾客点单则给出具体选择。顾客最后吃到什么，不靠服务员背下所有菜，而靠菜单、登记表和点单三者配合。数据驱动配置也是这样，代码不需要背下所有视觉细节，只要按 schema 和注册表读取配置。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把“潜艇深度表现视觉”误当成物理建模。当天材料只确认它出现在表现设置、表现数据 schema、配置注册和表现层代码中，没有浮力、压强、介质阻力或动力学方程线索。</li>
+                <li>以为 schema 定义完就自动生效。实际上还需要配置注册表接入运行时，并由表现层代码和测试消费。</li>
+                <li>把配置文件当成随便改的文本，忽略了它背后可能存在结构约束和测试保护。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>配置校验与配置契约</td><td>配置注册接入运行时之前，配置本身需要符合 schema 并被检查，所以两者是“定义结构”和“确认结构合法”的前后关系。</td></tr>
+                <tr><td>资产契约与契约检查</td><td>后处理计划和资产审计同样是把规范变成可检查对象，与配置注册共享“先定义结构再消费”的思路。</td></tr>
+                <tr><td>有序 LLM provider 故障转移</td><td>provider 候选链同样需要配置契约才能进入编排器，表现层的配置驱动链与它是同一种配置消费模式。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果表现数据 schema 发生变更，配置注册表和表现层测试应怎样同步更新，才能避免旧配置静默失效？</li>
+                <li>当配置值缺失或类型错误时，表现层应该回退到默认值，还是直接报错并阻止运行？</li>
+                <li>怎样在讲解中明确区分“深度作为表现配置”和“深度作为物理模型”的证据边界？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="config-validation-contract">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>配置校验与配置契约</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>配置校验与配置契约，说的是系统不要等到真正使用配置时才碰运气。当天材料里，`config.example.json`、`docs/configuration.md` 和 `scripts/check_config.py` 同时出现变更线索，这提示配置不是一个随便写的文本文件，而是被示例、文档和校验脚本共同约束的结构契约。底层理念是“把运行时错误尽量提前”。如果 provider 顺序、表现设置或其他关键配置不符合约定，系统应该在前置检查阶段就报错，而不是等到某个 provider 失败、某个场景加载时才暴露。配置契约把示例配置、说明文档和校验脚本绑在一起：示例告诉人怎么写，文档解释为什么这样写，校验脚本则用可执行方式检查是否符合约定。这样，后续的 failover 链、表现层或调用方才有一个相对可靠的前提。需要谨慎的是，材料确认了这些配置相关文件发生变更，但没有展开具体校验规则。因此不能编造“校验了哪些字段”或“失败后如何处理”。可以确认的是：配置被当作需要检查的前置条件，而不是单纯注释。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>错误前置：与其等到 provider 失败或场景加载时才暴露问题，不如在系统启动前用可执行检查把结构错误拦下来。</li>
+                <li>三位一体：示例配置告诉人怎么写，说明文档解释为什么这样写，校验脚本用可执行方式检查是否符合约定，三者共同构成契约。</li>
+                <li>契约只给前提：校验通过只证明配置满足已定义契约，它为后续 failover 链和表现层提供可靠前提，但不保证所有运行结果都符合预期。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>这像飞机起飞前的检查单：飞行员并不是不信任飞机，而是把关键条件在起飞前逐项确认——油量、舵面、仪表、天气。配置校验就是软件起飞前的检查单，它不保证飞行一定成功，但能避免很多本可提前发现的错误。再具体一点：如果 provider 选择顺序配置里写了一个系统不认识的名字，或把本该是列表的结构写成了普通字符串，校验脚本应在系统运行前报错；否则系统可能直到主 provider 失败、需要找备用 provider 时，才发现备份入口根本无效。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为有 `config.example.json` 就代表配置一定正确。示例只是给人看的模板，不等于实际配置已经通过校验。</li>
+                <li>以为校验通过就等于业务绝对正确。校验通常只能证明配置满足已定义的契约，不能证明所有运行结果都符合预期。</li>
+                <li>忽略文档、示例和校验脚本之间的同步关系。三者一旦不一致，人就会按旧示例写配置，而系统按新脚本拒绝它。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>有序 LLM provider 故障转移</td><td>provider 配置需要先被校验，才适合进入 failover 链，否则候选链可能在运行时才发现配置错误。</td></tr>
+                <tr><td>数据驱动配置与配置注册</td><td>两者都遵循“先定义结构、再让运行时消费”的顺序，只是一个强调结构注册，一个强调结构检查。</td></tr>
+                <tr><td>资产契约与契约检查</td><td>两者都是前置条件式检查，区别只在检查对象：一个是配置，一个是角色资产。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>配置校验应覆盖哪些层次：字段存在性、类型正确性、引用有效性，还是更进一步的业务约束？</li>
+                <li>校验失败时，系统应该拒绝启动，还是降级到安全默认值并给出明确警告？</li>
+                <li>当配置文档、示例和校验脚本不同步时，应以哪一个作为契约权威？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="ordered-llm-provider-failover">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 大语言模型 / 软件工程</p>
+                <h3>有序 LLM provider 故障转移</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>有序 LLM provider 故障转移，来自当天 DailyLearningAssistant 的已确认提交主题 `Add ordered LLM provider failover`。这里有三个关键词：LLM provider、ordered、failover。LLM provider 是抽象边界，系统把不同的大语言模型服务提供方当作可替换后端；ordered 表示这些 provider 不是无序集合，而是有顺序或优先级的候选链；failover 表示当前 provider 不能完成调用时，系统按顺序转移到下一个候选。底层逻辑是可靠性设计。如果系统只绑定一个模型服务，它不可用时整个调用就失败；如果把多个 provider 排成候选链，就可以在失败时降级到备用路径。当天材料还显示 `orchestrator/llm.py`、`orchestrator/check_status.py`、`config.example.json`、`docs/configuration.md`、`scripts/check_config.py`、agents 与 scripts 下多个调用方，以及新增的 `tests/test_llm_failover.py`。这些线索说明 failover 不是孤立函数，而是配置契约、状态检查、调用方适配和回归验证共同组成的设计。但必须谨慎：材料没有给出 provider 列表、排序字段、失败分类、重试次数或最终兜底策略。因此只能确认“有序 failover”这个方向和文件范围，不能从主题名推出完整实现。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>抽象边界：把不同的大语言模型服务统一成可替换的 provider 接口，调用方不直接绑定某一家服务。</li>
+                <li>有序候选链：provider 不是无序集合，而是有顺序或优先级的候选链，ordered 意味着存在选择次序。</li>
+                <li>失败时转移：只有当前 provider 不能完成调用时，才按顺序转到下一个候选，而不是一开始就无差别并发；所有候选都不可用时仍需表达失败。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>可以把它想成出门带多把钥匙：主钥匙打不开门，就按备用顺序试第二把、第三把。重点是有顺序、有备用，而不是同时把所有钥匙都插进门里。failover 也是这样：当前 provider 不能完成调用时，才按候选链往下走，而不是一开始就无差别地并发调用所有服务。再具体一点：一个学习助手要生成概念关联报告时，编排器先调用主 provider；主 provider 不能完成调用，就按配置顺序尝试备用 provider，最终把结果交给 `agents/concept_relevance.py` 或 `agents/daily_work_summary.py`，状态检查用来看当前走到哪一步，测试文件验证 failover 行为。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把 failover 等同于简单重试。重试通常是对同一个目标再试，failover 则是转向另一个候选 provider。</li>
+                <li>以为 failover 就是同时问多个模型然后投票。材料只确认有序转移，没有确认并发投票。</li>
+                <li>以为有 failover 就永远不会失败。如果所有候选都不可用，系统仍然需要表达失败。</li>
+                <li>把 ordered 理解为所有 provider 完全等价。有序通常意味着优先级或选择顺序，但具体排序依据材料未给出。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>配置校验与配置契约</td><td>provider 选择顺序需要配置契约和校验，否则 failover 链可能在运行时才发现配置错误。</td></tr>
+                <tr><td>状态设计与状态检查</td><td>故障转移会改变调用状态，状态检查用于观察当前走到了哪一步。</td></tr>
+                <tr><td>调用方适配与接口影响面</td><td>agents 和 scripts 下多个文件修改，说明核心 LLM 调用接口变化会传播到调用方。</td></tr>
+                <tr><td>回归测试与 failover 行为验证</td><td>新增 `tests/test_llm_failover.py` 是行为验证的直接线索，用来确认转移行为符合预期。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>有序候选链的排序应依据成本、延迟、能力、可用性，还是这些因素的组合？</li>
+                <li>哪些失败应触发转移到下一个 provider，哪些失败应直接返回错误而不再尝试？</li>
+                <li>当所有 provider 都失败时，系统应如何表达最终状态，并把错误清晰地传给调用方？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">数据驱动配置与配置注册、配置校验与配置契约共享同一种工程思想：先定义一份可检查的结构，再让代码、配置、测试围绕它协作。表现层通过 schema 和配置注册读取视觉参数，LLM 编排通过配置和校验确定 provider 是否可用，资产管线则通过契约检查判断角色资产是否符合规范。有序 LLM provider 故障转移把这种契约思想推进到运行时可靠性：provider 是抽象边界，ordered 表示候选链有顺序，failover 表示当前提供方不能完成调用时按顺序转移；而配置校验、状态检查和回归测试，分别负责进入前的合法性、运行中的可观察性和行为验证。三者还共同体现了证据分层：提交主题、文件变更、测试新增都是线索，但材料没有给出的细节不能编造。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">一个系统要可靠，不能只靠调用点临时判断，而要把“什么数据合法、什么配置可用、失败后往哪里走”提前设计成可检查、可测试的边界。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如果表现数据 schema 发生变更，配置注册表和表现层测试应怎样同步更新，才能避免旧配置静默失效？</li>
+            <li>配置校验应覆盖哪些层次：字段存在性、类型正确性、引用有效性，还是更进一步的业务约束？</li>
+            <li>有序候选链的排序应依据成本、延迟、能力、可用性，还是这些因素的组合？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
