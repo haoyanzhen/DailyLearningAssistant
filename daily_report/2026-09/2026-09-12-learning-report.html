@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-09-12 学习笔记日报</title>
+    <meta name="description" content="从首次观测基线到同一 ref 的 SHA 比较，再用观测证据范围限制约束结论强度，理解只读远端 ref 监控能证明什么、不能证明什么。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260912-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-09-12</p>
+        <h1>远端 ref 的只读观测：从基线到变化线索</h1>
+        <p>只读读取远端 ref，看到的是指针值而不是事件。先建立基线，再比较同一 ref 的 SHA，最后按证据边界说话。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>远端 ref 只读观测与观测证据边界</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>首次观测基线</strong>
+                <small>第一次看见只是给 ref 拍登记照…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>ref 指针 SHA 比较…</strong>
+                <small>同一个 ref 的两次 SHA 一…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>观测证据范围限制</strong>
+                <small>能看见指针值，不等于能展开指针背后…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念形成递进链条：首次观测基线解决“第一次看见不能当变化”；ref 指针 SHA 比较与变化检测解决“如何判断变化”；观测证据范围限制解决“变化线索能支持多强的结论”。只读远端监控和最小权限访问贯穿其中，让整条观测链既低数据面，又保持结论诚实。落点是：先建立基线，再比较同一 ref 的 SHA，最后严格限制报告能说什么。这样，远端 ref 监控就不会被误写成完整提交审计，也不会把首次发现误报成新增事件。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["远端 ref 只读观测与观测证据边界"])
+  concept1["首次观测基线"]
+  hub --&gt; concept1
+  concept2["ref 指针 SHA 比较与变化检测"]
+  hub --&gt; concept2
+  concept3["观测证据范围限制"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["只读远端 ref 监控"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  related2["ref 命名空间"]
+  concept2 --&gt; related2
+  concept3 --&gt; concept2
+  concept3 --&gt; concept1
+  related3["证据缺失不等于事件不存在"]
+  concept3 --&gt; related3
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="first-observation-baseline">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>首次观测基线</h3>
+              <p>First-Observation Baseline</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">第一次看见只是给 ref 拍登记照，第二次比较才谈得上变化。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>第一次看到某个远端 ref，只得到它此刻的 SHA，只能记录基线，不能算作新增提交。</li>
+                <li>基线要按 ref 分开保存：指针值 SHA、所属命名空间、观测时间以及这次读取是否成功。</li>
+                <li>基线不是结论，而是后续 unchanged / changed 判断能够成立的前提。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="first-observation-baseline" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="ref-sha-comparison">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>ref 指针 SHA 比较与变化检测</h3>
+              <p>Ref Pointer SHA Comparison and Change Detection</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">同一个 ref 的两次 SHA 一对比，才知道指针有没有移动。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>ref 是命名空间里的指针，SHA 是它在某个时刻的指针值，不是提交内容本身。</li>
+                <li>保存同一 ref 上一次的 SHA，与当前 SHA 比较：相同为 unchanged，不同为 changed。</li>
+                <li>比较结果只是变化线索，不回答多了哪些提交、谁写的、改了哪些文件。</li>
+                <li>比较必须绑定到具体 ref，不同 ref 的 SHA 不能混在一起比较。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="ref-sha-comparison" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="observation-evidence-scope">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>观测证据范围限制</h3>
+              <p>Observation Evidence Scope Limit</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">能看见指针值，不等于能展开指针背后的全部故事。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>观测接口能回答的问题有明确上限：只读 ref 得到的是指针层元数据。</li>
+                <li>changed 只支持“版本变化线索”，不支持提交数量、作者、文件列表或 diff。</li>
+                <li>unchanged 只说明被监控的 ref 没变，不等于整个仓库没有任何变化。</li>
+                <li>限制不是缺陷而是接口契约：低数据面、低风险，代价是结论强度有限。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="observation-evidence-scope" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="first-observation-baseline">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>首次观测基线</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>首次观测基线说的是：当你第一次看见某个远端 ref，比如 refs/heads/main 时，你得到的是一个当前值，而不是一个变化事件。基线的作用像给这个 ref 拍一张登记照：记录它此刻的 SHA、来自哪个命名空间、观测时间以及这次读取是否成功。只有等到下一次观测，把新读到的 SHA 与登记照里的历史 SHA 比较，相同才叫 unchanged，不同才叫变化线索。为什么第一次不能直接算新增提交？因为“第一次看见”只说明你的监控系统刚建立联系，不说明远端刚刚发生任何事情；第一次看到 refs/heads/main 指向某个 SHA，很可能这个提交已经存在很久了。如果没有基线，系统连比较对象都没有，只能输出未知或首次发现。基线建立后，变化检测才有参照系，就像你第一次给身高记录数字，不能据此说你今天长高了；第二次测量比第一次高，才说明变化。所以，基线不是结论，而是后续比较的前提。它也应该为每个 ref 分开保存，因为 refs/heads/main 和 refs/heads/private/agent-self-customization 是两个不同指针，不能共用一条历史。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>首次读取只建立“这个 ref 现在指向什么”的登记信息，本身不包含任何时间上的先后对比。</li>
+                <li>变化判断必须有两个时刻的值：历史 SHA 作为参照，当前 SHA 作为被比较对象。</li>
+                <li>不同 ref 是不同指针，基线必须逐 ref 保存，否则一个 ref 的变动会污染另一个 ref 的判断。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设监控 refs/heads/main。第一次读取得到 SHA 7c9f，系统只记录：main 的基线是 7c9f。第二天再读取仍是 7c9f，输出 unchanged。第三天读取变成 a1b2，才输出“main ref 指针出现变化线索”。第一次那一步不能输出 changed。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把“第一次看到”误报成“新增提交”或“远端发生变化”。</li>
+                <li>只保存一个全局基线，把不同 ref 的 SHA 混在一起，导致 main 没变而私有分支变了时也无法正确判断。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>ref 指针 SHA 比较与变化检测</td><td>基线提供历史值，是 SHA 比较能够成立的前提；没有历史值，就只剩首次发现，无法判断当前值是否变化。</td></tr>
+                <tr><td>观测证据范围限制</td><td>只读、低数据面的观测只能先记录 ref 元数据，基线本身就是证据范围限制下的第一层产物。</td></tr>
+                <tr><td>只读远端 ref 监控</td><td>不 clone、不 fetch 的监控方式决定了第一次只能登记 ref 指针，而不能立刻读取提交详情。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何为多个远端 ref 分别设计基线存储字段，使首次发现、正常更新、删除和读取失败可以区分？</li>
+                <li>如果一个 ref 已经有基线，但后来从远端消失，应该把它标成删除、未知还是待确认？</li>
+                <li>当读取失败时，是否应该保留旧基线不覆盖，以避免把访问故障误判为远端变化？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="ref-sha-comparison">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>ref 指针 SHA 比较与变化检测</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>ref 是 Git 中的引用，可以把它想成命名空间里的指针。refs/heads/main 是一个名字，它指向的值是一个 SHA 字符串。SHA 是这个 ref 在某个时刻的指针值，不是提交内容本身。所谓 ref 指针 SHA 比较与变化检测，就是保存同一个 ref 上一次读到的 SHA，再读取当前 SHA，然后比较两者。如果历史 SHA 和当前 SHA 相同，系统可以输出 unchanged，意思是“这个被监控的 ref 指针在两次观测之间没有变化”。如果不同，系统可以输出 changed，但这仍然只是变化线索，不是完整提交详情，因为这个比较只回答“指针有没有移动”，不回答“移动之后多了什么提交、谁写的、改了哪些文件”。比较还必须绑定到具体的 ref：refs/heads/main 的变化不能代表 refs/heads/private/agent-self-customization 的变化，反过来也一样。当天多个远端仓库通过 refs/heads/... 读取状态，并报告未发现远端 ref 指针变化，正说明这种比较是一种可观察边界：你能看见指针值，但不能自动看见指针背后的全部故事。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>比较的对象是同一个 ref 在不同时刻的指针值 SHA，而不是两个不同分支或标签的 SHA。</li>
+                <li>历史 SHA 与当前 SHA 相同则输出 unchanged，不同则输出 changed，两者都是一次观测与上一次基线之间的差分结论。</li>
+                <li>比较只覆盖被监控的那个 ref，其他分支、标签或对象库的变化不在这次比较的范围内。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设系统保存了 refs/heads/main 的历史 SHA 为 3f1a。今天读取当前 SHA 仍是 3f1a，于是输出 unchanged。若今天读取到 8b2c，则输出“main ref 指针出现变化线索”。但报告不能写“新增两个提交并修改了配置注册”，因为当前观测层没有下载提交对象、文件树或 diff。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把 changed 当成完整提交报告，直接说“新增了几个提交、修改了哪些文件”。</li>
+                <li>把 unchanged 当成“仓库完全没有任何变化”，忽略其他分支、标签或对象库仍可能变化。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>首次观测基线</td><td>比较依赖基线提供的历史值；没有基线，变化检测只剩首次发现，无法输出 unchanged 或 changed。</td></tr>
+                <tr><td>观测证据范围限制</td><td>比较结果必须受证据范围约束，只能报告变化线索，不能越级报告提交数量、作者、文件列表或 diff。</td></tr>
+                <tr><td>ref 命名空间</td><td>命名空间决定比较的是哪一个指针，refs/heads/main 与私有分支的 SHA 不能混在一起比较。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当一个远端仓库有多个分支时，如何把多个 ref 的比较结果聚合成仓库级发布信号？</li>
+                <li>如果分支和标签指向同一个 SHA，应该算一个信号还是两个独立信号？</li>
+                <li>当历史 SHA 缺失或当前读取失败时，变化检测应该输出未知、沿用旧状态，还是标成待确认？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="observation-evidence-scope">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>观测证据范围限制</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>观测证据范围限制说的是：一个观测接口能回答的问题有明确上限。当天远端监控只通过 git ls-remote 读取远端 ref，不 clone、不 fetch、不下载提交对象、文件树或工作区内容。因此它掌握的是 ref 元数据这一层证据：某个 ref 的指针值是多少，和上次相比是否变化。这层证据能支持“ref 指针是否变化”的结论，但不能支持“新增了多少提交、提交信息是什么、作者是谁、改了哪些文件、diff 内容是什么”的结论。即使看到 changed，也只能说发现版本变化线索，下一步如果要了解详情，需要另一次成本更高的读取或下载。反过来，看到 unchanged 也只能说被监控的 ref 没变，不能说整个仓库绝对没有任何变化。这个限制不是缺陷，而是接口契约。只读监控和最小权限访问让数据面很小、风险很低，代价就是结论强度有限。当天 tiny-sea-war 的未提交变更也体现了同类边界：当前工作区存在变更，但 Git 不能证明它发生在目标日期前一天，所以只能作为待确认变化线索，不能写成已完成的提交事实。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>接口契约决定证据上限：git ls-remote 只读取 ref 元数据，不下载提交对象、文件树或工作区内容。</li>
+                <li>证据层级决定结论强度：ref 指针变化只能支持“版本变化线索”，不能支持提交数量、作者、文件列表或 diff。</li>
+                <li>只读与最小权限把数据面和风险压到最小，代价是必须为未知与待确认单独留出表达位置。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设监控报告 refs/heads/main changed。严谨写法是：“被监控的 main ref 指针出现变化线索，尚未获取提交详情。”不能写成：“新增 3 个提交，修复了 scene_presentation_test.gd。”如果报告是 unchanged，严谨写法是：“被监控的 ref 指针未发现变化。”不能写成：“仓库完全没有任何变化。”</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把 ref 变化线索当成完整提交事实，直接写“远端新增了若干提交并修改了测试运行器”。</li>
+                <li>把 unchanged 当成“仓库没有任何变化”，或者把未提交变更的存在当成它一定发生在目标日期前一天。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>ref 指针 SHA 比较与变化检测</td><td>证据范围限制要求 SHA 比较只报告变化线索，不越级报告提交数量、作者、文件列表或 diff。</td></tr>
+                <tr><td>首次观测基线</td><td>基线只记录 ref 元数据，正是证据范围限制下能拿到的最小可用信息。</td></tr>
+                <tr><td>证据缺失不等于事件不存在</td><td>未提交变更只能作为待确认变化线索，说明结论强度必须匹配证据等级，缺失应留在未判定。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何在自动化报告中显式标注证据等级，让读者知道哪些是已确认、哪些是待确认、哪些是未知？</li>
+                <li>当 ref 变化线索出现时，应该按什么条件触发下一层低数据面的对象下载或提交详情查询？</li>
+                <li>如果一次读取失败，系统应如何保留旧基线并输出未判定，避免把失败误报成变化或不变？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念形成递进链条：首次观测基线解决“第一次看见不能当变化”；ref 指针 SHA 比较与变化检测解决“如何判断变化”；观测证据范围限制解决“变化线索能支持多强的结论”。只读远端监控和最小权限访问贯穿其中，让整条观测链既低数据面，又保持结论诚实。落点是：先建立基线，再比较同一 ref 的 SHA，最后严格限制报告能说什么。这样，远端 ref 监控就不会被误写成完整提交审计，也不会把首次发现误报成新增事件。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">先建立基线，再比较同一个 ref 的 SHA，最后严格限制报告能说什么。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何为多个远端 ref 分别设计基线存储字段，使首次发现、正常更新、删除 ref 和读取失败可以区分？</li>
+            <li>当一个远端仓库有多个分支时，如何把多个 ref 的比较结果聚合成仓库级发布信号，并表达部分成功与未知？</li>
+            <li>如何在自动化报告中显式标注证据等级，并在 ref 变化线索出现时决定是否触发下一层对象下载或提交详情查询？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
