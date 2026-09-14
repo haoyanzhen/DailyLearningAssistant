@@ -65,10 +65,28 @@
     }
   ],
   "llm": {
-    "api_url": "https://api.deepseek.com/v1/chat/completions",
-    "api_key": "YOUR_DEEPSEEK_API_KEY",
-    "model": "deepseek-v4-pro",
-    "trust_env_proxy": false
+    "failover_timeout_seconds": 60,
+    "trust_env_proxy": false,
+    "providers": [
+      {
+        "name": "lan-vllm",
+        "api_url": "http://192.168.1.50:8000/v1/chat/completions",
+        "api_key": "YOUR_VLLM_API_KEY",
+        "model": "your-served-model-name"
+      },
+      {
+        "name": "openwebui-backup",
+        "api_url": "http://192.168.1.50:3000/api/chat/completions",
+        "api_key": "YOUR_OPENWEBUI_API_KEY",
+        "model": "your-openwebui-model-id"
+      },
+      {
+        "name": "cloud-backup",
+        "api_url": "https://api.deepseek.com/v1/chat/completions",
+        "api_key": "YOUR_DEEPSEEK_API_KEY",
+        "model": "your-cloud-model-name"
+      }
+    ]
   },
   "site": {
     "base_url": "https://yourgithubusername.github.io/DailyLearningAssistant"

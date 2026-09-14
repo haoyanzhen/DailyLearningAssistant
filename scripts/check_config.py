@@ -102,16 +102,57 @@ def check_llm(config: dict, strict: bool) -> list[str]:
     llm = config.get("llm")
     if not isinstance(llm, dict):
         return ["llm 必须是 object"]
-    for key in ("api_url", "api_key", "model"):
-        value = llm.get(key)
-        if not isinstance(value, str) or not value.strip():
-            problems.append(f"llm.{key} 不能为空")
-    api_url = llm.get("api_url")
-    if isinstance(api_url, str) and api_url and not URL_RE.search(api_url):
-        problems.append("llm.api_url 必须是 http(s) URL")
-    api_key = str(llm.get("api_key") or "")
-    if strict and (not api_key or api_key.startswith("YOUR_")):
-        problems.append("llm.api_key 不能是示例占位符")
+
+    def check_positive_number(value: object, label: str) -> None:
+        if isinstance(value, bool) or not isinstance(value, (int, float)) or value <= 0:
+            problems.append(f"{label} 必须是正数")
+
+    def check_provider(provider: dict, prefix: str, *, require_name: bool) -> None:
+        if require_name:
+            name = provider.get("name")
+            if not isinstance(name, str) or not name.strip():
+                problems.append(f"{prefix}.name 不能为空")
+        for key in ("api_url", "api_key", "model"):
+            value = provider.get(key)
+            if not isinstance(value, str) or not value.strip():
+                problems.append(f"{prefix}.{key} 不能为空")
+        api_url = provider.get("api_url")
+        if isinstance(api_url, str) and api_url and not URL_RE.search(api_url):
+            problems.append(f"{prefix}.api_url 必须是 http(s) URL")
+        api_key = str(provider.get("api_key") or "")
+        if strict and (not api_key or api_key.startswith("YOUR_")):
+            problems.append(f"{prefix}.api_key 不能是示例占位符")
+        if "timeout_seconds" in provider:
+            check_positive_number(provider["timeout_seconds"], f"{prefix}.timeout_seconds")
+
+    providers = llm.get("providers")
+    if providers is None:
+        check_provider(llm, "llm", require_name=False)
+        return problems
+
+    if not isinstance(providers, list) or not providers:
+        problems.append("llm.providers 必须是非空列表")
+        return problems
+    if "failover_timeout_seconds" in llm:
+        check_positive_number(llm["failover_timeout_seconds"], "llm.failover_timeout_seconds")
+
+    shared = {
+        key: value
+        for key, value in llm.items()
+        if key not in {"providers", "failover_timeout_seconds"}
+    }
+    seen_names: set[str] = set()
+    for index, item in enumerate(providers):
+        prefix = f"llm.providers[{index}]"
+        if not isinstance(item, dict):
+            problems.append(f"{prefix} 必须是 object")
+            continue
+        name = item.get("name")
+        if isinstance(name, str) and name.strip():
+            if name.strip() in seen_names:
+                problems.append(f"{prefix}.name 重复: {name.strip()}")
+            seen_names.add(name.strip())
+        check_provider({**shared, **item}, prefix, require_name=True)
     return problems
 
 

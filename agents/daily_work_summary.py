@@ -23,7 +23,12 @@ from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
-from orchestrator.llm import LLMRetryPolicy, call_chat_completion
+from orchestrator.llm import (
+    LLMRetryPolicy,
+    call_chat_completion,
+    primary_llm_model,
+    require_llm_config as validate_llm_config,
+)
 DEFAULT_REPOSITORIES = [
     "AInote",
     "DailyLearningAssistant",
@@ -145,13 +150,10 @@ def load_config(path: Path) -> dict:
 
 
 def require_llm_config(config: dict) -> dict | None:
-    llm = config.get("llm") or {}
-    required = ("api_url", "api_key", "model")
-    if not all(llm.get(key) for key in required):
+    try:
+        return validate_llm_config(config)
+    except ValueError:
         return None
-    if str(llm["api_key"]).startswith("YOUR_"):
-        return None
-    return llm
 
 
 def resolve_timezone(args: argparse.Namespace, config: dict) -> ZoneInfo:
@@ -1429,7 +1431,7 @@ def main() -> int:
         "llm": {
             "enabled": not args.no_llm,
             "configured": bool(llm),
-            "model": llm.get("model") if llm else None,
+            "model": primary_llm_model(llm) if llm else None,
             "retries": args.llm_retries,
             "retry_delay_seconds": args.llm_retry_delay,
         },

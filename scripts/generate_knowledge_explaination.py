@@ -17,7 +17,13 @@ from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
-from orchestrator.llm import LLMRetryPolicy, RetryPolicy, call_chat_completion, retry_call
+from orchestrator.llm import (
+    LLMRetryPolicy,
+    RetryPolicy,
+    call_chat_completion,
+    require_llm_config as validate_llm_config,
+    retry_call,
+)
 from orchestrator.question_threads import upsert_questions_from_concepts
 KNOWLEDGE_LOG_HEADERS = ("日期", "概念", "领域", "难度", "一句话解释", "下一次讲解参考")
 
@@ -57,15 +63,11 @@ def load_json(path):
 
 
 def require_llm_config(config):
-    llm = config.get("llm") or {}
-    missing = [key for key in ("api_url", "api_key", "model") if not llm.get(key)]
-    if missing:
-        print(f"[错误] config.json 缺少 llm 配置项: {', '.join(missing)}")
+    try:
+        return validate_llm_config(config)
+    except ValueError as exc:
+        print(f"[错误] {exc}")
         sys.exit(1)
-    if str(llm["api_key"]).startswith("YOUR_"):
-        print("[错误] llm.api_key 仍是示例占位符，请在 config.json 中填入真实密钥。")
-        sys.exit(1)
-    return llm
 
 
 def resolve_target_date(arg_date, config):

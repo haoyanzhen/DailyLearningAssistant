@@ -75,12 +75,45 @@ python3 scripts/check_config.py --config config.json --strict
 
 ## llm
 
-- `api_url`：OpenAI Chat Completions 兼容接口地址。
-- `api_key`：真实 API key，不能保留 `YOUR_...` 占位符。
-- `model`：使用的模型名。
-- `trust_env_proxy`：是否让 LLM HTTP 请求读取 `http_proxy`、`https_proxy`、`no_proxy` 等环境变量。默认建议为 `false`，避免终端或系统代理设置影响定时流水线；确实需要通过代理访问 LLM API 时再显式改为 `true`。
+`llm.providers` 是按优先级排列的 OpenAI Chat Completions 兼容服务列表。一次真实生成请求会先访问第一个 provider；如果超时、连接失败、返回非成功 HTTP 状态、返回非 JSON，或响应不符合 `choices[0].message.content` 约定，则立即尝试下一个 provider。
 
-当前建议模型为 `deepseek-v4-pro`。LLM 网络调用使用 `httpx`，因此本地调度环境需要安装 `requirements.txt` 中的依赖。
+```json
+{
+  "llm": {
+    "failover_timeout_seconds": 60,
+    "trust_env_proxy": false,
+    "providers": [
+      {
+        "name": "lan-vllm",
+        "api_url": "http://192.168.1.50:8000/v1/chat/completions",
+        "api_key": "YOUR_VLLM_API_KEY",
+        "model": "your-served-model-name"
+      },
+      {
+        "name": "openwebui-backup",
+        "api_url": "http://192.168.1.50:3000/api/chat/completions",
+        "api_key": "YOUR_OPENWEBUI_API_KEY",
+        "model": "your-openwebui-model-id"
+      }
+    ]
+  }
+}
+```
+
+字段说明：
+
+- `failover_timeout_seconds`：每个 provider 的请求超时，默认 60 秒。它不会超过命令行 `--timeout` 设置。
+- `providers`：非空候选列表，严格按照数组顺序尝试。
+- `providers[].name`：provider 唯一名称，用于终端输出和 `llm_trace.jsonl` 诊断。
+- `providers[].api_url`：完整的 Chat Completions 接口地址。vLLM 通常为 `/v1/chat/completions`，OpenWebUI 通常为 `/api/chat/completions`。
+- `providers[].api_key`：Bearer API key，不能为空或保留为 `YOUR_...` 占位符。未开启鉴权的兼容服务也需要填写一个非空值，因为客户端始终发送 Bearer header。
+- `providers[].model`：该服务实际暴露的模型 ID。
+- `providers[].timeout_seconds`：可选，覆盖当前 provider 的公共故障转移超时。
+- `trust_env_proxy`：公共代理设置，默认建议为 `false`；单个 provider 可覆盖这个值以及 `connect_timeout`、`read_timeout`、`write_timeout` 和 `pool_timeout`。
+
+一轮中所有 provider 均失败后，`--llm-retries` 控制整条候选链最多执行多少轮，`--llm-retry-delay` 控制轮次之间的指数退避。三个 provider、每个 60 秒且全部超时时，单轮最坏耗时约为 180 秒。
+
+旧版单 provider 结构仍然可用：直接在 `llm` 下配置 `api_url`、`api_key` 和 `model` 即可，但不会产生跨服务故障转移。LLM 网络调用使用 `httpx`，因此本地调度环境需要安装 `requirements.txt` 中的依赖。
 
 ## email
 

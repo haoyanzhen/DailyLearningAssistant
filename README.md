@@ -48,7 +48,8 @@ cp config.example.json config.json
 3. 编辑 `config.json`：
 
 - `repositories`：要扫描的本地 Git 仓库列表。
-- `llm`：LLM API 地址、API key 和模型名。
+- `llm.providers`：按优先级排列的 OpenAI Chat Completions 兼容服务；前一个失败时自动切换到下一个。
+- `llm.failover_timeout_seconds`：每个候选 LLM 的最长请求等待时间，默认 60 秒。
 - `llm.trust_env_proxy`：是否让 LLM 请求读取终端环境代理，默认建议关闭。
 - `email`：发件邮箱、收件人、SMTP/IMAP 配置。
 - `site.base_url`：GitHub Pages 站点根地址。

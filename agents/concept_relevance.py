@@ -23,7 +23,12 @@ from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
-from orchestrator.llm import LLMRetryPolicy, call_chat_completion
+from orchestrator.llm import (
+    LLMRetryPolicy,
+    call_chat_completion,
+    primary_llm_model,
+    require_llm_config as validate_llm_config,
+)
 from orchestrator.question_threads import QuestionThreadSelection, collect_recent_open_questions, render_questions_for_prompt
 
 
@@ -96,13 +101,10 @@ def load_config(path: Path) -> dict:
 
 
 def require_llm_config(config: dict) -> dict:
-    llm = config.get("llm") or {}
-    missing = [key for key in ("api_url", "api_key", "model") if not llm.get(key)]
-    if missing:
-        raise SystemExit(f"[错误] config.json 缺少 llm 配置项: {', '.join(missing)}")
-    if str(llm["api_key"]).startswith("YOUR_"):
-        raise SystemExit("[错误] llm.api_key 仍是示例占位符，请在 config.json 中填入真实密钥。")
-    return llm
+    try:
+        return validate_llm_config(config)
+    except ValueError as exc:
+        raise SystemExit(f"[错误] {exc}") from exc
 
 
 def resolve_timezone(args: argparse.Namespace, config: dict) -> ZoneInfo:
@@ -592,7 +594,7 @@ def main() -> int:
                 "llm": {
                     "enabled": True,
                     "configured": True,
-                    "model": llm.get("model"),
+                    "model": primary_llm_model(llm),
                     "retries": args.llm_retries,
                     "retry_delay_seconds": args.llm_retry_delay,
                     "status": "skipped_question_threads_invalid",
@@ -629,7 +631,7 @@ def main() -> int:
                 "llm": {
                     "enabled": True,
                     "configured": True,
-                    "model": llm.get("model"),
+                    "model": primary_llm_model(llm),
                     "retries": args.llm_retries,
                     "retry_delay_seconds": args.llm_retry_delay,
                     "status": "skipped_input_invalid",
@@ -681,7 +683,7 @@ def main() -> int:
                     "llm": {
                         "enabled": True,
                         "configured": True,
-                        "model": llm.get("model"),
+                        "model": primary_llm_model(llm),
                         "retries": args.llm_retries,
                         "retry_delay_seconds": args.llm_retry_delay,
                         "status": "skipped_review_source_missing",
@@ -735,7 +737,7 @@ def main() -> int:
                 "llm": {
                     "enabled": True,
                     "configured": True,
-                    "model": llm.get("model"),
+                    "model": primary_llm_model(llm),
                     "retries": args.llm_retries,
                     "retry_delay_seconds": args.llm_retry_delay,
                     "status": llm_status,
@@ -778,7 +780,7 @@ def main() -> int:
             "llm": {
                 "enabled": True,
                 "configured": True,
-                "model": llm.get("model"),
+                "model": primary_llm_model(llm),
                 "retries": args.llm_retries,
                 "retry_delay_seconds": args.llm_retry_delay,
                 "status": llm_status,

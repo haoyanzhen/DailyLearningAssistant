@@ -24,7 +24,7 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
-from orchestrator.llm import LLMRetryPolicy, call_chat_completion
+from orchestrator.llm import LLMRetryPolicy, call_chat_completion, require_llm_config
 from orchestrator.manifest import load_daily_manifest, select_report
 
 
@@ -164,7 +164,7 @@ def generate_email_content(report, config, send_date, recipient_name=None):
 }}"""
 
     try:
-        llm = {**config["llm"], "max_tokens": 650}
+        llm = {**require_llm_config(config), "max_tokens": 650}
         text = call_chat_completion(
             llm,
             [{"role": "user", "content": prompt}],
