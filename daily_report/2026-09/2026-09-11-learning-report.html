@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-09-11 学习笔记日报</title>
+    <meta name="description" content="从远端多 ref 聚合观测，到本地 HEAD、索引、工作树三层状态，再到三值状态机：读取失败必须标为未判定，而不是不存在或未变化。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260911-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-09-11</p>
+        <h1>多 ref、三层状态与三值结论：把仓库观测的边界画清楚</h1>
+        <p>同一天没有新提交，也可以把观测模型往前推一步：远端从单一 main 走向多 ref 聚合，本地从两层走向 HEAD、索引、工作树三层，结论从二值走向三值。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>多 ref 聚合观测 · 索引作为…</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>多 ref 命名空间聚合观测</strong>
+                <small>main 没动，不代表整个远端没有…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>索引/暂存区作为第三层状态…</strong>
+                <small>Git 本地不是两层，而是 HEA…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>观测结果的三值状态机</strong>
+                <small>读不到，不等于不存在，也不等于没变。</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">多 ref 聚合观测和索引三层状态，分别对应远端与本地两个观测面。远端面由分支、标签、远端 HEAD 等 ref 组成；本地面由 HEAD 提交快照、索引/暂存区、工作树组成。三值状态机是贯穿两者的报告规则：读取成功且明确存在或不存在，可以给出肯定或否定结论；读取失败、权限不足、外部过滤器缺失、网络超时等只能进入未判定。因此，一个可信的仓库观测系统不是简单输出有变化或无变化，而是把多个入口、多个状态层和多种读取结果聚合起来，保留未判定字段，再决定下一步读取或重试。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["多 ref 聚合观测 · 索引作为第三层状态 · 三值状态机"])
+  concept1["多 ref 命名空间聚合观测"]
+  hub --&gt; concept1
+  concept2["索引/暂存区作为第三层状态边界"]
+  hub --&gt; concept2
+  concept3["观测结果的三值状态机"]
+  hub --&gt; concept3
+  related1["引用作为可达闭包入口"]
+  concept1 --&gt; related1
+  concept1 --&gt; concept3
+  concept1 --&gt; concept2
+  related2["提交对象的快照语义与父链重建"]
+  concept2 --&gt; related2
+  concept2 --&gt; concept3
+  concept2 --&gt; concept1
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  concept3 --&gt; related1
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="multi-ref-namespace-observation">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>多 ref 命名空间聚合观测</h3>
+              <p>Multi-ref Namespace Aggregated Observation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">main 没动，不代表整个远端没有发布。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>远端不只有 refs/heads/main，还有 refs/heads/* 分支、refs/tags/* 标签、refs/remotes/* 远端跟踪引用与远端 HEAD 等多个命名空间。</li>
+                <li>每个 ref 都有自己的基线与生命周期：第一次看到的 ref 只能作为基线，不能立刻算作新增事件。</li>
+                <li>一个 ref 未变不能抵消另一个 ref 已变，整体结论可以是部分未变、部分已变、部分未判定。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="multi-ref-namespace-observation" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="index-staging-third-layer">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>索引/暂存区作为第三层状态边界</h3>
+              <p>Index / Staging Area as the Third State Boundary</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">Git 本地不是两层，而是 HEAD → 索引 → 工作树三层。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>HEAD 指向当前分支最新提交，代表正式历史中的快照；索引记录下一次提交准备包含的快照；工作树是磁盘上正在编辑的文件。</li>
+                <li>git status 做两组比较：HEAD 与索引比较得到已暂存的变化，索引与工作树比较得到未暂存的变化，同一文件可以同时拥有两部分改动。</li>
+                <li>索引是提交对象图与工作树之间的安全边界，切换分支前检查未提交修改，正是为了避免更新 HEAD 时覆盖它。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="index-staging-third-layer" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="three-valued-observation-state-machine">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 数学 / 计算机科学</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>观测结果的三值状态机</h3>
+              <p>Three-valued State Machine for Observation Results</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">读不到，不等于不存在，也不等于没变。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>三种基本结论：已确认、已确认不存在、未判定；未判定来自读取失败、超时、权限不足、外部过滤器缺失、锁冲突或格式门槛。</li>
+                <li>已确认内部还可以继续区分与历史基线相同或不同，但未判定不能降级成未变化或不存在。</li>
+                <li>未判定更像待办事项而不是失败：它要求保留问题、记录原因，并在条件恢复后重新读取。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="three-valued-observation-state-machine" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="multi-ref-namespace-observation">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>多 ref 命名空间聚合观测</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>ref 可以理解成贴在某个对象 ID 上的名字标签。远端仓库里不只有一个 main，还有 refs/heads/* 分支、refs/tags/* 标签、refs/remotes/* 远端跟踪引用、远端 HEAD 等命名空间。只盯 refs/heads/main，就像只检查一个主门是否开过，而忽略侧门、公告栏和临时通知。多 ref 聚合观测的关键是：每个 ref 都有自己的基线和生命周期。第一次看到的 ref 只能作为基线，不能立刻算作新增事件；已存在的 ref 如果读取失败，不能写成未变化；一个 ref 没变，也不能抵消另一个 ref 已变。整体结论可能是部分未变、部分已变、部分未判定。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>ref 是“名字 → 对象 ID”的入口标签，每个命名空间都有自己的入口集合，观测必须遍历整组入口，而不是只读一个入口。</li>
+                <li>基线是聚合判断的前提：只有先记录某个 ref 此前的对象 ID，才能区分首次发现、正常更新、删除和读取失败这几种情况。</li>
+                <li>各 ref 的结论相互独立，必须先按 ref 聚合再给出整体判断，任何单个 ref 的结果都不能覆盖其他 ref 的结果。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>想象一个港口有多个信号旗：主航道旗、仓库区旗、危险品旗、天气旗。你只盯着主航道旗，看到它没动就宣布整个港口今天没有新消息；可实际上仓库区已经换了作业批次，或者天气旗升起了大风预警。多 ref 观测就是同时读取这些旗杆，而不是把港口状态压缩成一根旗杆。换到仓库也一样：假设今天 refs/heads/main 与昨天相同，但新增了 refs/tags/v1.2，并且 refs/heads/dev 移动到了新提交。只观察 main 会得出没有变化；多 ref 聚合则能看到标签发布与非默认分支更新两个信号。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为 main 不变就等于整个远端没有发布。</li>
+                <li>认为标签只是附属信息，可以不看；或者把多个 ref 的 SHA 简单列出来，却不给每个 ref 建立历史基线，看起来收集了很多数据，仍会漏掉标签发布、非默认分支更新或远端 HEAD 切换。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>引用作为可达闭包入口</td><td>每个 ref 都是一个潜在入口，聚合观测先比较入口名称和对象 ID，但不能因此知道闭包里的具体提交内容。</td></tr>
+                <tr><td>观测结果的三值状态机</td><td>多个 ref 可能部分读取成功、部分读取失败，整体报告必须保留未判定，不能简单写成无变化。</td></tr>
+                <tr><td>索引/暂存区作为第三层状态边界</td><td>远端多 ref 关注发布入口，本地三层状态关注工作区改动，两者是不同观测面，不应混在一起。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何为每个 ref 设计基线，区分首次发现、正常更新、删除和读取失败？</li>
+                <li>当标签和分支指向同一个提交时，应该把它算作一个发布信号还是两个独立信号？</li>
+                <li>如果只允许低数据面读取，怎样在多 ref 聚合中判断哪些变化值得进一步下载对象？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="index-staging-third-layer">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>索引/暂存区作为第三层状态边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>Git 的本地状态不是只有已提交和工作树两种。中间还有索引，也叫暂存区。HEAD 指向当前分支最新提交，代表正式历史中的快照；索引记录下一次提交准备包含的快照；工作树是磁盘上正在编辑的文件。git status 会做两组比较：HEAD 与索引比较，得到已暂存的变化；索引与工作树比较，得到未暂存的变化。这样同一个文件可以同时有已暂存和未暂存两部分改动。git checkout 或切换分支前检查未提交修改，是为了避免更新 HEAD 时覆盖索引或工作树中的未提交状态。索引因此是提交对象图与工作树之间的安全边界。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>三层结构把“正式历史”“下一次提交的内容”“当前磁盘内容”分别保存，使同一个文件的 staged 与 unstaged 改动可以并存且互不覆盖。</li>
+                <li>status 的清晰分类来自两组比较的组合：HEAD 与索引、索引与工作树；差集的方向决定了改动属于哪一类。</li>
+                <li>索引是更新 HEAD 之前的保护层：checkout 必须判断新的 HEAD 是否会覆盖索引或工作树中的未提交状态，因此可能拒绝切换。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>把写书想成 Git：已经出版的版本是 HEAD 提交快照，桌上正在改的稿子是工作树，而你已经挑了部分段落放进“待出版文件夹”的版本是索引。你可以在桌上继续改，同时待出版文件夹里保留另一份更早的挑选结果；出版社只看待出版文件夹，不会直接拿桌上的散页去印刷。换成命令：你修改 a.txt 后执行 git add a.txt，此时 HEAD 与索引不同，status 显示已暂存；随后你又修改 a.txt 但不 add，此时索引与工作树也不同，status 会同时显示已暂存和未暂存。若此时切换分支可能影响这些状态，checkout 会先检查并可能拒绝。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为 Git 只比较提交和工作树，暂存区只是多余的中转站；实际上 status 的清晰分类来自 HEAD、索引、工作树三者比较。</li>
+                <li>以为 checkout 只改文件内容，忽略它还要保护索引和工作树里未提交的状态。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>提交对象的快照语义与父链重建</td><td>索引比较的基准是 HEAD 指向的提交快照；没有快照语义，就无法说明已暂存差异从何而来。</td></tr>
+                <tr><td>观测结果的三值状态机</td><td>如果索引或工作树因为权限、锁、外部过滤器缺失而读不到，status 的结论应进入未判定，而不是宣布干净。</td></tr>
+                <tr><td>多 ref 命名空间聚合观测</td><td>远端多 ref 和本地三层状态是不同观测面，一个是发布入口，一个是工作区状态，自动化报告应分开记录。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>为什么 Git 需要索引，而不能只靠提交快照和工作树的直接比较？</li>
+                <li>切换分支时，Git 如何判断一次 checkout 是否会覆盖索引或工作树中的未提交状态？</li>
+                <li>在合并、变基或冲突解决过程中，索引层分别承担什么角色？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="three-valued-observation-state-machine">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 数学 / 计算机科学</p>
+                <h3>观测结果的三值状态机</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>自动化观测如果只有有变化和无变化两个值，就会把读取失败误写成无变化。更合理的模型至少有三种结论：已确认、已确认不存在、未判定。已确认表示读取成功并得到明确值；已确认不存在表示读取成功且明确知道对象或状态不存在；未判定表示读取失败、超时、权限不足、外部过滤器缺失、锁冲突、格式门槛等阻止了判断。已确认内部还可以继续区分与历史基线相同或不同。但关键是未判定不能降级成未变化或不存在。网络失败读不到 ref，不等于 ref 不存在；git-lfs 缺失导致工作区读取失败，不等于工作区干净。三值状态机让报告保留这种边界，并提示稍后重试或换一种读取方式。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>二值模型只有“有变化/无变化”，会把读取失败压缩成无变化，等于把未知当成安全。</li>
+                <li>三值把“读取动作是否成功”和“对象是否存在”分开判断：先确认读取结果是否可信，再判断内容是否与基线相同。</li>
+                <li>未判定需要携带原因字段，才能在条件恢复后重试，或在多个原因同时出现时决定保留哪些信息、是否升级为人工排查。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>医院化验会给出阳性、阴性、样本污染无法判定。如果机器故障时报告写成阴性，就会把未知当成安全。仓库观测也一样：网络超时读不到标签，不能写成没有标签；外部过滤器缺失读不到工作树，不能写成没有改动。再看一个具体场景：自动化脚本执行 git ls-remote 检查 refs/tags/v1，但网络超时。正确输出不是标签不存在，也不是标签未变化，而是未判定、原因为网络超时。等网络恢复后重新读取，才能确认标签存在、不存在或 SHA 是否变化。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为没有读到就等于不存在，或者读取失败可以归入未变化。</li>
+                <li>把未判定当成失败并直接放弃；未判定更像待办事项，它要求保留问题、记录原因，并在条件恢复后重新读取。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>多 ref 命名空间聚合观测</td><td>多个 ref 的读取结果可能部分成功、部分失败，整体结论必须保留未判定，不能被其他 ref 的成功结果掩盖。</td></tr>
+                <tr><td>索引/暂存区作为第三层状态边界</td><td>索引或工作树读取失败时，状态报告不能宣布干净，而应把该层标为未判定。</td></tr>
+                <tr><td>引用作为可达闭包入口</td><td>读取 ref 入口失败时，只能说明入口未知；即使入口读取成功，也只得到对象 ID，不能自动知道闭包内容。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何设计自动化报告字段，让部分成功、部分失败和整体未判定都能准确表达？</li>
+                <li>未判定状态应该在什么条件下重试，什么时候升级为人工排查？</li>
+                <li>多个未判定原因同时出现时，报告应该保留全部原因还是只保留最高优先级原因？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">多 ref 聚合观测和索引三层状态，分别对应远端与本地两个观测面。远端面由分支、标签、远端 HEAD 等 ref 组成；本地面由 HEAD 提交快照、索引/暂存区、工作树组成。三值状态机是贯穿两者的报告规则：读取成功且明确存在或不存在，可以给出肯定或否定结论；读取失败、权限不足、外部过滤器缺失、网络超时等只能进入未判定。因此，一个可信的仓库观测系统不是简单输出有变化或无变化，而是把多个入口、多个状态层和多种读取结果聚合起来，保留未判定字段，再决定下一步读取或重试。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">读取失败必须标为未判定：既不能写成不存在，也不能写成未变化。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何为每个 ref 设计基线，区分首次发现、正常更新、删除和读取失败？</li>
+            <li>为什么 Git 需要索引，而不能只靠提交快照和工作树的直接比较？</li>
+            <li>如何设计自动化报告字段，让部分成功、部分失败和整体未判定都能准确表达？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
