@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-09-14 学习笔记日报</title>
+    <meta name="description" content="从本地工作区、暂存区与未跟踪文件的状态分类，到基于历史 SHA 基线的 unchanged 判定，再到待确认变化线索与人工确认，串起证据分层的学习主线。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260914-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-09-14</p>
+        <h1>证据分层：工作区痕迹、ref 基线与人工确认</h1>
+        <p>今天先分清本地改动停在哪一层，再理解远端 ref 为什么能给出 unchanged，最后看清工作区痕迹只能算待确认线索。三层证据各说各话，不能被拼成同一句结论。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>Git 证据分层与变更检测</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>工作区、暂存区与未跟踪文件…</strong>
+                <small>提交历史是档案柜，暂存区是讲台上的…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>基于历史基线的变更检测</strong>
+                <small>SHA 像书架排头的编号：编号没变…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>待确认变化线索与人工确认</strong>
+                <small>桌上的半杯温咖啡提示有人来过，但不…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">这三个概念从易到难连成一条证据链：先分清本地工作区、暂存区和未跟踪文件的状态，再理解远端 ref 如何用历史 SHA 基线判断 unchanged，最后理解为什么工作区变化只能作为待确认线索并需要人工确认。它们共同强调的是：不同层看到的证据不同，结论不能跨层外推。远端多个仓库的 ref 都显示 unchanged，那只来自 git ls-remote 的 ref 元数据；tiny-sea-war 窗口内没有提交，却有工作区未提交变化，那只能提示当前现场有痕迹。把这两类信息分开写，才是符合证据边界且对读者负责的做法。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["Git 证据分层与变更检测"])
+  concept1["工作区、暂存区与未跟踪文件的状态分类"]
+  hub --&gt; concept1
+  concept2["基于历史基线的变更检测"]
+  hub --&gt; concept2
+  concept3["待确认变化线索与人工确认"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["提交历史与工作区状态的证据层级"]
+  concept1 --&gt; related1
+  related2["ref 元数据证据边界"]
+  concept2 --&gt; related2
+  related3["首次观测基线"]
+  concept2 --&gt; related3
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; related1
+  concept3 --&gt; related2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="git-state-classification">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>工作区、暂存区与未跟踪文件的状态分类</h3>
+              <p>Working Tree, Index &amp; Untracked States</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">提交历史是档案柜，暂存区是讲台上的答题卡，工作区是桌上的草稿纸，未跟踪文件是还没登记的纸片。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>Git 把本地改动分成三个位置：工作区是当前编辑现场，暂存区（索引）是下一次提交的候选清单，未跟踪文件是尚未纳入版本管理的文件或目录。</li>
+                <li>三个位置对应不同证据强度：已暂存说明改动已进入下一次提交候选清单，未暂存与未跟踪只说明现场留有痕迹，正式提交历史里没有新记录。</li>
+                <li>只有被放入暂存区并执行提交的改动才会进入提交历史，所以判断结论之前，先要判断改动停在哪个区域。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="git-state-classification" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="baseline-change-detection">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 数学</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>基于历史基线的变更检测</h3>
+              <p>History-Baseline Change Detection</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">SHA 像书架排头的编号：编号没变，只能说明指针没动，不能说明没人翻过书。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>检测方法是先取上一次成功观测留下的值作为历史基线，再和本次读到的当前值比较；相等记为 unchanged，不等才说明被监控对象可能发生了变化。</li>
+                <li>两个必要前提：必须先有一次成功读取并留下历史基线，本次读取也必须成功；读取失败时不能写成 unchanged，因为没有成功观测就没有可靠比较。</li>
+                <li>首次看到某个 ref 只记录基线，不视为新增提交或 changed，否则第一次观测就会被误报成一次变化。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="baseline-change-detection" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="unconfirmed-signal-human-review">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>待确认变化线索与人工确认</h3>
+              <p>Unconfirmed Signals &amp; Human Confirmation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">桌上的半杯温咖啡提示有人来过，但不能直接写成某人昨晚读完了这本书。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>工作区里的未暂存改动与未跟踪文件只能证明当前现场有痕迹，不能可靠证明它是什么时候发生的，也不能证明作者、意图或是否完成。</li>
+                <li>因此这类信息应单独标注为待确认变化线索，等待人工确认后再升级为结论，不能写成目标日期前一天已经完成的提交事实。</li>
+                <li>材料列出的若干候选路径只是候选方向，不能从候选方向外推出完整开发内容。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="unconfirmed-signal-human-review" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="git-state-classification">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>工作区、暂存区与未跟踪文件的状态分类</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>工作区、暂存区和未跟踪文件，是 Git 用来给本地改动分位置的三类状态。工作区就是你眼前正在编辑的文件现场；暂存区也叫索引，是下一次提交的候选清单；未跟踪文件是 Git 还没有纳入版本管理的文件或目录。当天 tiny-sea-war 的材料明确说：窗口内提交数为 0，但主工作区存在未暂存变更和未跟踪文件或目录，已暂存变更为无。翻译成状态分类就是：正式历史档案里没有新提交；索引里也没有准备提交的改动；但工作现场有改动，而且还有 Git 尚未登记的新文件或目录。这里的核心不是判断改动好坏，而是判断改动停在哪个区域，因为不同区域代表不同证据强度。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Git 用区域而不是用“有没有变化”来组织本地状态：工作区、暂存区（索引）与未跟踪集合三者互相独立，可以同时存在不同内容。</li>
+                <li>状态分类决定了证据强度：已暂存意味着改动已进入下一次提交的候选清单，未暂存与未跟踪只意味着现场留有痕迹，尚未被正式历史收录。</li>
+                <li>提交历史只收录被暂存并提交的改动，因此“窗口内提交数为 0”与“工作区有痕迹”在逻辑上并不冲突，也不需要互相解释。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>tiny-sea-war 窗口内提交数为 0，主工作区存在未暂存变更和未跟踪文件或目录，已暂存变更为无。可确认的结论是：当前工作现场有编辑痕迹和未登记文件，但没有准备好进入下一次提交的暂存内容，也没有目标窗口内的提交记录。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把工作区有变化当成已经提交。工作区、未暂存、未跟踪与已暂存是不同状态，只有被暂存并提交的改动才进入提交历史。</li>
+                <li>把未跟踪文件当成会自动进入下一次提交。未跟踪文件在 Git 还没有任何记录，除非显式加入暂存区，否则不会被提交。</li>
+                <li>看到窗口内提交数为 0 就以为仓库完全没有变化。提交历史为空窗和当前工作区有痕迹是两回事。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>基于历史基线的变更检测</td><td>状态分类关注本地改动停在哪一层；基线比较关注远端 ref 指针是否移动。两者面向不同的证据来源，结论不能互换。</td></tr>
+                <tr><td>待确认变化线索与人工确认</td><td>未暂存与未跟踪的改动只能提示方向，属于待确认线索；只有先分清改动位置，才能判断这条线索的证据强度。</td></tr>
+                <tr><td>提交历史与工作区状态的证据层级</td><td>提交历史是正式档案，工作区是当前现场，暂存区是两者之间的候选清单，三者不能混写成同一句事实。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>怎样从 git status 的输出中准确区分已暂存、未暂存和未跟踪三类条目？</li>
+                <li>如果未跟踪目录里又包含很多文件，为什么 Git 有时只显示目录名而不逐个列出？</li>
+                <li>当已暂存变更为无但未暂存变更存在时，下一次 git commit 真的不会包含任何变更吗？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="baseline-change-detection">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 数学</p>
+                <h3>基于历史基线的变更检测</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>基于历史基线的变更检测，是先用上一次成功观测留下的值作为参照，再和这一次读到的值比较。当天远端 ref 监控用 git ls-remote 读取 ref，每个 ref 都有历史 SHA 和当前 SHA。历史 SHA 是上次记录下来的基线，当前 SHA 是这次读到的指针值；两者相等就记为 unchanged，不等才表示这个 ref 指针可能发生了变化。关键前提有两个：第一，必须先有一次成功读取并留下历史基线；第二，这次读取也必须成功。当天多个仓库的 ref 都显示 unchanged，是因为它们已有可比较的 SHA 且读取成功。首次看到一个 ref 只记录基线，不视为新增提交；否则就会把第一次观测误报成变化。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>比较需要参照物：没有历史基线时只剩一个孤立观测值，无法判断它相对过去是否变化。</li>
+                <li>比较需要双方都成功：基线缺失或本次读取失败，比较条件不成立，结果应进入未知或待确认，而不是 unchanged。</li>
+                <li>SHA 是内容寻址的哈希指针值，相等就表示 ref 指向同一个对象；因此 SHA 相等足以支撑“这个 ref 指针没动”这一层结论。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设昨天记录 refs/heads/main 的历史 SHA 是 A，今天通过 git ls-remote 读到当前 SHA 还是 A，就记 unchanged。若某个 ref 是第一次出现，只把 A 记录成基线，不报告新增提交。2026-09-14 材料中多个远端仓库正是这种成功读取且 ref 未变化的情况。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为 unchanged 等于仓库没有发生任何变化。它只说明被监控 ref 指针与历史基线相同，其他 ref、工作区、文件内容或提交对象是否变化并不在这条结论里。</li>
+                <li>把首次看到某个 ref 当成 changed。首次观测只能建立基线，不能宣告变化。</li>
+                <li>在读取失败时仍然写成 unchanged。没有成功观测就没有可靠比较，读取失败应留在未知或待确认状态。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>ref 元数据证据边界</td><td>变更检测的结论只覆盖被监控的 ref 指针，不覆盖提交数量、作者、文件列表或 diff 内容。</td></tr>
+                <tr><td>首次观测基线</td><td>首次观测基线是变更检测的前置条件；没有历史基线时只能建立参照点，不能宣告变化。</td></tr>
+                <tr><td>待确认变化线索与人工确认</td><td>当基线缺失或读取失败时，结论无法升级为 unchanged 或 changed，只能作为待确认状态交给后续处理。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果历史 SHA 缺失或当前读取失败，变更检测应该输出未知、沿用旧状态，还是标成待确认？</li>
+                <li>当一个仓库有多个 ref 时，怎样把多个 SHA 的比较结果聚合成仓库级信号？</li>
+                <li>为什么成功读取是 unchanged 结论的必要条件，而不是可以省略的步骤？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="unconfirmed-signal-human-review">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>待确认变化线索与人工确认</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>待确认变化线索与人工确认，说的是自动化系统看到了某种变化痕迹，但证据还不足以把它写成已经确认的事实。当天 tiny-sea-war 的情况是：窗口内提交数为 0，但主工作区存在未暂存变更和未跟踪文件或目录。材料明确要求，这些只是待确认变化线索，不能写成目标日期前一天已经完成的提交事实。原因是工作区里的改动只能证明当前现场有痕迹，不能可靠证明它是什么时候发生的，也不能证明作者、意图或是否完成。材料还列出一些候选路径，例如表现层数据 schema、配置注册、战斗单位视图、测试与回归验证、角色美术批处理与 QA 报告等，但它们都只是候选方向。自动化报告应该把这类线索单独标注，等待人工确认后再升级为结论。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>证据强度决定表述强度：工作区痕迹只能证明“当前现场有改动”，不足以支撑“某日完成了某次提交”这样的事实陈述。</li>
+                <li>时间归属需要额外证据：文件修改时间、编辑器记录、提交时间等都可能帮助确认，但缺一不可时只能停留在待确认状态。</li>
+                <li>候选路径只是方向而不是成果：把待确认线索外推成完整开发内容，是自动化报告最典型的越界方式。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>tiny-sea-war 当天窗口内提交数为 0，主工作区存在未暂存变更和未跟踪文件或目录，已暂存变更为无。材料列出的 config_registry.gd、presentation_settings.json、scene_presentation_test.gd、character_art_batch_report.json 等路径，只能作为待确认变化线索，不能写成 2026-09-13 已完成的提交成果。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把待确认线索直接写成已确认的提交事实。工作区有未暂存或未跟踪变化，只能说明现场存在痕迹。</li>
+                <li>把窗口内提交数为 0 误读成完全没有工作痕迹，忽略了工作区可能仍有未提交改动。</li>
+                <li>看到候选路径就外推出完整开发内容，把候选方向当成已经完成的开发成果。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>工作区、暂存区与未跟踪文件的状态分类</td><td>只有先分清改动停在哪个区域，才能判断这条线索的证据强弱，决定它能否升级为结论。</td></tr>
+                <tr><td>提交历史与工作区状态的证据层级</td><td>提交历史是正式档案，工作区是当前现场，两者不能混写，线索也不因位于现场就自动具备档案效力。</td></tr>
+                <tr><td>ref 元数据证据边界</td><td>它延续了 ref 元数据证据边界的思想：自动化报告必须说明结论来自哪一层证据，不能把线索外推成事实。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>怎样设计一个报告字段，让待确认变化线索明确区别于已确认提交事实？</li>
+                <li>如果要人工确认工作区变更的时间归属，哪些额外证据会有帮助，例如文件修改时间、编辑器记录或提交时间？</li>
+                <li>当待确认线索指向多个候选路径时，怎样避免把候选方向写成已经完成的开发成果？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">这三个概念从易到难连成一条证据链：先分清本地工作区、暂存区和未跟踪文件的状态，再理解远端 ref 如何用历史 SHA 基线判断 unchanged，最后理解为什么工作区变化只能作为待确认线索并需要人工确认。它们共同强调的是：不同层看到的证据不同，结论不能跨层外推。远端多个仓库的 ref 都显示 unchanged，那只来自 git ls-remote 的 ref 元数据；tiny-sea-war 窗口内没有提交，却有工作区未提交变化，那只能提示当前现场有痕迹。把这两类信息分开写，才是符合证据边界且对读者负责的做法。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">不同层看到的证据不同，结论不能跨层外推。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>怎样为 ref 元数据、提交历史、暂存区与工作区分别定义证据等级，让报告的每一句话都能标注来源？</li>
+            <li>当 ref 指针未移动但工作区有痕迹时，应该在什么条件下才升级为一次需要人工确认的事件？</li>
+            <li>能否设计一套字段和状态机，使“待确认”“未判定”“已确认”在同一份自动化报告中互不混淆？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
