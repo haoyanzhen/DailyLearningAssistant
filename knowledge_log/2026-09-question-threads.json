@@ -3,6 +3,96 @@
   "year_month": "2026-09",
   "threads": [
     {
+      "id": "2026-09-16-concept-f4477e2b7b",
+      "question": "如果远端分支被删除，ref 消失与读取失败如何在报告里区分？",
+      "source_date": "2026-09-16",
+      "source_concept": "首次观测基线与旧基线保留",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-16T06:13:25.204526+08:00",
+      "updated_at": "2026-09-16T06:13:25.204526+08:00"
+    },
+    {
+      "id": "2026-09-16-concept-eeea9d5348",
+      "question": "当 http_git 和 ssh_git 都可用时，监控系统应如何选择、降级和重试？",
+      "source_date": "2026-09-16",
+      "source_concept": "只读远端监控的访问路径与凭据边界",
+      "domain": "软件工程 / 安全",
+      "status": "open",
+      "created_at": "2026-09-16T06:13:25.204526+08:00",
+      "updated_at": "2026-09-16T06:13:25.204526+08:00"
+    },
+    {
+      "id": "2026-09-16-concept-ecbd86f202",
+      "question": "如何为 failed、unchanged、changed 设计机器可读的报告字段，避免下游把未知当未变化？",
+      "source_date": "2026-09-16",
+      "source_concept": "读取失败不等于未变化",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-16T06:13:25.204526+08:00",
+      "updated_at": "2026-09-16T06:13:25.204526+08:00"
+    },
+    {
+      "id": "2026-09-16-concept-eb7bf4b6b1",
+      "question": "多 ref 监控中，首次发现、正常更新、删除 ref 和读取失败应分别怎样表示？",
+      "source_date": "2026-09-16",
+      "source_concept": "首次观测基线与旧基线保留",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-16T06:13:25.204526+08:00",
+      "updated_at": "2026-09-16T06:13:25.204526+08:00"
+    },
+    {
+      "id": "2026-09-16-concept-d8edc09ec9",
+      "question": "HTTP token 脱敏怎样既避免泄露，又保留足够信息用于排障？",
+      "source_date": "2026-09-16",
+      "source_concept": "只读远端监控的访问路径与凭据边界",
+      "domain": "软件工程 / 安全",
+      "status": "open",
+      "created_at": "2026-09-16T06:13:25.204526+08:00",
+      "updated_at": "2026-09-16T06:13:25.204526+08:00"
+    },
+    {
+      "id": "2026-09-16-concept-96d146bf78",
+      "question": "如何为只读远端监控设计只读 deploy key 或短期 token，并避免把秘密写进状态文件？",
+      "source_date": "2026-09-16",
+      "source_concept": "只读远端监控的访问路径与凭据边界",
+      "domain": "软件工程 / 安全",
+      "status": "open",
+      "created_at": "2026-09-16T06:13:25.204526+08:00",
+      "updated_at": "2026-09-16T06:13:25.204526+08:00"
+    },
+    {
+      "id": "2026-09-16-concept-727393382c",
+      "question": "如果一次失败后下一次成功读取到不同 SHA，怎样判断变化发生在哪个时间窗口？",
+      "source_date": "2026-09-16",
+      "source_concept": "读取失败不等于未变化",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-16T06:13:25.204526+08:00",
+      "updated_at": "2026-09-16T06:13:25.204526+08:00"
+    },
+    {
+      "id": "2026-09-16-concept-4ce317d05e",
+      "question": "当读取失败时，自动化系统应该保留旧状态、标记未知，还是先重试再判断？",
+      "source_date": "2026-09-16",
+      "source_concept": "读取失败不等于未变化",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-16T06:13:25.204526+08:00",
+      "updated_at": "2026-09-16T06:13:25.204526+08:00"
+    },
+    {
+      "id": "2026-09-16-concept-1381b41db1",
+      "question": "旧基线应该保留多久，失败多少次后才算无法判定？",
+      "source_date": "2026-09-16",
+      "source_concept": "首次观测基线与旧基线保留",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-16T06:13:25.204526+08:00",
+      "updated_at": "2026-09-16T06:13:25.204526+08:00"
+    },
+    {
       "id": "2026-09-15-llm-provider-fd57e0bcb7",
       "question": "有序候选链的排序应依据成本、延迟、能力、可用性，还是这些因素的组合？",
       "source_date": "2026-09-15",

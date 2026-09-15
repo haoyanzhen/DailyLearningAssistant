@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-09-16 学习笔记日报</title>
+    <meta name="description" content="今天围绕远端引用监控的可确认性，讲清读取失败与未变化的区别、首次观测基线与旧基线保留，以及只读监控的访问路径与凭据边界。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260916-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-09-16</p>
+        <h1>读不到不等于没变化：远端 ref 监控的三层可确认性</h1>
+        <p>从 failed 与 unchanged 的区分出发，理解基线为何必须保留，并沿着访问路径与凭据边界看清可观测性的边界。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>远端 ref 监控的可确认性：失败…</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>读取失败不等于未变化</strong>
+                <small>没读到当前值，就只能说不确定，不能…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>首次观测基线与旧基线保留</strong>
+                <small>第一次看见只是记下参照点，不是宣布…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>只读远端监控的访问路径与凭…</strong>
+                <small>访问路径和凭据边界决定能不能读到…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">这三个概念像一条观测链：访问路径决定能不能读到 ref；基线决定拿什么比较；比较结果决定是 unchanged、changed 还是 failed。任何一环缺失，都不能把“没读到”解释成“没变化”。当天可确认的证据也很有限：ref 元数据最多证明指针是否相同，不能证明提交数量、作者、文件列表或 diff；因此核心思维是给证据分级：已确认、待确认、未知，并且把访问失败留在未判定。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["远端 ref 监控的可确认性：失败、基线与访问边界"])
+  concept1["读取失败不等于未变化"]
+  hub --&gt; concept1
+  concept2["首次观测基线与旧基线保留"]
+  hub --&gt; concept2
+  concept3["只读远端监控的访问路径与凭据边界"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["远端 ref 监控的可确认性：失败、基线与访问边界"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="failed-read-not-unchanged">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>读取失败不等于未变化</h3>
+              <p>Failed Read Is Not Unchanged</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">没读到当前值，就只能说不确定，不能说不存在变化。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>成功读取且历史 SHA 与当前 SHA 相同，才是 unchanged。</li>
+                <li>成功读取且两个 SHA 不同，才是 changed。</li>
+                <li>当前 SHA 没读到，只能标成 failed 或未知，不能当成 unchanged。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="failed-read-not-unchanged" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="first-observation-baseline">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>首次观测基线与旧基线保留</h3>
+              <p>First Observation Baseline and Old Baseline Retention</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">第一次看见只是记下参照点，不是宣布它刚刚变化。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>第一次看到某个远端 ref，只记录其 SHA 作为以后比较的起点。</li>
+                <li>变化至少需要上一次 SHA 和这一次 SHA 两个可比观测，首次观测不能构成变化事件。</li>
+                <li>读取失败时不能删除或覆盖旧基线；应保留旧基线并标记当前状态为 failed 或未知。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="first-observation-baseline" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="readonly-remote-monitoring-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 安全</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>只读远端监控的访问路径与凭据边界</h3>
+              <p>Access Path and Credential Boundary for Read-Only Remote Monitoring</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">访问路径和凭据边界决定能不能读到 ref，访问失败只能留在未判定。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>只读监控通常用 git ls-remote 读取 ref 指针，不 clone、不 fetch，也不下载提交对象、文件树或工作区内容。</li>
+                <li>http_git 与 ssh_git 是两条不同访问路径，可能分别遇到 network_failed、超时或依赖 SSH key/agent 的问题。</li>
+                <li>状态文件不应记录密钥，HTTP(S) URL 中的用户名、token、密码要脱敏；只读最小权限不需要写权限，也不需要下载完整历史。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="readonly-remote-monitoring-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="failed-read-not-unchanged">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>读取失败不等于未变化</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>我们可以把远端变化检测想成一次对答案：先拿出上次记录的 SHA，再读一次当前 SHA，然后比较。成功读取且两个 SHA 相同，才是 unchanged；成功读取且两个 SHA 不同，才是 changed；如果当前 SHA 根本没读到，就只能标成 failed 或未知。failed 不是第三种“变化”，而是“比较需要的一端缺失了”。为什么不能把 failed 当 unchanged？因为 unchanged 要求你确实看到了当前值和历史值相等，而网络失败、超时、凭据不可用时，你根本没有看到当前值。看不到，只能说不确定，不能说不存在变化。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>远端变化检测需要两个可比较端点：上次记录的 SHA 与本次读取的当前 SHA。</li>
+                <li>只有成功读取当前 SHA，才能与历史 SHA 比较并得出 unchanged 或 changed。</li>
+                <li>读取失败意味着比较所需的一端缺失，因此结果只能进入 failed 或未知，而不是第三种“变化”。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>public-library 通过 ssh_git 成功读取 refs/heads/main，历史 SHA 与当前 SHA 相同，所以可以写 unchanged；而 cannbot-skills 的 ref 读取 failed，当前 SHA 未读取到，就不能写 unchanged，只能写 failed 或未知。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把“没读到”当成“没变化”，或把网络失败、超时、凭据问题直接写成 unchanged。</li>
+                <li>报告会把未知伪装成确定，导致真实更新可能被静默漏掉。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>首次观测基线与旧基线保留</td><td>failed 与 unchanged 的区分依赖 SHA 比较，而比较依赖保留可用的历史基线；失败时不能把旧基线覆盖成空值。</td></tr>
+                <tr><td>只读远端监控的访问路径与凭据边界</td><td>访问路径诊断解释了 failed 可能来自 network_failed 或凭据问题，而不是仓库真实变化。</td></tr>
+                <tr><td>远端 ref 监控的可确认性：失败、基线与访问边界</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当读取失败时，自动化系统应该保留旧状态、标记未知，还是先重试再判断？</li>
+                <li>如何为 failed、unchanged、changed 设计机器可读的报告字段，避免下游把未知当未变化？</li>
+                <li>如果一次失败后下一次成功读取到不同 SHA，怎样判断变化发生在哪个时间窗口？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="first-observation-baseline">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>首次观测基线与旧基线保留</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>基线就是你用来比较的参照点。第一次看到某个远端 ref 时，系统只应该记录它的 SHA，把它当作以后比较的起点，而不是宣布“这里刚刚发生了变化”。变化至少需要两个可比观测：上一次的 SHA 和这一次的 SHA。首次观测只有一次，所以不能构成变化事件。另一个关键点是，读取失败时不能把旧基线删掉或覆盖成空值。旧基线是未来成功读取后还能比较的基础；如果失败一次就清空，下次即便读到新值，也不知道它相对于什么发生了变化。保留旧基线，同时把当前状态标成 failed 或未知，才是更安全的设计。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>基线是用来比较的参照点，没有历史 SHA 就无法判断 unchanged 或 changed。</li>
+                <li>变化事件要求至少两个可比观测，首次观测只有一次，因此不能升级为变化。</li>
+                <li>失败时保留旧基线，下一次成功读取后仍能知道相对什么发生了变化；清空基线会破坏未来比较能力。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>某个 ref 的历史 SHA 是 A。今天首次监控看到 A，只记录 A 作为基线；明天读到 A，状态是 unchanged；明天读到 B，状态才是 changed；明天读不到，则状态是 failed，并继续保留 A 作为旧基线。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把“第一次看到某个 ref”误报成“新增提交”。</li>
+                <li>读取失败时用空值覆盖历史 SHA，导致下一次成功读取也失去参照；还有人把基线更新本身当成变化事件。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>读取失败不等于未变化</td><td>基线是 SHA 比较的前提；失败时保留旧基线，才能避免把访问故障误判成远端变化或重置。</td></tr>
+                <tr><td>只读远端监控的访问路径与凭据边界</td><td>访问边界决定能否成功读取 ref，进而决定基线能否更新或只能保持 failed/未知。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>多 ref 监控中，首次发现、正常更新、删除 ref 和读取失败应分别怎样表示？</li>
+                <li>旧基线应该保留多久，失败多少次后才算无法判定？</li>
+                <li>如果远端分支被删除，ref 消失与读取失败如何在报告里区分？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="readonly-remote-monitoring-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 安全</p>
+                <h3>只读远端监控的访问路径与凭据边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>只读远端监控通常用 git ls-remote 这类命令，只读取 ref 指针，不 clone、不 fetch，也不下载提交对象、文件树或工作区内容。它的好处是副作用小、权限小、观测面清晰。但能不能读到 ref，不只取决于远端仓库本身，还取决于访问路径和凭据边界。http_git 和 ssh_git 是两条不同的路：http_git 可能遇到 network_failed 和 30 秒超时；ssh_git 成功通常依赖本机 SSH key 或 SSH agent。状态文件不应记录密钥，HTTP(S) URL 里的用户名、token、密码也要脱敏。只读最小权限意味着监控只需要读 ref 元数据，不需要写权限，也不需要下载完整历史。这样既降低泄密风险，也避免把访问失败误判成仓库变化。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>能否读到 ref，不只取决于远端仓库状态，还取决于访问路径与凭据是否可用。</li>
+                <li>http_git 与 ssh_git 的失败原因不同；ssh_git 成功通常依赖本机 SSH key 或 SSH agent。</li>
+                <li>只读最小权限限制证据范围：ls-remote 只能证明 ref 指针状态，不能证明提交详情；凭据脱敏保证排障时不泄露秘密。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>public-library 通过 ssh_git 读取 refs/heads/main 成功，历史 SHA 与当前 SHA 相同；同一批里的 http_git 仓库 30 秒超时，只能记录 failed 和 network_failed，不能记录 changed 或 unchanged。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为 ssh 成功就等于有写权限；把 token 或密码写进日志。</li>
+                <li>认为 ls-remote 成功就能看到提交详情；把 http_git 失败直接归因于仓库没有变化或仓库损坏。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>读取失败不等于未变化</td><td>访问路径与凭据边界直接决定 failed 是否出现，因此失败不能被解释成没有变化。</td></tr>
+                <tr><td>首次观测基线与旧基线保留</td><td>只读最小权限限制证据范围，失败时应保留旧基线并标记未判定，而不是覆盖或宣告变化。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当 http_git 和 ssh_git 都可用时，监控系统应如何选择、降级和重试？</li>
+                <li>如何为只读远端监控设计只读 deploy key 或短期 token，并避免把秘密写进状态文件？</li>
+                <li>HTTP token 脱敏怎样既避免泄露，又保留足够信息用于排障？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">这三个概念像一条观测链：访问路径决定能不能读到 ref；基线决定拿什么比较；比较结果决定是 unchanged、changed 还是 failed。任何一环缺失，都不能把“没读到”解释成“没变化”。当天可确认的证据也很有限：ref 元数据最多证明指针是否相同，不能证明提交数量、作者、文件列表或 diff；因此核心思维是给证据分级：已确认、待确认、未知，并且把访问失败留在未判定。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">任何一环缺失，都不能把“没读到”解释成“没变化”。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>当读取失败时，自动化系统应该保留旧状态、标记未知，还是先重试再判断？</li>
+            <li>多 ref 监控中，首次发现、正常更新、删除 ref 和读取失败应分别怎样表示？</li>
+            <li>当 http_git 和 ssh_git 都可用时，监控系统应如何选择、降级和重试？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
