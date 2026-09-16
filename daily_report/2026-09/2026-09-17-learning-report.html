@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-09-17 学习笔记日报</title>
+    <meta name="description" content="当天主线是配置真正生效：文档与代码同步，智能体编排共享配置，模型故障切换超时被遵守。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260917-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-09-17</p>
+        <h1>配置如何真正生效：从文档同步到 LLM failover</h1>
+        <p>当天从配置文档与代码行为同步讲起，再进入 Agent 工作流与任务编排，最后落到 LLM failover timeout 如何被真正遵守。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>配置项从纸面约定变成系统行为</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>配置文档与代码行为同步</strong>
+                <small>文档承诺、代码执行、测试验证，三者…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>Agent 工作流与任务编排</strong>
+                <small>配置放在哪一层，就影响哪一层共享的…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>LLM failover…</strong>
+                <small>超时不是普通请求失败，而是故障转移…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念形成从易到难的递进线：配置文档与代码行为同步解决配置说明和实际行为是否一致；Agent 工作流与任务编排解决配置如何被多个任务共享和传递；LLM failover timeout 配置与生效路径解决失败后最多等多久再切换备用模型这一时间边界如何被真正遵守。文档负责说明，编排层负责传递，Agent 负责使用，测试负责验证，只有把这些面连起来，配置才能从纸面约定变成系统行为。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["配置项从纸面约定变成系统行为"])
+  concept1["配置文档与代码行为同步"]
+  hub --&gt; concept1
+  concept2["Agent 工作流与任务编排"]
+  hub --&gt; concept2
+  concept3["LLM failover timeout 配置与生效路径"]
+  hub --&gt; concept3
+  concept1 --&gt; concept3
+  concept1 --&gt; concept2
+  related1["配置项从纸面约定变成系统行为"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept3
+  concept2 --&gt; concept1
+  concept3 --&gt; concept2
+  concept3 --&gt; concept1
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="config-doc-code-sync">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>配置文档与代码行为同步</h3>
+              <p>Config Documentation and Code Behavior Sync</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">文档承诺、代码执行、测试验证，三者对齐才叫配置生效。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>配置文档说明字段含义、默认值和影响范围，代码负责真正读取并执行。</li>
+                <li>测试负责检查代码行为是否符合文档承诺，三者一致才算配置同步。</li>
+                <li>配置项变化时，文档说明、代码读取路径和测试断言需要同步更新。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="config-doc-code-sync" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="agent-workflow-orchestration">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 大语言模型</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>Agent 工作流与任务编排</h3>
+              <p>Agent Workflow and Task Orchestration</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">配置放在哪一层，就影响哪一层共享的所有任务。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>每个 agent 负责一个具体任务，orchestrator 负责启动流程、管理生命周期并提供共享 LLM 调用入口。</li>
+                <li>LLM 配置如果放在编排层，就不只是某个函数参数，而可能影响多个任务路径。</li>
+                <li>配置变化的影响范围，取决于它被放在哪一层，以及哪些任务共享这一层。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="agent-workflow-orchestration" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="llm-failover-timeout-path">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">大语言模型 / 软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>LLM failover timeout 配置与生效路径</h3>
+              <p>LLM Failover Timeout Configuration and Effective Path</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">超时不是普通请求失败，而是故障转移的决策边界。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>failover timeout 控制主模型调用失败或卡住时，系统最多等多久才允许切换到备用模型。</li>
+                <li>关键不是配置里有没有 timeout 字段，而是调用链是否真的按配置值判断何时切换。</li>
+                <li>文档、编排层、Agent 调用路径和测试需要共同固定 failover 行为。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="llm-failover-timeout-path" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="config-doc-code-sync">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>配置文档与代码行为同步</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>配置文档与代码行为同步，可以理解为菜单和厨房做法要对齐。配置文档告诉使用者某个字段是什么意思、默认值是多少、影响哪些行为；代码行为则是系统真正读取这个字段并执行动作。如果文档写 LLM failover timeout 表示主模型失败后最多等待多久再切换，但代码没有读取这个字段，或者读取了别的字段，那么用户以为系统会遵守 30 秒，实际却可能 10 秒就切换，或者一直等待。当天提交主题是 fix: honor configured LLM failover timeout，并且 docs/configuration.md 和 orchestrator/README.md 发生变化，这说明配置项变化时，文档说明需要同步更新。核心不是写文档本身，而是让配置成为一份可验证的契约：文档说明承诺什么，代码负责执行什么，测试负责检查执行是否符合承诺。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>文档是配置语义的说明层，负责告诉使用者字段含义、默认值和影响范围。</li>
+                <li>代码是配置执行层，负责在调用链中读取字段并触发对应行为。</li>
+                <li>测试是配置验证层，负责把文档承诺固定成可重复检查的行为断言。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>想象一个外卖平台在页面里写配送超时 30 分钟自动赔付，但后端实际只按 10 分钟判断。用户等到 20 分钟投诉时，客服查不到赔付依据。后来页面说明、后端判断逻辑和自动化测试都改成同一个 30 分钟，问题才消失。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为配置项写在文档里就等于系统已经支持。</li>
+                <li>以为改了代码默认值就不需要改文档，导致纸面配置和实际行为漂移。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>LLM failover timeout 配置与生效路径</td><td>timeout 的含义必须先被文档清楚说明，才可能被代码正确执行。</td></tr>
+                <tr><td>Agent 工作流与任务编排</td><td>当多个 agent 共享同一份 LLM 配置时，文档需要说明这个配置会影响哪些任务路径。</td></tr>
+                <tr><td>配置项从纸面约定变成系统行为</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当配置文档、代码默认值和测试断言不一致时，应该以哪一个作为权威来源？</li>
+                <li>如何设计启动时的配置校验，让系统能发现文档示例、配置字段和代码读取路径之间的漂移？</li>
+                <li>当一个配置项影响多个 agent 或多个脚本时，文档应该如何组织说明，才能避免重复、遗漏和误解？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="agent-workflow-orchestration">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 大语言模型</p>
+                <h3>Agent 工作流与任务编排</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>Agent 工作流与任务编排，可以想象成一条流水线上的多个工位，以及负责调度的总控台。每个 agent 负责一个具体任务，比如概念相关性分析、日报发送、工作总结、知识解释、学习报告发布等；orchestrator 则负责启动流程、管理生命周期、提供共享的 LLM 调用入口。这些 agent 表面上各自独立，但它们都可能调用 LLM，也可能共享同一份 LLM 配置。当天 DailyLearningAssistant 中 agents/concept_relevance.py、agents/daily_email_send.py、agents/daily_work_summary.py、agents/knowledge_explaination.py、agents/learning_report_publish.py 以及 orchestrator/lifecycle.py、orchestrator/run_daily.py 等文件发生变化，这说明 LLM 调用配置不是某个 agent 的内部细节，而是会影响多个任务路径的编排层配置。理解这个概念的关键是：配置变化的影响范围，取决于它被放在哪一层，以及哪些任务共享这一层。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Agent 是任务执行单元，负责完成概念相关性、日报发送、工作总结等具体工作。</li>
+                <li>Orchestrator 是调度与共享层，负责启动流程、管理生命周期，并提供统一 LLM 调用入口。</li>
+                <li>共享配置会沿编排层传播，因此一个 timeout、failover 或 provider 设置可能同时影响多个 agent。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>学校广播站里有多个节目主持人，每个主持人负责不同节目，但都共用一个总音量旋钮。如果总控台把无人应答 20 秒后自动切换备用麦克风的规则改掉了，所有节目都会受到影响，而不是只有某一个节目受影响。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为每个 agent 都是完全独立的，改一个 agent 的脚本就只影响那个任务。</li>
+                <li>以为 LLM 配置只是某个函数里的参数，和编排层无关。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>LLM failover timeout 配置与生效路径</td><td>timeout 配置需要通过编排层传递到各个 agent 的 LLM 调用路径中。</td></tr>
+                <tr><td>配置文档与代码行为同步</td><td>agent 工作流越复杂，文档越需要说明某个配置会影响哪些任务、哪些入口和哪些失败路径。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>多个 agent 共享同一份 LLM 配置时，如何避免某个 agent 私自覆盖全局 timeout 或 failover 规则？</li>
+                <li>编排层应该如何记录每次 LLM 调用来自哪个 agent、哪个任务阶段、使用了哪个 provider，以便排障和审计？</li>
+                <li>当某个 agent 不需要 failover 或需要更短 timeout 时，配置应该如何表达继承和例外，同时保持文档、代码和测试一致？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="llm-failover-timeout-path">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 大语言模型 / 软件工程</p>
+                <h3>LLM failover timeout 配置与生效路径</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>LLM failover timeout 配置与生效路径，讲的是主模型调用失败或卡住时，系统最多等多久才允许切换到备用模型。failover 是备用切换，timeout 是时间上限。它不是普通的请求超时这么简单，因为它控制的是故障转移的决策边界：在 timeout 内，系统可能继续等待、重试或记录状态；超过 timeout 后，系统才应该按配置进入 failover 流程。当天提交主题是 fix: honor configured LLM failover timeout，关键在 honor，也就是真正按配置判断主模型失败后最多等多久再切换备用模型。文件分布显示 orchestrator/llm.py 发生变化，说明 LLM 编排层被调整；多个 agents/* 和 scripts/* 发生变化，说明知识解释、学习报告等生成流程可能与这条调用链相关；tests/test_llm_failover.py 发生变化，说明 failover 行为需要测试固定；docs/configuration.md 和 orchestrator/README.md 发生变化，说明配置说明和编排说明需要同步。这里基于当日材料可确认的是配置被遵守的方向，不能确认具体超时值、provider 选择策略、失败分类或实际运行效果。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>timeout 是故障转移的时间边界，不是普通请求超时的简单别名。</li>
+                <li>在 timeout 内，系统可以继续等待、重试或记录状态；超过 timeout 后，才应进入 failover 流程。</li>
+                <li>配置要生效，必须从文档说明进入编排层读取，再传递到多个 agent 的 LLM 调用路径，并由测试固定。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>想象你打电话找客服，总机规定如果主线路 20 秒没接通，就自动转备用线路。如果总机没有真正看计时器，就会一直等主线路；如果总机看错了计时器，10 秒就转，又可能造成不必要的切换。修复 honor configured failover timeout，就是让总机真正按照配置的 20 秒来判断。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为配置里写了 timeout 就自动生效，但代码可能读取了错误字段或根本没有读取。</li>
+                <li>把 failover timeout 等同于普通请求 timeout，忽略它真正控制的是何时允许切换到备用模型。</li>
+                <li>只改文档或只改某个 agent，却没有检查编排层和测试，导致不同任务路径行为不一致。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>Agent 工作流与任务编排</td><td>timeout 配置需要通过 orchestrator 传递到多个 agent 的 LLM 调用路径中。</td></tr>
+                <tr><td>配置文档与代码行为同步</td><td>timeout 的含义、默认值和影响范围必须在 docs/configuration.md 与 orchestrator/README.md 中说明清楚。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当主模型失败类型不同，例如网络超时、限流、鉴权失败、内容审核失败时，是否都应该使用同一个 failover timeout？</li>
+                <li>如何设计测试，在不等真实 30 秒的情况下验证 timeout 被正确遵守，例如使用假时钟、mock 延迟或可注入的时间源？</li>
+                <li>如果所有 provider 都在 timeout 内失败，系统应该记录什么最终状态，并把什么错误信息清晰地传给调用方？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念形成从易到难的递进线：配置文档与代码行为同步解决配置说明和实际行为是否一致；Agent 工作流与任务编排解决配置如何被多个任务共享和传递；LLM failover timeout 配置与生效路径解决失败后最多等多久再切换备用模型这一时间边界如何被真正遵守。文档负责说明，编排层负责传递，Agent 负责使用，测试负责验证，只有把这些面连起来，配置才能从纸面约定变成系统行为。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">LLM failover timeout 的关键不是有没有这个字段，而是调用链是否真的按它判断何时切换备用模型。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>当配置文档、代码默认值和测试断言不一致时，应以哪一个作为权威来源？</li>
+            <li>多个 agent 共享同一份 LLM 配置时，如何避免某个 agent 私自覆盖全局 timeout 或 failover 规则？</li>
+            <li>如何设计测试，在不等真实 30 秒的情况下验证 timeout 被正确遵守？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>

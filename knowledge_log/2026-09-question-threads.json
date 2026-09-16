@@ -3,6 +3,96 @@
   "year_month": "2026-09",
   "threads": [
     {
+      "id": "2026-09-17-llm-failover-timeout-d91729b1b0",
+      "question": "如何设计测试，在不等真实 30 秒的情况下验证 timeout 被正确遵守，例如使用假时钟、mock 延迟或可注入的时间源？",
+      "source_date": "2026-09-17",
+      "source_concept": "LLM failover timeout 配置与生效路径",
+      "domain": "大语言模型 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-17T06:18:36.140383+08:00",
+      "updated_at": "2026-09-17T06:18:36.140383+08:00"
+    },
+    {
+      "id": "2026-09-17-llm-failover-timeout-d31e2f2b24",
+      "question": "如果所有 provider 都在 timeout 内失败，系统应该记录什么最终状态，并把什么错误信息清晰地传给调用方？",
+      "source_date": "2026-09-17",
+      "source_concept": "LLM failover timeout 配置与生效路径",
+      "domain": "大语言模型 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-17T06:18:36.140383+08:00",
+      "updated_at": "2026-09-17T06:18:36.140383+08:00"
+    },
+    {
+      "id": "2026-09-17-llm-failover-timeout-3ba776c147",
+      "question": "当主模型失败类型不同，例如网络超时、限流、鉴权失败、内容审核失败时，是否都应该使用同一个 failover timeout？",
+      "source_date": "2026-09-17",
+      "source_concept": "LLM failover timeout 配置与生效路径",
+      "domain": "大语言模型 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-17T06:18:36.140383+08:00",
+      "updated_at": "2026-09-17T06:18:36.140383+08:00"
+    },
+    {
+      "id": "2026-09-17-concept-9db24df54b",
+      "question": "如何设计启动时的配置校验，让系统能发现文档示例、配置字段和代码读取路径之间的漂移？",
+      "source_date": "2026-09-17",
+      "source_concept": "配置文档与代码行为同步",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-09-17T06:18:36.140383+08:00",
+      "updated_at": "2026-09-17T06:18:36.140383+08:00"
+    },
+    {
+      "id": "2026-09-17-concept-318b63f36b",
+      "question": "当配置文档、代码默认值和测试断言不一致时，应该以哪一个作为权威来源？",
+      "source_date": "2026-09-17",
+      "source_concept": "配置文档与代码行为同步",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-09-17T06:18:36.140383+08:00",
+      "updated_at": "2026-09-17T06:18:36.140383+08:00"
+    },
+    {
+      "id": "2026-09-17-concept-1cfd56a736",
+      "question": "当一个配置项影响多个 agent 或多个脚本时，文档应该如何组织说明，才能避免重复、遗漏和误解？",
+      "source_date": "2026-09-17",
+      "source_concept": "配置文档与代码行为同步",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-09-17T06:18:36.140383+08:00",
+      "updated_at": "2026-09-17T06:18:36.140383+08:00"
+    },
+    {
+      "id": "2026-09-17-agent-dfad1edb8c",
+      "question": "编排层应该如何记录每次 LLM 调用来自哪个 agent、哪个任务阶段、使用了哪个 provider，以便排障和审计？",
+      "source_date": "2026-09-17",
+      "source_concept": "Agent 工作流与任务编排",
+      "domain": "软件工程 / 大语言模型",
+      "status": "open",
+      "created_at": "2026-09-17T06:18:36.140383+08:00",
+      "updated_at": "2026-09-17T06:18:36.140383+08:00"
+    },
+    {
+      "id": "2026-09-17-agent-95ca1377bb",
+      "question": "多个 agent 共享同一份 LLM 配置时，如何避免某个 agent 私自覆盖全局 timeout 或 failover 规则？",
+      "source_date": "2026-09-17",
+      "source_concept": "Agent 工作流与任务编排",
+      "domain": "软件工程 / 大语言模型",
+      "status": "open",
+      "created_at": "2026-09-17T06:18:36.140383+08:00",
+      "updated_at": "2026-09-17T06:18:36.140383+08:00"
+    },
+    {
+      "id": "2026-09-17-agent-029f5ab0be",
+      "question": "当某个 agent 不需要 failover 或需要更短 timeout 时，配置应该如何表达继承和例外，同时保持文档、代码和测试一致？",
+      "source_date": "2026-09-17",
+      "source_concept": "Agent 工作流与任务编排",
+      "domain": "软件工程 / 大语言模型",
+      "status": "open",
+      "created_at": "2026-09-17T06:18:36.140383+08:00",
+      "updated_at": "2026-09-17T06:18:36.140383+08:00"
+    },
+    {
       "id": "2026-09-16-concept-f4477e2b7b",
       "question": "如果远端分支被删除，ref 消失与读取失败如何在报告里区分？",
       "source_date": "2026-09-16",
