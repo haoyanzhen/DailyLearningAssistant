@@ -60,7 +60,7 @@ prework/YYYY-MM/YYYY-MM-DD/run_status.json
 
 ## LLM 重连与结果校验
 
-`llm.py` 使用 `httpx` 提供统一的 Chat Completions 调用、候选 provider 故障转移和重试能力。`llm.providers` 按配置顺序尝试，每个 provider 最多等待 `failover_timeout_seconds`（默认 60 秒）；一轮全部失败后，才按 `--llm-retries` 和 `--llm-retry-delay` 重试整条候选链。旧的单 provider 配置仍然兼容。各 Agent 只保留业务调用和失败解释，不再自行实现循环等待、指数退避或断联重连。总调度运行时会把每次 LLM 尝试和 provider 切换写入当天的 `llm_trace.jsonl`，记录 Agent、provider、尝试轮次、耗时、模型、接口、是否信任环境代理和错误类型。LLM 请求默认不读取 `http_proxy`、`https_proxy` 等环境代理；如需代理访问，可在 `llm.trust_env_proxy` 或单个 provider 中显式开启。
+`llm.py` 使用 `httpx` 提供统一的 Chat Completions 调用、候选 provider 故障转移和重试能力。`llm.providers` 按配置顺序尝试；未显式指定命令行 `--timeout` 时，每个 provider 最多等待 `failover_timeout_seconds`（默认 60 秒），显式指定时以 `--timeout` 为准。一轮全部失败后，才按 `--llm-retries` 和 `--llm-retry-delay` 重试整条候选链。旧的单 provider 配置仍然兼容。各 Agent 只保留业务调用和失败解释，不再自行实现循环等待、指数退避或断联重连。总调度运行时会把每次 LLM 尝试和 provider 切换写入当天的 `llm_trace.jsonl`，记录 Agent、provider、尝试轮次、耗时、模型、接口、是否信任环境代理和错误类型。LLM 请求默认不读取 `http_proxy`、`https_proxy` 等环境代理；如需代理访问，可在 `llm.trust_env_proxy` 或单个 provider 中显式开启。
 
 `manifest.py` 负责站点索引的统一管理，会强校验日期格式、路径格式、重复项、倒序和必要字段；在生成日报或发送邮件时，还会检查 manifest 指向的本地文件是否存在且非空。
 

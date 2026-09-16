@@ -225,19 +225,20 @@ def _positive_timeout(value: object, label: str) -> float:
     return timeout
 
 
-def _provider_timeout(llm: dict, provider: dict, requested_timeout: int | float) -> float:
-    requested = _positive_timeout(requested_timeout, "LLM request timeout")
-    multi_provider = llm.get("providers") is not None
+def _provider_timeout(llm: dict, provider: dict, requested_timeout: int | float | None) -> float:
     configured = provider.get("timeout_seconds")
-    if configured is None and multi_provider:
+    if configured is None:
         configured = llm.get("failover_timeout_seconds", LLM_FAILOVER_TIMEOUT_SECONDS)
     if configured is None:
-        return requested
-    provider_timeout = _positive_timeout(
-        configured,
-        f"LLM provider {provider.get('name')!r} timeout_seconds",
-    )
-    return min(requested, provider_timeout)
+        configured_timeout = LLM_FAILOVER_TIMEOUT_SECONDS
+    else:
+        configured_timeout = _positive_timeout(
+            configured,
+            f"LLM provider {provider.get('name')!r} timeout_seconds",
+        )
+    if requested_timeout is None:
+        return configured_timeout
+    return _positive_timeout(requested_timeout, "LLM request timeout")
 
 
 def _phase_timeout(llm: dict, key: str, default: float, request_timeout: float) -> float:
@@ -265,7 +266,7 @@ def call_chat_completion_once(
     llm: dict,
     messages: list[dict],
     *,
-    timeout: int,
+    timeout: int | float,
     temperature: float | None = None,
     attempt: int | None = None,
     max_attempts: int | None = None,

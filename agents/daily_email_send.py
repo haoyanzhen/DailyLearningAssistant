@@ -41,7 +41,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--timezone", help="Timezone override, e.g. Asia/Shanghai.")
     parser.add_argument("--dry-run", action="store_true", help="Generate email content and status without sending.")
     parser.add_argument("--no-llm", action="store_true", help="Skip LLM copy generation and use static fallback text.")
-    parser.add_argument("--timeout", type=int, default=180, help="Reserved for orchestrator compatibility.")
+    parser.add_argument(
+        "--timeout",
+        type=int,
+        default=None,
+        help="Optional LLM request timeout; when omitted, use the configured provider failover timeout.",
+    )
     parser.add_argument("--verify-inbox", action="store_true", help="After sending, verify the message via IMAP.")
     parser.add_argument("--verify-timeout", type=int, default=90, help="Seconds to wait for IMAP delivery verification.")
     parser.add_argument("--verify-interval", type=float, default=10.0, help="Seconds between IMAP verification attempts.")

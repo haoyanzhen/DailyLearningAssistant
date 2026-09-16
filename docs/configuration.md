@@ -102,7 +102,7 @@ python3 scripts/check_config.py --config config.json --strict
 
 字段说明：
 
-- `failover_timeout_seconds`：每个 provider 的请求超时，默认 60 秒。它不会超过命令行 `--timeout` 设置。
+- `failover_timeout_seconds`：未指定命令行 `--timeout` 时，每个 provider 的请求超时，默认 60 秒；如果显式指定 `--timeout`，以命令行值为准。
 - `providers`：非空候选列表，严格按照数组顺序尝试。
 - `providers[].name`：provider 唯一名称，用于终端输出和 `llm_trace.jsonl` 诊断。
 - `providers[].api_url`：完整的 Chat Completions 接口地址。vLLM 通常为 `/v1/chat/completions`，OpenWebUI 通常为 `/api/chat/completions`。

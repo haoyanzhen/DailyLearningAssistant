@@ -45,7 +45,12 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--output-root", default=str(PROJECT_ROOT), help="Root where pipeline outputs are written.")
     parser.add_argument("--timezone", help="Timezone override, e.g. Asia/Shanghai.")
-    parser.add_argument("--timeout", type=int, default=180, help="Per-agent LLM timeout.")
+    parser.add_argument(
+        "--timeout",
+        type=int,
+        default=None,
+        help="Optional per-agent LLM timeout; when omitted, use the configured provider failover timeout.",
+    )
     parser.add_argument("--llm-retries", type=int, default=3, help="LLM retry attempts for supported agents.")
     parser.add_argument("--llm-retry-delay", type=float, default=3.0, help="Initial LLM retry delay.")
     parser.add_argument("--dry-run", action="store_true", help="Print commands and update orchestrator status without running agents.")

@@ -42,7 +42,7 @@ def build_agent_command(
     input_root: Path,
     output_root: Path,
     timezone: str | None,
-    timeout: int,
+    timeout: int | None,
     llm_retries: int,
     llm_retry_delay: float,
     dry_run: bool,
@@ -57,9 +57,9 @@ def build_agent_command(
         str(config_path),
         "--output-root",
         str(output_root),
-        "--timeout",
-        str(timeout),
     ]
+    if timeout is not None:
+        cmd.extend(["--timeout", str(timeout)])
     if spec.requires_input_root:
         cmd.extend(["--input-root", str(input_root)])
     if timezone:

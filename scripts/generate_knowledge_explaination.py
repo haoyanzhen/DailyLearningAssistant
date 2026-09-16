@@ -43,7 +43,12 @@ def parse_args():
         "--output-root",
         help="Optional test output root. When set, generated files are written under this directory.",
     )
-    parser.add_argument("--timeout", type=int, default=120, help="LLM request timeout in seconds.")
+    parser.add_argument(
+        "--timeout",
+        type=int,
+        default=None,
+        help="Optional LLM request timeout; when omitted, use the configured provider failover timeout.",
+    )
     parser.add_argument("--llm-retries", type=int, default=3, help="Maximum LLM generation attempts.")
     parser.add_argument("--llm-retry-delay", type=float, default=3.0, help="Initial LLM retry delay in seconds.")
     return parser.parse_args()

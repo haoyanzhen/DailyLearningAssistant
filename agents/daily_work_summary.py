@@ -112,7 +112,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output-root", default=str(PROJECT_ROOT), help="Root where prework/ will be written.")
     parser.add_argument("--timezone", help="Timezone override, e.g. Asia/Shanghai.")
     parser.add_argument("--no-llm", action="store_true", help="Write the deterministic Git evidence summary directly.")
-    parser.add_argument("--timeout", type=int, default=120, help="LLM request timeout in seconds.")
+    parser.add_argument(
+        "--timeout",
+        type=int,
+        default=None,
+        help="Optional LLM request timeout; when omitted, use the configured provider failover timeout.",
+    )
     parser.add_argument("--llm-retries", type=int, default=3, help="Maximum LLM attempts per repository.")
     parser.add_argument("--llm-retry-delay", type=float, default=3.0, help="Initial LLM retry delay in seconds.")
     return parser.parse_args()

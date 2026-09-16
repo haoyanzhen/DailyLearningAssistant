@@ -24,7 +24,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--input-root", default=str(PROJECT_ROOT), help="Root to read prework and knowledge_log from.")
     parser.add_argument("--output-root", default=str(PROJECT_ROOT), help="Root to write daily_report and manifests to.")
     parser.add_argument("--timezone", help="Timezone override, e.g. Asia/Shanghai.")
-    parser.add_argument("--timeout", type=int, default=180, help="LLM request timeout in seconds.")
+    parser.add_argument(
+        "--timeout",
+        type=int,
+        default=None,
+        help="Optional LLM request timeout; when omitted, use the configured provider failover timeout.",
+    )
     parser.add_argument("--llm-retries", type=int, default=3, help="Maximum LLM attempts.")
     parser.add_argument("--llm-retry-delay", type=float, default=3.0, help="Initial LLM retry delay in seconds.")
     return parser.parse_args()
@@ -170,13 +175,10 @@ def main() -> int:
         str(input_root),
         "--output-root",
         str(output_root),
-        "--timeout",
-        str(args.timeout),
-        "--llm-retries",
-        str(args.llm_retries),
-        "--llm-retry-delay",
-        str(args.llm_retry_delay),
     ]
+    if args.timeout is not None:
+        cmd.extend(["--timeout", str(args.timeout)])
+    cmd.extend(["--llm-retries", str(args.llm_retries), "--llm-retry-delay", str(args.llm_retry_delay)])
     result = subprocess.run(cmd, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     finished_at = datetime.now(timezone).isoformat()

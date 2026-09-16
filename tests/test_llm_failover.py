@@ -114,7 +114,7 @@ class LLMFailoverTests(unittest.TestCase):
                     )
                 )
 
-    def test_failure_switches_to_next_provider_with_sixty_second_timeout(self) -> None:
+    def test_explicit_timeout_overrides_configured_failover_timeout(self) -> None:
         llm = multi_llm_config()
         with patch(
             "orchestrator.llm.call_chat_completion_once",
@@ -132,8 +132,24 @@ class LLMFailoverTests(unittest.TestCase):
             ["primary-vllm", "backup-openwebui"],
             [call.args[0]["name"] for call in call_once.call_args_list],
         )
-        self.assertEqual([60, 60], [call.kwargs["timeout"] for call in call_once.call_args_list])
+        self.assertEqual([180, 180], [call.kwargs["timeout"] for call in call_once.call_args_list])
         self.assertEqual([1, 2], [call.kwargs["provider_index"] for call in call_once.call_args_list])
+
+    def test_missing_timeout_uses_configured_failover_timeout(self) -> None:
+        llm = multi_llm_config()
+        with patch(
+            "orchestrator.llm.call_chat_completion_once",
+            side_effect=[RuntimeError("primary unavailable"), "backup response"],
+        ) as call_once:
+            result = call_chat_completion(
+                llm,
+                [{"role": "user", "content": "hello"}],
+                timeout=None,
+                retry_policy=LLMRetryPolicy(attempts=1, initial_delay=0),
+            )
+
+        self.assertEqual("backup response", result)
+        self.assertEqual([60, 60], [call.kwargs["timeout"] for call in call_once.call_args_list])
 
     def test_retry_restarts_the_entire_provider_chain(self) -> None:
         llm = multi_llm_config()
