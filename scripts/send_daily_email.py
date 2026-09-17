@@ -12,7 +12,6 @@
 
 import argparse
 import json
-import random
 import smtplib
 import sys
 from datetime import datetime, date
@@ -132,43 +131,32 @@ def generate_email_content(report, config, send_date, recipient_name=None):
     report_date = report.get("date", send_date)
     title = report.get("title", f"{report_date} 学习笔记日报")
     summary = report.get("summary", "今日学习内容已就绪。")
-    style_profiles = [
-        "清晨便签：像早上顺手留在桌边的一张小纸条，短句多一点，语气轻、干净、温柔。",
-        "轻松吐槽：像熟人之间带一点笑意的随口提醒，可以有一点俏皮，但不要油腻或夸张。",
-        "知识小导游：像把今天日报里的重点先指给对方看，语气清楚、有引导感，不像正式讲课。",
-        "安静陪跑：像陪对方一起慢慢学习，语气稳定、踏实，强调不用急、慢慢看也很好。",
-        "灵感速递：像递来一小束今天值得留意的想法，句子有一点新鲜感，但保持日常口吻。",
-        "复盘伙伴：像一天学习前的小复盘，帮对方看见今天内容之间的联系，语气可靠亲近。",
-        "小小鼓劲：像给对方一点轻柔的动力，关注学习习惯和积累感，不写鸡血口号。",
-    ]
-    style_profile = random.choice(style_profiles)
+    prompt = f"""你是“每日学习助手”，和收件人既是熟悉的朋友，也是一起持续学习的同行者。你读过今天的学习日报，从中挑一处值得留意的细节，像朋友间发消息一样写一段简短留言。语气亲切、具体、自然，句子有长有短，偶尔带一点轻松的观察，表达真诚而松弛。
 
-    prompt = f"""你负责为"每日拾光学习簿"撰写每日学习日报邮件的开头文案。文案应像一条自然、亲切的日常留言：温暖、有陪伴感，但不过度夸张。收件人的称呼是"{recipient_name}"，开头问候必须自然使用这个称呼，不要改写成其他昵称。整体效果应让收件人感觉"今天的学习日报已经准备好了，值得点开看看"。
-
-邮件发送日期是 {send_date} {weekday}。本次要推荐的是 manifest 中最新可用的学习日报：
-- 日报日期：{report_date}
+邮件发送日期：{send_date} {weekday}
+今日学习日报：
+- 日期：{report_date}
 - 标题：{title}
 - 摘要：{summary}
+- 收件人称呼：{recipient_name}
 
-今日写作风格：{style_profile}
+写作时以标题和摘要明确提供的信息为依据；信息有限时，用概括而轻松的表达。问候里自然使用收件人称呼一次。点评只挑一个具体细节，顺着它说清楚今天内容之间的联系或值得留意之处；合适时再用一个贴近日常的比喻。
 
-写作边界：
-- 不要猜测收件人最近的生活状态、昨天发生了什么、今天在哪里或正在做什么；只能围绕日期、标题、摘要和学习日报本身展开。
-- 不要把摘要里没有的信息扩写成具体事实；如果信息不足，就写得更轻、更概括。
+请写两部分内容：greeting 为 1–2 句自然问候；commentary 为 2–3 句轻量点评。两部分合计以 120–220 字为宜，上限 600 字。保持留言像熟人之间的短消息，让具体观察带出亲近感。
 
-请为今日邮件生成以下两部分内容，严格按 JSON 格式输出（不要包含 markdown 代码块标记）：
-
+请按以下 JSON 结构提供最终内容，两个字段都填写完整的自然语言文本：
 {{
-  "greeting": "邮件开头的问候语，3-5句话。要求：第一句自然称呼收件人为'{recipient_name}'；语气亲切、自然、日常，像熟悉的人在一天开始时轻声提醒；必须贴合今日写作风格；可以提到学习节奏、状态、习惯或一点轻松的小情绪；不要提天气、地点、现实事件、对方最近状态等未提供的信息；结尾要自然邀请对方查看今日学习日报，但不要总是写成'点开看看吧'。",
-  "commentary": "对今日学习内容的轻量点评，3-5句话。要求：结合标题或摘要中的1-2个具体知识点，但不要讲得太学术；用容易亲近的语言点出今天内容值得看的地方；可以用一个日常类比或小问题增加变化，但不要添加摘要中没有的事实；最后自然连接到今日学习日报已经整理好、适合继续阅读。"
-}}"""
+  "greeting": "问候语",
+  "commentary": "学习点评"
+}}
+最终回复请呈现完整 JSON 对象。"""
 
     try:
-        llm = {**require_llm_config(config), "max_tokens": 650}
+        llm = require_llm_config(config)
         text = call_chat_completion(
             llm,
             [{"role": "user", "content": prompt}],
-            timeout=30,
+            timeout=600,
             retry_policy=LLMRetryPolicy(attempts=1, initial_delay=0),
             temperature=0.9,
         )
