@@ -3,6 +3,96 @@
   "year_month": "2026-09",
   "threads": [
     {
+      "id": "2026-09-18-ref-f4f509a6bf",
+      "question": "如何设计只读监控报告，把 ref 指针一致、ref 指针变化、读取失败和基线缺失表达成不同证据等级？",
+      "source_date": "2026-09-18",
+      "source_concept": "远端 ref 指针一致性",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-18T06:21:09.388036+08:00",
+      "updated_at": "2026-09-18T06:21:09.388036+08:00"
+    },
+    {
+      "id": "2026-09-18-ref-8b791c68dd",
+      "question": "如果本地 main 与 origin/main 指向同一 SHA，但远端 ref 历史基线记录的是另一个 SHA，应该如何判断 changed 或 unchanged？",
+      "source_date": "2026-09-18",
+      "source_concept": "远端 ref 指针一致性",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-18T06:21:09.388036+08:00",
+      "updated_at": "2026-09-18T06:21:09.388036+08:00"
+    },
+    {
+      "id": "2026-09-18-ref-660518c14b",
+      "question": "当多个 ref 同时指向同一 SHA 时，能否推断它们最近发生过同步，为什么？",
+      "source_date": "2026-09-18",
+      "source_concept": "远端 ref 指针一致性",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-18T06:21:09.388036+08:00",
+      "updated_at": "2026-09-18T06:21:09.388036+08:00"
+    },
+    {
+      "id": "2026-09-18-concept-cfc4e2ccd3",
+      "question": "如何设计日志字段，区分超时发生的位置、超时值、是否重试和最终降级结果？",
+      "source_date": "2026-09-18",
+      "source_concept": "超时控制与调用可靠性",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-09-18T06:21:09.388036+08:00",
+      "updated_at": "2026-09-18T06:21:09.388036+08:00"
+    },
+    {
+      "id": "2026-09-18-concept-bc6dde8afc",
+      "question": "如何设计报告字段，把窗口内提交、窗口外提交、工作区未提交和读取失败区分成不同状态？",
+      "source_date": "2026-09-18",
+      "source_concept": "提交窗口与时间归属",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-09-18T06:21:09.388036+08:00",
+      "updated_at": "2026-09-18T06:21:09.388036+08:00"
+    },
+    {
+      "id": "2026-09-18-concept-3fd9b8f57e",
+      "question": "当文件修改时间、提交时间和检查窗口不一致时，应该优先使用哪个时间证据来判断归属？",
+      "source_date": "2026-09-18",
+      "source_concept": "提交窗口与时间归属",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-09-18T06:21:09.388036+08:00",
+      "updated_at": "2026-09-18T06:21:09.388036+08:00"
+    },
+    {
+      "id": "2026-09-18-concept-3e3bcbb8ec",
+      "question": "如果 timeout 分别用于网络请求、任务执行和模型调用，它们的失败语义和重试策略会有什么不同？",
+      "source_date": "2026-09-18",
+      "source_concept": "超时控制与调用可靠性",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-09-18T06:21:09.388036+08:00",
+      "updated_at": "2026-09-18T06:21:09.388036+08:00"
+    },
+    {
+      "id": "2026-09-18-concept-2b84459d3d",
+      "question": "如何在不等待真实 30 秒的情况下，用测试验证 timeout 配置被正确遵守？",
+      "source_date": "2026-09-18",
+      "source_concept": "超时控制与调用可靠性",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-09-18T06:21:09.388036+08:00",
+      "updated_at": "2026-09-18T06:21:09.388036+08:00"
+    },
+    {
+      "id": "2026-09-18-concept-1ee6766eba",
+      "question": "如果一次提交跨越检查窗口边界，例如提交时间在窗口外但分支更新在窗口内，应该如何标注证据等级？",
+      "source_date": "2026-09-18",
+      "source_concept": "提交窗口与时间归属",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-09-18T06:21:09.388036+08:00",
+      "updated_at": "2026-09-18T06:21:09.388036+08:00"
+    },
+    {
       "id": "2026-09-17-llm-failover-timeout-d91729b1b0",
       "question": "如何设计测试，在不等真实 30 秒的情况下验证 timeout 被正确遵守，例如使用假时钟、mock 延迟或可注入的时间源？",
       "source_date": "2026-09-17",
