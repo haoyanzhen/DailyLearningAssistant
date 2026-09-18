@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-09-19 学习笔记日报</title>
+    <meta name="description" content="今日围绕观测范围决定结论强度，讲解远端引用与指针、命令读取边界，以及已提交事实与待确认工作区线索的证据分层。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260919-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-09-19</p>
+        <h1>观测范围决定结论强度</h1>
+        <p>从远端 ref 指针到本地工作区线索，今天学习如何按观测边界控制结论强度。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>观测范围决定结论强度</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>Git 远端引用与 SHA…</strong>
+                <small>标签没换，不等于书箱没变。</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>git ls-remote…</strong>
+                <small>只问目录编号，不翻书箱。</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>已提交事实与待确认工作区线…</strong>
+                <small>草稿在桌上，不等于昨天已完成。</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念从基础到综合：Git 远端引用与 SHA 指针提供可比较的仓库位置坐标，git ls-remote 元数据读取边界限定我们能从远端读到什么，已提交事实与待确认工作区线索的证据分层决定不同证据应如何写入报告。它们共同说明，监控系统不是越多数据越好，而是先明确观测边界，再按边界选择结论强度。当天能稳定确认的是 Git 观测证据边界和工作区状态分类；tiny-sea-war 路径中的资产管线、契约检查、Python 工具链等只是待确认线索，今天不把它们写成已完成事实。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["观测范围决定结论强度"])
+  concept1["Git 远端引用与 SHA 指针"]
+  hub --&gt; concept1
+  concept2["git ls-remote 元数据读取边界"]
+  hub --&gt; concept2
+  concept3["已提交事实与待确认工作区线索的证据分层"]
+  hub --&gt; concept3
+  related1["基于历史基线的变更检测"]
+  concept1 --&gt; related1
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  concept2 --&gt; concept1
+  related2["只读仓库监控"]
+  concept2 --&gt; related2
+  concept2 --&gt; concept3
+  related3["未提交变更的时间归属问题"]
+  concept3 --&gt; related3
+  related4["未跟踪目录的保守证据表述"]
+  concept3 --&gt; related4
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="git-remote-ref-sha-pointer">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>Git 远端引用与 SHA 指针</h3>
+              <p>Git Remote Ref and SHA Pointer</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">标签没换，不等于书箱没变。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>ref 是可改写的名字，用来指向某个 SHA；SHA 是对象的位置编号或内容指纹。</li>
+                <li>监控系统记录历史 SHA 与当前 SHA，本质上拿到的是指针位置，而不是提交对象本身。</li>
+                <li>历史 SHA 与当前 SHA 相同只能确认该 ref 指针未变化，不能确认仓库没有新增提交或文件变化。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="git-remote-ref-sha-pointer" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="git-ls-remote-metadata-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>git ls-remote 元数据读取边界</h3>
+              <p>git ls-remote Metadata Boundary</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">只问目录编号，不翻书箱。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>git ls-remote 只读取远端 ref 指向的 SHA，不 clone、不 fetch、不下载提交对象、文件树或工作区内容。</li>
+                <li>它回答的是哪个 ref 现在指向哪个 SHA，而不是这个 SHA 背后有哪些提交、哪些文件、谁提交或 diff 是什么。</li>
+                <li>读取失败不能当成 unchanged，首次看到 ref 只能记录基线，不能视为新增提交。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="git-ls-remote-metadata-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="committed-facts-vs-workspace-clues">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>已提交事实与待确认工作区线索的证据分层</h3>
+              <p>Committed Facts vs Workspace Clues</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">草稿在桌上，不等于昨天已完成。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>检查窗口内提交数为 0 是已确认结论，可以作为已提交事实写入日报。</li>
+                <li>主工作区未暂存修改和未跟踪文件/目录只是当前待确认线索，不能直接归属到目标日期。</li>
+                <li>未跟踪目录只能作为目录级线索，不能证明目录内具体文件数量、内容或完成状态。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="committed-facts-vs-workspace-clues" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="git-remote-ref-sha-pointer">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>Git 远端引用与 SHA 指针</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>Git 远端引用与 SHA 指针，可以理解成仓库里的门牌系统和指向门牌的牌子。SHA 是对象的位置编号或内容指纹，ref 例如 refs/heads/main 是一个可改写的名字，用来指向某个 SHA。当天远端总结列出多个 ref，并记录历史 SHA 与当前 SHA，这说明监控系统拿到的是指针位置，而不是提交对象本身。基于这个位置，系统可以比较同一 ref 上次记录与本次记录是否相同；如果相同，只能说明该指针没有移动，不能直接说明仓库内容、提交数量或文件变化没有发生。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>ref 是可变名字，SHA 是指针指向的位置标识；比较变化时，比较的是同一 ref 在不同时刻指向的 SHA。</li>
+                <li>历史 SHA 与当前 SHA 相同，说明该 ref 的指针位置没有移动，属于最小可确认事实。</li>
+                <li>由于没有读取提交对象、文件树或工作区内容，指针 unchanged 不能扩展为仓库内容无变化。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>某个远端仓库的 refs/heads/main 历史 SHA 与当前 SHA 相同，当天报告可以写 ref 指针未变化；这里能确认的是 main 这个指针没有移动，不能确认仓库没有新增提交、没有作者变化或没有文件变化。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把 ref 指针 unchanged 理解成仓库完全没有活动。</li>
+                <li>把 SHA 当成提交信息、文件列表和 diff 内容，而忽略它只是指针指向的位置标识。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>基于历史基线的变更检测</td><td>Git 远端引用与 SHA 指针为基于历史基线的变更检测提供比较对象，因为没有 ref 指向的 SHA，就无法判断 unchanged 或 changed。</td></tr>
+                <tr><td>git ls-remote 元数据读取边界</td><td>Git 远端引用与 SHA 指针是 git ls-remote 元数据读取边界下的最小观测单位，读取范围只到指针位置，不进入提交对象内容。</td></tr>
+                <tr><td>已提交事实与待确认工作区线索的证据分层</td><td>Git 远端引用与 SHA 指针帮助理解证据分层，远端 ref 指针状态属于可确认的指针证据，而不是提交内容证据。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果同一个仓库有多个 ref 指向同一 SHA，我们最多能确认什么，哪些过程性结论仍不能确认？</li>
+                <li>当 ref 名称变化但 SHA 不变时，报告应如何区分指针移动和指针未移动？</li>
+                <li>为什么把历史 SHA 与当前 SHA 相同写成 unchanged，而不是写成 no new commits？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="git-ls-remote-metadata-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>git ls-remote 元数据读取边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>git ls-remote 元数据读取边界，说的是这个命令只读取远端 ref 指向的 SHA，不 clone、不 fetch、不下载提交对象、文件树或工作区内容。它回答的是哪个 ref 现在指向哪个 SHA，而不是这个 SHA 背后有哪些提交、哪些文件、谁提交、diff 是什么。当天多个远端仓库都通过 http_git 或 ssh_git 成功读取 ref，并且历史 SHA 与当前 SHA 相同，所以结果可以写成 unchanged。这个边界让监控保持只读和低副作用，但也限制结论强度：读取失败不能当成 unchanged，首次看到 ref 只能记录基线，不能视为新增提交。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>命令输出本质上是一组 ref 到 SHA 的映射，因此可确认的信息止于指针位置。</li>
+                <li>只读取元数据让监控保持低副作用，适合只读仓库监控，但不能获得提交对象内容。</li>
+                <li>成功读取、读取失败、基线缺失和指针变化必须分开表达，否则会把未知误写成 unchanged。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>public-library 使用 ssh_git，其余远端仓库使用 http_git，当天均成功读取 ref，并且历史 SHA 与当前 SHA 相同；报告可以确认这些 ref 指针未变化，但不能确认这些仓库在检查窗口内没有新增提交或没有文件变化。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为 git ls-remote 会下载仓库内容，从而能直接看到提交、文件树或 diff。</li>
+                <li>以为 ref 指针 unchanged 就能证明仓库没有提交、没有文件变化。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>Git 远端引用与 SHA 指针</td><td>git ls-remote 元数据读取边界依赖 Git 远端引用与 SHA 指针，因为它的输出本质上是一组 ref 到 SHA 的映射。</td></tr>
+                <tr><td>只读仓库监控</td><td>git ls-remote 元数据读取边界为只读仓库监控提供低副作用观测面，使系统只获得指针级信号而不下载完整仓库内容。</td></tr>
+                <tr><td>已提交事实与待确认工作区线索的证据分层</td><td>git ls-remote 元数据读取边界约束证据分层，提醒我们把远端 ref 指针状态与提交内容事实分开表达。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果只读监控只允许 git ls-remote，当 ref 指针变化时，应设计什么升级流程才能安全地查看提交详情？</li>
+                <li>当历史 SHA 缺失而当前读取成功时，为什么应记录首次基线而不是判断 changed？</li>
+                <li>如何设计报告字段，把成功读取、读取失败、基线缺失和 ref 指针变化区分开？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="committed-facts-vs-workspace-clues">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>已提交事实与待确认工作区线索的证据分层</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>已提交事实与待确认工作区线索的证据分层，是把不同来源的信息按可确认程度分开表达。当天 tiny-sea-war 的检查窗口内提交数为 0，这是已确认结论；但主工作区存在未暂存修改和未跟踪文件/目录，总结明确将其标注为待确认变化线索。Git 工作区状态描述的是当前存在什么变更，而不是这些变更何时发生。未提交变更可能发生在检查窗口内，也可能发生在更早时间，甚至可能只是当前机器上的临时状态。未跟踪目录也只能说明目录级线索存在，不能证明目录内具体文件数量、内容或完成状态。因此日报应区分已提交事实、远端 ref 指针状态和当前工作区线索，避免把弱证据写成强事实。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Git 工作区状态描述当前存在什么变更，不携带可靠的变更发生时间，因此不能直接归属目标日期。</li>
+                <li>未提交变更可能发生在检查窗口内、更早时间，或只是当前机器上的临时状态，必须保留待确认状态。</li>
+                <li>日报应分层表达已提交事实、远端 ref 指针状态和工作区待确认线索，避免把弱证据写成强事实。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>tiny-sea-war 当天窗口内提交数为 0，同时主工作区存在未暂存修改和未跟踪目录，并记录了一个 worktree 线索 main @ b5672c2c7f88；报告应写窗口内无已确认提交，同时存在待确认工作区线索，而不能写成昨天完成了资产管线更新或具体文件数量已完成。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把未提交变更直接当成目标日期完成的工作量。</li>
+                <li>把未跟踪目录当成目录内文件已经完成，或者把 ref 指针 unchanged 当成仓库没有任何活动。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>未提交变更的时间归属问题</td><td>已提交事实与待确认工作区线索的证据分层依赖未提交变更的时间归属问题，因为工作区状态不携带可靠的变更发生时间。</td></tr>
+                <tr><td>未跟踪目录的保守证据表述</td><td>已提交事实与待确认工作区线索的证据分层需要未跟踪目录的保守证据表述，避免把目录级线索写成目录内文件数量和完成状态。</td></tr>
+                <tr><td>git ls-remote 元数据读取边界</td><td>已提交事实与待确认工作区线索的证据分层与 git ls-remote 元数据读取边界共同构成观测范围决定结论强度的原则，远端 ref 指针和本地工作区都必须按证据强度表达。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何设计机器可读报告字段，把窗口内提交、窗口外提交、远端 ref 指针状态、工作区未提交和未跟踪目录分别标注？</li>
+                <li>当工作区 diff 统计量很大时，如何在日报中避免把它写成目标日期完成的工作量？</li>
+                <li>人工确认工作区线索时，哪些额外证据可以帮助判断变更发生时间，例如提交记录、文件时间戳、任务日志或人工说明？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念从基础到综合：Git 远端引用与 SHA 指针提供可比较的仓库位置坐标，git ls-remote 元数据读取边界限定我们能从远端读到什么，已提交事实与待确认工作区线索的证据分层决定不同证据应如何写入报告。它们共同说明，监控系统不是越多数据越好，而是先明确观测边界，再按边界选择结论强度。当天能稳定确认的是 Git 观测证据边界和工作区状态分类；tiny-sea-war 路径中的资产管线、契约检查、Python 工具链等只是待确认线索，今天不把它们写成已完成事实。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">观测范围决定结论强度：先明确读到什么，再决定能写多强的结论。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如果只读监控只允许 git ls-remote，当 ref 指针变化时，应设计什么升级流程才能安全地查看提交详情？</li>
+            <li>如何设计机器可读报告字段，把窗口内提交、窗口外提交、远端 ref 指针状态、工作区未提交和未跟踪目录分别标注？</li>
+            <li>当工作区 diff 统计量很大时，如何在日报中避免把它写成目标日期完成的工作量？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>

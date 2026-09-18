@@ -3,6 +3,96 @@
   "year_month": "2026-09",
   "threads": [
     {
+      "id": "2026-09-19-git-sha-e25e5dbfd3",
+      "question": "如果同一个仓库有多个 ref 指向同一 SHA，我们最多能确认什么，哪些过程性结论仍不能确认？",
+      "source_date": "2026-09-19",
+      "source_concept": "Git 远端引用与 SHA 指针",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-19T06:15:37.497559+08:00",
+      "updated_at": "2026-09-19T06:15:37.497559+08:00"
+    },
+    {
+      "id": "2026-09-19-git-sha-e1f0b70a53",
+      "question": "为什么把历史 SHA 与当前 SHA 相同写成 unchanged，而不是写成 no new commits？",
+      "source_date": "2026-09-19",
+      "source_concept": "Git 远端引用与 SHA 指针",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-19T06:15:37.497559+08:00",
+      "updated_at": "2026-09-19T06:15:37.497559+08:00"
+    },
+    {
+      "id": "2026-09-19-git-sha-2ae373de35",
+      "question": "当 ref 名称变化但 SHA 不变时，报告应如何区分指针移动和指针未移动？",
+      "source_date": "2026-09-19",
+      "source_concept": "Git 远端引用与 SHA 指针",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-19T06:15:37.497559+08:00",
+      "updated_at": "2026-09-19T06:15:37.497559+08:00"
+    },
+    {
+      "id": "2026-09-19-git-ls-remote-c744d7f30e",
+      "question": "当历史 SHA 缺失而当前读取成功时，为什么应记录首次基线而不是判断 changed？",
+      "source_date": "2026-09-19",
+      "source_concept": "git ls-remote 元数据读取边界",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-19T06:15:37.497559+08:00",
+      "updated_at": "2026-09-19T06:15:37.497559+08:00"
+    },
+    {
+      "id": "2026-09-19-git-ls-remote-7c9b55ae9b",
+      "question": "如果只读监控只允许 git ls-remote，当 ref 指针变化时，应设计什么升级流程才能安全地查看提交详情？",
+      "source_date": "2026-09-19",
+      "source_concept": "git ls-remote 元数据读取边界",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-19T06:15:37.497559+08:00",
+      "updated_at": "2026-09-19T06:15:37.497559+08:00"
+    },
+    {
+      "id": "2026-09-19-git-ls-remote-6a7a399743",
+      "question": "如何设计报告字段，把成功读取、读取失败、基线缺失和 ref 指针变化区分开？",
+      "source_date": "2026-09-19",
+      "source_concept": "git ls-remote 元数据读取边界",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-19T06:15:37.497559+08:00",
+      "updated_at": "2026-09-19T06:15:37.497559+08:00"
+    },
+    {
+      "id": "2026-09-19-concept-941b2113c7",
+      "question": "如何设计机器可读报告字段，把窗口内提交、窗口外提交、远端 ref 指针状态、工作区未提交和未跟踪目录分别标注？",
+      "source_date": "2026-09-19",
+      "source_concept": "已提交事实与待确认工作区线索的证据分层",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-09-19T06:15:37.497559+08:00",
+      "updated_at": "2026-09-19T06:15:37.497559+08:00"
+    },
+    {
+      "id": "2026-09-19-concept-8d7472279d",
+      "question": "人工确认工作区线索时，哪些额外证据可以帮助判断变更发生时间，例如提交记录、文件时间戳、任务日志或人工说明？",
+      "source_date": "2026-09-19",
+      "source_concept": "已提交事实与待确认工作区线索的证据分层",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-09-19T06:15:37.497559+08:00",
+      "updated_at": "2026-09-19T06:15:37.497559+08:00"
+    },
+    {
+      "id": "2026-09-19-concept-68e82d5cb0",
+      "question": "当工作区 diff 统计量很大时，如何在日报中避免把它写成目标日期完成的工作量？",
+      "source_date": "2026-09-19",
+      "source_concept": "已提交事实与待确认工作区线索的证据分层",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-09-19T06:15:37.497559+08:00",
+      "updated_at": "2026-09-19T06:15:37.497559+08:00"
+    },
+    {
       "id": "2026-09-18-ref-f4f509a6bf",
       "question": "如何设计只读监控报告，把 ref 指针一致、ref 指针变化、读取失败和基线缺失表达成不同证据等级？",
       "source_date": "2026-09-18",
