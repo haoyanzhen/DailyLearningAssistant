@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-09-20 学习笔记日报</title>
+    <meta name="description" content="当天围绕角色资产目录结构、资产契约检查与质量审计、批量生成与后处理管线，把路径线索升级为可检查、可追溯的工程知识。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260920-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-09-20</p>
+        <h1>2026-09-20 学习笔记日报</h1>
+        <p>当天不继续复述 Git 监控，而是把 tiny-sea-war 中待确认工作区线索组织成可理解工程知识。三个概念从目录边界、契约检查到批量管线，说明如何把看到文件升级为知道文件应如何被读取、检查、生成和追溯。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>角色资产工程知识：目录边界、契约检…</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>角色资产目录结构作为产物接…</strong>
+                <small>目录是产物的门牌，不是完成证明。</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>资产契约检查与 QA 审计</strong>
+                <small>契约检查像出杯检查单，证明查过什么…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>批量生成与后处理管线</strong>
+                <small>管线可信度来自阶段产物和报告，而不…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念形成一条从空间组织到质量检查再到流程执行的链条。目录结构先回答产物应该放在哪里，契约检查再回答产物应该满足什么约定，批量管线进一步回答产物如何被生成、后处理、审查和汇总。三者都依赖明确输入输出和可追溯记录。它们也都受证据边界约束。当天材料只确认路径存在，不确认脚本实现、运行成功、依赖版本或质量通过。因此讲解中需要反复区分路径存在、约定存在和运行成功，避免把候选线索写成已完成工程事实。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["角色资产工程知识：目录边界、契约检查与批量管线"])
+  concept1["角色资产目录结构作为产物接口边界"]
+  hub --&gt; concept1
+  concept2["资产契约检查与 QA 审计"]
+  hub --&gt; concept2
+  concept3["批量生成与后处理管线"]
+  hub --&gt; concept3
+  related1["资产元数据与产物管理"]
+  concept1 --&gt; related1
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  concept2 --&gt; concept1
+  concept2 --&gt; related1
+  concept2 --&gt; concept3
+  related2["测试作为行为约束"]
+  concept2 --&gt; related2
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  related3["配置与依赖锁定"]
+  concept3 --&gt; related3
+  concept3 --&gt; related2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="character-asset-directory-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>角色资产目录结构作为产物接口边界</h3>
+              <p>Character Asset Directory Boundary</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">目录是产物的门牌，不是完成证明。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>目录路径把角色产物拆成 concept、processed、ui、vfx、battle、qa 等可定位类别。</li>
+                <li>目录结构是产物接口边界，让生成、检查、审查工具按约定路径读取和写入。</li>
+                <li>路径存在只能说明候选边界，不能证明文件已生成、已处理或 QA 已通过。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="character-asset-directory-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="asset-contract-check-qa-audit">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>资产契约检查与 QA 审计</h3>
+              <p>Asset Contract Check and QA Audit</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">契约检查像出杯检查单，证明查过什么，而不是替人判断好不好。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>契约把资产应满足的要求写成可逐项核对的规则，而不是口头要求。</li>
+                <li>检查脚本按规则核对文件、目录和命名，审计报告记录存在、缺失和待复核项。</li>
+                <li>文件名或脚本路径只能提示可能存在检查，不能证明检查执行成功或资产质量合格。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="asset-contract-check-qa-audit" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="batch-generation-postprocess-pipeline">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>批量生成与后处理管线</h3>
+              <p>Batch Generation and Postprocess Pipeline</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">管线可信度来自阶段产物和报告，而不是脚本路径数量。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>管线核心不是脚本数量，而是阶段之间的输入输出关系。</li>
+                <li>每个阶段产生明确产物：brief、plan、raw、processed、delivery review、batch report。</li>
+                <li>脚本路径存在只能提示候选阶段，可信管线需要运行日志、批次报告、测试输出和人工审查状态。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="batch-generation-postprocess-pipeline" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="character-asset-directory-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>角色资产目录结构作为产物接口边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>角色资产目录结构作为产物接口边界，讲的是把不同类型的角色产物放在不同目录里，让目录路径成为后续工具可以依赖的接口。当天 tiny-sea-war 的待确认工作区线索中，assets/characters/ 下出现了 meta/、battle/、concept/、processed/、ui/、vfx/、qa/ 等目录。这里基于当日材料可确认的是：这些目录路径存在，并且它们把角色资产拆成了概念、处理、UI、特效、战斗、QA 等不同类别；但不能仅凭目录名确认每个目录里的文件已经合格、已经生成或已经完成 QA。对学习者来说，可以把它理解成文件接口：就像 API 规定函数入参和出参，目录结构规定某类产物应该出现在哪里。后续脚本如果要读取概念稿、生成处理图、检查 QA 报告，就可以按路径约定去找，而不是每次猜文件放在哪。这个概念的重点不是目录本身多漂亮，而是它降低了系统各部分之间的沟通成本：生成工具知道把产物写到 processed/，检查工具知道去 qa/ 找报告，人工审查也知道去哪里看接触图。因为当天材料只给路径，所以它更适合作为候选接口边界来理解：路径已经形成边界，功能仍待确认。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>固定目录为不同阶段产物提供稳定位置，减少工具之间猜测文件位置的成本。</li>
+                <li>目录约定形成接口边界：生成工具写约定目录，检查工具读约定目录，人工审查按目录定位。</li>
+                <li>证据边界要求区分路径存在和产物合格，目录名不能替代文件内容、脚本输出或审计报告。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设系统要检查角色 gangut 是否具备基础资产。检查器可以按约定查看 assets/characters/gangut/concept/ 是否有概念图，查看 assets/characters/gangut/processed/ 是否有处理后接触图，查看 assets/characters/gangut/qa/ 是否有 QA 报告。如果 concept 和 processed 存在但 qa 缺失，报告可以写产物路径部分存在，QA 报告待确认，而不是直接写角色资产已完成。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>看到 qa/ 目录，不等于 QA 已经通过。</li>
+                <li>看到 processed/ 目录，不等于后处理已经成功；看到 meta/ 目录，不等于元数据字段完整。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>资产元数据与产物管理</td><td>目录结构为 generation brief、postprocess plan、source provenance 和 processed contact 等文件提供固定位置，使后续工具可按路径读取。</td></tr>
+                <tr><td>资产契约检查与 QA 审计</td><td>契约检查需要先知道某类产物应该出现在哪个目录，因此目录结构是契约检查的前置条件。</td></tr>
+                <tr><td>批量生成与后处理管线</td><td>批量脚本需要把不同阶段产物写入约定目录，才能让后续阶段继续处理。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果一个角色资产目录只存在 concept/ 和 processed/，但缺少 qa/，我们应该把它标成待检查还是检查失败？</li>
+                <li>当目录名与文件实际内容不一致时，应该优先相信目录约定、文件内容还是检查脚本输出？</li>
+                <li>如何设计一个最小目录契约，让脚本能区分目录缺失、目录为空和目录存在但文件不合规？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="asset-contract-check-qa-audit">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>资产契约检查与 QA 审计</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>资产契约检查与 QA 审计，讲的是把资产应该长什么样写成可检查的约定，并把检查结果记录下来。契约不是口头要求，而是可以逐项核对的规则，例如某个角色是否有 generation brief、postprocess plan、source provenance、processed contact、QA 报告，或者目录和命名是否符合约定。当天 tiny-sea-war 的待确认线索中出现了 tools/art_pipeline/check_character_asset_contract.py、character_asset_contract_audit_gangut.md、character_asset_contract_audit_tashkent_chapayev_gangut_k_21.md、character_art_batch_report.json/md 等路径。这里基于当日材料可确认的是：存在契约检查脚本和审计报告路径，提示系统可能在做资产约定检查与审计记录；但不能确认脚本具体检查了哪些字段，也不能确认检查结果是全部通过还是部分失败。对学习者来说，可以把契约检查理解为自动对清单：清单规定每个角色资产应有哪些材料和格式，脚本逐项核对，审计报告记录哪些项存在、哪些项缺失、哪些项需要人工复核。QA 审计的重点不是替人判断美术质量，而是把检查过什么、结果是什么、证据在哪里固化下来。这样后续复盘时，不是凭记忆说应该检查过了，而是能打开报告看具体字段。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>契约把资产应该长什么样变成可执行规则，使检查可以逐项核对。</li>
+                <li>审计报告固化检查对象、结果和证据位置，避免复盘时凭记忆判断。</li>
+                <li>QA 审计重点不是替人判断美术质量，而是记录检查过什么、结果是什么、证据在哪里。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设契约规定每个角色必须包含 generation_brief.md、postprocess_plan.json、source_provenance.json、processed_contact.png 和 qa 报告。检查脚本扫描角色 gangut 后，发现 brief 和 plan 存在，但 processed_contact.png 缺失，qa 报告为空。审计报告可以记录：gangut 的 processed 产物缺失，QA 报告不可用，整体状态为待补充。这个结果比只写 gangut 有问题更可执行，因为下一步知道要补哪类产物。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>看到 check 或 audit 文件名就认为检查已经完成并通过。</li>
+                <li>把审计报告存在等同于资产质量合格，忽略失败原因和人工复核状态。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>角色资产目录结构作为产物接口边界</td><td>契约需要依据固定目录和文件位置来判断产物是否存在，因此依赖目录结构作为接口边界。</td></tr>
+                <tr><td>资产元数据与产物管理</td><td>契约检查会读取 brief、plan、provenance 和 processed 产物，使元数据从普通文件变成可检查对象。</td></tr>
+                <tr><td>批量生成与后处理管线</td><td>批量管线每生成一批资产，就可以用契约检查快速发现缺失或不合规产物。</td></tr>
+                <tr><td>测试作为行为约束</td><td>测试可以验证检查脚本本身是否按契约正确报告缺失项。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当契约检查发现某个文件存在但内容格式错误时，报告应该区分缺失和不合规吗？为什么？</li>
+                <li>如果多个角色共用同一份契约，某个角色因为特殊设计需要例外，契约检查应如何记录例外而不破坏整体审计？</li>
+                <li>如何设计审计报告字段，让下游能区分检查未运行、检查失败、资产不合规和人工已复核通过？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="batch-generation-postprocess-pipeline">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>批量生成与后处理管线</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>批量生成与后处理管线，讲的是把多个处理步骤串成一条可追踪的生产链：先准备输入计划，再批量生成或处理资产，再对产物做后处理，最后做交付审查和报告。当天 tiny-sea-war 的 tools/art_pipeline/ 下出现了 batch_character_art.py、build_phase2_generation_briefs.py、build_phase2_postprocess_plans.py、postprocess_generated_character.py、postprocess_trial_sheets.py、generate_character_art.py、delivery_review.py、record_codex_builtin_art.py 等路径。这里基于当日材料可确认的是：这些脚本路径提示存在批量生成、后处理、交付审查和记录类步骤；但不能确认脚本具体实现、是否运行过、运行是否成功，也不能确认 record_codex_builtin_art.py 一定涉及 LLM 或 Agent 工作流。对学习者来说，管线的核心不是很多脚本，而是阶段之间的输入输出关系。例如 build brief 阶段产出 generation brief，build postprocess plan 阶段产出 postprocess plan，batch_character_art 阶段消费这些计划并产出角色图，postprocess_generated_character 阶段把原始图加工成可用产物，delivery_review 阶段检查交付条件，batch report 汇总结果。这样每一步都有明确输入和输出，问题出现时可以沿着产物链追溯：是 brief 缺了字段，还是 plan 没生成，还是后处理脚本失败。当天材料还出现 .python-version、pyproject.toml、uv.lock 以及若干测试脚本路径，它们提示这条 Python 管线可能需要可声明、可锁定的运行环境，并受测试约束。这里只能作为环境可复现和行为约束的候选线索，不能确认具体依赖版本或测试通过状态。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>先准备输入计划，再批量生成或处理，再后处理，再交付审查和报告，形成可追踪生产链。</li>
+                <li>每步有明确输入输出，问题出现时可沿产物链追溯：brief 字段、plan 生成、后处理脚本或产物写入。</li>
+                <li>环境配置和测试路径提示管线可能需要可声明、可锁定运行环境和行为约束，但仍属候选线索。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设要为 20 个角色生成第二批资产。管线可以先运行 build_phase2_generation_briefs.py 生成 20 份 brief，再运行 build_phase2_postprocess_plans.py 生成 20 份后处理计划，然后运行 batch_character_art.py 批量生成原始角色图，再运行 postprocess_generated_character.py 处理成最终图，最后运行 delivery_review.py 检查交付条件并输出 character_art_batch_report.json。如果报告里 18 个角色成功、2 个角色缺少 processed contact，就可以精准定位到后处理或产物写入阶段，而不是笼统说批量生成失败。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把脚本路径多当成管线已经跑通。</li>
+                <li>看到 batch、postprocess、delivery_review 等文件名，就认为它们已被执行且输出产物正确。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>角色资产目录结构作为产物接口边界</td><td>每个阶段都需要把 brief、plan、raw、processed、qa 等产物写入约定目录。</td></tr>
+                <tr><td>资产契约检查与 QA 审计</td><td>批量管线直接改变资产元数据与产物管理状态，因此需要契约检查和 QA 审计验证批量结果是否合规。</td></tr>
+                <tr><td>配置与依赖锁定</td><td>.python-version、pyproject.toml 和 uv.lock 可成为管线稳定运行的可复现 Python 运行环境候选基础。</td></tr>
+                <tr><td>测试作为行为约束</td><td>test_generation_pipeline、test_postprocess_generated_character 和 test_delivery_review 等测试路径提示关键行为需要被自动化验证。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果批量管线中某一步失败，应该保留哪些中间产物，才能帮助定位是输入计划错误还是处理脚本错误？</li>
+                <li>如何设计 batch report 字段，让每个角色的状态能区分 pending、running、success、failed、skipped 和 needs_review？</li>
+                <li>当依赖锁文件 uv.lock 与脚本实际使用的库版本不一致时，应如何把这种漂移纳入管线失败或警告状态？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念形成一条从空间组织到质量检查再到流程执行的链条。目录结构先回答产物应该放在哪里，契约检查再回答产物应该满足什么约定，批量管线进一步回答产物如何被生成、后处理、审查和汇总。三者都依赖明确输入输出和可追溯记录。它们也都受证据边界约束。当天材料只确认路径存在，不确认脚本实现、运行成功、依赖版本或质量通过。因此讲解中需要反复区分路径存在、约定存在和运行成功，避免把候选线索写成已完成工程事实。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">目录结构本身不是功能证明，但它可以把角色资产拆成可定位、可检查的产物接口。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何设计一个最小目录契约，让脚本能区分目录缺失、目录为空和目录存在但文件不合规？</li>
+            <li>如何设计审计报告字段，让下游能区分检查未运行、检查失败、资产不合规和人工已复核通过？</li>
+            <li>如何设计 batch report 字段，让每个角色的状态能区分 pending、running、success、failed、skipped 和 needs_review？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>

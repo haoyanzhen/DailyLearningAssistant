@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-09/2026-09-20-learning-report.html">2026-09-20</a>
+      </td>
+      <td>角色资产目录结构作为产物接口边界</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★</td>
+      <td>角色资产目录结构作为产物接口边界，就是让不同阶段的角色产物按固定目录存放，使后续工具能按路径约定读取和检查。</td>
+      <td>下一次可以讲目录契约如何变成机器可读规则：例如用 JSON schema 或配置表规定每个角色必须包含哪些目录和文件，并让检查脚本输出缺失项。</td>
+    </tr>
+    <tr>
+      <td>资产契约检查与 QA 审计</td>
+      <td>软件工程</td>
+      <td>★★★</td>
+      <td>资产契约检查与 QA 审计，就是把角色资产应满足的约定变成可执行检查，并把检查结果记录成可追溯的审计报告。</td>
+      <td>下一次可以讲契约字段如何设计成机器可读 schema，并让检查脚本输出结构化失败原因，例如 missing_file、invalid_field、naming_violation。</td>
+    </tr>
+    <tr>
+      <td>批量生成与后处理管线</td>
+      <td>软件工程 / 计算机科学</td>
+      <td>★★★★</td>
+      <td>批量生成与后处理管线，就是把角色资产的计划、生成、后处理、审查和报告串成一条有明确输入输出和可追溯产物的处理链。</td>
+      <td>下一次可以讲管线状态机：每个角色资产在批量流程中如何从 pending 到 running、success、failed、needs_review，以及如何用 batch report 和测试输出驱动状态迁移。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-09/2026-09-19-learning-report.html">2026-09-19</a>
       </td>
       <td>Git 远端引用与 SHA 指针</td>
