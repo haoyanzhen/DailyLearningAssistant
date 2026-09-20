@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-09/2026-09-21-learning-report.html">2026-09-21</a>
+      </td>
+      <td>成功读取与 unchanged 的证据条件</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★</td>
+      <td>成功读取与 unchanged 的证据条件，就是只有成功读到当前 SHA、有历史 SHA 可比、且两者相同，才能把状态写成 unchanged。</td>
+      <td>下一次可以讲三值或四值状态字段：read_failed、baseline_missing、unchanged、changed 如何映射到退出码、重试策略和人工确认入口。</td>
+    </tr>
+    <tr>
+      <td>Git worktree 与多工作区状态归属</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★</td>
+      <td>Git worktree 与多工作区状态归属，就是把 Git 状态绑定到具体工作区、分支 tip 和当前差异，而不是只按仓库名判断变化。</td>
+      <td>下一次可以讲多 worktree 报告字段：worktree_path、branch_tip、staged、unstaged、untracked、window_commits 如何组合成机器可读状态。</td>
+    </tr>
+    <tr>
+      <td>资产合同检查与交付审查</td>
+      <td>软件工程</td>
+      <td>★★★★</td>
+      <td>资产合同检查与交付审查，就是把角色资产约定变成可执行检查，并用检查结果和人工复核状态决定产物能否进入交付。</td>
+      <td>下一次可以讲交付审查状态机：pending_check、check_failed、contract_violation、needs_review、approved 如何由检查输出、QA 报告和人工确认共同驱动。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-09/2026-09-20-learning-report.html">2026-09-20</a>
       </td>
       <td>角色资产目录结构作为产物接口边界</td>
