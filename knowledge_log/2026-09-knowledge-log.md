@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-09/2026-09-22-learning-report.html">2026-09-22</a>
+      </td>
+      <td>Git commit 作为唯一变更事实源</td>
+      <td>软件工程</td>
+      <td>★★</td>
+      <td>Git commit 作为唯一变更事实源，就是把已提交、可验证、可归属时间的 commit 当作系统结论的唯一硬证据。</td>
+      <td>下一次可以讲 commit-only 报告的机器可读字段：window_commits、ref_pointer_status、workspace_clues、evidence_level 如何组合，并避免把 ref changed 直接写成 commit 详情。</td>
+    </tr>
+    <tr>
+      <td>文件接口作为系统边界</td>
+      <td>软件工程</td>
+      <td>★★★</td>
+      <td>文件接口作为系统边界，就是让提示词、脚本、文档和测试共同定义 Agent 能做什么、怎么做、为什么做和如何验证。</td>
+      <td>下一次可以讲 Agent 文件接口的一致性检查：如何把 prompt 中的禁止项、脚本中的过滤逻辑和测试中的断言映射成同一张契约表。</td>
+    </tr>
+    <tr>
+      <td>LLM 输出可靠性与证据约束</td>
+      <td>大语言模型 / 软件工程</td>
+      <td>★★★★</td>
+      <td>LLM 输出可靠性与证据约束，就是让模型只在可确认证据范围内生成结论，并把弱证据明确标注为待确认。</td>
+      <td>下一次可以讲 LLM 证据引用与拒绝回答机制：如何设计输出 schema，要求每条结论附带 evidence_type、evidence_id、confidence 和 forbidden_inference 检查。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-09/2026-09-21-learning-report.html">2026-09-21</a>
       </td>
       <td>成功读取与 unchanged 的证据条件</td>

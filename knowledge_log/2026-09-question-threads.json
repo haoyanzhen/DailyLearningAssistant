@@ -3,6 +3,96 @@
   "year_month": "2026-09",
   "threads": [
     {
+      "id": "2026-09-22-llm-f7434196bc",
+      "question": "如何为 LLM 输出设计证据引用字段，让每个结论都能追溯到 commit SHA、ref 状态或人工确认记录？",
+      "source_date": "2026-09-22",
+      "source_concept": "LLM 输出可靠性与证据约束",
+      "domain": "大语言模型 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-22T06:15:05.629412+08:00",
+      "updated_at": "2026-09-22T06:15:05.629412+08:00"
+    },
+    {
+      "id": "2026-09-22-llm-e0573fb0aa",
+      "question": "当 Agent 自己生成的日报提交进入监控输入时，应如何排除、标记或单独审计？",
+      "source_date": "2026-09-22",
+      "source_concept": "LLM 输出可靠性与证据约束",
+      "domain": "大语言模型 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-22T06:15:05.629412+08:00",
+      "updated_at": "2026-09-22T06:15:05.629412+08:00"
+    },
+    {
+      "id": "2026-09-22-llm-d3d7f2fd22",
+      "question": "如何测试 LLM 在证据不足时是否会拒绝补全，而不是生成看似合理的总结？",
+      "source_date": "2026-09-22",
+      "source_concept": "LLM 输出可靠性与证据约束",
+      "domain": "大语言模型 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-22T06:15:05.629412+08:00",
+      "updated_at": "2026-09-22T06:15:05.629412+08:00"
+    },
+    {
+      "id": "2026-09-22-git-commit-fbfc539da5",
+      "question": "如果远端 ref 变化但没有提交对象，报告应该使用 changed、pending_commit_detail 还是 unknown？",
+      "source_date": "2026-09-22",
+      "source_concept": "Git commit 作为唯一变更事实源",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-09-22T06:15:05.629412+08:00",
+      "updated_at": "2026-09-22T06:15:05.629412+08:00"
+    },
+    {
+      "id": "2026-09-22-git-commit-9a83670e2a",
+      "question": "如果一个提交跨越检查窗口边界，应该如何决定它属于哪个目标日期？",
+      "source_date": "2026-09-22",
+      "source_concept": "Git commit 作为唯一变更事实源",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-09-22T06:15:05.629412+08:00",
+      "updated_at": "2026-09-22T06:15:05.629412+08:00"
+    },
+    {
+      "id": "2026-09-22-git-commit-4c557b6968",
+      "question": "如何设计字段同时表达 commit 已确认、ref 已变化、工作区有草稿三种不同证据等级？",
+      "source_date": "2026-09-22",
+      "source_concept": "Git commit 作为唯一变更事实源",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-09-22T06:15:05.629412+08:00",
+      "updated_at": "2026-09-22T06:15:05.629412+08:00"
+    },
+    {
+      "id": "2026-09-22-concept-dbb8f67e49",
+      "question": "如何为 Agent 文件接口设计一致性检查，自动发现 prompt 与测试覆盖范围漂移？",
+      "source_date": "2026-09-22",
+      "source_concept": "文件接口作为系统边界",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-09-22T06:15:05.629412+08:00",
+      "updated_at": "2026-09-22T06:15:05.629412+08:00"
+    },
+    {
+      "id": "2026-09-22-concept-7304c62e3e",
+      "question": "当提示词、脚本和测试不一致时，应该以哪个文件为权威来源？",
+      "source_date": "2026-09-22",
+      "source_concept": "文件接口作为系统边界",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-09-22T06:15:05.629412+08:00",
+      "updated_at": "2026-09-22T06:15:05.629412+08:00"
+    },
+    {
+      "id": "2026-09-22-concept-3bc300b629",
+      "question": "如果新增一个任务阶段，应该同步修改哪些文件才算完成边界扩展？",
+      "source_date": "2026-09-22",
+      "source_concept": "文件接口作为系统边界",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-09-22T06:15:05.629412+08:00",
+      "updated_at": "2026-09-22T06:15:05.629412+08:00"
+    },
+    {
       "id": "2026-09-21-unchanged-4254989bdc",
       "question": "当历史 SHA 与当前 SHA 相同时，如何设计字段同时表达 unchanged 和 changed 的置信等级？",
       "source_date": "2026-09-21",

@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-09-22 学习笔记日报</title>
+    <meta name="description" content="当天围绕提交事实源、文件接口边界与大模型证据约束，说明弱证据只能支持弱结论，强结论必须依赖可验证提交事实。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260922-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-09-22</p>
+        <h1>从变化线索到可确认事实</h1>
+        <p>当天从“看到变化”走向“能确认什么”，把提交事实源、文件接口边界与大模型证据约束串成一条可靠总结链条。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>证据等级与可靠总结</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>Git commit 作为…</strong>
+                <small>现场有变化不等于已确认变化，com…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>文件接口作为系统边界</strong>
+                <small>提示词、脚本、文档和测试要像同一张…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>LLM 输出可靠性与证据约束</strong>
+                <small>没有提交证据就不能推断提交内容，只…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念分别回答什么可以作为事实、系统边界由什么承载、大模型输出如何不越界。Git commit 作为唯一变更事实源解决事实选择问题；文件接口作为系统边界解决约束承载问题；LLM 输出可靠性与证据约束解决输出可信问题。三者形成递进关系：先限定事实源，再让文件接口把规则变成可执行系统，最后让大模型在边界内生成可靠总结。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["证据等级与可靠总结"])
+  concept1["Git commit 作为唯一变更事实源"]
+  hub --&gt; concept1
+  concept2["文件接口作为系统边界"]
+  hub --&gt; concept2
+  concept3["LLM 输出可靠性与证据约束"]
+  hub --&gt; concept3
+  related1["Git SHA 对象标识与 ref 比较"]
+  concept1 --&gt; related1
+  related2["提交事实与工作区线索的证据分层"]
+  concept1 --&gt; related2
+  concept1 --&gt; concept3
+  related3["提示词工程与任务约束设计"]
+  concept2 --&gt; related3
+  related4["测试作为行为契约与回归验证"]
+  concept2 --&gt; related4
+  related5["Agent 工作流与任务编排"]
+  concept2 --&gt; related5
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  related6["证据边界与可确认事实分层"]
+  concept3 --&gt; related6
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4,related5,related6 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="git-commit-as-single-change-fact-source">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>Git commit 作为唯一变更事实源</h3>
+              <p>Commit-Only Change Facts</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">现场有变化不等于已确认变化，commit 才是可查的正式记录。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>只把已进入 commit 的变更当作已确认事实，工作区草稿和未跟踪文件只能作为线索。</li>
+                <li>ref 变化只能说明远端指针移动，不能直接确认提交内容、文件列表或功能完成。</li>
+                <li>事实源越窄，自动化总结越可追溯，越不容易把弱线索升级成强结论。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="git-commit-as-single-change-fact-source" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="file-interface-as-system-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>文件接口作为系统边界</h3>
+              <p>File Interfaces as System Boundaries</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">提示词、脚本、文档和测试要像同一张乐谱，不能各改各的。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>提示词约束大模型怎么说和不能说什么，脚本决定实际执行路径。</li>
+                <li>架构文档和任务文档说明设计原因与任务边界，测试验证行为是否符合预期。</li>
+                <li>多文件必须表达同一套规则，任何一边漂移都会让系统边界失效。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="file-interface-as-system-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="llm-output-reliability-evidence-constraints">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">大语言模型 / 软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>LLM 输出可靠性与证据约束</h3>
+              <p>LLM Output Reliability and Evidence Constraints</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">没有提交证据就不能推断提交内容，只有 ref 变化就不能确认文件变更。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>大模型擅长把零散信息组织成通顺文本，也可能把不确定信息说得很确定。</li>
+                <li>commit 是强证据，ref 变化是弱证据，工作区草稿是待确认线索，不能互相升级。</li>
+                <li>可靠性不靠模型自觉，而靠提示词、脚本、文档和测试共同设置证据边界。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="llm-output-reliability-evidence-constraints" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="git-commit-as-single-change-fact-source">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>Git commit 作为唯一变更事实源</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>我们可以把 Git 仓库想象成一个不断变化的现场。现场里有很多东西看起来都变了：某个文件被修改了，某个新文件出现在未跟踪目录里，某个 ref 指针从旧 SHA 变成新 SHA。但这些“看起来变了”并不一定都能成为结论依据。Git commit 是 Git 中已经封存的一条历史记录，它通常包含提交时间、作者、提交说明、文件变更等信息，可以被读取、被验证、被归属到某个检查窗口。所谓 Git commit 作为唯一变更事实源，就是系统只把已经进入 commit 的变更当作“已确认事实”，其他东西都只能作为线索。这个口径非常重要，因为它让结论变得可追溯。工作区草稿可能只是半成品，ref 变化可能只是远端指针移动，未跟踪文件可能只是临时实验；而 commit 至少说明有人把一组变更正式写入了历史。对于自动化总结来说，事实源越窄，结论越不容易跑偏。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>Git commit 是已封存的历史记录，包含可读取、可验证、可归属时间的变更信息。</li>
+                <li>ref 变化、工作区修改和未跟踪文件都属于现场线索，不能直接证明已确认变更。</li>
+                <li>把事实源收窄到 commit，可以让报告中的每条结论都追溯到具体提交。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设监控发现 sliceV2 的 refs/heads/main 历史 SHA 与当前 SHA 不同，但当天只读取 ref 元数据，不下载提交对象、文件树或 diff。可靠写法是“远端 main 指针发生变化，提交级内容待确认”，不能写“sliceV2 当天修改了某个文件”或“完成了某功能”。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把“看到变化”直接当成“确认变化”，例如看到远端 ref SHA 变了就认为一定新增了某个功能。</li>
+                <li>把目标日期直接等同于所有相关变化的发生时间，忽略提交窗口、读取失败和待确认状态。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>Git SHA 对象标识与 ref 比较</td><td>ref 比较只能判断指针是否移动，commit 事实源提供指针背后可确认的变更内容。</td></tr>
+                <tr><td>提交事实与工作区线索的证据分层</td><td>只有排除未提交、未跟踪和工作区状态后，commit 才能成为唯一可确认变更事实源。</td></tr>
+                <tr><td>LLM 输出可靠性与证据约束</td><td>事实源越明确，大模型生成总结时越不容易把弱线索说成已完成工作。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果一个提交跨越检查窗口边界，应该如何决定它属于哪个目标日期？</li>
+                <li>如果远端 ref 变化但没有提交对象，报告应该使用 changed、pending_commit_detail 还是 unknown？</li>
+                <li>如何设计字段同时表达 commit 已确认、ref 已变化、工作区有草稿三种不同证据等级？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="file-interface-as-system-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>文件接口作为系统边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>一个 Agent 系统看起来可能只是一段提示词加一个脚本，但真正稳定运行时需要多个文件共同配合。提示词文件约束 Agent 应该怎么说、不能说什么；脚本决定实际流程如何执行；架构文档和任务文档说明系统为什么这样设计、任务边界在哪里；测试文件验证行为是否符合预期。这里可以把“文件接口”理解成：每个文件都承担一种接口职责，合在一起定义了系统的能力、限制和验证方式。如果只改提示词，不更新脚本或测试，系统可能出现“嘴上说得很严，实际执行没跟上”的漂移。如果只改脚本，不更新文档，后来的人就不知道边界为什么变了。如果只改测试，不更新提示词，测试可能验证了一个没人真正要求的规则。因此，文件接口作为系统边界，强调的是多文件一致性：提示词、脚本、文档、测试要共同表达同一套规则。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>每个文件承担一种接口职责，共同定义系统能力、限制和验证方式。</li>
+                <li>提示词、脚本、文档和测试必须同步表达同一套边界，否则会出现行为漂移。</li>
+                <li>文件接口把抽象规则变成可检查、可维护、可回归的系统约束。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设每日总结 Agent 的提示词要求“没有窗口内 commit 就不能写完成项”，脚本也确实只读取窗口内 commit，测试也构造了无 commit 场景并断言输出不能包含完成项。这时文件接口是一致的。如果提示词后来改成“可以补充本地草稿”，但脚本仍然只读取 commit，测试仍然只验证 commit，就会形成边界漂移：模型可能想补充草稿，但系统证据源并不支持。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为文档只是说明，不参与系统行为，或者认为测试只是附属产物。</li>
+                <li>认为只要核心脚本改了，系统边界就自动更新了，忽略提示词、文档和测试的同步。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>提示词工程与任务约束设计</td><td>提示词是文件接口中约束大模型输出语言和证据范围的一部分。</td></tr>
+                <tr><td>测试作为行为契约与回归验证</td><td>测试把文件接口中的行为约定变成可执行、可回归的验证对象。</td></tr>
+                <tr><td>Agent 工作流与任务编排</td><td>文件接口承载了工作流各阶段的输入、输出和边界说明。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当提示词、脚本和测试不一致时，应该以哪个文件为权威来源？</li>
+                <li>如何为 Agent 文件接口设计一致性检查，自动发现 prompt 与测试覆盖范围漂移？</li>
+                <li>如果新增一个任务阶段，应该同步修改哪些文件才算完成边界扩展？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="llm-output-reliability-evidence-constraints">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 大语言模型 / 软件工程</p>
+                <h3>LLM 输出可靠性与证据约束</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>大语言模型很擅长把零散信息组织成通顺文本，但这也带来一个风险：它可能会把不确定信息说得很确定。比如只看到 ref 变化，它可能自动补全成“完成了某功能”；只看到工作区草稿，它可能自动补全成“当天推进了某任务”。LLM 输出可靠性不是简单要求模型“更聪明”，而是要给模型设置证据约束：哪些证据可以支持结论，哪些证据只能作为线索，哪些内容必须标注为待确认。只读 git ls-remote 只能证明 ref 指针变化，不能证明提交数量、提交信息、作者、文件列表或 diff；工作区状态不采集，就不能把草稿写成已完成工作。证据约束的意义，就是让大模型的输出像有引用来源的报告，而不是没有边界的自由发挥。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>大模型会把弱证据包装成通顺事实，因此必须明确证据等级和可推断范围。</li>
+                <li>输入证据、脚本过滤、文档边界和测试断言共同构成输出约束。</li>
+                <li>每条结论都应能追溯到可确认证据，证据不足时应标注待确认或拒绝补全。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设输入中只有 sliceV2 的 refs/heads/main 历史 SHA 与当前 SHA 不同，但没有提交对象、提交日志、文件树或 diff。可靠输出应写“远端 main 指针发生变化，提交级内容未确认”；不可靠输出会写“sliceV2 当天完成某功能”或“修改了某文件”。如果输入中还有窗口内 commit、文件列表和 diff 摘要，才可以写具体变更，并最好附带 commit 标识作为证据引用。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为只要在提示词里写“不要编造”，大模型输出就可靠了。</li>
+                <li>认为输出流畅就等于可靠，忽略通顺文本可能只是把弱证据包装得更像事实。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>Git commit 作为唯一变更事实源</td><td>commit 事实源为大模型输出提供了可确认的证据上限。</td></tr>
+                <tr><td>文件接口作为系统边界</td><td>提示词、脚本、文档和测试共同把证据约束变成可执行系统规则。</td></tr>
+                <tr><td>证据边界与可确认事实分层</td><td>大模型必须区分已确认事实、待确认线索和不可推断内容，避免把弱证据升级成强结论。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何为 LLM 输出设计证据引用字段，让每个结论都能追溯到 commit SHA、ref 状态或人工确认记录？</li>
+                <li>当 Agent 自己生成的日报提交进入监控输入时，应如何排除、标记或单独审计？</li>
+                <li>如何测试 LLM 在证据不足时是否会拒绝补全，而不是生成看似合理的总结？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念分别回答什么可以作为事实、系统边界由什么承载、大模型输出如何不越界。Git commit 作为唯一变更事实源解决事实选择问题；文件接口作为系统边界解决约束承载问题；LLM 输出可靠性与证据约束解决输出可信问题。三者形成递进关系：先限定事实源，再让文件接口把规则变成可执行系统，最后让大模型在边界内生成可靠总结。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">弱证据只能支持弱结论，强结论必须依赖可验证的提交事实。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如果一个提交跨越检查窗口边界，应该如何决定它属于哪个目标日期？</li>
+            <li>当远端 ref 变化但没有提交对象时，报告应使用 changed、pending_commit_detail 还是 unknown？</li>
+            <li>如何为 LLM 输出设计证据引用字段，让每条结论都能追溯到 commit SHA、ref 状态或人工确认记录？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
