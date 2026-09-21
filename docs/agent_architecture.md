@@ -22,7 +22,7 @@ Agent 位于 `agents/`，每个 Agent 都是可单独运行的脚本。Orchestra
 1. `daily_work_summary`
    - 扫描 `config.repositories` 中的本地仓库。
    - 扫描 `config.remote_repositories` 中的远端仓库变化线索。
-   - 收集当日提交、未提交变更、本地分支、worktree 证据。
+   - 只收集检查窗口内的 Git commit 及其文件变更；未提交变更和 worktree 工作区状态不作为依据。
    - 对远端仓库配置的 URL 执行 `git ls-remote`，支持 SSH Git 和 HTTP(S) Git，任一 URL 成功即可确认 ref 当前 SHA。
    - 输出 `prework/YYYY-MM/YYYY-MM-DD/work_summary_[repo].md`。
 

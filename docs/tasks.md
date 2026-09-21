@@ -6,8 +6,8 @@
 
 - [x] 第 1 步 Agent：读取每日 Git change，生成 `prework/YYYY-MM/YYYY-MM-DD/work_summary_[reponame].md`。
   - 覆盖存在目标日期提交的情况。
-  - 覆盖无提交但工作区存在未提交变更的情况。
-  - 覆盖主路径无变化，但其他本地 branch 或 worktree 存在提交/变更的情况。
+  - 无提交时按无变更处理，即使工作区存在未暂存、已暂存或未跟踪文件。
+  - 覆盖其他本地 branch 或 worktree 的可达提交，不采集工作区未提交变化。
 - [x] 第 2 步 Agent：读取 6 个 `work_summary_*.md`，生成 `concept_relevance.md`。
 - [x] 第 3 步集成：把现有 `scripts/generate_knowledge_explaination.py` 接入统一 runner。
 - [x] 第 4 步 Agent：读取 `knowledge_explaination.md`，生成 HTML 日报并更新两个 manifest。

@@ -74,14 +74,6 @@ class ChangeIgnoreRules:
 
 
 @dataclass
-class WorktreeInfo:
-    path: Path
-    branch: str
-    head: str
-    status: list[str]
-
-
-@dataclass
 class SummaryEvidence:
     markdown: str
     has_confirmed_commits: bool
@@ -93,15 +85,7 @@ class SummaryEvidence:
 
     @property
     def should_call_llm(self) -> bool:
-        return any(
-            (
-                self.has_confirmed_commits,
-                self.has_primary_uncommitted_changes,
-                self.has_branch_tip_changes,
-                self.has_worktree_candidate_changes,
-                self.has_remote_ref_changes,
-            )
-        )
+        return self.has_confirmed_commits or self.has_remote_ref_changes
 
 
 def parse_args() -> argparse.Namespace:
@@ -314,35 +298,6 @@ def current_branch(path: Path) -> str:
     return f"detached@{result.stdout.strip()}" if result.returncode == 0 else "未知"
 
 
-def git_status(path: Path) -> list[str]:
-    result = run_git(path, ["status", "--short"])
-    if result.returncode != 0:
-        return [f"[读取失败] {result.stderr.strip()}"]
-    return [line for line in result.stdout.splitlines() if line.strip()]
-
-
-def diff_name_status(path: Path, cached: bool) -> list[str]:
-    args = ["diff", "--name-status"]
-    if cached:
-        args.insert(1, "--cached")
-    result = run_git(path, args)
-    if result.returncode != 0:
-        return [f"[读取失败] {result.stderr.strip()}"]
-    return [line for line in result.stdout.splitlines() if line.strip()]
-
-
-def diff_stat(path: Path, cached: bool, paths: list[str] | None = None) -> str:
-    args = ["diff", "--stat"]
-    if cached:
-        args.insert(1, "--cached")
-    if paths is not None:
-        if not paths:
-            return ""
-        args.extend(["--", *paths])
-    result = run_git(path, args)
-    return result.stdout.strip() if result.returncode == 0 else result.stderr.strip()
-
-
 def publish_commit_prefixes(config: dict) -> tuple[str, ...]:
     configured = ((config.get("publish") or {}).get("commit_message") or "").strip()
     prefixes = ["Publish daily learning report"]
@@ -409,13 +364,6 @@ def change_paths_from_name_status(line: str) -> list[str]:
     return [normalize_git_path(line)]
 
 
-def change_paths_from_status(line: str) -> list[str]:
-    path_text = line[3:] if len(line) > 3 else line
-    if " -> " in path_text:
-        return [normalize_git_path(part) for part in path_text.split(" -> ", 1)]
-    return [normalize_git_path(path_text)]
-
-
 def path_matches_publish_artifact(path_text: str, rules: ChangeIgnoreRules) -> bool:
     normalized = normalize_git_path(path_text)
     return normalized in rules.exact_paths or any(normalized.startswith(prefix) for prefix in rules.path_prefixes)
@@ -434,20 +382,6 @@ def should_ignore_publish_commit(commit: CommitInfo, rules: ChangeIgnoreRules) -
     for line in commit.files:
         changed_paths.extend(change_paths_from_name_status(line))
     return all_paths_match_publish_artifacts(changed_paths, rules)
-
-
-def filter_publish_artifact_lines(lines: list[str], rules: ChangeIgnoreRules, path_parser) -> tuple[list[str], list[str]]:
-    if not rules.enabled:
-        return lines, []
-    kept: list[str] = []
-    ignored: list[str] = []
-    for line in lines:
-        paths = path_parser(line)
-        if all_paths_match_publish_artifacts(paths, rules):
-            ignored.append(line)
-        else:
-            kept.append(line)
-    return kept, ignored
 
 
 def parse_commits(raw: str) -> list[tuple[str, str, str, str, str, str]]:
@@ -486,71 +420,6 @@ def collect_commits(path: Path, start: datetime, end: datetime) -> list[CommitIn
         stat = stat_result.stdout.strip() if stat_result.returncode == 0 else stat_result.stderr.strip()
         commits.append(CommitInfo(full_hash, short_hash, date, author, refs, subject, files, stat))
     return commits
-
-
-def collect_recent_branch_tips(path: Path, start: datetime, end: datetime, rules: ChangeIgnoreRules) -> list[str]:
-    result = run_git(path, ["for-each-ref", "refs/heads", "--format=%(refname:short)%09%(objectname:short)%09%(committerdate:iso-strict)%09%(subject)"])
-    if result.returncode != 0:
-        return [f"[读取失败] {result.stderr.strip()}"]
-
-    branch_lines: list[str] = []
-    for line in result.stdout.splitlines():
-        parts = line.split("\t", 3)
-        if len(parts) != 4:
-            continue
-        name, head, date_text, subject = parts
-        try:
-            tip_date = datetime.fromisoformat(date_text)
-        except ValueError:
-            continue
-        if rules.enabled and any(subject.startswith(prefix) for prefix in rules.commit_subject_prefixes):
-            continue
-        if start <= tip_date < end:
-            branch_lines.append(f"- `{name}` @ `{head}` ({date_text})：{subject}")
-    return branch_lines
-
-
-def parse_worktree_blocks(raw: str) -> list[dict[str, str]]:
-    blocks: list[dict[str, str]] = []
-    current: dict[str, str] = {}
-    for line in raw.splitlines():
-        if not line.strip():
-            if current:
-                blocks.append(current)
-                current = {}
-            continue
-        key, _, value = line.partition(" ")
-        if key == "worktree" and current:
-            blocks.append(current)
-            current = {}
-        current[key] = value
-    if current:
-        blocks.append(current)
-    return blocks
-
-
-def collect_worktrees(path: Path, rules: ChangeIgnoreRules) -> list[WorktreeInfo]:
-    result = run_git(path, ["worktree", "list", "--porcelain"])
-    if result.returncode != 0:
-        return [WorktreeInfo(path, "读取失败", "", [result.stderr.strip()])]
-
-    worktrees: list[WorktreeInfo] = []
-    for block in parse_worktree_blocks(result.stdout):
-        wt_path = Path(block.get("worktree", "")).expanduser()
-        if not wt_path.exists():
-            continue
-        branch_ref = block.get("branch", "")
-        branch = branch_ref.removeprefix("refs/heads/") if branch_ref else "detached"
-        head = block.get("HEAD", "")
-        status, _ = filter_publish_artifact_lines(git_status(wt_path), rules, change_paths_from_status)
-        worktrees.append(WorktreeInfo(wt_path, branch, head[:12], status))
-    return worktrees
-
-
-def render_list(items: list[str], empty_text: str) -> str:
-    if not items:
-        return empty_text
-    return "\n".join(f"- `{item}`" for item in items)
 
 
 def render_commit(commit: CommitInfo) -> str:
@@ -616,13 +485,6 @@ def build_summary_evidence(repo: RepositoryConfig, target_date: str, start: date
         commits = collect_commits(path, start, end)
         ignored_commits = [commit for commit in commits if should_ignore_publish_commit(commit, ignore_rules)]
         commits = [commit for commit in commits if not should_ignore_publish_commit(commit, ignore_rules)]
-        branch_tips = collect_recent_branch_tips(path, start, end, ignore_rules)
-        worktrees = collect_worktrees(path, ignore_rules)
-        status, ignored_status = filter_publish_artifact_lines(git_status(path), ignore_rules, change_paths_from_status)
-        unstaged, ignored_unstaged = filter_publish_artifact_lines(diff_name_status(path, cached=False), ignore_rules, change_paths_from_name_status)
-        staged, ignored_staged = filter_publish_artifact_lines(diff_name_status(path, cached=True), ignore_rules, change_paths_from_name_status)
-        unstaged_stat = diff_stat(path, cached=False, paths=[path for line in unstaged for path in change_paths_from_name_status(line)])
-        staged_stat = diff_stat(path, cached=True, paths=[path for line in staged for path in change_paths_from_name_status(line)])
     except RuntimeError as exc:
         markdown = f"""# {target_date} {repo.name} 更改总结
 
@@ -641,78 +503,17 @@ def build_summary_evidence(repo: RepositoryConfig, target_date: str, start: date
 """
         return SummaryEvidence(markdown, False, False, False, False, "unavailable")
 
-    ignored_note_lines = []
-    if ignore_rules.enabled:
-        ignored_count = len(ignored_commits) + len(ignored_status) + len(ignored_unstaged) + len(ignored_staged)
-        if ignored_count:
-            ignored_note_lines.append(
-                f"- 已忽略自身自动发布日报产生的 Git 变更：{len(ignored_commits)} 个自动发布提交，"
-                f"{len(ignored_status)} 条工作区状态，{len(ignored_staged)} 条已暂存记录，{len(ignored_unstaged)} 条未暂存记录。"
-            )
-    ignored_note = "\n".join(ignored_note_lines)
-
-    changed_worktrees = [wt for wt in worktrees if wt.status]
-    primary_clean = not status
-    has_branch_or_worktree_change = bool(branch_tips or changed_worktrees)
-
-    if not commits and not status and not has_branch_or_worktree_change:
-        markdown = f"""# {target_date} {repo.name} 更改总结
+    ignored_note = (
+        f"- 已忽略自身自动发布日报产生的 {len(ignored_commits)} 个提交。"
+        if ignored_commits else ""
+    )
+    headline = f"检查窗口内发现 {len(commits)} 个提交。" if commits else "当日无变更：检查窗口内无符合条件的 Git 提交。"
+    commit_section = "\n".join(render_commit(commit) for commit in commits) or "检查窗口内无符合条件的 Git 提交。"
+    markdown = f"""# {target_date} {repo.name} 更改总结
 
 ## 结论
 
-当日无变更。
-
-## 基本信息
-
-| 项目 | 内容 |
-| --- | --- |
-| 仓库 | `{repo.name}` |
-| 路径 | `{path}` |
-| 当前分支 | `{current_branch(path)}` |
-| 检查窗口 | {checked_window} |
-| 窗口内提交数 | 0 |
-| 主工作区状态 | 干净 |
-| 存在待确认变化线索的 worktree 数 | 0 |
-
-## 对后续概念提炼任务的备注
-
-- 该仓库在检查窗口内无 Git 提交。
-- 主工作区无未提交变更。
-- 未发现窗口内更新的本地分支或包含待确认变化线索的 worktree。
-- 后续概念提炼可将该仓库视为“当日无新增技术线索”。
-{ignored_note}
-"""
-        return SummaryEvidence(markdown, False, False, False, False, "no_change")
-
-    if commits:
-        headline = f"检查窗口内发现 {len(commits)} 个提交。"
-    elif status:
-        headline = "检查窗口内未发现提交，但主工作区存在未提交变更。"
-    elif has_branch_or_worktree_change:
-        headline = "主路径无未提交变更，但其他 branch 或 worktree 存在待确认变化线索。"
-    else:
-        headline = "检查窗口内未发现提交，主路径、分支提示和 worktree 均未发现明确变化。"
-
-    commit_section = "\n".join(render_commit(commit) for commit in commits) if commits else "检查窗口内未发现任何本地分支可达的提交。"
-    branch_section = "\n".join(branch_tips) if branch_tips else "未发现 tip 时间落在检查窗口内的本地分支。"
-
-    worktree_lines = []
-    for wt in worktrees:
-        state = "存在当前待确认变化线索" if wt.status else "干净"
-        worktree_lines.append(f"### `{wt.branch}` @ `{wt.head}`")
-        worktree_lines.append(f"- 路径：`{wt.path}`")
-        worktree_lines.append(f"- 状态：{state}")
-        if wt.status:
-            worktree_lines.append("")
-            worktree_lines.append(render_list(wt.status, "无未提交变更。"))
-        worktree_lines.append("")
-    worktree_section = "\n".join(worktree_lines).strip() or "未读取到 worktree 信息。"
-
-    themes = infer_theme_lines(commits, status, branch_tips, changed_worktrees)
-
-    markdown = f"""# {target_date} {repo.name} 更改总结
-
-本总结由本地第 1 步 Agent 基于 Git 证据生成。目标日期为 `{target_date}`，实际检查的是目标日期前一天的提交窗口。
+{headline}
 
 ## 提交概览
 
@@ -723,78 +524,34 @@ def build_summary_evidence(repo: RepositoryConfig, target_date: str, start: date
 | 当前分支 | `{current_branch(path)}` |
 | 检查窗口 | {checked_window} |
 | 窗口内提交数 | {len(commits)} |
-| 主工作区状态 | {"干净" if primary_clean else "存在未提交变更"} |
-| 存在待确认变化线索的 worktree 数 | {len(changed_worktrees)} |
-
-{headline}
+| 监测依据 | Git commit（所有本地可达引用及 HEAD） |
 
 ## 一、窗口内提交记录
 
 {commit_section}
 
-## 二、主工作区未提交变更
+## 二、主要工作主题
 
-### 状态摘要
+{infer_theme_lines(commits)}
 
-{render_list(status, "主工作区当前无未提交变更。")}
+## 三、可能涉及的知识点线索
 
-### 已暂存文件
+{infer_concept_lines(commits)}
 
-{render_list(staged, "无已暂存变更。")}
+## 四、对后续概念提炼任务的备注
 
-### 未暂存文件
-
-{render_list(unstaged, "无未暂存变更。")}
-
-### 已暂存统计
-
-```text
-{staged_stat or "无"}
-```
-
-### 未暂存统计
-
-```text
-{unstaged_stat or "无"}
-```
-
-## 三、分支与 worktree 线索
-
-### 检查窗口内更新的本地分支
-
-{branch_section}
-
-### Worktree 状态（当前待确认变化线索）
-
-{worktree_section}
-
-## 四、主要工作主题
-
-{themes}
-
-## 五、可能涉及的知识点线索
-
-{infer_concept_lines(commits, status, branch_tips, changed_worktrees)}
-
-## 六、对后续概念提炼任务的备注
-
-- 本文件只基于 Git 提交、工作区状态、分支和 worktree 元数据生成。
-- Git 无法可靠证明未提交变更发生的具体日期，因此 worktree 未提交变更只作为“当前待确认变化线索”，不要等同于目标窗口内已经完成的提交事实。
-- 如果主路径无变化但 branch 或 worktree 有待确认变化线索，后续任务应优先关注对应分支/worktree 的提交主题和文件路径，并在必要时人工确认时间归属。
+- 实际检查目标日期前一天的 Git commit；文件列表和统计仅来自这些提交。
+- 未暂存、已暂存但未提交、未跟踪文件及 worktree 工作区状态不采集，不作为变化或知识点依据。
+- 无符合条件的提交时，该仓库无新增技术线索；不从历史提交补造当日变化。
 {ignored_note}
 """
-    if commits:
-        evidence_type = "confirmed_change"
-    else:
-        evidence_type = "candidate_change"
-
     return SummaryEvidence(
         markdown=markdown,
         has_confirmed_commits=bool(commits),
-        has_primary_uncommitted_changes=bool(status),
-        has_branch_tip_changes=bool(branch_tips),
-        has_worktree_candidate_changes=bool(changed_worktrees),
-        evidence_type=evidence_type,
+        has_primary_uncommitted_changes=False,
+        has_branch_tip_changes=False,
+        has_worktree_candidate_changes=False,
+        evidence_type="confirmed_change" if commits else "no_change",
     )
 
 
@@ -1087,38 +844,14 @@ def build_remote_summary_evidence(remote: RemoteRepositoryConfig, target_date: s
     )
 
 
-def infer_theme_lines(
-    commits: list[CommitInfo],
-    status: list[str],
-    branch_tips: list[str],
-    changed_worktrees: list[WorktreeInfo],
-) -> str:
-    lines: list[str] = []
-    if commits:
-        subjects = "; ".join(commit.subject for commit in commits[:8])
-        lines.append(f"- 提交主题：{subjects}")
-    if status:
-        lines.append("- 主工作区存在未提交变更，需要后续确认这些变更是否属于当天正式工作。")
-    if branch_tips:
-        lines.append("- 有本地分支 tip 落在检查窗口内，说明工作可能发生在非当前分支。")
-    if changed_worktrees:
-        names = ", ".join(wt.branch for wt in changed_worktrees)
-        lines.append(f"- 有 worktree 存在当前待确认变化线索：{names}。")
-    if not lines:
-        lines.append("- 未发现明确工作主题。")
-    return "\n".join(lines)
+def infer_theme_lines(commits: list[CommitInfo]) -> str:
+    if not commits:
+        return "- 未发现明确工作主题。"
+    return "- 提交主题：" + "; ".join(commit.subject for commit in commits[:8])
 
 
-def infer_concept_lines(
-    commits: list[CommitInfo],
-    status: list[str],
-    branch_tips: list[str],
-    changed_worktrees: list[WorktreeInfo],
-) -> str:
-    paths = []
-    for commit in commits:
-        paths.extend(commit.files)
-    paths.extend(status)
+def infer_concept_lines(commits: list[CommitInfo]) -> str:
+    paths = [line for commit in commits for line in commit.files]
 
     lower_blob = "\n".join(paths + [commit.subject for commit in commits]).lower()
     concepts: list[str] = []
@@ -1138,13 +871,6 @@ def infer_concept_lines(
     for keyword, concept in keyword_map:
         if keyword in lower_blob and concept not in concepts:
             concepts.append(concept)
-
-    if branch_tips:
-        concepts.append("分支隔离、并行开发")
-    if changed_worktrees:
-        concepts.append("Git worktree、多工作区协作")
-    if status and not commits:
-        concepts.append("未提交变更管理、工作区状态审计")
 
     if not concepts:
         return "- 未发现明确知识点线索。"
@@ -1182,9 +908,9 @@ def build_llm_prompt(repo: RepositoryConfig, target_date: str, evidence_markdown
 重要边界：
 - 只能基于证据草稿中可确认的信息总结，不要编造提交内容、文件变化或技术意图。
 - “窗口内提交记录”是目标日期前一天的已确认提交事实。
-- “主工作区未提交变更”和“worktree 状态”只能作为当前待确认变化线索；Git 不能证明它们一定发生在目标日期前一天，因此不要写成已经完成的昨日事实。
+- 本地仓库只总结窗口内 Git commit；禁止将未暂存、已暂存但未提交、未跟踪文件或 worktree 工作区状态作为变化或概念依据。
 - 如果证据来自远端仓库监控，只能说明远端 ref 指针是否变化；不能编造提交详情、作者、文件列表、diff 或新增提交数量。
-- 如果没有提交，也要保留“无提交记录”的结论；如果只有待确认变化线索，要明确标注“待确认”。
+- 如果没有提交，保留“无提交记录”的结论，不补充历史工作或未提交变化。
 - 输出必须是完整 Markdown 文件内容，不要输出 JSON，不要包裹 markdown 代码块。
 - 文件应包含：仓库名称、日期、当日提交概览、关键文件变更、主要工作主题、可能涉及的知识点线索、对后续概念提炼任务有帮助的备注。
 - 语气清晰、可复盘，不要只写流水账；但所有推断都必须能从证据草稿找到依据。
@@ -1210,8 +936,6 @@ def generate_llm_summary(
     content = strip_markdown_fence(call_llm(llm, prompt, timeout, retries, retry_delay))
     if not content.strip():
         raise RuntimeError("LLM 返回空内容。")
-    if "待确认" not in content and "worktree" in evidence.lower():
-        content += "\n\n## 自动校验备注\n\n- 证据草稿包含 worktree 信息；其中未提交变更只能视为当前待确认变化线索，不应等同于目标窗口内的提交事实。\n"
     return content.rstrip() + "\n"
 
 
