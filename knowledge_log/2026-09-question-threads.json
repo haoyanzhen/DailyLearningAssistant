@@ -3,6 +3,96 @@
   "year_month": "2026-09",
   "threads": [
     {
+      "id": "2026-09-23-ref-ee2c28a924",
+      "question": "在只读 git ls-remote 场景下，什么证据才能把远端 ref 状态写成 changed 而不是 changed_clue？",
+      "source_date": "2026-09-23",
+      "source_concept": "本地引用名称与远端 ref 变化的证据边界",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-23T06:19:17.818432+08:00",
+      "updated_at": "2026-09-23T06:19:17.818432+08:00"
+    },
+    {
+      "id": "2026-09-23-ref-9301edf9b2",
+      "question": "如何设计报告字段，把本地引用指向、远端 ref 当前 SHA 和远端 ref 历史 SHA 分开记录？",
+      "source_date": "2026-09-23",
+      "source_concept": "本地引用名称与远端 ref 变化的证据边界",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-23T06:19:17.818432+08:00",
+      "updated_at": "2026-09-23T06:19:17.818432+08:00"
+    },
+    {
+      "id": "2026-09-23-ref-7d713ce543",
+      "question": "当本地 main、origin/main 和 origin/HEAD 指向同一 SHA 时，如何避免误写成远端推送成功？",
+      "source_date": "2026-09-23",
+      "source_concept": "本地引用名称与远端 ref 变化的证据边界",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-23T06:19:17.818432+08:00",
+      "updated_at": "2026-09-23T06:19:17.818432+08:00"
+    },
+    {
+      "id": "2026-09-23-concept-aa44182c92",
+      "question": "如何设计阶段完成状态字段，把 docs 状态、资产包提交、工具提交和审查结果绑定到同一阶段？",
+      "source_date": "2026-09-23",
+      "source_concept": "文档状态与资产交付同步",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-09-23T06:19:17.818432+08:00",
+      "updated_at": "2026-09-23T06:19:17.818432+08:00"
+    },
+    {
+      "id": "2026-09-23-concept-49344ee337",
+      "question": "角色资产包从生成到交付的最小完整集合应包含哪些目录和审查文件？",
+      "source_date": "2026-09-23",
+      "source_concept": "角色资产包作为交付单元",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-09-23T06:19:17.818432+08:00",
+      "updated_at": "2026-09-23T06:19:17.818432+08:00"
+    },
+    {
+      "id": "2026-09-23-concept-3e88ffc156",
+      "question": "如何把 AGENTS.md 这类待确认协作文件与已确认文档状态分开标注，避免把文件修改误写成规则生效？",
+      "source_date": "2026-09-23",
+      "source_concept": "文档状态与资产交付同步",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-09-23T06:19:17.818432+08:00",
+      "updated_at": "2026-09-23T06:19:17.818432+08:00"
+    },
+    {
+      "id": "2026-09-23-concept-2b597a4684",
+      "question": "如果某个角色资产包缺少 processed/ 或 qa/ 目录，契约检查应输出哪些结构化缺失项？",
+      "source_date": "2026-09-23",
+      "source_concept": "角色资产包作为交付单元",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-09-23T06:19:17.818432+08:00",
+      "updated_at": "2026-09-23T06:19:17.818432+08:00"
+    },
+    {
+      "id": "2026-09-23-concept-226e2e3cf7",
+      "question": "当文档写 phase two art completion 但某个角色包审查未通过时，系统应如何表达部分完成？",
+      "source_date": "2026-09-23",
+      "source_concept": "文档状态与资产交付同步",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-09-23T06:19:17.818432+08:00",
+      "updated_at": "2026-09-23T06:19:17.818432+08:00"
+    },
+    {
+      "id": "2026-09-23-concept-13f8d57a0f",
+      "question": "当多个角色资产包在同一提交中批量交付时，如何定位单个角色的失败原因？",
+      "source_date": "2026-09-23",
+      "source_concept": "角色资产包作为交付单元",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-09-23T06:19:17.818432+08:00",
+      "updated_at": "2026-09-23T06:19:17.818432+08:00"
+    },
+    {
       "id": "2026-09-22-llm-f7434196bc",
       "question": "如何为 LLM 输出设计证据引用字段，让每个结论都能追溯到 commit SHA、ref 状态或人工确认记录？",
       "source_date": "2026-09-22",

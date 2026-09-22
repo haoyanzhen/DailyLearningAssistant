@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-09/2026-09-23-learning-report.html">2026-09-23</a>
+      </td>
+      <td>角色资产包作为交付单元</td>
+      <td>软件工程</td>
+      <td>★★</td>
+      <td>角色资产包作为交付单元，就是让一个角色的概念图、战斗素材、动画帧、UI、特效、配置和审查记录按固定目录组成一个完整交付物。</td>
+      <td>下一次可以讲角色资产包契约 schema：用 JSON 定义每个角色必须包含哪些目录、文件、配置和审查状态，并让检查脚本输出 missing_file、missing_review、naming_violation 等结构化失败原因。</td>
+    </tr>
+    <tr>
+      <td>本地引用名称与远端 ref 变化的证据边界</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★</td>
+      <td>本地引用名称与远端 ref 变化的证据边界，就是把 origin/main 等引用名称指向某个 SHA 只当作指向关系证据，而不是远端 ref 在检查窗口内变化的证据。</td>
+      <td>下一次可以讲 ref 证据分级报告字段：local_ref_points_to、remote_ref_current_sha、remote_ref_baseline_sha、remote_ref_change_status 和 push_evidence 如何组合，并避免把本地引用名写成远端变化。</td>
+    </tr>
+    <tr>
+      <td>文档状态与资产交付同步</td>
+      <td>软件工程</td>
+      <td>★★★★</td>
+      <td>文档状态与资产交付同步，就是让文档中的阶段完成状态、角色资产包提交和工具管线提交相互对齐，共同构成可追溯的阶段完成证据。</td>
+      <td>下一次可以讲阶段完成状态机：pending_art、assets_submitted、tools_unified、docs_updated、review_passed 如何由提交、审查文件和文档状态共同驱动，并处理部分完成与审查未通过的情况。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-09/2026-09-22-learning-report.html">2026-09-22</a>
       </td>
       <td>Git commit 作为唯一变更事实源</td>
