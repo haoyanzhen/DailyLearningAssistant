@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-09-24 学习笔记日报</title>
+    <meta name="description" content="今日围绕无变更复习日，梳理状态词证据条件、多源字段正交化与契约失败状态空间，形成可审计证据链。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260924-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-09-24</p>
+        <h1>2026-09-24 无变更复习日：证据条件、字段正交与状态空间</h1>
+        <p>今天没有新增提交，但围绕 unchanged 的证据条件、字段正交化和契约状态空间，把无变化写成可审计结论。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>把无变化写成有证据支撑的状态</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>监控状态词与证据条件的绑定…</strong>
+                <small>没读到不是没变化，第一次记录不是新…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>多源证据字段正交化</strong>
+                <small>一个字段只说一类证据，多个指针相同…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>契约失败类型的状态空间设计</strong>
+                <small>失败不是只有一个 fail，而是让…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念共同构成一条可审计证据链：先决定什么证据才能支撑什么状态词，再用正交字段把不同来源的证据分开记录，最后用互斥状态空间表达复杂检查中的不同失败原因。它们不是今天新增的工程事实，而是对证据边界主题的复习延展。这条主线从 Git 监控场景出发，也可以迁移到契约检查和 LLM 输出审查：只要系统要输出结论，就需要明确证据条件、字段边界和状态含义。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["把无变化写成有证据支撑的状态"])
+  concept1["监控状态词与证据条件的绑定规则"]
+  hub --&gt; concept1
+  concept2["多源证据字段正交化"]
+  hub --&gt; concept2
+  concept3["契约失败类型的状态空间设计"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["把无变化写成有证据支撑的状态"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept2
+  concept3 --&gt; concept1
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="monitoring-status-evidence-binding">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>监控状态词与证据条件的绑定规则</h3>
+              <p>Status-Evidence Binding Rules</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">没读到不是没变化，第一次记录不是新增，状态词必须有证据门槛。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>unchanged 需要当前读取成功、存在历史基线、当前 SHA 与历史 SHA 相同三个条件同时成立。</li>
+                <li>changed 需要明确指针变化证据；只有弱线索时，应写成 changed_clue 或 pending_commit_detail。</li>
+                <li>unknown 或 read_failed 用于读取失败，baseline_created 只表示建立参照点，不表示仓库发生变化。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="monitoring-status-evidence-binding" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="orthogonal-evidence-fields">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>多源证据字段正交化</h3>
+              <p>Orthogonal Evidence Fields</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">一个字段只说一类证据，多个指针相同不等于推送成功。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>每个字段只负责一类证据，类似坐标轴，避免混合不同来源的事实。</li>
+                <li>local_ref_points_to、remote_ref_current_sha、remote_ref_baseline_sha、workspace_clues、push_evidence 应分开记录。</li>
+                <li>字段正交化后，状态词可由明确字段计算，而不是由自然语言总结猜测。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="orthogonal-evidence-fields" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="contract-failure-state-space">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>契约失败类型的状态空间设计</h3>
+              <p>Contract Failure State Space</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">失败不是只有一个 fail，而是让下游知道问题发生在哪一层。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>fail 太粗，需要拆成 check_not_run、missing_file、invalid_field、empty_directory、needs_review、manual_review_passed 等状态。</li>
+                <li>状态必须互斥，检查没运行不能写成文件缺失，字段格式错误不能写成检查未运行。</li>
+                <li>每个状态都要可追溯，能回答依据目录扫描、文件解析、检查运行记录还是人工确认。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="contract-failure-state-space" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="monitoring-status-evidence-binding">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>监控状态词与证据条件的绑定规则</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>监控状态词与证据条件的绑定规则，核心是把结论词当成有门槛的标签。在 Git 远端监控里，unchanged 不是今天看起来没动静，而是需要当前读取成功、存在历史基线、当前 SHA 与历史 SHA 相同三个条件同时成立。changed 也需要明确证据，例如远端 ref 指针从旧 SHA 变为新 SHA；如果只有弱线索，还没有提交对象或 ref 更新证据，就应写成 changed_clue 或 pending_commit_detail。unknown 或 read_failed 用于读取失败、网络失败、凭据失败等场景，不能因为没读到就写成 unchanged。baseline_created 用于第一次成功记录某个 ref 的 SHA，它表示建立了参照点，不表示仓库发生了变化。这个规则的价值在于降低误报，让每个结论都能回答：你为什么这么说？你看到了哪些字段？缺了什么证据？</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>状态词不是随意标签，而是由证据条件触发的结论。</li>
+                <li>unchanged、changed、unknown、baseline_created 各自对应不同证据门槛。</li>
+                <li>绑定证据条件后，监控报告可以从自然语言总结变成可检查判断。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设远端 main 的历史基线 SHA 是 abc123。今天只读 git ls-remote 成功读到 origin/main 当前 SHA 也是 abc123，则可以输出 remote_ref_change_status=unchanged。如果今天读取失败，则输出 unknown 或 read_failed，而不是 unchanged。如果今天是第一次记录 origin/main=abc123，则输出 baseline_created。如果今天读到 origin/main 变成 def456，但还没有获取 commit 详情，则可以先输出 changed_clue 或 pending_commit_detail，等证据升级后再写 changed。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把状态词当成情绪化总结：没看到变化就写 unchanged，看到一点线索就写 changed，第一次记录就写新增。</li>
+                <li>把读取失败当成未变化，或把本地引用指向与远端当前 SHA 相同直接写成推送成功。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>多源证据字段正交化</td><td>只有 local_ref_points_to、remote_ref_current_sha、remote_ref_baseline_sha 等字段分开后，状态词才有明确输入。</td></tr>
+                <tr><td>契约失败类型的状态空间设计</td><td>check_not_run、check_failed、needs_review、manual_review_passed 同样必须绑定证据条件，避免把未运行写成失败。</td></tr>
+                <tr><td>把无变化写成有证据支撑的状态</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当远端 ref 指针已经变化，但提交对象尚未获取时，changed 与 changed_clue 的边界应该如何定义？</li>
+                <li>当历史基线缺失但当前读取成功时，是否永远只能输出 baseline_created，还是可以在人工确认后升级为 unchanged 或 changed？</li>
+                <li>当多个 ref 都 unchanged 时，仓库级状态应该如何聚合，才能避免把指针未变误写成没有任何工程进展？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="orthogonal-evidence-fields">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>多源证据字段正交化</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>多源证据字段正交化，核心是让每个字段只负责一类证据。正交可以理解为坐标轴：x 轴只表示横向位置，y 轴只表示纵向位置，如果把 x 和 y 混在一个数字里，后续计算就会乱。Git 监控里也有多个证据来源：本地 main 指向哪个 SHA，远端 origin/main 当前指向哪个 SHA，远端 origin/main 历史基线是哪个 SHA，是否已经确认窗口内 commit，工作区是否有未提交草稿。它们看起来都和变化有关，但含义完全不同。如果把这些证据塞进同一个 summary 字段，比如写 main 有变化或 main 已完成，下游就很难判断：是本地改了？是远端变了？还是只是工作区有草稿？字段正交化后，系统可以分别记录 local_ref_points_to、remote_ref_current_sha、remote_ref_baseline_sha、workspace_clues、push_evidence，使结论更稳。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>每个字段只承载一类证据来源，避免多个事实互相覆盖。</li>
+                <li>字段分开后，状态词可以由明确字段计算，而不是由自然语言总结猜测。</li>
+                <li>正交字段为机器可读报告提供稳定 schema，也便于发现字段缺失或冲突。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>某个仓库的本地 main 指向 abc123，远端 origin/main 当前也指向 abc123，历史基线也是 abc123，但工作区还有未提交修改，且没有推送日志。正交字段可以写成：local_ref_points_to=abc123、remote_ref_current_sha=abc123、remote_ref_baseline_sha=abc123、remote_ref_change_status=unchanged、workspace_clues=dirty、push_evidence=none。这样下游能准确理解：远端 ref 没有变化，本地有草稿，不能宣称推送成功。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>用一个大而全的 status 字段表达所有事实，例如把本地指向、远端变化、工作区草稿、人工确认都写进同一个结论。</li>
+                <li>把多个引用指向同一 SHA 理解成推送成功，忽略推送日志、接收端 ref 更新证据或明确过程记录。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>监控状态词与证据条件的绑定规则</td><td>状态词需要由明确字段计算，而不是由自然语言总结猜测。</td></tr>
+                <tr><td>契约失败类型的状态空间设计</td><td>检查运行状态、文件缺失、字段格式错误和人工复核状态应分别表达，不能混在一个失败原因字段中。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何设计字段，使 commit 已确认、ref 已变化、工作区有草稿三种证据可以同时存在，但不会互相覆盖？</li>
+                <li>当多个引用指向同一 SHA 时，哪些字段只能证明指针一致，哪些字段必须存在才能支持推送成功？</li>
+                <li>当某个字段缺失或字段之间冲突时，系统应输出 unknown、needs_review，还是保留旧值并标记待复核？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="contract-failure-state-space">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>契约失败类型的状态空间设计</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>契约失败类型的状态空间设计，核心是把检查没通过拆成多种可定位的原因。很多系统最初只用 pass 和 fail，但 fail 太粗：可能是检查脚本根本没运行，可能是文件缺失，可能是目录存在但为空，可能是文件存在但字段格式错误，也可能是规则本身需要人工判断。状态空间设计就是定义一组有限、互斥、可追溯的状态词，让下游知道问题发生在哪一层。以资产契约检查为例，missing_file 表示契约要求某个文件但文件不存在；invalid_field 表示文件存在，但内容字段不符合约定；empty_directory 表示目录存在但没有必要内容；check_not_run 表示检查没有执行；check_failed 表示检查执行了但整体失败；needs_review 表示自动检查不能确定，需要人工判断；manual_review_passed 表示人工已经复核通过，可能包含例外说明。这些状态不应互相替代，每个状态都应能回答：你依据什么证据得出这个状态？</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>状态空间要有限、互斥、可追溯，让失败原因可以定位。</li>
+                <li>自动检查、文件解析、目录扫描和人工复核应分层记录，不能压成一个 fail。</li>
+                <li>needs_review 是等待人工判断的中间状态，本身不代表资产合规或不合规。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设角色资产契约要求每个角色包包含 concept.png、combat.json 和 review.md。检查发现 concept.png 存在，combat.json 存在但缺少 skill 字段，review.md 不存在。此时不应只写 check_failed，而应分别记录：concept.png=passed、combat.json=invalid_field、review.md=missing_file。如果检查脚本根本没有运行，则整体状态应写 check_not_run；如果人工确认某个例外可接受，则可在对应项上记录 manual_review_passed 并保留例外说明。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把所有失败都写成 check_failed，导致下游无法区分检查没运行、文件缺失、字段格式错误和需要人工复核。</li>
+                <li>把 needs_review 当成通过或失败，忽略它只是自动检查停止、等待人工判断的状态。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>多源证据字段正交化</td><td>检查运行状态、文件存在状态、字段格式状态和人工复核状态应分别表达，避免一个字段同时承载多种失败原因。</td></tr>
+                <tr><td>监控状态词与证据条件的绑定规则</td><td>check_not_run、check_failed、needs_review、manual_review_passed 都必须有明确证据条件，不能把未运行写成失败。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当目录存在但为空时，应该使用 missing_file、empty_directory，还是 invalid_field，边界如何定义？</li>
+                <li>当某个角色需要契约例外时，例外记录应作为独立字段、状态迁移，还是人工复核说明？</li>
+                <li>当批量检查中多个角色失败时，如何聚合仓库级状态，同时保留每个角色的具体失败原因？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念共同构成一条可审计证据链：先决定什么证据才能支撑什么状态词，再用正交字段把不同来源的证据分开记录，最后用互斥状态空间表达复杂检查中的不同失败原因。它们不是今天新增的工程事实，而是对证据边界主题的复习延展。这条主线从 Git 监控场景出发，也可以迁移到契约检查和 LLM 输出审查：只要系统要输出结论，就需要明确证据条件、字段边界和状态含义。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">状态词必须绑定证据条件，字段必须正交，失败状态必须互斥且可追溯。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>状态词如何映射到自动化动作：unchanged、changed_clue、unknown、baseline_created 分别应触发哪些重试、人工确认或升级读取策略？</li>
+            <li>正交字段如何组成机器可读报告 schema，并定义字段缺失、字段冲突、人工确认入口和状态升级路径？</li>
+            <li>契约状态空间如何映射到交付审查状态机：pending_check、check_not_run、check_failed、needs_review、manual_review_passed 的迁移条件、证据要求和人工确认入口是什么？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>

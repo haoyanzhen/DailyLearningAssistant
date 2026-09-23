@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-09/2026-09-24-learning-report.html">2026-09-24</a>
+      </td>
+      <td>监控状态词与证据条件的绑定规则</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★</td>
+      <td>监控状态词与证据条件的绑定规则，就是让 unchanged、changed、unknown、baseline_created 等结论词只在满足特定证据条件时才能使用。</td>
+      <td>下一次可以讲状态词到自动化动作的映射：unchanged、changed_clue、unknown、baseline_created 分别应触发哪些重试、人工确认或升级读取策略，以及如何映射到报告退出码。</td>
+    </tr>
+    <tr>
+      <td>多源证据字段正交化</td>
+      <td>软件工程 / 计算机科学</td>
+      <td>★★★</td>
+      <td>多源证据字段正交化，就是让本地指向、远端当前 SHA、历史基线、commit 确认和工作区草稿分别放在不同字段中，避免一个字段同时承载多个证据来源。</td>
+      <td>下一次可以讲正交字段如何组成机器可读报告 schema，并定义字段缺失、字段冲突、人工确认入口和状态升级路径。</td>
+    </tr>
+    <tr>
+      <td>契约失败类型的状态空间设计</td>
+      <td>软件工程 / 计算机科学</td>
+      <td>★★★★</td>
+      <td>契约失败类型的状态空间设计，就是用一组互斥且可追溯的状态词，区分检查未运行、文件缺失、字段错误、需要人工复核和人工复核通过等不同情况。</td>
+      <td>下一次可以讲契约状态空间如何映射到交付审查状态机：pending_check、check_not_run、check_failed、needs_review、manual_review_passed 的迁移条件、证据要求和人工确认入口。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-09/2026-09-23-learning-report.html">2026-09-23</a>
       </td>
       <td>角色资产包作为交付单元</td>

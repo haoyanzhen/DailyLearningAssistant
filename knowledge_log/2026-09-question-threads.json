@@ -3,6 +3,96 @@
   "year_month": "2026-09",
   "threads": [
     {
+      "id": "2026-09-24-concept-dd506b25e9",
+      "question": "当历史基线缺失但当前读取成功时，是否永远只能输出 baseline_created，还是可以在人工确认后升级为 unchanged 或 changed？",
+      "source_date": "2026-09-24",
+      "source_concept": "监控状态词与证据条件的绑定规则",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-24T06:14:35.467127+08:00",
+      "updated_at": "2026-09-24T06:14:35.467127+08:00"
+    },
+    {
+      "id": "2026-09-24-concept-8790bee6fb",
+      "question": "当某个角色需要契约例外时，例外记录应作为独立字段、状态迁移，还是人工复核说明？",
+      "source_date": "2026-09-24",
+      "source_concept": "契约失败类型的状态空间设计",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-24T06:14:35.467127+08:00",
+      "updated_at": "2026-09-24T06:14:35.467127+08:00"
+    },
+    {
+      "id": "2026-09-24-concept-778fe60d27",
+      "question": "当目录存在但为空时，应该使用 missing_file、empty_directory，还是 invalid_field，边界如何定义？",
+      "source_date": "2026-09-24",
+      "source_concept": "契约失败类型的状态空间设计",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-24T06:14:35.467127+08:00",
+      "updated_at": "2026-09-24T06:14:35.467127+08:00"
+    },
+    {
+      "id": "2026-09-24-concept-6e9a996fff",
+      "question": "当某个字段缺失或字段之间冲突时，系统应输出 unknown、needs_review，还是保留旧值并标记待复核？",
+      "source_date": "2026-09-24",
+      "source_concept": "多源证据字段正交化",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-24T06:14:35.467127+08:00",
+      "updated_at": "2026-09-24T06:14:35.467127+08:00"
+    },
+    {
+      "id": "2026-09-24-concept-4abfbe2563",
+      "question": "当远端 ref 指针已经变化，但提交对象尚未获取时，changed 与 changed_clue 的边界应该如何定义？",
+      "source_date": "2026-09-24",
+      "source_concept": "监控状态词与证据条件的绑定规则",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-24T06:14:35.467127+08:00",
+      "updated_at": "2026-09-24T06:14:35.467127+08:00"
+    },
+    {
+      "id": "2026-09-24-concept-344d9b5113",
+      "question": "当批量检查中多个角色失败时，如何聚合仓库级状态，同时保留每个角色的具体失败原因？",
+      "source_date": "2026-09-24",
+      "source_concept": "契约失败类型的状态空间设计",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-24T06:14:35.467127+08:00",
+      "updated_at": "2026-09-24T06:14:35.467127+08:00"
+    },
+    {
+      "id": "2026-09-24-concept-2628b35295",
+      "question": "当多个引用指向同一 SHA 时，哪些字段只能证明指针一致，哪些字段必须存在才能支持推送成功？",
+      "source_date": "2026-09-24",
+      "source_concept": "多源证据字段正交化",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-24T06:14:35.467127+08:00",
+      "updated_at": "2026-09-24T06:14:35.467127+08:00"
+    },
+    {
+      "id": "2026-09-24-concept-20dbeefa14",
+      "question": "如何设计字段，使 commit 已确认、ref 已变化、工作区有草稿三种证据可以同时存在，但不会互相覆盖？",
+      "source_date": "2026-09-24",
+      "source_concept": "多源证据字段正交化",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-24T06:14:35.467127+08:00",
+      "updated_at": "2026-09-24T06:14:35.467127+08:00"
+    },
+    {
+      "id": "2026-09-24-concept-20496961f2",
+      "question": "当多个 ref 都 unchanged 时，仓库级状态应该如何聚合，才能避免把“指针未变”误写成“没有任何工程进展”？",
+      "source_date": "2026-09-24",
+      "source_concept": "监控状态词与证据条件的绑定规则",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-24T06:14:35.467127+08:00",
+      "updated_at": "2026-09-24T06:14:35.467127+08:00"
+    },
+    {
       "id": "2026-09-23-ref-ee2c28a924",
       "question": "在只读 git ls-remote 场景下，什么证据才能把远端 ref 状态写成 changed 而不是 changed_clue？",
       "source_date": "2026-09-23",
