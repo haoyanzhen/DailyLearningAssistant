@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-09/2026-09-25-learning-report.html">2026-09-25</a>
+      </td>
+      <td>窗口边界提交的时间证据优先级</td>
+      <td>软件工程 / 计算机科学</td>
+      <td>★★</td>
+      <td>窗口边界提交的时间证据优先级，就是在提交时间、分支更新时间和文件修改时间不一致时，优先用可验证提交时间判断目标日期归属，把其他时间作为辅助线索。</td>
+      <td>下一次可以讲提交时间被 rebase、amend 或 cherry-pick 改变时，如何设计时间证据等级、人工确认入口和报告字段，避免把弱时间线索写成完成事实。</td>
+    </tr>
+    <tr>
+      <td>阶段完成语义的部分完成表达</td>
+      <td>软件工程</td>
+      <td>★★★</td>
+      <td>阶段完成语义的部分完成表达，就是把文档、资产、工具和审查等多个子状态拆开记录，让阶段状态能表达“有些完成、有些阻塞”而不是简单二选一。</td>
+      <td>下一次可以讲阶段完成状态机：pending_art、assets_submitted、tools_unified、docs_updated、review_passed 如何由提交、审查文件和文档状态共同驱动，并处理部分完成与审查未通过的情况。</td>
+    </tr>
+    <tr>
+      <td>批量角色失败的层级化原因保留</td>
+      <td>软件工程 / 计算机科学</td>
+      <td>★★★★</td>
+      <td>批量角色失败的层级化原因保留，就是在批量检查或批量交付中同时保留仓库级摘要和角色级、步骤级失败原因，让整体结论和局部定位都能被追溯。</td>
+      <td>下一次可以讲批量失败原因 schema：batch_id、repository_id、role_id、step_id、failure_code、evidence_level 如何组合，并支持从仓库摘要下钻到角色原因和证据引用。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-09/2026-09-24-learning-report.html">2026-09-24</a>
       </td>
       <td>监控状态词与证据条件的绑定规则</td>

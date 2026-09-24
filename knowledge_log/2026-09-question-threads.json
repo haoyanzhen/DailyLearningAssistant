@@ -3,6 +3,96 @@
   "year_month": "2026-09",
   "threads": [
     {
+      "id": "2026-09-25-concept-e530a63663",
+      "question": "如果检查窗口边界恰好落在提交时间同一秒，应如何定义包含或排除规则，并让报告字段保持一致？",
+      "source_date": "2026-09-25",
+      "source_concept": "窗口边界提交的时间证据优先级",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-25T06:14:10.862615+08:00",
+      "updated_at": "2026-09-25T06:14:10.862615+08:00"
+    },
+    {
+      "id": "2026-09-25-concept-db93f9717f",
+      "question": "当提交时间被 rebase、amend 或 cherry-pick 改变后，应如何设计时间证据等级和人工确认入口？",
+      "source_date": "2026-09-25",
+      "source_concept": "窗口边界提交的时间证据优先级",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-25T06:14:10.862615+08:00",
+      "updated_at": "2026-09-25T06:14:10.862615+08:00"
+    },
+    {
+      "id": "2026-09-25-concept-923f1e74f9",
+      "question": "当文档写 completion 但某个角色审查未通过时，报告应使用哪些字段表达阻塞项、责任角色和证据等级？",
+      "source_date": "2026-09-25",
+      "source_concept": "阶段完成语义的部分完成表达",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-09-25T06:14:10.862615+08:00",
+      "updated_at": "2026-09-25T06:14:10.862615+08:00"
+    },
+    {
+      "id": "2026-09-25-concept-70045079c5",
+      "question": "部分完成状态如何映射到自动化报告的退出码、重试策略和人工确认入口？",
+      "source_date": "2026-09-25",
+      "source_concept": "阶段完成语义的部分完成表达",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-09-25T06:14:10.862615+08:00",
+      "updated_at": "2026-09-25T06:14:10.862615+08:00"
+    },
+    {
+      "id": "2026-09-25-concept-6a7aa4a44b",
+      "question": "如何设计阶段完成状态字段，使 docs、assets、tools、review 四个子状态都能独立记录并组合出 partially_completed？",
+      "source_date": "2026-09-25",
+      "source_concept": "阶段完成语义的部分完成表达",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-09-25T06:14:10.862615+08:00",
+      "updated_at": "2026-09-25T06:14:10.862615+08:00"
+    },
+    {
+      "id": "2026-09-25-concept-4912114d4f",
+      "question": "如何把提交时间、分支更新时间和文件修改时间映射成机器可读的 evidence_level 字段，并避免把弱证据写成完成事实？",
+      "source_date": "2026-09-25",
+      "source_concept": "窗口边界提交的时间证据优先级",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-25T06:14:10.862615+08:00",
+      "updated_at": "2026-09-25T06:14:10.862615+08:00"
+    },
+    {
+      "id": "2026-09-25-concept-37bd005971",
+      "question": "如何设计 batch report schema，使 repository_status、role_status、step_status 和 failure_code 能同时保留并支持下钻？",
+      "source_date": "2026-09-25",
+      "source_concept": "批量角色失败的层级化原因保留",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-25T06:14:10.862615+08:00",
+      "updated_at": "2026-09-25T06:14:10.862615+08:00"
+    },
+    {
+      "id": "2026-09-25-concept-06214919af",
+      "question": "当多个角色失败原因相同或相似时，如何合并展示而不丢失每个角色的证据 ID 和定位信息？",
+      "source_date": "2026-09-25",
+      "source_concept": "批量角色失败的层级化原因保留",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-25T06:14:10.862615+08:00",
+      "updated_at": "2026-09-25T06:14:10.862615+08:00"
+    },
+    {
+      "id": "2026-09-25-concept-035baaaebc",
+      "question": "批量失败中的依赖版本不一致、超时位置和审查未通过应分别记录在哪个层级，如何避免把步骤级原因误写成仓库级原因？",
+      "source_date": "2026-09-25",
+      "source_concept": "批量角色失败的层级化原因保留",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-25T06:14:10.862615+08:00",
+      "updated_at": "2026-09-25T06:14:10.862615+08:00"
+    },
+    {
       "id": "2026-09-24-concept-dd506b25e9",
       "question": "当历史基线缺失但当前读取成功时，是否永远只能输出 baseline_created，还是可以在人工确认后升级为 unchanged 或 changed？",
       "source_date": "2026-09-24",

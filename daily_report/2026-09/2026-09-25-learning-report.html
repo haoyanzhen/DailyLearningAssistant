@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-09-25 学习笔记日报</title>
+    <meta name="description" content="今日无变更复习，围绕时间证据优先级、阶段部分完成表达、批量失败层级化原因保留，训练证据边界与状态表达。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260925-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-09-25</p>
+        <h1>证据边界、部分完成与层级化失败</h1>
+        <p>今天没有新增工程事实，重点复习如何判断时间归属、表达阶段部分完成，并在批量失败中保留可下钻原因。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>无变更复习日：从证据边界到状态聚合</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>窗口边界提交的时间证据优先级</strong>
+                <small>先问有没有可验证 commit，再…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>阶段完成语义的部分完成表达</strong>
+                <small>阶段状态不是完成或失败，而是哪些子…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>批量角色失败的层级化原因保留</strong>
+                <small>摘要可以压缩，原因必须保留；状态可…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念围绕同一条主线：先确认证据边界，再表达状态，最后聚合结果。窗口边界提交的时间证据优先级解决证据属于哪天的问题；阶段完成语义的部分完成表达解决多子状态不一致时如何表达阶段的问题；批量角色失败的层级化原因保留解决多个角色失败时如何既给摘要又保留细节的问题。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["无变更复习日：从证据边界到状态聚合"])
+  concept1["窗口边界提交的时间证据优先级"]
+  hub --&gt; concept1
+  concept2["阶段完成语义的部分完成表达"]
+  hub --&gt; concept2
+  concept3["批量角色失败的层级化原因保留"]
+  hub --&gt; concept3
+  related1["LLM 日报中窗口外证据的降级表述"]
+  concept1 --&gt; related1
+  concept1 --&gt; concept2
+  related2["多工作区草稿的分支归属与时间线索"]
+  concept1 --&gt; related2
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept2 --&gt; related2
+  concept3 --&gt; concept2
+  related3["依赖版本声明与实际调用路径的一致性证据"]
+  concept3 --&gt; related3
+  concept3 --&gt; related1
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="window-boundary-commit-time-evidence-priority">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>窗口边界提交的时间证据优先级</h3>
+              <p>Window Boundary Commit Time Evidence Priority</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">先问有没有可验证 commit，再看提交时间是否落在窗口内；其他时间只作线索。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>提交时间通常绑定可验证 commit 对象，更适合决定目标日期归属。</li>
+                <li>分支更新时间只能说明 ref 指针在某时刻被看到，不能单独证明窗口内产生新提交。</li>
+                <li>文件修改时间只是工作区现场痕迹，可能早于、晚于提交，也可能从未提交。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="window-boundary-commit-time-evidence-priority" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="phase-completion-partial-completion-expression">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>阶段完成语义的部分完成表达</h3>
+              <p>Partial Completion Expression for Phase Completion Semantics</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">阶段状态不是完成或失败，而是哪些子项完成、哪些子项阻塞。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>阶段完成不是单一布尔值，需要拆成 docs、assets、tools、review 等子状态。</li>
+                <li>文档写完成不能单独证明阶段完成，资产、工具和审查状态也要共同支持。</li>
+                <li>部分完成不是含糊其辞，而是用结构化状态保留阻塞项和已完成项。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="phase-completion-partial-completion-expression" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="batch-role-failure-hierarchical-reason-preservation">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>批量角色失败的层级化原因保留</h3>
+              <p>Hierarchical Reason Preservation for Batch Role Failures</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">摘要可以压缩，原因必须保留；状态可以聚合，证据不能合并丢失。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>仓库级或阶段级摘要可以由下层状态聚合而来，但不能丢掉角色级原因。</li>
+                <li>每个失败原因应能回溯到具体角色、步骤和证据。</li>
+                <li>批量报告需要同时回答整体是否成功和具体哪里失败。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="batch-role-failure-hierarchical-reason-preservation" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="window-boundary-commit-time-evidence-priority">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>窗口边界提交的时间证据优先级</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>判断一件作品是否属于今天完成时，系统里可能有提交时间、分支更新时间、文件修改时间和检查窗口边界。它们看起来都在描述同一件事，但证据等级不同。提交时间通常绑定到一个可验证的 commit 对象，因此更适合决定目标日期归属；分支更新时间只能说明某个 ref 指针在某个时刻被看到，不能单独证明窗口内产生了新提交；文件修改时间只是工作区现场痕迹，可能早于、晚于提交，也可能从未提交。今天是无变更复习日，没有窗口内提交，因此不讨论实际提交归属，只复习规则。若多个时间证据冲突，应先问三个问题：是否有可验证 commit 对象；该 commit 的提交时间是否落在检查窗口内；其他时间证据能否只作为线索记录。若提交时间不可靠或存在 rebase、amend、时钟偏差等情况，可以保留为待确认线索，而不是直接下结论。例如，检查窗口为 2026-09-25T00:00:00+08:00 到 2026-09-26T00:00:00+08:00，提交 A 的提交时间是 2026-09-24T23:58:00+08:00，分支 origin/main 在 2026-09-25T00:02:00+08:00 被观察到更新，某文件修改时间是 2026-09-24T23:50:00+08:00；报告应写 25 日窗口外提交线索，不作为 25 日完成事实。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>可验证 commit 对象是目标日期归属的强证据，因为它能绑定到具体提交记录。</li>
+                <li>分支更新是观察性证据，只能说明指针在某时刻被看到，不能替代提交对象证明。</li>
+                <li>文件修改时间是工作区线索，受编辑、暂存、提交和时钟偏差影响，只能辅助定位。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>检查窗口为 2026-09-25T00:00:00+08:00 到 2026-09-26T00:00:00+08:00。提交 A 的提交时间是 2026-09-24T23:58:00+08:00，分支 origin/main 在 2026-09-25T00:02:00+08:00 被观察到更新，某文件修改时间是 2026-09-24T23:50:00+08:00。按提交时间，A 不属于 25 日窗口；按分支更新，它只是 25 日看到指针变化；按文件修改，它只是工作区线索。报告应写 25 日窗口外提交线索，不作为 25 日完成事实。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>看到文件修改时间或分支更新时间落在目标日期内，就认为当天完成了提交。</li>
+                <li>把窗口外提交线索、窗口外分支更新或工作区痕迹直接写成目标日期完成事实。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>LLM 日报中窗口外证据的降级表述</td><td>为窗口外证据的降级表述提供判断依据，避免把窗口外提交或窗口外分支更新写成目标日期完成事实。</td></tr>
+                <tr><td>阶段完成语义的部分完成表达</td><td>阶段完成是否属于目标日期需要依赖提交窗口和时间证据优先级，而不是只看文档措辞。</td></tr>
+                <tr><td>多工作区草稿的分支归属与时间线索</td><td>提交时间、分支更新时间和文件修改时间共同影响未提交草稿的归属判断。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当提交时间被 rebase、amend 或 cherry-pick 改变后，应如何设计时间证据等级和人工确认入口？</li>
+                <li>如果检查窗口边界恰好落在提交时间同一秒，应如何定义包含或排除规则，并让报告字段保持一致？</li>
+                <li>如何把提交时间、分支更新时间和文件修改时间映射成机器可读的 evidence_level 字段，并避免把弱证据写成完成事实？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="phase-completion-partial-completion-expression">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>阶段完成语义的部分完成表达</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>一个阶段往往不是完成或未完成两个状态。以角色资产交付为例，一个阶段可能同时包含文档更新、资产包提交、工具提交和审查结果。文档可能已经写 phase two art completion，资产包可能已经提交，工具可能已经统一，但某个角色包审查未通过。这时如果只写完成，会掩盖审查未通过；如果只写失败，又会抹掉已经完成的文档、资产和工具工作。部分完成表达就是把阶段拆成多个子状态，让每个子状态都有明确证据，再用一个更精确的阶段状态概括整体。今天没有阶段完成新增证据，因此不写成今天实际完成某个阶段，只复习如何表达部分完成。设计时可以避免单一布尔字段，改用结构化状态，例如 phase_status=partially_completed，substates.docs=done，substates.assets=done，substates.tools=done，substates.review=failed。这样既能让日报给出高层结论，也能让人快速定位哪个子项阻塞了阶段完成。例如，某阶段目标是完成第二批角色美术，文档已更新为 phase two art completion，角色 A 资产包已提交，角色 B 资产包已提交，工具提交已完成，但角色 B 审查未通过；此时应写 phase partially_completed，并保留 docs=done、assets=done、tools=done、review=failed、blocking_role=B。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>阶段完成由多个证据子状态共同支持，单一文档措辞不足以决定整体状态。</li>
+                <li>部分完成需要把已完成项和阻塞项分别记录，避免高层状态吞掉低层原因。</li>
+                <li>结构化子状态可以让报告同时支持高层摘要和具体定位。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>某阶段目标是完成第二批角色美术。当前证据显示：文档已更新为 phase two art completion，角色 A 资产包已提交，角色 B 资产包已提交，工具提交已完成，但角色 B 审查未通过。此时不应写 phase completed，而应写 phase partially_completed，并保留 substates：docs=done，assets=done，tools=done，review=failed，blocking_role=B。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把文档里的完成措辞当作阶段完成事实。</li>
+                <li>把某一项审查未通过直接等同于整个阶段失败。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>窗口边界提交的时间证据优先级</td><td>只有先判断文档、资产、工具和审查证据是否属于目标日期，才能决定阶段状态是否计入当天。</td></tr>
+                <tr><td>批量角色失败的层级化原因保留</td><td>部分完成通常来自多个角色、多个产物或多个审查项的状态不一致，需要保留角色级原因。</td></tr>
+                <tr><td>多工作区草稿的分支归属与时间线索</td><td>工作区草稿不能直接证明阶段完成，需要结合分支归属、提交状态和审查状态判断。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何设计阶段完成状态字段，使 docs、assets、tools、review 四个子状态都能独立记录并组合出 partially_completed？</li>
+                <li>当文档写 completion 但某个角色审查未通过时，报告应使用哪些字段表达阻塞项、责任角色和证据等级？</li>
+                <li>部分完成状态如何映射到自动化报告的退出码、重试策略和人工确认入口？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="batch-role-failure-hierarchical-reason-preservation">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>批量角色失败的层级化原因保留</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>批量检查或批量交付中，系统经常要处理多个角色、多个产物或多个步骤。如果只输出一个仓库级结论，例如 failed，使用者只知道有问题，却不知道是哪个角色、哪一步、因为什么原因失败。层级化原因保留就是让报告同时存在两层：上层给出可快速阅读的摘要，下层保留每个角色或步骤的具体原因。上层状态可以由下层状态聚合而来，但聚合不能把下层原因丢掉。今天没有批量管线运行证据，因此不写成今天实际发生批量失败，只复习如何设计层级化表达。一个可用思路是：batch_status=partial_failure，repository_status=failed，roles 数组中每个角色保留 status、failure_code、evidence_level 和 evidence_id。例如角色 A 成功，角色 B missing_file，角色 C review_failed。这样高层能知道整体部分失败，低层能知道 B 缺文件、C 审查未通过。若失败原因来自依赖版本不一致或超时位置，也应保留在角色级或步骤级原因中，而不是合并成一个笼统的 failed。例如，一次批量检查包含三个角色，角色 A 检查通过，角色 B 缺少 review 文件，角色 C 审查未通过；仓库级状态可聚合为 partial_failure，但报告必须保留 A.status=success、B.status=failed、B.failure_code=missing_review、C.status=failed、C.failure_code=review_failed。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>高层状态负责快速判断整体结果，低层原因负责定位具体阻塞。</li>
+                <li>聚合状态可以压缩表达，但失败原因必须保留可追溯的证据字段。</li>
+                <li>角色级或步骤级原因能避免把局部失败误写成仓库级失败。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一次批量检查包含三个角色。角色 A 检查通过；角色 B 缺少 review 文件，失败原因是 missing_review；角色 C 审查未通过，失败原因是 review_failed。仓库级状态可聚合为 partial_failure，但报告必须保留 roles 数组：A.status=success，B.status=failed，B.failure_code=missing_review，C.status=failed，C.failure_code=review_failed。这样既能回答整体是否成功，也能回答具体哪里失败。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为只要仓库级状态是 failed，就可以不再记录角色级原因。</li>
+                <li>把多个角色失败合并成一个总原因，丢失每个角色的证据 ID 和定位信息。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>阶段完成语义的部分完成表达</td><td>部分完成通常来自多个角色、多个产物或多个审查项的状态不一致，需要保留角色级原因。</td></tr>
+                <tr><td>依赖版本声明与实际调用路径的一致性证据</td><td>依赖版本不一致可能成为批量管线失败原因之一，需要在角色级或步骤级原因中保留。</td></tr>
+                <tr><td>LLM 日报中窗口外证据的降级表述</td><td>LLM 汇总批量结果时需要区分仓库级摘要、角色级原因和窗口外线索，避免把局部失败或窗口外材料写成整体完成。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何设计 batch report schema，使 repository_status、role_status、step_status 和 failure_code 能同时保留并支持下钻？</li>
+                <li>当多个角色失败原因相同或相似时，如何合并展示而不丢失每个角色的证据 ID 和定位信息？</li>
+                <li>批量失败中的依赖版本不一致、超时位置和审查未通过应分别记录在哪个层级，如何避免把步骤级原因误写成仓库级原因？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念围绕同一条主线：先确认证据边界，再表达状态，最后聚合结果。窗口边界提交的时间证据优先级解决证据属于哪天的问题；阶段完成语义的部分完成表达解决多子状态不一致时如何表达阶段的问题；批量角色失败的层级化原因保留解决多个角色失败时如何既给摘要又保留细节的问题。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">工程报告的价值不在于给出一个简单结论，而在于让每个结论都能回溯到可验证证据，并保留局部原因。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>当提交时间被 rebase、amend 或 cherry-pick 改变后，如何设计时间证据等级和人工确认入口？</li>
+            <li>阶段完成状态字段如何组合 docs、assets、tools、review 四个子状态，并映射到退出码和重试策略？</li>
+            <li>batch report schema 如何同时保留 repository_status、role_status、step_status 和 failure_code，并支持从摘要下钻到证据？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
