@@ -3,6 +3,96 @@
   "year_month": "2026-09",
   "threads": [
     {
+      "id": "2026-09-26-ref-unchanged-b76f897702",
+      "question": "未监控 ref、读取失败或工作区草稿应如何进入仓库级状态，而不是被 unchanged 覆盖？",
+      "source_date": "2026-09-26",
+      "source_concept": "多 ref unchanged 的仓库级聚合表述",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-26T06:13:05.776795+08:00",
+      "updated_at": "2026-09-26T06:13:05.776795+08:00"
+    },
+    {
+      "id": "2026-09-26-ref-unchanged-7bd36c7301",
+      "question": "如何区分 monitored_refs_unchanged、no_new_commits_in_window 和 no_engineering_progress？",
+      "source_date": "2026-09-26",
+      "source_concept": "多 ref unchanged 的仓库级聚合表述",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-26T06:13:05.776795+08:00",
+      "updated_at": "2026-09-26T06:13:05.776795+08:00"
+    },
+    {
+      "id": "2026-09-26-ref-unchanged-57f05433ae",
+      "question": "多个 ref unchanged 时，仓库级状态应该使用哪个聚合词才能不越界？",
+      "source_date": "2026-09-26",
+      "source_concept": "多 ref unchanged 的仓库级聚合表述",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-26T06:13:05.776795+08:00",
+      "updated_at": "2026-09-26T06:13:05.776795+08:00"
+    },
+    {
+      "id": "2026-09-26-llm-ec3b30527f",
+      "question": "如何区分合理低置信表述和无证据幻觉，并让自动化校验能识别这种差异？",
+      "source_date": "2026-09-26",
+      "source_concept": "证据不足时 LLM 拒绝补全的测试边界",
+      "domain": "大语言模型 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-26T06:13:05.776795+08:00",
+      "updated_at": "2026-09-26T06:13:05.776795+08:00"
+    },
+    {
+      "id": "2026-09-26-llm-3b2b43d424",
+      "question": "证据引用字段应包含哪些最小字段，才能判断一条结论是否越界？",
+      "source_date": "2026-09-26",
+      "source_concept": "证据不足时 LLM 拒绝补全的测试边界",
+      "domain": "大语言模型 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-26T06:13:05.776795+08:00",
+      "updated_at": "2026-09-26T06:13:05.776795+08:00"
+    },
+    {
+      "id": "2026-09-26-llm-1d3b81ff0d",
+      "question": "如何设计测试用例，验证 LLM 在缺少 commit SHA 时不会补成已完成？",
+      "source_date": "2026-09-26",
+      "source_concept": "证据不足时 LLM 拒绝补全的测试边界",
+      "domain": "大语言模型 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-26T06:13:05.776795+08:00",
+      "updated_at": "2026-09-26T06:13:05.776795+08:00"
+    },
+    {
+      "id": "2026-09-26-concept-9b5a5409c0",
+      "question": "目录状态字段应如何与人工复核入口连接，让 needs_review 能追溯到具体目录和文件？",
+      "source_date": "2026-09-26",
+      "source_concept": "空目录与缺失文件的状态边界",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-26T06:13:05.776795+08:00",
+      "updated_at": "2026-09-26T06:13:05.776795+08:00"
+    },
+    {
+      "id": "2026-09-26-concept-0d0d44ecbd",
+      "question": "如何设计最小目录契约，让检查脚本同时输出目录缺失、目录为空和文件不合规？",
+      "source_date": "2026-09-26",
+      "source_concept": "空目录与缺失文件的状态边界",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-26T06:13:05.776795+08:00",
+      "updated_at": "2026-09-26T06:13:05.776795+08:00"
+    },
+    {
+      "id": "2026-09-26-concept-0659ec92eb",
+      "question": "当空目录可能是正常中间态时，如何避免把中间态误报为最终失败？",
+      "source_date": "2026-09-26",
+      "source_concept": "空目录与缺失文件的状态边界",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-26T06:13:05.776795+08:00",
+      "updated_at": "2026-09-26T06:13:05.776795+08:00"
+    },
+    {
       "id": "2026-09-25-concept-e530a63663",
       "question": "如果检查窗口边界恰好落在提交时间同一秒，应如何定义包含或排除规则，并让报告字段保持一致？",
       "source_date": "2026-09-25",

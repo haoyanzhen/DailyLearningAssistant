@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-09-26 学习笔记日报</title>
+    <meta name="description" content="今日围绕证据边界复习三个概念：空目录、缺失文件与内容不合规要分层，多 ref unchanged 不能扩大成无进展，LLM 证据不足应拒绝补全。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260926-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-09-26</p>
+        <h1>2026-09-26 证据边界学习笔记日报</h1>
+        <p>今天是无变更复习日，主线不是新增工程事实，而是把目录状态、Git 聚合和 LLM 输出都放回证据范围内。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>证据边界与保守结论</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>空目录与缺失文件的状态边界</strong>
+                <small>房间、表格和字段内容要分开判断。</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>多 ref unchang…</strong>
+                <small>只监控几个门口，就不能宣布全校没有…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>证据不足时 LLM 拒绝补…</strong>
+                <small>没有指纹、监控和证人时，不能直接写…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念共同指向结论强度不能超过证据范围。空目录状态边界训练分层观察；多 ref unchanged 聚合表述把分层观察扩展到仓库级；LLM 拒绝补全把同一原则带到语言生成层。三者都要求先固定证据范围，再选择状态词或输出结论。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["证据边界与保守结论"])
+  concept1["空目录与缺失文件的状态边界"]
+  hub --&gt; concept1
+  concept2["多 ref unchanged 的仓库级聚合表述"]
+  hub --&gt; concept2
+  concept3["证据不足时 LLM 拒绝补全的测试边界"]
+  hub --&gt; concept3
+  related1["字段冲突时的保留旧值与待复核策略"]
+  concept1 --&gt; related1
+  related2["契约例外的记录载体与审计边界"]
+  concept1 --&gt; related2
+  related3["基线缺失时状态升级的证据门槛"]
+  concept2 --&gt; related3
+  related4["本地/远端引用同 SHA 的推送成功误判边界"]
+  concept2 --&gt; related4
+  related5["自生成日报提交的监控隔离"]
+  concept3 --&gt; related5
+  concept3 --&gt; related3
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4,related5 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="empty-directory-missing-file-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>空目录与缺失文件的状态边界</h3>
+              <p>Empty Directory vs Missing File Boundary</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">房间、表格和字段内容要分开判断。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>目录存在性、文件存在性和内容合规性是三个不同层次的事实。</li>
+                <li>空目录不能直接写成缺失文件，也不能直接写成内容不合规。</li>
+                <li>不同状态应触发不同处理：创建路径、等待产物或修复字段。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="empty-directory-missing-file-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="multi-ref-unchanged-aggregation">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>多 ref unchanged 的仓库级聚合表述</h3>
+              <p>Monitored Refs Unchanged Aggregation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">只监控几个门口，就不能宣布全校没有活动。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>多个被监控 ref 的历史 SHA 与当前 SHA 相同，只能说明这些指针未变。</li>
+                <li>未监控分支、标签、工作区草稿和提交对象不在该结论范围内。</li>
+                <li>报告应使用 monitored_refs_unchanged 一类限定词，而不是 repository_has_no_new_commits。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="multi-ref-unchanged-aggregation" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="llm-refusal-evidence-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">大语言模型 / 软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>证据不足时 LLM 拒绝补全的测试边界</h3>
+              <p>LLM Refusal Under Missing Evidence</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">没有指纹、监控和证人时，不能直接写凶手是谁。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>LLM 不应把没看到补成没有发生，也不应把不确定补成确定结论。</li>
+                <li>缺少 commit SHA、ref 状态或人工确认记录时，应输出 unknown、needs_review 或 missing_evidence。</li>
+                <li>证据引用字段要能追溯证据类型、证据 ID、置信程度和禁止推论。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="llm-refusal-evidence-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="empty-directory-missing-file-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>空目录与缺失文件的状态边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>空目录与缺失文件的状态边界，核心是把目录是否存在、文件是否存在、文件内容是否合规看成三个不同层次的事实。目录像房间，文件像房间里的一张表格，内容合规性像表格里字段是否正确。检查系统如果只输出一个 missing 或 failed，后续处理就会混乱：目录缺失需要创建路径或检查配置；目录存在但为空可能表示产物还没生成、任务还没跑完，或者生成器没有输出；文件存在但内容不合规则需要修字段、修格式或触发人工复核。这里基于当日材料可确认的是，今天没有资产目录检查运行证据，所以这个概念只作为问题延展，不写成今天实际发生了目录检查失败。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>状态词必须匹配事实层次，目录、文件和内容不能互相替代。</li>
+                <li>空目录可能是正常中间态，也可能是产物未生成，需要保留可追溯状态。</li>
+                <li>结构化状态能让后续流程选择创建、等待或修复，而不是笼统失败。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>检查 roles/warrior/ 时，目录不存在输出 missing_directory，目录存在但为空输出 empty_directory，battle.json 缺少必需字段输出 invalid_field。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把目录为空直接当成文件缺失。</li>
+                <li>把文件内容不合规也归到目录缺失里。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>字段冲突时的保留旧值与待复核策略</td><td>两者都要求区分不同证据层次，不能用一个状态覆盖另一个状态。</td></tr>
+                <tr><td>契约例外的记录载体与审计边界</td><td>两者都属于契约检查中的状态表达，空目录不能被整体契约通过或失败吞掉。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何设计最小目录契约，让检查脚本同时输出目录缺失、目录为空和文件不合规？</li>
+                <li>当空目录可能是正常中间态时，如何避免把中间态误报为最终失败？</li>
+                <li>目录状态字段应如何与人工复核入口连接，让 needs_review 能追溯到具体目录和文件？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="multi-ref-unchanged-aggregation">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>多 ref unchanged 的仓库级聚合表述</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>多 ref unchanged 的仓库级聚合表述，讲的是当多个 Git ref 的历史 SHA 与当前 SHA 相同时，仓库级报告应该怎么写。ref 可以理解为仓库里的指针，比如 main、release/1.0、origin/HEAD。如果几个被监控 ref 都没有移动，只能说明这些指针没有变化，不能说明整个仓库没有任何工程进展，因为可能还有未监控分支、标签、工作区草稿、提交对象或其他仓库没有进入监控范围。这里基于当日材料可确认的是，今天多个远端仓库 ref 状态为 unchanged，但只作为无变更证据，不扩展为工程进展判断。把状态写成 unchanged 而不是 no new commits，是因为 unchanged 绑定的是历史 SHA 与当前 SHA 相同这一证据；no new commits 通常需要窗口内提交证据，可能超出 ref 元数据能证明的范围。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>unchanged 绑定的是可比较 SHA 证据，不是窗口内提交证据。</li>
+                <li>聚合结论必须保留被监控对象范围，不能覆盖未监控对象。</li>
+                <li>仓库级状态需要区分指针未变、窗口提交无新增和工程无进展。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>监控 main、release/1.0 和 origin/HEAD，三者历史 SHA 与当前 SHA 相同，可写 monitored_refs_unchanged，不应写 repository_has_no_new_commits。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把多个 ref unchanged 直接写成仓库没有新增提交。</li>
+                <li>把有限 ref 证据扩大成没有任何工程进展。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>基线缺失时状态升级的证据门槛</td><td>两者都涉及证据不足时不能升级结论，多 ref unchanged 也不能推出完整工程进展。</td></tr>
+                <tr><td>本地/远端引用同 SHA 的推送成功误判边界</td><td>两者都要求聚合结论不超过字段可证明范围，同 SHA 只能证明指针一致，多 ref unchanged 只能证明被监控指针未变。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>多个 ref unchanged 时，仓库级状态应该使用哪个聚合词才能不越界？</li>
+                <li>如何区分 monitored_refs_unchanged、no_new_commits_in_window 和 no_engineering_progress？</li>
+                <li>未监控 ref、读取失败或工作区草稿应如何进入仓库级状态，而不是被 unchanged 覆盖？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="llm-refusal-evidence-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 大语言模型 / 软件工程</p>
+                <h3>证据不足时 LLM 拒绝补全的测试边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>证据不足时 LLM 拒绝补全的测试边界，关注的是 LLM 产物层面的可靠性，而不是模型内部机制。LLM 很擅长生成流畅文本，但如果输入证据不足，它可能会把没看到补成没有发生，把不确定补成确定结论。因此需要设计测试边界：当输入缺少 commit SHA、ref 状态、人工确认记录等关键证据时，合格输出应该说明证据不足，给出 unknown、needs_review 或 missing_evidence，而不是生成完整日报。这里承接之前关于 LLM 输出可靠性与证据约束的讨论，但不重复模型内部机制，只聚焦测试边界。这里基于当日材料可确认的是，今天没有 LLM 生成新日报或新总结的证据，所以这个概念只作为问题延展，不写成今天发生了 LLM 输出事故。证据引用字段的作用是让每条结论都能追溯：evidence_type 说明证据类型，evidence_id 指向具体 commit、ref 或人工确认记录，confidence 表示置信程度，forbidden_inference 用来标记哪些推论被禁止。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>生成式输出也必须受证据约束，流畅文本不等于工程事实。</li>
+                <li>测试边界要验证模型在关键证据缺失时拒绝补全完整结论。</li>
+                <li>证据引用字段让结论可追溯，也能识别越界推论。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>输入只有某个仓库今天好像没变化，没有 remote_ref_baseline_sha 和 remote_ref_current_sha，合格输出应写证据不足，无法判断 unchanged。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为 LLM 生成流畅总结就代表事实成立。</li>
+                <li>认为最终结论碰巧正确，就可以省略证据引用。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>自生成日报提交的监控隔离</td><td>两者都要求特殊来源或证据不足时不补全事实，自生成提交需要隔离，LLM 证据不足时需要拒绝生成完整结论。</td></tr>
+                <tr><td>基线缺失时状态升级的证据门槛</td><td>两者都强调低证据状态下的保守表达，基线缺失时不升级状态，LLM 证据不足时不补全结论。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何设计测试用例，验证 LLM 在缺少 commit SHA 时不会补成已完成？</li>
+                <li>证据引用字段应包含哪些最小字段，才能判断一条结论是否越界？</li>
+                <li>如何区分合理低置信表述和无证据幻觉，并让自动化校验能识别这种差异？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念共同指向结论强度不能超过证据范围。空目录状态边界训练分层观察；多 ref unchanged 聚合表述把分层观察扩展到仓库级；LLM 拒绝补全把同一原则带到语言生成层。三者都要求先固定证据范围，再选择状态词或输出结论。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">结论强度不能超过证据范围。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何设计最小目录契约，让检查脚本同时输出目录缺失、目录为空和文件不合规？</li>
+            <li>如何区分 monitored_refs_unchanged、no_new_commits_in_window 和 no_engineering_progress？</li>
+            <li>如何设计测试用例，验证 LLM 在缺少 commit SHA 时不会补成已完成？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>

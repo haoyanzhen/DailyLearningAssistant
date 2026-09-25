@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-09/2026-09-26-learning-report.html">2026-09-26</a>
+      </td>
+      <td>空目录与缺失文件的状态边界</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★</td>
+      <td>空目录与缺失文件的状态边界，就是把目录是否存在、文件是否存在、内容是否合规分开记录，避免把空目录误写成缺文件或内容错。</td>
+      <td>下一次可以讲目录契约 schema：如何用 JSON 定义 required_dirs、required_files、content_schema，并让检查脚本输出 missing_directory、empty_directory、invalid_field 和 needs_review 的结构化结果。</td>
+    </tr>
+    <tr>
+      <td>多 ref unchanged 的仓库级聚合表述</td>
+      <td>软件工程 / 计算机科学</td>
+      <td>★★★</td>
+      <td>多 ref unchanged 的仓库级聚合表述，就是把多个被监控 ref 的指针未变汇总成有限结论，而不把它扩大成仓库没有任何工程进展。</td>
+      <td>下一次可以讲仓库级聚合 schema：monitored_refs、ref_status、unmonitored_refs、window_commits、workspace_clues 如何组合，并定义从 ref 状态到无变化、有变化线索、未判定的映射。</td>
+    </tr>
+    <tr>
+      <td>证据不足时 LLM 拒绝补全的测试边界</td>
+      <td>大语言模型 / 软件工程</td>
+      <td>★★★★</td>
+      <td>证据不足时 LLM 拒绝补全的测试边界，就是要求模型在缺少可追溯证据时停止生成完整结论，并明确说明缺什么证据。</td>
+      <td>下一次可以讲 LLM 证据引用 schema 的自动化校验：evidence_type、evidence_id、confidence、forbidden_inference 如何与 commit SHA、ref 状态和人工确认记录联动，并设计拒绝补全回归测试。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-09/2026-09-25-learning-report.html">2026-09-25</a>
       </td>
       <td>窗口边界提交的时间证据优先级</td>
