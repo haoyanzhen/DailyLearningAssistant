@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-09-27 学习笔记日报</title>
+    <meta name="description" content="今日为无变更复习日，围绕窗口边界时间归属、部分完成退出码映射、批量失败层级下钻，强调结论不能超过证据。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260927-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-09-27</p>
+        <h1>2026-09-27 学习日报：无变更日的证据边界复习</h1>
+        <p>今天是无变更复习日，不把它写成新增工程进展，而是围绕最近 7 天 open 问题做复习延展。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>无变更复习日：让报告规则、状态映射…</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>检查窗口边界的时间归属规则</strong>
+                <small>窗口边界显式化，同一提交只归一个日…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>部分完成状态到自动化报告退…</strong>
+                <small>部分完成要拆子状态，退出码要能驱动…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>批量失败原因的层级保留与下钻</strong>
+                <small>聚合给摘要，下钻留证据。</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念的共同核心是结论不能超过证据。窗口边界规则要求同一提交不能因为边界模糊被重复计入或漏计；部分完成映射要求不能把多个子状态压缩成一个模糊成功；批量失败下钻要求不能把多个层级原因压缩成一个仓库级失败。时间归属为阶段状态提供证据基础，阶段状态为退出码和重试策略提供机器可读输入，批量失败下钻则把这些输入放到仓库、角色、步骤的层级结构中，使整体结论和局部定位都能被追溯。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["无变更复习日：让报告规则、状态映射和失败下钻都可追溯"])
+  concept1["检查窗口边界的时间归属规则"]
+  hub --&gt; concept1
+  concept2["部分完成状态到自动化报告退出码的映射"]
+  hub --&gt; concept2
+  concept3["批量失败原因的层级保留与下钻"]
+  hub --&gt; concept3
+  related1["提交时间被改写后的证据降级规则"]
+  concept1 --&gt; related1
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  concept2 --&gt; concept3
+  concept2 --&gt; concept1
+  related2["Agent 文件接口的一致性漂移检测"]
+  concept2 --&gt; related2
+  concept3 --&gt; concept2
+  related3["依赖锁文件与脚本版本漂移的管线状态"]
+  concept3 --&gt; related3
+  concept3 --&gt; concept1
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="check-window-boundary-time-attribution">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>检查窗口边界的时间归属规则</h3>
+              <p>Check Window Boundary Time Attribution</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">窗口边界显式化，同一提交只归一个日期。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>检查窗口必须显式声明边界包含方式，例如 [start, end) 表示起点包含、终点不包含。</li>
+                <li>报告字段应一致表达 window_start、window_end、boundary_inclusion、commit_attribution 和 evidence_level。</li>
+                <li>当提交时间被 rebase、amend 或 cherry-pick 改写，或时间读取失败时，应降级为弱线索并保留人工确认入口。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="check-window-boundary-time-attribution" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="partial-completion-exit-code-mapping">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>部分完成状态到自动化报告退出码的映射</h3>
+              <p>Partial Completion to Automation Report Exit Code Mapping</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">部分完成要拆子状态，退出码要能驱动下一步。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>部分完成不是简单成功或失败，而是多个子状态组合后的中间状态。</li>
+                <li>自动化报告应把部分完成映射到明确退出码，并记录阻塞项、责任角色、证据等级和下一步动作。</li>
+                <li>退出码表需要区分全部成功、部分完成、失败和需要人工确认，避免把不同阻塞项混成同一个码。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="partial-completion-exit-code-mapping" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="batch-failure-hierarchy-preservation-drilldown">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>批量失败原因的层级保留与下钻</h3>
+              <p>Batch Failure Reason Hierarchy Preservation and Drill-down</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">聚合给摘要，下钻留证据。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>批量报告应像树一样分层：仓库级回答整体是否失败，角色级回答哪个角色失败，步骤级回答具体哪一步失败。</li>
+                <li>聚合展示可以合并相似失败，但每个角色和步骤的 evidence_id、step_id 和定位信息必须保留。</li>
+                <li>下钻能力要让同一份报告既能给脚本仓库级退出码，也能给人工复核从仓库到角色再到步骤的证据链。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="batch-failure-hierarchy-preservation-drilldown" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="check-window-boundary-time-attribution">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>检查窗口边界的时间归属规则</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>检查窗口边界的时间归属规则，讨论的是当一个提交时间正好落在检查窗口起点或终点时，系统应该把它算进哪一天。检查窗口可以理解成一个时间区间：起点 start 和终点 end 之间有哪些提交。为了让规则可重复，报告必须显式说明边界采用哪种包含方式，例如 [start, end) 表示起点包含、终点不包含；这样 end 那一秒的提交会归到下一个窗口，而不会在两个相邻日期里同时出现。对高中基础读者来说，这就像课程表里 8:00 正好下课又正好上课：如果不规定 8:00 属于哪一节，就会出现同一节课被算两次的混乱。报告字段要保持一致，例如 window_start、window_end、boundary_inclusion、commit_attribution 和 evidence_level 要一起表达：窗口是什么、边界怎么算、提交归属到哪一天、这个归属有多可靠。如果提交时间被 rebase、amend 或 cherry-pick 改写，或者时间读取失败，系统就不应继续把它当作强时间证据，而应降级为弱线索并保留人工确认入口。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>时间窗口必须定义边界包含语义，才能避免同一提交在相邻窗口重复或漏计。</li>
+                <li>边界归属不是孤立结论，需要与窗口字段、提交归属字段和证据等级字段共同表达。</li>
+                <li>时间证据被改写或读取失败时，应降低证据等级并保留人工确认入口，而不是继续输出确定日期。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设检查窗口是 2026-09-27T00:00:00+08:00 到 2026-09-28T00:00:00+08:00，采用 [start, end) 规则。一个提交的 commit time 是 2026-09-28T00:00:00+08:00，那么它不计入 2026-09-27，而应计入 2026-09-28。报告可以记录 window_end_exclusive=true、commit_attribution=next_window；如果这个提交时间后来被 rebase 改写，则 evidence_level 应降为 weak_time_clue，并进入 needs_review，而不是直接写成确定归属。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为边界提交可以灵活处理，导致同一提交在不同报告中被计入不同日期。</li>
+                <li>默认终点 end 必须包含在窗口内，导致相邻窗口重复统计同一提交。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>提交时间被改写后的证据降级规则</td><td>当提交时间被 rebase 或 amend 改写后，边界归属只能作为弱线索而不能直接写成确定日期。</td></tr>
+                <tr><td>部分完成状态到自动化报告退出码的映射</td><td>窗口内提交证据会影响阶段子状态是否被确认，窗口归属不确定时阶段状态也应保留待复核标记。</td></tr>
+                <tr><td>批量失败原因的层级保留与下钻</td><td>窗口归属错误可能导致仓库级状态错误，进而让批量报告的下钻定位失去可信基础。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果提交时间只有秒级精度，而检查窗口边界也落在同一秒，应该如何在报告中同时保留原始时间戳、归属规则和人工确认入口？</li>
+                <li>当多个仓库使用不同时区时，如何统一窗口边界的时间归属规则，避免同一提交在不同仓库报告中被计入不同目标日期？</li>
+                <li>如果提交时间被 rebase 改写，系统应该如何把窗口归属从确定结论降级为待复核线索，并保留原时间戳和改写时间戳？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="partial-completion-exit-code-mapping">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>部分完成状态到自动化报告退出码的映射</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>部分完成状态到自动化报告退出码的映射，讨论的是当一个阶段里有些子任务完成、有些子任务阻塞时，自动化系统如何给出机器可读的结果。部分完成不是简单的成功或失败，而是多个子状态组合后的中间状态。例如 open 问题中提到 docs、assets、tools、review 四个子状态可以独立记录；当 docs 和 assets 完成，而 tools 失败或 review 未通过时，阶段状态可以表达为 partially_completed。对自动化系统来说，仅写部分完成还不够，因为它还需要知道下一步该自动重试、等待人工确认，还是直接标记失败。因此可以设计退出码表：0 表示全部成功，10 表示部分完成，20 表示失败，30 表示需要人工确认；这只是讲解示例，不是当天事实。报告还应记录阻塞项、责任角色、证据等级和下一步动作，例如 blocking_items、owner_role、evidence_level、next_action。这样人看报告能理解哪里卡住，脚本看退出码也能选择正确动作。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>阶段状态需要先拆成可独立记录的子状态，才能表达部分完成而不是二选一。</li>
+                <li>退出码必须承载机器动作，例如重试、等待人工确认或标记失败，而不是只表达语义。</li>
+                <li>报告字段要同时服务人和脚本，保留阻塞项、责任角色、证据等级和下一步动作。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设一个阶段包含 docs=success、assets=success、tools=failed、review=pending。组合状态是 partially_completed，阻塞项是 tools，责任角色是 tools_owner，证据等级是 confirmed_step_failure。报告可以设置 exit_code=10、retry_policy=retry_tools_step、manual_review_entry=review_tools_failure。这样自动化系统知道不是整体失败，而是 tools 步骤需要重试；人工复核也知道要看 tools 失败证据，而不是重新检查 docs 和 assets。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为部分完成可以用 0 表示成功，导致自动化系统误以为阶段已全部完成。</li>
+                <li>用一个模糊的 1 表示失败，导致无法区分哪些子状态已完成、哪些阻塞、应该重试哪个步骤。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>批量失败原因的层级保留与下钻</td><td>部分完成可能只发生在某个角色或步骤，批量报告必须保留该层级原因而不能只给仓库级失败。</td></tr>
+                <tr><td>检查窗口边界的时间归属规则</td><td>窗口内提交证据会影响子状态是否被确认，窗口归属不确定时阶段状态也应保留待复核标记。</td></tr>
+                <tr><td>Agent 文件接口的一致性漂移检测</td><td>新增阶段或文件边界扩展会改变子状态集合，如果 prompt、脚本和测试不同步，退出码映射可能无法正确消费。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当 docs、assets、tools、review 四个子状态出现不同组合时，如何设计退出码表，使自动化系统既能区分成功、部分完成、失败和需要人工确认，又不会把不同阻塞项混成同一个码？</li>
+                <li>如果某个子状态因为读取失败而未知，部分完成状态应该如何降级，并保留旧状态和人工确认入口？</li>
+                <li>当文档声明 completion 但 review 未通过时，报告应如何同时记录声明来源、阻塞证据、责任角色和证据等级，避免把弱线索补全成完成事实？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="batch-failure-hierarchy-preservation-drilldown">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>批量失败原因的层级保留与下钻</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>批量失败原因的层级保留与下钻，讨论的是当一次批量检查或批量交付中多个仓库、多个角色、多个步骤都出现问题时，报告如何既给出整体摘要，又保留定位细节。可以把批量报告想象成一棵树：仓库级是树干，角色级是树枝，步骤级是树叶。仓库级状态回答这个仓库整体是否失败，角色级状态回答哪个角色失败，步骤级状态回答具体哪一步失败，failure_code 和 evidence_id 则回答失败原因是什么、证据在哪里。聚合展示是为了让人快速看懂整体，但聚合不能把叶子节点证据吞掉。多个角色失败原因相似时，可以合并成一组，例如都标记为 version_drift，但每个角色的 evidence_id、step_id 和定位信息仍要保留，否则后续无法判断是输入计划错误、处理脚本错误，还是依赖锁文件与脚本实际使用版本不一致。对自动化系统来说，下钻能力意味着同一份报告既能给脚本一个仓库级退出码，也能给人工复核一条从仓库到角色再到步骤的证据链。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>批量失败需要分层表达，仓库级、角色级和步骤级分别回答不同定位问题。</li>
+                <li>相似失败可以分组，但分组不能替代证据 ID、步骤 ID 和定位信息。</li>
+                <li>下钻结构要让自动化系统和人工复核使用同一份数据，从摘要一路追到具体证据。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设 batch_id=B20260927 中仓库 repoA 的 repository_status=failed。角色 role1 的 step=dependency_check 失败，failure_code=version_drift，evidence_id=EV-101；角色 role2 的 step=asset_review 失败，failure_code=review_not_passed，evidence_id=EV-102；角色 role3 的 step=dependency_check 失败，failure_code=version_drift，evidence_id=EV-103。仓库级摘要可以写 dominant_failure=version_drift、affected_roles=[role1, role3]、other_failures=[review_not_passed]。下钻时仍要保留 EV-101 和 EV-103，而不是把它们合并成一条没有证据 ID 的依赖问题。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为批量失败只要给一个仓库级原因就够了，导致无法定位具体失败位置。</li>
+                <li>把相似失败合并后丢掉每个角色和步骤的证据 ID，导致无法判断相似失败是否真的来自同一个根因。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>部分完成状态到自动化报告退出码的映射</td><td>部分完成状态需要被映射到退出码，同时批量报告要保留造成部分完成的具体角色和步骤原因。</td></tr>
+                <tr><td>依赖锁文件与脚本版本漂移的管线状态</td><td>依赖版本漂移可能出现在步骤级，若只记录仓库级失败，就无法判断是输入计划错误还是处理脚本错误。</td></tr>
+                <tr><td>检查窗口边界的时间归属规则</td><td>窗口归属决定哪些提交证据进入批量报告，若边界提交被错误归属，下钻到的失败原因可能指向错误日期。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当多个角色出现相同 failure_code 时，如何合并展示相似原因，同时保留每个角色的 evidence_id、step_id 和定位信息？</li>
+                <li>依赖版本不一致、超时位置和审查未通过应分别记录在仓库级、角色级还是步骤级，如何避免层级混淆？</li>
+                <li>批量报告需要支持从仓库摘要下钻到角色原因和证据引用，如何设计 schema 使自动化系统和人工复核都能使用同一份数据？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念的共同核心是结论不能超过证据。窗口边界规则要求同一提交不能因为边界模糊被重复计入或漏计；部分完成映射要求不能把多个子状态压缩成一个模糊成功；批量失败下钻要求不能把多个层级原因压缩成一个仓库级失败。时间归属为阶段状态提供证据基础，阶段状态为退出码和重试策略提供机器可读输入，批量失败下钻则把这些输入放到仓库、角色、步骤的层级结构中，使整体结论和局部定位都能被追溯。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">结论不能超过证据：边界要显式、状态要可消费、失败要能下钻。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>当提交时间被 rebase 改写时，如何把窗口归属从确定结论降级为待复核线索，并保留原时间戳和改写时间戳？</li>
+            <li>当 docs、assets、tools、review 子状态组合出现时，如何设计退出码表区分成功、部分完成、失败和人工确认，又不混淆阻塞项？</li>
+            <li>当多个角色出现相同 failure_code 时，如何合并相似原因，同时保留每个角色的 evidence_id、step_id 和定位信息？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>

@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-09/2026-09-27-learning-report.html">2026-09-27</a>
+      </td>
+      <td>检查窗口边界的时间归属规则</td>
+      <td>软件工程 / 计算机科学</td>
+      <td>★★</td>
+      <td>检查窗口边界的时间归属规则，就是提前规定提交时间落在窗口起点或终点时算哪一天，并让报告字段始终按同一规则表达。</td>
+      <td>下一次可以讲窗口边界归属规则如何写入报告 schema：window_start、window_end、boundary_inclusion、commit_attribution 和 evidence_level 如何联动，并设计边界提交不重复、不漏计的回归测试。</td>
+    </tr>
+    <tr>
+      <td>部分完成状态到自动化报告退出码的映射</td>
+      <td>软件工程</td>
+      <td>★★★</td>
+      <td>部分完成状态到自动化报告退出码的映射，就是把多个子状态组合成机器可读结果，让系统知道哪些完成、哪些阻塞、下一步该重试还是人工确认。</td>
+      <td>下一次可以讲阶段完成状态机与退出码表：pending、running、success、failed、skipped、needs_review 和 partially_completed 的迁移条件、重试策略、人工确认入口如何与 batch report schema 联动。</td>
+    </tr>
+    <tr>
+      <td>批量失败原因的层级保留与下钻</td>
+      <td>软件工程 / 计算机科学</td>
+      <td>★★★★</td>
+      <td>批量失败原因的层级保留与下钻，就是在聚合仓库级摘要的同时保留角色级和步骤级原因，让整体结论和局部定位都能被追溯。</td>
+      <td>下一次可以讲 batch report schema 的下钻接口：batch_id、repository_id、role_id、step_id、failure_code、evidence_level、evidence_id 如何组成可查询结构，并设计相似失败分组不丢证据的回归测试。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-09/2026-09-26-learning-report.html">2026-09-26</a>
       </td>
       <td>空目录与缺失文件的状态边界</td>
