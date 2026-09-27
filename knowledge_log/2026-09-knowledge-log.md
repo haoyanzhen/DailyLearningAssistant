@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-09/2026-09-28-learning-report.html">2026-09-28</a>
+      </td>
+      <td>远端 ref 状态词与证据条件绑定</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★</td>
+      <td>远端 ref 状态词必须绑定证据条件，unchanged、changed、first_seen 分别表示指针未变、指针变化和首次建立基线。</td>
+      <td>下一次可以讲状态词到自动化动作的映射，例如 changed 是否触发按需获取提交对象、first_seen 是否保留基线、unchanged 是否跳过内容检查，并设计对应报告字段。</td>
+    </tr>
+    <tr>
+      <td>远端 ref 指针变化与提交详情之间的证据边界</td>
+      <td>软件工程 / 计算机科学</td>
+      <td>★★★</td>
+      <td>远端 ref 指针变化只能证明分支指向变化，不能证明提交数量、作者、文件列表或 diff。</td>
+      <td>下一次可以讲按需升级读取策略，即从 ref 指针变化线索出发，在满足哪些权限、证据和失败回退条件时才 fetch 提交对象或文件树。</td>
+    </tr>
+    <tr>
+      <td>路径级证据归纳的边界</td>
+      <td>软件工程 / 计算机科学</td>
+      <td>★★★★</td>
+      <td>本地 commit 能支持路径级和主题级归纳，但没有 diff 时不能推断具体接口、算法、性能或运行时行为。</td>
+      <td>下一次可以讲证据等级 schema，把 commit_level、path_level、topic_level、diff_level 组合成机器可读字段，并设计从路径线索升级到 diff 确认的流程。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-09/2026-09-27-learning-report.html">2026-09-27</a>
       </td>
       <td>检查窗口边界的时间归属规则</td>

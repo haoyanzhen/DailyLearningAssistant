@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-09-28 学习笔记日报</title>
+    <meta name="description" content="今天围绕远端 ref 状态词、指针变化边界与路径级归纳，强调证据能到哪一层，结论就只能写到哪一层，避免弱线索被扩写成完成事实。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260928-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-09-28</p>
+        <h1>远端 ref 状态词与证据边界</h1>
+        <p>今天从远端 ref 状态词出发，区分指针变化、提交详情和路径级归纳，把监控结论限制在可支持证据范围内。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>远端 ref 状态词与证据边界</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>远端 ref 状态词与证据…</strong>
+                <small>状态词不是自由描述，而是证据条件的…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>远端 ref 指针变化与提…</strong>
+                <small>指针变化是位置变化，不是提交详情。</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>路径级证据归纳的边界</strong>
+                <small>没拆开的箱子，只能确认清单类别，不…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念形成一条证据链：状态词绑定证据条件，保证监控结论不被随意放大；ref 指针变化与提交详情边界，保证弱线索不被写成完成事实；路径级证据归纳边界，保证本地 commit 也被限制在可支持范围内。共同点是：证据能到哪一层，结论就只能写到哪一层。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["远端 ref 状态词与证据边界"])
+  concept1["远端 ref 状态词与证据条件绑定"]
+  hub --&gt; concept1
+  concept2["远端 ref 指针变化与提交详情之间的证据边界"]
+  hub --&gt; concept2
+  concept3["路径级证据归纳的边界"]
+  hub --&gt; concept3
+  related1["Git SHA 作为版本指针标识"]
+  concept1 --&gt; related1
+  related2["基于历史状态快照的变更检测"]
+  concept1 --&gt; related2
+  concept1 --&gt; concept2
+  related3["Agent 或 LLM 输出可靠性与证据约束"]
+  concept1 --&gt; related3
+  related4["git ls-remote 只读元数据访问"]
+  concept2 --&gt; related4
+  related5["最小权限访问与只读监控"]
+  concept2 --&gt; related5
+  related6["检查窗口与本地 Git commit 作为变更事实源"]
+  concept2 --&gt; related6
+  related7["LLM 拒绝补全或不推断缺失证据"]
+  concept2 --&gt; related7
+  concept3 --&gt; related6
+  related8["变更统计的概览口径与去重边界"]
+  concept3 --&gt; related8
+  concept3 --&gt; related7
+  related9["文档、工作单与代码变更同步"]
+  concept3 --&gt; related9
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4,related5,related6,related7,related8,related9 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="remote-ref-status-evidence-binding">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>远端 ref 状态词与证据条件绑定</h3>
+              <p>Remote Ref Status Evidence Binding</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">状态词不是自由描述，而是证据条件的结果。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>unchanged 需要读取成功、有历史 SHA，且当前 SHA 与历史 SHA 相同。</li>
+                <li>changed 只表示历史 SHA 与当前 SHA 不同，不证明提交数量、作者、文件列表或 diff。</li>
+                <li>first_seen 只表示首次建立基线，不能写成新增提交或 changed。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="remote-ref-status-evidence-binding" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="remote-ref-pointer-change-evidence-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>远端 ref 指针变化与提交详情之间的证据边界</h3>
+              <p>Remote Ref Pointer Change Evidence Boundary</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">指针变化是位置变化，不是提交详情。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>git ls-remote 只读取远端 ref 元数据，不 clone、不 fetch、不下载提交对象、文件树或工作区内容。</li>
+                <li>changed 只能表述为远端版本变化线索或 ref 指针变化线索。</li>
+                <li>提交数量、作者、文件列表和 diff 需要提交对象、日志、文件列表或 diff 支持。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="remote-ref-pointer-change-evidence-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="path-level-evidence-induction-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>路径级证据归纳的边界</h3>
+              <p>Path-Level Evidence Induction Boundary</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">没拆开的箱子，只能确认清单类别，不能确认内部实现。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>已确认 commit 可支持提交主题、文件路径、新增或修改类型和行数统计。</li>
+                <li>未展开 diff 时，归纳只能停留在路径级和主题级。</li>
+                <li>文件名、路径和提交主题不能直接扩写成接口、算法、性能或运行时行为。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="path-level-evidence-induction-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="remote-ref-status-evidence-binding">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>远端 ref 状态词与证据条件绑定</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>可以把远端 ref 想象成一个会改写的门牌号，例如 refs/heads/main。门牌号本身不是内容，它指向某个 SHA。监控系统今天读到一个当前 SHA，再和上次记录的历史 SHA 比较，就能得到三种结果：如果读取成功、有历史 SHA、且两者相同，就是 unchanged；如果读取成功、有历史 SHA、但两者不同，就是 changed；如果没有历史 SHA，只能记录当前 SHA 作为基线，就是 first_seen。当天材料里，cannbot-skills 和 public-library 的 unchanged 表示指针未变，chunkcat 和 padv3 的 changed 表示指针变化，gatherpakvcache 和 slicev2 的 first_seen 表示首次建立基线。这个概念的关键不是记住三个词，而是理解每个词背后都有证据条件。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>远端 ref 是指向 SHA 的可改写指针，状态判断依赖历史 SHA 与当前 SHA 的可比性。</li>
+                <li>只有读取成功且存在可比基线，才能进入 unchanged 或 changed；没有历史基线时只能记录 first_seen。</li>
+                <li>状态词描述的是指针观测结果，不承载提交内容、作者、文件列表或工程完成度。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>某仓库 refs/heads/main 的历史 SHA 是 abc123。今天读取成功，当前 SHA 仍是 abc123，则状态为 unchanged；如果当前 SHA 是 def456，则状态为 changed，但只知道指针从 abc123 变到 def456；如果昨天没有历史记录，今天第一次读到 def456，则状态为 first_seen，只记录 def456 作为基线。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把 changed 当成已经提交某个功能。</li>
+                <li>把 unchanged 当成没有任何工作。</li>
+                <li>把 first_seen 当成新增提交。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>Git SHA 作为版本指针标识</td><td>历史 SHA 和当前 SHA 必须可比较，才能判断 unchanged 或 changed。</td></tr>
+                <tr><td>基于历史状态快照的变更检测</td><td>需要保存上次 SHA，没有历史快照就无法区分 first_seen 和 changed。</td></tr>
+                <tr><td>远端 ref 指针变化与提交详情之间的证据边界</td><td>限制 changed 的表述强度，防止把指针变化写成提交内容。</td></tr>
+                <tr><td>Agent 或 LLM 输出可靠性与证据约束</td><td>自动总结只能使用状态词对应的证据范围，不能越界补全。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当读取成功但历史基线缺失时，为什么 first_seen 不能写成 changed？</li>
+                <li>unchanged、changed、first_seen 分别应该映射到哪些自动化动作，例如跳过、升级读取或保留基线？</li>
+                <li>多个 ref 同时存在不同状态时，如何聚合到仓库级结论而不把指针未变扩大成无工程进展？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="remote-ref-pointer-change-evidence-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>远端 ref 指针变化与提交详情之间的证据边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>ref 指针变化像看到书架上的标签从 A 换到 B。标签变化说明这个位置指向了新的版本标识，但标签本身不会告诉你书架里新增了几本书、谁放的、书名是什么、内容改了什么。git ls-remote 只读取远端 ref 元数据，不 clone、不 fetch、不下载提交对象、文件树或工作区内容，因此它能确认的是指针是否移动，而不是提交对象里的细节。当天 chunkcat 和 padv3 的 refs/heads/main 出现 changed，材料明确说明这只能表述为远端版本变化线索或 ref 指针变化线索，具体提交数量、作者、文件列表和 diff 均待确认。这个概念的核心是区分位置变化和事件细节。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>ref 指针变化只说明位置指向新的 SHA，不说明提交对象内部细节。</li>
+                <li>git ls-remote 的只读元数据访问决定了证据上限，不会下载提交对象或文件树。</li>
+                <li>弱线索必须与已确认提交事实分开，避免把指针变化写成完成事实。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>远端 main 从 abc123 变为 def456。可以写 main ref 指针发生变化，属于待确认版本变化线索；不能写新增 3 个提交、修改了 level_objectives.json、完成玩家反馈优化，因为这些信息需要提交对象、日志、文件列表或 diff 支持。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>看到 main 指针 changed 就写提交了玩家反馈、修改了 battle_session.gd、修复了某个问题。</li>
+                <li>把多个远端 ref 同时 changed 合并成一次完整功能交付。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>git ls-remote 只读元数据访问</td><td>只读 ref 指针时不会下载提交对象或文件树，因此决定证据上限。</td></tr>
+                <tr><td>最小权限访问与只读监控</td><td>系统故意不扩大读取范围，从而把结论限制在指针层面。</td></tr>
+                <tr><td>检查窗口与本地 Git commit 作为变更事实源</td><td>只有窗口内已确认 commit 才能支持提交主题和文件路径。</td></tr>
+                <tr><td>LLM 拒绝补全或不推断缺失证据</td><td>缺少提交对象时，自动总结应停止生成具体提交详情。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>在什么证据条件下，changed 可以从指针变化线索升级为已确认提交详情？</li>
+                <li>如何设计字段同时保留 ref 已变化、提交对象未获取、本地 commit 未确认三种状态而不互相覆盖？</li>
+                <li>当多个远端 ref 同时 changed 时，如何避免把多个指针变化合并成一次完整功能交付？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="path-level-evidence-induction-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>路径级证据归纳的边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>本地 commit 是比远端 ref 更强的证据，因为它可以提供提交主题、文件路径、新增或修改类型和行数统计。当天 tiny-sea-war 在 2026-09-27 检查窗口内有 3 个已确认 commit，因此可以归纳出玩家反馈与战斗推进、关卡目标与舰船获取数据、美术资源路径约定与资产目录解析、文档工作单与测试同步等主题。但是，材料没有展开 diff，所以这些归纳仍然停留在路径级和主题级。看到 asset_catalog.gd、asset_path_lookup_test.gd、assets/README.md，可以确认美术资源路径约定和资产目录解析是当天线索；看到 level_objectives.json、ship_acquisition.json，可以确认数据驱动配置线索；但不能进一步说某个函数如何解析路径、某个状态机如何迁移、某个算法如何计算舰船获取概率。这个概念提醒我们，即使证据来自已确认 commit，没有 diff 时也不能把文件名和主题扩写成实现细节。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>本地 commit 比远端 ref 更强，但仍受证据展开程度限制。</li>
+                <li>文件路径和提交主题只能支持路径级、主题级归纳。</li>
+                <li>接口、算法、性能、运行时行为需要 diff、测试或运行证据支持。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>tiny-sea-war 的提交 feat: improve player feedback and battle progression 涉及 player_command_feedback.gd、battle_session.gd、level_objectives.json 等文件。可以归纳为涉及玩家反馈、战斗推进和关卡目标数据；不能归纳为战斗推进算法被重写、玩家反馈延迟被降低、某个 UI 状态机被实现，除非展开 diff 或运行测试证据支持。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>看到 battle_session.gd 或 player_command_feedback.gd 就推断具体战斗状态机、玩家反馈算法或性能优化。</li>
+                <li>把总新增删除行数当成精确文件级变化，或把路径级线索写成已确认实现事实。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>检查窗口与本地 Git commit 作为变更事实源</td><td>文件路径和提交主题来自窗口内已确认 commit，提供路径级归纳的事实基础。</td></tr>
+                <tr><td>变更统计的概览口径与去重边界</td><td>总行数只能作为概览，因为统计按提交相加且未跨提交重复文件去重。</td></tr>
+                <tr><td>LLM 拒绝补全或不推断缺失证据</td><td>缺少 diff 时，自动总结应停止推断接口、算法、性能和运行时行为。</td></tr>
+                <tr><td>文档、工作单与代码变更同步</td><td>AGENTS.md、docs、workorder 与代码文件同批变化时，只能确认同步变化的路径级线索。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>没有 diff 时，如何设计证据等级字段区分 path_level、topic_level、diff_level 和 runtime_level？</li>
+                <li>如何从文件路径生成可验证假设，而不是直接写成实现结论？</li>
+                <li>什么时候必须展开 diff 或运行测试，才能确认接口签名、算法细节、性能影响或运行时行为？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念形成一条证据链：状态词绑定证据条件，保证监控结论不被随意放大；ref 指针变化与提交详情边界，保证弱线索不被写成完成事实；路径级证据归纳边界，保证本地 commit 也被限制在可支持范围内。共同点是：证据能到哪一层，结论就只能写到哪一层。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">证据能到哪一层，结论就只能写到哪一层。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>unchanged、changed、first_seen 分别应该映射到哪些自动化动作和报告字段，例如跳过、升级读取或保留基线？</li>
+            <li>changed 在满足哪些权限、证据和失败回退条件时，才能从指针变化线索升级为已确认提交详情？</li>
+            <li>没有 diff 时，如何设计 path_level、topic_level、diff_level 等证据等级字段，避免把路径线索写成实现结论？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>

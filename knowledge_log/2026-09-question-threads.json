@@ -3,6 +3,96 @@
   "year_month": "2026-09",
   "threads": [
     {
+      "id": "2026-09-28-ref-8fecac0f4f",
+      "question": "如何设计字段同时保留 ref 已变化、提交对象未获取、本地 commit 未确认三种状态而不互相覆盖？",
+      "source_date": "2026-09-28",
+      "source_concept": "远端 ref 指针变化与提交详情之间的证据边界",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-28T06:19:14.657425+08:00",
+      "updated_at": "2026-09-28T06:19:14.657425+08:00"
+    },
+    {
+      "id": "2026-09-28-ref-7e797e4f57",
+      "question": "unchanged、changed、first_seen 分别应该映射到哪些自动化动作，例如跳过、升级读取或保留基线？",
+      "source_date": "2026-09-28",
+      "source_concept": "远端 ref 状态词与证据条件绑定",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-28T06:19:14.657425+08:00",
+      "updated_at": "2026-09-28T06:19:14.657425+08:00"
+    },
+    {
+      "id": "2026-09-28-ref-44c4decdad",
+      "question": "在什么证据条件下，changed 可以从指针变化线索升级为已确认提交详情？",
+      "source_date": "2026-09-28",
+      "source_concept": "远端 ref 指针变化与提交详情之间的证据边界",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-28T06:19:14.657425+08:00",
+      "updated_at": "2026-09-28T06:19:14.657425+08:00"
+    },
+    {
+      "id": "2026-09-28-ref-400499f3c6",
+      "question": "多个 ref 同时存在不同状态时，如何聚合到仓库级结论而不把指针未变扩大成无工程进展？",
+      "source_date": "2026-09-28",
+      "source_concept": "远端 ref 状态词与证据条件绑定",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-28T06:19:14.657425+08:00",
+      "updated_at": "2026-09-28T06:19:14.657425+08:00"
+    },
+    {
+      "id": "2026-09-28-ref-2a3662deca",
+      "question": "当读取成功但历史基线缺失时，为什么 first_seen 不能写成 changed？",
+      "source_date": "2026-09-28",
+      "source_concept": "远端 ref 状态词与证据条件绑定",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-28T06:19:14.657425+08:00",
+      "updated_at": "2026-09-28T06:19:14.657425+08:00"
+    },
+    {
+      "id": "2026-09-28-ref-002751c654",
+      "question": "当多个远端 ref 同时 changed 时，如何避免把多个指针变化合并成一次完整功能交付？",
+      "source_date": "2026-09-28",
+      "source_concept": "远端 ref 指针变化与提交详情之间的证据边界",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-28T06:19:14.657425+08:00",
+      "updated_at": "2026-09-28T06:19:14.657425+08:00"
+    },
+    {
+      "id": "2026-09-28-concept-d8cb344c44",
+      "question": "没有 diff 时，如何设计证据等级字段区分 path_level、topic_level、diff_level 和 runtime_level？",
+      "source_date": "2026-09-28",
+      "source_concept": "路径级证据归纳的边界",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-28T06:19:14.657425+08:00",
+      "updated_at": "2026-09-28T06:19:14.657425+08:00"
+    },
+    {
+      "id": "2026-09-28-concept-75103402ef",
+      "question": "什么时候必须展开 diff 或运行测试，才能确认接口签名、算法细节、性能影响或运行时行为？",
+      "source_date": "2026-09-28",
+      "source_concept": "路径级证据归纳的边界",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-28T06:19:14.657425+08:00",
+      "updated_at": "2026-09-28T06:19:14.657425+08:00"
+    },
+    {
+      "id": "2026-09-28-concept-5e22ddb21a",
+      "question": "如何从文件路径生成可验证假设，而不是直接写成实现结论？",
+      "source_date": "2026-09-28",
+      "source_concept": "路径级证据归纳的边界",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-28T06:19:14.657425+08:00",
+      "updated_at": "2026-09-28T06:19:14.657425+08:00"
+    },
+    {
       "id": "2026-09-27-concept-e8c11a0d5f",
       "question": "如果提交时间被 rebase 改写，系统应该如何把窗口归属从确定结论降级为待复核线索，并保留原时间戳和改写时间戳？",
       "source_date": "2026-09-27",
