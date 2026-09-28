@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-09-29 学习笔记日报</title>
+    <meta name="description" content="今日主线从战斗帧布局、数据驱动配置到模拟报告，把界面区域、平衡参数与运行证据拆成可验证边界。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260929-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-09-29</p>
+        <h1>战斗界面、数据配置与模拟报告的可验证边界</h1>
+        <p>今天围绕 tiny-sea-war 的工程链，把战斗界面、平衡参数和运行证据拆成可验证区域。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>从界面布局到数据配置，再到运行证据…</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>战斗帧布局与 HUD 控制…</strong>
+                <small>黑板显示战场，面板负责操作，分开后…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>数据驱动配置与平衡参数</strong>
+                <small>JSON 是菜单，代码是厨师，改菜…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>模拟聚合与报告输出</strong>
+                <small>记录台、统计员、报告员把比赛过程变…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念按由表及里排列：战斗帧布局解决界面区域边界，数据驱动配置解决行为参数边界，模拟聚合与报告输出解决运行证据边界。布局测试、schema 契约、回归测试和文档映射分别把不同层级的变化变成可检查状态；对于公式内容、具体指标和实现细节，应保持待确认。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["从界面布局到数据配置，再到运行证据的可验证边界"])
+  concept1["战斗帧布局与 HUD 控制区/海洋视口分离"]
+  hub --&gt; concept1
+  concept2["数据驱动配置与平衡参数"]
+  hub --&gt; concept2
+  concept3["模拟聚合与报告输出"]
+  hub --&gt; concept3
+  concept1 --&gt; concept1
+  related1["UI 布局测试"]
+  concept1 --&gt; related1
+  related2["Godot/GDScript 分层脚本结构"]
+  concept1 --&gt; related2
+  related3["数据 schema 契约"]
+  concept2 --&gt; related3
+  related4["战斗会话状态协调"]
+  concept2 --&gt; related4
+  related5["战斗公式数据化"]
+  concept2 --&gt; related5
+  concept3 --&gt; related4
+  related6["回归测试与验证状态"]
+  concept3 --&gt; related6
+  concept3 --&gt; related2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4,related5,related6 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="battle-frame-layout-hud-viewport">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>战斗帧布局与 HUD 控制区/海洋视口分离</h3>
+              <p>Battle Frame Layout and HUD/Viewport Separation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">黑板显示战场，面板负责操作，分开后都能稳定变化。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>战斗帧布局先定义界面由哪些区域组成，再给每个区域划定边界。</li>
+                <li>HUD 控制区负责操作信息，海洋视口负责战场画面，两者职责分离。</li>
+                <li>布局测试可以把区域边界、遮挡关系和缩放约束变成可执行检查。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="battle-frame-layout-hud-viewport" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="data-driven-config-balance-parameters">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>数据驱动配置与平衡参数</h3>
+              <p>Data-Driven Configuration and Balance Parameters</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">JSON 是菜单，代码是厨师，改菜单不必重训厨师。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>舰船、武器和公式参数外置到 JSON，代码只读取数据并执行规则。</li>
+                <li>构建脚本维护数据，降低设计调整与核心逻辑耦合。</li>
+                <li>数据文件需要 schema 契约、字段说明和读取约定，避免散乱参数。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="data-driven-config-balance-parameters" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="simulation-aggregation-report-output">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>模拟聚合与报告输出</h3>
+              <p>Simulation Aggregation and Report Output</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">记录台、统计员、报告员把比赛过程变成可复盘证据。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>battle_recorder.gd 记录运行中的战斗状态。</li>
+                <li>simulation_aggregator.gd 把零散记录汇总成指标。</li>
+                <li>simulation_report_writer.gd 把统计结果写成可阅读或可机器读取的报告。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="simulation-aggregation-report-output" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="battle-frame-layout-hud-viewport">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>战斗帧布局与 HUD 控制区/海洋视口分离</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>可以把战斗界面想象成一间教室：海洋视口像黑板，用来显示舰船、战场和运动画面；HUD 控制区像讲台旁的操作面板，用来显示船速、弹药、暂停和加速等控制信息。战斗帧布局先规定整个战斗界面由哪些区域组成，再给每个区域划定边界。HUD 控制区与海洋视口分离，就是不让操作面板和战场画面绑死在一起：改按钮位置时不会破坏海洋画面，调整视口大小时也不会让控制区错位。这里基于当日材料可确认的是提交标题、文档路径和测试路径，说明项目正在把战斗界面拆成可约束的区域；不能确认具体像素、渲染算法或性能实现。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>先定义帧结构，再拆分区域，让界面有稳定边界。</li>
+                <li>HUD 与海洋视口分离后，表现层职责更清晰，减少互相影响。</li>
+                <li>用布局测试约束区域，使界面变化可被验证。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设战斗界面顶部是 HUD 控制区，中央是海洋视口，底部是暂停、加速和回放控制；布局测试可以检查顶部 HUD 不超过指定高度，中央视口不被控制按钮遮挡，窗口缩放时控制区仍留在顶部，海洋视口仍保留足够显示区域。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把 UI 分离理解成只是把按钮挪个位置。</li>
+                <li>只关注视觉排列，忽略职责边界和可测试性。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>战斗帧布局</td><td>定义了界面区域，HUD 控制区与海洋视口分离是这种区域拆分的具体表现。</td></tr>
+                <tr><td>UI 布局测试</td><td>让战斗帧布局的约束从文档描述变成可执行检查。</td></tr>
+                <tr><td>Godot/GDScript 分层脚本结构</td><td>presentation 层适合承载 HUD、视口和战斗帧布局相关脚本。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果窗口尺寸变化，战斗帧布局应如何保持控制区与海洋视口不互相遮挡？</li>
+                <li>UI 布局测试应检查哪些最小约束，才能证明 HUD 与视口已经分离？</li>
+                <li>当表现层布局变化时，如何避免把界面改动误写成战斗规则变化？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="data-driven-config-balance-parameters">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>数据驱动配置与平衡参数</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>如果舰船耐久、武器射程、战斗公式参数都写死在脚本里，每次调整平衡都要改代码，容易把设计调整和程序逻辑混在一起。数据驱动配置的思路是：把舰船、武器、公式等参数外置到 JSON 数据文件中，例如 data/ships/*.json、data/weapons/*.json、data/formulas/combat_formulas.json，并用构建脚本维护这些数据。代码只负责读取数据并执行规则，这样设计者调整参数时，不必深入修改核心脚本。这里基于当日材料可确认的是数据文件路径、构建脚本路径和提交标题中的 balance 线索；不能确认具体数值、公式内容、变量、约束或平衡结果。combat_formulas.json 与 combat_formula_design.md 只能作为战斗公式数据化的候选线索。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>参数与逻辑分离，让平衡调整不直接侵入核心代码。</li>
+                <li>数据文件需要 schema 约束字段、类型和含义。</li>
+                <li>构建脚本和测试共同保证数据可维护、可验证。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设某艘舰船的耐久、装填时间、射程放在 ship.json，某武器的伤害、射速、射程放在 weapon.json；调整平衡时，只改 JSON 中某艘舰船的耐久或某武器的伤害，然后运行构建脚本和测试，不需要修改 battle_session.gd 的核心战斗逻辑。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为数据驱动只是把数字放到文件里。</li>
+                <li>看到 combat_formulas.json 就认为已经确认了数学公式。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>数据 schema 契约</td><td>约束 JSON 字段、类型和含义，让读取稳定。</td></tr>
+                <tr><td>战斗会话状态协调</td><td>读取舰船、武器和公式数据时，schema 决定它能稳定依赖哪些字段。</td></tr>
+                <tr><td>战斗公式数据化</td><td>combat_formulas.json 指向公式外置，但当天未确认具体公式内容。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当新增一个舰船字段时，schema 文档、JSON 数据和读取脚本应如何同步更新？</li>
+                <li>平衡参数外置后，如何测试防止错误数值导致战斗行为异常？</li>
+                <li>在只有文件路径和提交标题时，如何把数据驱动配置写成可确认概念而不是具体公式事实？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="simulation-aggregation-report-output">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>模拟聚合与报告输出</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>一场战斗运行过程中会产生很多事件：舰船移动、开火、命中、损伤、沉没、战斗结束等。battle_recorder.gd 可以理解为记录员，把运行中的战斗状态记录下来；simulation_aggregator.gd 可以理解为统计员，把零散记录汇总成指标；simulation_report_writer.gd 可以理解为报告员，把统计结果写成可阅读或可机器读取的报告。这条链路把一场战斗从运行过程转化为可分析数据，再转化为可追溯报告。在 Godot/GDScript 分层脚本结构中，infrastructure 层适合承载这类模拟、记录、报告能力，而 application 层的 battle_session.gd 负责协调战斗会话。这里基于当日材料可确认的是这些脚本路径和记录—聚合—报告链路线索；不能确认具体指标名称、采样频率、报告格式、聚合算法或运行时性能。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>先记录事件，再聚合指标，最后输出报告，形成分析管道。</li>
+                <li>聚合需要定义指标、分组方式和汇总规则，不能只打印日志。</li>
+                <li>报告可作为验证证据，支撑回归测试、文档状态和项目复盘。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设一场战斗记录包含舰 A 开火、舰 B 被命中、舰 B 沉没等事件；聚合器可以按舰船统计被命中次数，按战斗统计平均存活时间或战斗结束原因；报告写入器把结果写成报告，供回归测试或项目状态文档引用，说明某次行为调整是否被检查。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为模拟聚合只是把日志打印出来。</li>
+                <li>以为报告输出只是展示结果，忽略其作为验证证据的作用。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>战斗会话状态协调</td><td>产生运行状态和记录，模拟聚合与报告输出基于这些记录生成分析结果。</td></tr>
+                <tr><td>回归测试与验证状态</td><td>模拟报告可作为证据，说明某类行为是否被检查。</td></tr>
+                <tr><td>Godot/GDScript 分层脚本结构</td><td>infrastructure 层适合承载模拟、记录、报告等基础设施能力。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>战斗记录、聚合指标和报告输出之间应如何定义稳定的数据边界，避免报告直接依赖界面状态？</li>
+                <li>当模拟报告用于回归测试时，哪些指标变化应触发失败，哪些只作为观察线索？</li>
+                <li>在只有脚本路径的情况下，如何设计后续验证来确认记录—聚合—报告链路真的可用？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念按由表及里排列：战斗帧布局解决界面区域边界，数据驱动配置解决行为参数边界，模拟聚合与报告输出解决运行证据边界。布局测试、schema 契约、回归测试和文档映射分别把不同层级的变化变成可检查状态；对于公式内容、具体指标和实现细节，应保持待确认。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">布局测试、schema 契约、回归测试和文档映射分别把不同层级的变化变成可检查状态。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如果窗口尺寸变化，战斗帧布局应如何保持控制区与海洋视口不互相遮挡？</li>
+            <li>平衡参数外置后，如何测试防止错误数值导致战斗行为异常？</li>
+            <li>当模拟报告用于回归测试时，哪些指标变化应触发失败，哪些只作为观察线索？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
