@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-09-30 学习笔记日报</title>
+    <meta name="description" content="当天围绕资产清单、生成评审注册表与导航烘焙三条线，把散落文件、临时状态和口头约定变成可登记、可查询、可验证的结构。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20260930-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-09-30</p>
+        <h1>2026-09-30 学习笔记日报</h1>
+        <p>当天材料围绕 tiny-sea-war 的资产、评审和导航三条工程线展开，重点是把复杂对象变成可登记、可查询、可验证的结构。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>把复杂对象变成可登记、可查询、可验…</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>资产清单 manifest…</strong>
+                <small>manifest 说清楚一组资产包…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>注册表与静态评审页面</strong>
+                <small>registry 给候选项编号，r…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>导航图数据烘焙与可达性恢复…</strong>
+                <small>烘焙先做可走区域表，可达性问还能不…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念都围绕结构化入口。manifest 给资产集合入口，registry 给生成项评审入口，导航烘焙给规划器查询入口。它们也共享证据边界思想：文件存在能确认机制线索，但不能确认具体算法、生成主体或物理模型；因此讲解中把已确认机制和候选解释分开。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["把复杂对象变成可登记、可查询、可验证的结构"])
+  concept1["资产清单 manifest 与 generation 登记"]
+  hub --&gt; concept1
+  concept2["注册表与静态评审页面"]
+  hub --&gt; concept2
+  concept3["导航图数据烘焙与可达性恢复验证"]
+  hub --&gt; concept3
+  related1["源资产、成品资产与 QA 分层"]
+  concept1 --&gt; related1
+  concept1 --&gt; concept1
+  related2["资产构建流水线"]
+  concept1 --&gt; related2
+  related3["提示词版本化或生成条件版本化"]
+  concept2 --&gt; related3
+  related4["LLM 输出可靠性与证据约束"]
+  concept2 --&gt; related4
+  related5["tracker 状态追踪"]
+  concept2 --&gt; related5
+  related6["路径规划与轨迹规划"]
+  concept3 --&gt; related6
+  related7["导航进度恢复"]
+  concept3 --&gt; related7
+  related8["碰撞场轨迹验证与性能测试"]
+  concept3 --&gt; related8
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4,related5,related6,related7,related8 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="asset-manifest-generation">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>资产清单 manifest 与 generation 登记</h3>
+              <p>Manifest and Generation Registry</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">manifest 说清楚一组资产包含什么，generation 说清楚这组资产从哪次生成来。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>manifest 是资产集合的稳定入口，不是简单目录列表。</li>
+                <li>generation 记录产物来源、批次或生成上下文，形成追溯链。</li>
+                <li>源资产、成品资产、QA 文件分层，避免原始素材、最终资源和审查证据混在一起。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="asset-manifest-generation" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="registry-static-review-page">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 大语言模型</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>注册表与静态评审页面</h3>
+              <p>Registry and Static Review Page</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">registry 给候选项编号，review.html 让人看见编号，tracker 记录编号走向。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>registry 是结构化数据载体，保存生成项、评审来源或反馈记录。</li>
+                <li>review.html 是静态评审页面，把结构化评审数据呈现为可人工查看的界面。</li>
+                <li>生成内容不能出现即可用，而要进入登记、展示、反馈、追踪的评审流程。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="registry-static-review-page" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="navigation-graph-bake-reachability">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>导航图数据烘焙与可达性恢复验证</h3>
+              <p>Navigation Graph Baking and Reachability Recovery</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">烘焙先做可走区域表，可达性问还能不能到，恢复问断掉后还能不能继续。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>导航图数据烘焙把较原始的地形、区域或规则定义，预先转换成运行时可查询的结构。</li>
+                <li>可达性验证检查目标位置、区域或状态是否能在给定规则下到达。</li>
+                <li>失败恢复测试关注导航状态异常后如何回到可继续状态。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="navigation-graph-bake-reachability" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="asset-manifest-generation">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>资产清单 manifest 与 generation 登记</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>manifest 可以理解为一张资产集合的登记表。当天 tiny-sea-war 的共享飞机资产同时出现 source/aircraft_shared_v2、aircraft、qa、shared_aircraft_manifest.json、generation.json、build_shared_aircraft_assets.py 和 shared_aircraft_asset_test.gd。这里基于当日材料可确认的是：源资产、成品资产、QA 文件、manifest、generation 数据和构建脚本共同出现，形成一条资产生产链。manifest 的核心作用不是简单列出文件名，而是告诉运行时、评审流程或测试：这一组资产包含哪些文件，它们属于同一个交付集合。generation 数据进一步回答这些产物来自哪次生成、哪个批次或哪组生成上下文。源资产、成品资产和 QA 文件分层，是为了避免把原始素材、最终资源和审查证据混在一起。整条逻辑是：源文件进入构建脚本，转换成成品资产，manifest 和 generation 登记产物，QA 和测试验证产物，文档记录状态。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>源文件进入构建脚本，转换成成品资产。</li>
+                <li>manifest 登记产物范围，generation 登记来源和批次。</li>
+                <li>QA 和测试验证产物，文档记录状态，形成可追溯交付单元。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>共享飞机资产中，source/aircraft_shared_v2 是源素材，aircraft/ 是成品资源，qa/ 是审查证据，shared_aircraft_manifest.json 登记范围，generation.json 记录批次，build_shared_aircraft_assets.py 转换源数据，shared_aircraft_asset_test.gd 验证接入。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为 manifest 只是文件夹列表，实际上它是资产集合的稳定入口。</li>
+                <li>以为 generation.json 只是生成日志，实际上它是产物来源和批次的追溯字段。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>源资产、成品资产与 QA 分层</td><td>manifest 与三者配合，让同一批资产范围更清晰，避免运行时靠目录扫描猜测文件归属。</td></tr>
+                <tr><td>generation 登记</td><td>与 manifest 共同形成追溯链：manifest 回答包含什么，generation 回答来自哪次生成或哪个批次。</td></tr>
+                <tr><td>资产构建流水线</td><td>把源资产转换为成品资产，manifest 和 generation 让转换结果能被测试、评审和后续流程稳定引用。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果 manifest 中登记了某个文件但磁盘缺失，检查脚本应报告 missing_file、invalid_manifest 还是 needs_review？</li>
+                <li>generation.json 需要记录哪些最小字段，才能区分同一资产的不同生成批次？</li>
+                <li>当源资产、成品资产和 QA 文件命名不一致时，manifest 应如何设计字段来绑定三者？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="registry-static-review-page">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 大语言模型</p>
+                <h3>注册表与静态评审页面</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>当天 tiny-sea-war 的音乐方向出现 tools/music/music.py、review.html、tracker.py、reviews/registry.json、registry.md 和 reviews/sources/20260929_chat_feedback.json。这里基于当日材料可确认的是：存在生成、评审、注册、追踪相关文件，不能确认生成主体一定是 LLM。registry 是结构化数据载体，用来保存生成项、评审来源或反馈记录；review.html 是静态评审页面，读取注册表或索引，把结构化评审数据呈现为可人工查看的界面；tracker 则帮助记录候选项在流程中的状态。它的底层理念是：生成内容不能出现即可用，而要进入可追溯流程。一个候选产物先被登记，再被展示，再被反馈，再被追踪，最后才能决定是否进入正式资产。静态页面本身不代替后端判断，它只是让数据被人看见的入口。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>候选产物先被登记，获得可引用记录。</li>
+                <li>静态页面读取注册表或索引，把记录展示给人工评审。</li>
+                <li>反馈和状态被追踪，决定候选是否进入正式资产。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一条音乐候选进入 registry.json 后获得 id、来源、生成条件或批次线索；review.html 读取 registry.md 或 registry.json 展示候选列表；reviews/sources/20260929_chat_feedback.json 保存反馈来源；tracker.py 记录候选状态，例如待评审、已反馈、需修改或可进入正式资产。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为 review.html 本身完成评审判断，实际上它只是展示入口。</li>
+                <li>以为 registry 只是网页样式文件，实际上它是数据索引和结构化记录载体。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>提示词版本化或生成条件版本化</td><td>只有生成输入可追溯，评审记录才能对应到具体版本。</td></tr>
+                <tr><td>LLM 输出可靠性与证据约束</td><td>静态评审页面是候选载体，生成项需要进入评审和登记流程，而不是未经确认就进入最终资产。</td></tr>
+                <tr><td>tracker 状态追踪</td><td>帮助记录候选项在评审流程中的状态，例如待评审、已反馈、需修改或可进入正式资产。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>registry.json 与 registry.md 应如何保持一致，避免网页展示和机器读取出现两套事实？</li>
+                <li>当一条生成项被拒绝、修改或重新生成时，registry 应保留历史状态还是只保存最新状态？</li>
+                <li>review.html 作为静态页面，应显示哪些最小字段，才能让人工评审不依赖口头说明？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="navigation-graph-bake-reachability">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>导航图数据烘焙与可达性恢复验证</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>当天 tiny-sea-war 的沿海导航方向出现 navigation_definitions.json、bake_navigation_graph.py、test_navigation_bake.py、route_planner.gd、trajectory_planner.gd、terrain_query_service.gd、navigation_reachability_test.gd、navigation_progress.gd、navigation_progress_recovery_test.gd、navigation_collision_field_test.gd 和 ai_navigation_performance_test.gd。这里基于当日材料可确认的是：存在导航定义、烘焙脚本、规划器、可达性、恢复、碰撞和性能测试文件，不能确认具体算法或物理模型。导航图数据烘焙的意思是，把较原始的地形、区域或规则定义，预先转换成运行时可查询的结构，类似把复杂地图整理成可走区域表。route_planner 处理较粗的路线，trajectory_planner 处理更细的运动轨迹，terrain_query_service 提供地形或环境查询能力。可达性验证检查目标位置、区域或状态是否能在给定规则下到达；navigation_progress 是导航状态对象，失败恢复测试关注状态异常后如何回到可继续状态。碰撞场轨迹验证检查路径是否满足空间约束，性能测试关注导航是否足够快。整条逻辑是：定义数据转成可查询结构，规划器查询结构，测试验证可达、恢复、约束和性能。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>定义数据先转成可查询结构，规划器不需要每次重新理解原始定义。</li>
+                <li>可达性验证回答目标是否能到，失败恢复验证回答中断后能否继续。</li>
+                <li>碰撞场轨迹验证和性能测试提供约束检查与指标边界，避免规划结果不可执行或太慢。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>navigation_definitions.json 描述地形、区域或规则；bake_navigation_graph.py 将其转换为可查询导航结构；route_planner.gd 查询粗粒度路线，trajectory_planner.gd 生成更细轨迹；navigation_reachability_test.gd 验证目标区域可达，navigation_progress_recovery_test.gd 验证进度中断后能恢复，ai_navigation_performance_test.gd 关注导航性能。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为烘焙只是把图片渲染出来，实际上它是预计算可查询结构。</li>
+                <li>以为可达性测试只测最短路径，实际上它关注目标是否能到，失败恢复关注状态异常后能否回到可继续状态。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>路径规划与轨迹规划</td><td>导航图数据烘焙为路径规划和轨迹规划提供可查询基础。</td></tr>
+                <tr><td>导航进度恢复</td><td>与可达性验证共同构成导航鲁棒性：可达性回答目标是否能到，恢复回答失败后能否回到可继续状态。</td></tr>
+                <tr><td>碰撞场轨迹验证与性能测试</td><td>为导航结构提供约束检查与指标边界，避免规划结果只看起来通顺但不可执行或太慢。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当导航定义数据变更后，bake_navigation_graph.py 应如何触发重新烘焙，并让旧导航结构安全失效？</li>
+                <li>可达性测试应覆盖哪些最小场景：目标不可达、路径被阻挡、区域规则冲突和烘焙数据缺失？</li>
+                <li>navigation_progress 需要保存哪些状态，才能在失败恢复时避免从头规划？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念都围绕结构化入口。manifest 给资产集合入口，registry 给生成项评审入口，导航烘焙给规划器查询入口。它们也共享证据边界思想：文件存在能确认机制线索，但不能确认具体算法、生成主体或物理模型；因此讲解中把已确认机制和候选解释分开。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">三个概念都围绕结构化入口：manifest 给资产集合入口，registry 给生成项评审入口，导航烘焙给规划器查询入口。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>manifest 中登记了某个文件但磁盘缺失时，检查脚本应报告 missing_file、invalid_manifest 还是 needs_review？</li>
+            <li>registry.json 与 registry.md 应如何保持一致，避免网页展示和机器读取出现两套事实？</li>
+            <li>导航定义数据变更后，bake_navigation_graph.py 应如何触发重新烘焙，并让旧导航结构安全失效？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>

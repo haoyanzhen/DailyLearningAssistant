@@ -3,6 +3,96 @@
   "year_month": "2026-09",
   "threads": [
     {
+      "id": "2026-09-30-manifest-generation-9c0de33a4f",
+      "question": "generation.json 需要记录哪些最小字段，才能区分同一资产的不同生成批次？",
+      "source_date": "2026-09-30",
+      "source_concept": "资产清单 manifest 与 generation 登记",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-30T06:19:31.424905+08:00",
+      "updated_at": "2026-09-30T06:19:31.424905+08:00"
+    },
+    {
+      "id": "2026-09-30-manifest-generation-6fc41943ea",
+      "question": "如果 manifest 中登记了某个文件但磁盘缺失，检查脚本应报告 missing_file、invalid_manifest 还是 needs_review？",
+      "source_date": "2026-09-30",
+      "source_concept": "资产清单 manifest 与 generation 登记",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-30T06:19:31.424905+08:00",
+      "updated_at": "2026-09-30T06:19:31.424905+08:00"
+    },
+    {
+      "id": "2026-09-30-manifest-generation-3f316959e5",
+      "question": "当源资产、成品资产和 QA 文件命名不一致时，manifest 应如何设计字段来绑定三者？",
+      "source_date": "2026-09-30",
+      "source_concept": "资产清单 manifest 与 generation 登记",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-09-30T06:19:31.424905+08:00",
+      "updated_at": "2026-09-30T06:19:31.424905+08:00"
+    },
+    {
+      "id": "2026-09-30-concept-bbe502e050",
+      "question": "可达性测试应覆盖哪些最小场景：目标不可达、路径被阻挡、区域规则冲突和烘焙数据缺失？",
+      "source_date": "2026-09-30",
+      "source_concept": "导航图数据烘焙与可达性恢复验证",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-30T06:19:31.424905+08:00",
+      "updated_at": "2026-09-30T06:19:31.424905+08:00"
+    },
+    {
+      "id": "2026-09-30-concept-8d3fa2d55f",
+      "question": "当导航定义数据变更后，bake_navigation_graph.py 应如何触发重新烘焙，并让旧导航结构安全失效？",
+      "source_date": "2026-09-30",
+      "source_concept": "导航图数据烘焙与可达性恢复验证",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-30T06:19:31.424905+08:00",
+      "updated_at": "2026-09-30T06:19:31.424905+08:00"
+    },
+    {
+      "id": "2026-09-30-concept-81ce2e6461",
+      "question": "review.html 作为静态页面，应显示哪些最小字段，才能让人工评审不依赖口头说明？",
+      "source_date": "2026-09-30",
+      "source_concept": "注册表与静态评审页面",
+      "domain": "软件工程 / 大语言模型",
+      "status": "open",
+      "created_at": "2026-09-30T06:19:31.424905+08:00",
+      "updated_at": "2026-09-30T06:19:31.424905+08:00"
+    },
+    {
+      "id": "2026-09-30-concept-68a32e8be8",
+      "question": "navigation_progress 需要保存哪些状态，才能在失败恢复时避免从头规划？",
+      "source_date": "2026-09-30",
+      "source_concept": "导航图数据烘焙与可达性恢复验证",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-09-30T06:19:31.424905+08:00",
+      "updated_at": "2026-09-30T06:19:31.424905+08:00"
+    },
+    {
+      "id": "2026-09-30-concept-461e07b29b",
+      "question": "当一条生成项被拒绝、修改或重新生成时，registry 应保留历史状态还是只保存最新状态？",
+      "source_date": "2026-09-30",
+      "source_concept": "注册表与静态评审页面",
+      "domain": "软件工程 / 大语言模型",
+      "status": "open",
+      "created_at": "2026-09-30T06:19:31.424905+08:00",
+      "updated_at": "2026-09-30T06:19:31.424905+08:00"
+    },
+    {
+      "id": "2026-09-30-concept-116357d1a2",
+      "question": "registry.json 与 registry.md 应如何保持一致，避免网页展示和机器读取出现两套事实？",
+      "source_date": "2026-09-30",
+      "source_concept": "注册表与静态评审页面",
+      "domain": "软件工程 / 大语言模型",
+      "status": "open",
+      "created_at": "2026-09-30T06:19:31.424905+08:00",
+      "updated_at": "2026-09-30T06:19:31.424905+08:00"
+    },
+    {
       "id": "2026-09-29-hud-fade49b0fb",
       "question": "如果窗口尺寸变化，战斗帧布局应如何保持控制区与海洋视口不互相遮挡？",
       "source_date": "2026-09-29",

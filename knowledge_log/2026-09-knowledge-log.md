@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-09/2026-09-30-learning-report.html">2026-09-30</a>
+      </td>
+      <td>资产清单 manifest 与 generation 登记</td>
+      <td>软件工程 / 计算机科学</td>
+      <td>★★</td>
+      <td>manifest 把一组资产登记成可引用集合，generation 给生成产物补上来源和批次，使资产从散落文件变成可追溯交付单元。</td>
+      <td>下一次可以讲资产 manifest 的最小 schema：required_assets、source_root、output_root、qa_root、generation_id、status 如何联动，并设计缺失文件、命名冲突和批次不一致的测试。</td>
+    </tr>
+    <tr>
+      <td>注册表与静态评审页面</td>
+      <td>软件工程 / 大语言模型</td>
+      <td>★★★</td>
+      <td>注册表把生成项登记成结构化记录，静态评审页面把记录呈现给人工查看，使生成内容进入可追溯的评审流程。</td>
+      <td>下一次可以讲评审 registry 的最小状态机：pending_review、approved、rejected、needs_revision、regenerated 如何由反馈来源和人工确认驱动，并设计 registry 与 review.html 的回归测试。</td>
+    </tr>
+    <tr>
+      <td>导航图数据烘焙与可达性恢复验证</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★★</td>
+      <td>导航图烘焙把定义数据转成可查询结构，可达性测试验证目标能否到达，失败恢复测试验证导航状态能否从中断后继续。</td>
+      <td>下一次可以讲导航烘焙产物的最小契约：节点、区域、边、约束字段、烘焙版本、查询接口和测试断言如何联动，并设计从烘焙失败到规划器降级或拒绝查询的边界。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-09/2026-09-29-learning-report.html">2026-09-29</a>
       </td>
       <td>战斗帧布局与 HUD 控制区/海洋视口分离</td>
