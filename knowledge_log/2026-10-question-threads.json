@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "year_month": "2026-10",
+  "threads": [
+    {
+      "id": "2026-10-01-unchanged-first-seen-f8ebd61f84",
+      "question": "如果历史基线丢失，系统应该输出 first_seen、unknown 还是 unchanged？为什么？",
+      "source_date": "2026-10-01",
+      "source_concept": "历史基线与 unchanged / first_seen 状态边界",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-10-01T06:20:46.450506+08:00",
+      "updated_at": "2026-10-01T06:20:46.450506+08:00"
+    },
+    {
+      "id": "2026-10-01-unchanged-first-seen-ebf9a6ed5a",
+      "question": "当多个仓库共享同一监控窗口时，如何避免把首次基线误判为新增提交？",
+      "source_date": "2026-10-01",
+      "source_concept": "历史基线与 unchanged / first_seen 状态边界",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-10-01T06:20:46.450506+08:00",
+      "updated_at": "2026-10-01T06:20:46.450506+08:00"
+    },
+    {
+      "id": "2026-10-01-unchanged-first-seen-bf727268b7",
+      "question": "如何为 first_seen 和 unchanged 设计可测试的状态机？",
+      "source_date": "2026-10-01",
+      "source_concept": "历史基线与 unchanged / first_seen 状态边界",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-10-01T06:20:46.450506+08:00",
+      "updated_at": "2026-10-01T06:20:46.450506+08:00"
+    },
+    {
+      "id": "2026-10-01-llm-agent-c9e495b49b",
+      "question": "如何把 AGENTS.md 或 SKILL.md 中的约束变成可检查的字段和测试？",
+      "source_date": "2026-10-01",
+      "source_concept": "LLM/Agent 输出可靠性与证据约束",
+      "domain": "大语言模型 / 软件工程",
+      "status": "open",
+      "created_at": "2026-10-01T06:20:46.450506+08:00",
+      "updated_at": "2026-10-01T06:20:46.450506+08:00"
+    },
+    {
+      "id": "2026-10-01-llm-agent-ae73454958",
+      "question": "当生成资产存在 receipt 但没有 review 时，报告应使用什么措辞才能避免把生成完成误认为评审通过？",
+      "source_date": "2026-10-01",
+      "source_concept": "LLM/Agent 输出可靠性与证据约束",
+      "domain": "大语言模型 / 软件工程",
+      "status": "open",
+      "created_at": "2026-10-01T06:20:46.450506+08:00",
+      "updated_at": "2026-10-01T06:20:46.450506+08:00"
+    },
+    {
+      "id": "2026-10-01-llm-agent-783018e02b",
+      "question": "如何为 Agent 输出设计证据等级标签，例如 ref-only、commit-only、file-diff、runtime-test？",
+      "source_date": "2026-10-01",
+      "source_concept": "LLM/Agent 输出可靠性与证据约束",
+      "domain": "大语言模型 / 软件工程",
+      "status": "open",
+      "created_at": "2026-10-01T06:20:46.450506+08:00",
+      "updated_at": "2026-10-01T06:20:46.450506+08:00"
+    },
+    {
+      "id": "2026-10-01-git-ref-eba0467ee2",
+      "question": "如果只使用 git ls-remote，如何设计字段来区分 ref 指针变化、提交详情未知和访问失败？",
+      "source_date": "2026-10-01",
+      "source_concept": "Git 远端引用与 ref 指针变更检测",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-10-01T06:20:46.450506+08:00",
+      "updated_at": "2026-10-01T06:20:46.450506+08:00"
+    },
+    {
+      "id": "2026-10-01-git-ref-d80990a0a8",
+      "question": "当多个 ref 同时 unchanged 时，怎样避免把仓库整体描述成没有任何工程进展？",
+      "source_date": "2026-10-01",
+      "source_concept": "Git 远端引用与 ref 指针变更检测",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-10-01T06:20:46.450506+08:00",
+      "updated_at": "2026-10-01T06:20:46.450506+08:00"
+    },
+    {
+      "id": "2026-10-01-git-ref-3ac358ad56",
+      "question": "在只读监控中，哪些信息可以安全记录，哪些凭据或路径需要脱敏？",
+      "source_date": "2026-10-01",
+      "source_concept": "Git 远端引用与 ref 指针变更检测",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-10-01T06:20:46.450506+08:00",
+      "updated_at": "2026-10-01T06:20:46.450506+08:00"
+    }
+  ]
+}
