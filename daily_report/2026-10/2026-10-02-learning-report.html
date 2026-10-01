@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-10-02 学习笔记日报</title>
+    <meta name="description" content="无变更复习日围绕仓库级措辞、只读监控字段和状态机迁移，学习把弱证据写成可检查状态结论。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261002-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-10-02</p>
+        <h1>2026-10-02 无变更复习日：把弱证据写成可检查状态</h1>
+        <p>当天没有新增提交或远端 ref 指针变化，重点学习如何在无变化日准确描述监控范围、字段边界和状态迁移。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>无变更日的证据边界与可测试状态表达</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>多 ref 未变时的仓库级…</strong>
+                <small>只说被监控的 ref 未变，不说整…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>只读远端监控的访问状态与详…</strong>
+                <small>没读到是 unknown，不是 u…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>变更状态机的可测试事件与状…</strong>
+                <small>状态词由事件触发，不由自然语言感觉…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念围绕同一个问题：在没有新提交、没有新指针变化、证据较弱的日子里，如何准确描述工程状态。多 ref 未变时的仓库级聚合措辞解决说什么的边界，只读远端监控的访问状态与详情未知字段解决依据什么说的字段边界，变更状态机的可测试事件与状态迁移解决如何稳定地说的流程边界。它们共同把自然语言判断变成可检查结构：措辞必须保留监控范围和窗口范围，字段必须区分访问状态、指针状态和详情状态，状态机必须用明确事件驱动状态迁移。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["无变更日的证据边界与可测试状态表达"])
+  concept1["多 ref 未变时的仓库级聚合措辞"]
+  hub --&gt; concept1
+  concept2["只读远端监控的访问状态与详情未知字段"]
+  hub --&gt; concept2
+  concept3["变更状态机的可测试事件与状态迁移"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  related1["机器注册表与人工页面的一致性模型"]
+  concept1 --&gt; related1
+  related2["多仓库监控窗口的基线命名空间与首见隔离"]
+  concept1 --&gt; related2
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept2 --&gt; related2
+  concept3 --&gt; related2
+  concept3 --&gt; concept2
+  related3["注册表历史状态与最新状态分层"]
+  concept3 --&gt; related3
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="multi-ref-unchanged-repo-wording">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>多 ref 未变时的仓库级聚合措辞</h3>
+              <p>Repo-Level Wording for Unchanged Refs</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">只说被监控的 ref 未变，不说整个仓库无进展。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>仓库级措辞必须保留监控了哪些 ref、检查窗口是什么、证据来自哪一层。</li>
+                <li>被监控 ref 指针未变只能写成 monitored refs unchanged，不能写成 no engineering progress。</li>
+                <li>访问失败、窗口外历史变化、未监控 ref 的活动都不能被聚合进当天无进展结论。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="multi-ref-unchanged-repo-wording" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="read-only-remote-monitoring-fields">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>只读远端监控的访问状态与详情未知字段</h3>
+              <p>Access Status and Unknown Commit Detail Fields</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">没读到是 unknown，不是 unchanged；SHA 变了也不等于知道提交内容。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>只读远端监控通常只能读取远端 ref 指针元数据，不能直接读取提交内容、文件树或 diff。</li>
+                <li>字段应拆成访问状态、指针状态、提交详情状态三类，避免互相覆盖。</li>
+                <li>访问失败时 pointer_status 和 commit_detail_status 都应是 unknown，而不是 unchanged。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="read-only-remote-monitoring-fields" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="change-state-machine-testable-events">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>变更状态机的可测试事件与状态迁移</h3>
+              <p>Testable Events and State Transitions for Change Detection</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">状态词由事件触发，不由自然语言感觉决定。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>状态机用当前状态、输入事件、输出状态和输出措辞描述系统变化。</li>
+                <li>首次读取成功且没有历史基线时状态应为 first_seen，而不是 changed。</li>
+                <li>读取失败时状态应为 unknown，而不是 unchanged；状态迁移应保留可追溯记录。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="change-state-machine-testable-events" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="multi-ref-unchanged-repo-wording">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>多 ref 未变时的仓库级聚合措辞</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>检查一个仓库时，如果只检查 main 和 release 两个 ref，且检查窗口内历史 SHA 与当前 SHA 相同，能确认的事实是被监控的 ref 指针在该窗口内没有变化。这个事实只能写成 monitored refs unchanged，不能写成 no engineering progress，因为仓库中可能还有未监控 ref、文档、评审、CI、资产生成或其他工程活动。仓库级聚合措辞需要保留监控范围、检查窗口和证据来源，避免把局部观察扩大成整体判断。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>证据范围决定结论范围：只监控部分 ref，就只能得出部分 ref 的状态。</li>
+                <li>窗口边界决定时间归属：窗口外的变化不能进入当天结论。</li>
+                <li>状态词必须可追溯：仓库级措辞应能回溯到具体 ref、窗口和访问证据。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>某仓库监控 main 和 release 两个 ref，窗口为 2026-10-01 00:00 到 2026-10-02 00:00，两个 ref 的历史 SHA 与当前 SHA 相同且访问成功。正确措辞是：在指定窗口内，被监控的 main 和 release ref 指针未变；不能写：该仓库当天没有任何工程进展。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把多个 ref unchanged 直接说成仓库没有任何工程进展。</li>
+                <li>把某个 ref 访问失败混进 unchanged，或把检查窗口外的历史变化纳入当天结论。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>只读远端监控的访问状态与详情未知字段</td><td>仓库级措辞必须基于每个 ref 的访问状态和指针状态，访问失败不能被聚合为 unchanged。</td></tr>
+                <tr><td>机器注册表与人工页面的一致性模型</td><td>机器状态词和人工页面措辞必须一致，否则会出现机器说 monitored unchanged、页面说无进展的两套事实。</td></tr>
+                <tr><td>多仓库监控窗口的基线命名空间与首见隔离</td><td>若基线串用，仓库级聚合会把首次基线误判为新增提交。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果监控范围只包含部分 ref，报告模板应如何强制显示监控范围、检查窗口和证据来源？</li>
+                <li>当某个 ref 访问失败而其他 ref 未变时，仓库级状态词应如何表达才能既不夸大也不隐瞒？</li>
+                <li>如何设计一个措辞检查规则，在出现 no engineering progress 时要求提供窗口内提交证据或人工确认？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="read-only-remote-monitoring-fields">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>只读远端监控的访问状态与详情未知字段</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>只读远端监控例如 git ls-remote，通常只能读取远端 ref 指针元数据，不会下载提交对象、文件树或 diff。系统能知道某个 ref 当前指向哪个 SHA，也可能知道历史 SHA，但不能直接知道提交内容、提交数量、作者、文件列表或 diff。因此字段设计必须把访问状态、指针状态、提交详情状态分开：访问状态回答有没有读到远端，指针状态回答历史 SHA 和当前 SHA 是否相同，提交详情状态回答是否知道提交内容。访问成功且 SHA 相同可写 pointer_status=unchanged，但 commit_detail_status 仍可能是 unknown；访问成功且 SHA 不同只能写 pointer_status=changed，仍不能写提交详情。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>证据层级不同：访问成功、指针相同、指针变化、提交详情已知是不同层级的事实。</li>
+                <li>字段正交化：access_status、pointer_status、commit_detail_status 各自回答不同问题。</li>
+                <li>未知必须显式表达：无法读取或无法判断时应使用 unknown，而不是默认 unchanged。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>历史 main SHA 为 abc，当前 main SHA 为 abc，访问成功，则 access_status=success、pointer_status=unchanged、commit_detail_status=unknown。若访问失败，则 access_status=failure、pointer_status=unknown、commit_detail_status=unknown。若当前 main SHA 变为 def，则 access_status=success、pointer_status=changed、commit_detail_status=unknown。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把访问失败当成未变化。</li>
+                <li>把 SHA 变化当成提交内容变化，或把提交详情未知补全成具体提交数量、作者、文件列表。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>多 ref 未变时的仓库级聚合措辞</td><td>访问状态、指针状态和详情未知字段是仓库级措辞的证据基础。</td></tr>
+                <tr><td>变更状态机的可测试事件与状态迁移</td><td>读取成功、读取失败、SHA相同、SHA不同等事件需要被状态机接收并产生明确状态词。</td></tr>
+                <tr><td>多仓库监控窗口的基线命名空间与首见隔离</td><td>访问失败会影响基线是否能建立，基线必须按仓库、ref、窗口隔离。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果同一 ref 在一次检查中先访问失败、重试后成功，字段应如何记录重试前后的状态？</li>
+                <li>当 ref 指针变化但提交详情未知时，报告应如何措辞才能避免补充提交数量、作者或文件列表？</li>
+                <li>如何为 access_status、pointer_status 和 commit_detail_status 设计枚举值，使它们互不覆盖且可被自动化检查？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="change-state-machine-testable-events">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>变更状态机的可测试事件与状态迁移</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>状态机是一种用表格描述系统如何变化的方法：当前状态、输入事件、输出状态、输出措辞。first_seen、unchanged、changed、unknown 等状态可以由明确事件驱动，例如首次读取成功、历史 SHA 与当前 SHA 相同、历史 SHA 与当前 SHA 不同、读取失败。状态机的价值是把自然语言判断变成可穷举、可测试的迁移关系。首次读取成功且没有历史基线时，状态应为 first_seen，而不是 changed；读取失败时，状态应为 unknown，而不是 unchanged；历史 SHA 与当前 SHA 相同时，状态才是 unchanged。若多仓库共享同一检查窗口，还需要结合仓库、ref、窗口形成基线命名空间，避免一个仓库的首次基线被误读为另一个仓库的新增提交。状态迁移还应保留记录，使后续能判断当前状态是由哪些事件触发。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>事件驱动：状态变化必须由读取成功、读取失败、SHA相同、SHA不同等明确事件触发。</li>
+                <li>迁移可穷举：每个状态和事件组合都应能映射到明确输出状态和措辞。</li>
+                <li>历史可审计：只保存当前状态不够，需要保留迁移记录以判断状态如何形成。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>仓库 A 的 main 在窗口内首次读取成功，历史基线为空，状态迁移为 first_seen。下一次读取成功，历史 SHA 与当前 SHA 相同，状态迁移为 unchanged。再下一次读取成功，历史 SHA 与当前 SHA 不同，状态迁移为 changed。如果某次读取失败，状态迁移为 unknown，并且不能把 unknown 当作 unchanged。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>用自然语言总结直接判断状态，例如看到 ref 有 SHA 就写成 changed。</li>
+                <li>把 first_seen 写成 changed，或把读取失败写成 unchanged；只保存当前状态，不保存迁移历史。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>多仓库监控窗口的基线命名空间与首见隔离</td><td>状态迁移必须知道当前状态属于哪个仓库、哪个 ref、哪个检查窗口，否则 first_seen 可能跨仓库串用。</td></tr>
+                <tr><td>只读远端监控的访问状态与详情未知字段</td><td>状态机需要把访问成功、访问失败、SHA相同、SHA不同等事件分开，才能输出正确状态词。</td></tr>
+                <tr><td>注册表历史状态与最新状态分层</td><td>状态迁移需要保留可追溯记录，否则无法判断当前状态是如何迁移来的。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何为 first_seen、unchanged、changed、unknown 设计一组最小测试用例，覆盖读取成功、读取失败和 SHA 相同或不同的组合？</li>
+                <li>当多仓库共享同一检查窗口时，状态机如何结合仓库、ref、窗口命名空间避免把首次基线误判为新增提交？</li>
+                <li>如何保存状态迁移历史，使后续审计能判断当前状态是由哪些事件和证据触发？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念围绕同一个问题：在没有新提交、没有新指针变化、证据较弱的日子里，如何准确描述工程状态。多 ref 未变时的仓库级聚合措辞解决说什么的边界，只读远端监控的访问状态与详情未知字段解决依据什么说的字段边界，变更状态机的可测试事件与状态迁移解决如何稳定地说的流程边界。它们共同把自然语言判断变成可检查结构：措辞必须保留监控范围和窗口范围，字段必须区分访问状态、指针状态和详情状态，状态机必须用明确事件驱动状态迁移。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">多个 ref 未变只能说明被监控 ref 未变，不能直接推出仓库没有任何工程进展。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如果监控范围只包含部分 ref，报告模板应如何强制显示监控范围、检查窗口和证据来源？</li>
+            <li>当 ref 指针变化但提交详情未知时，报告应如何措辞才能避免补充提交数量、作者或文件列表？</li>
+            <li>如何为 first_seen、unchanged、changed、unknown 设计最小测试用例并保存迁移历史，使当前状态可审计？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
