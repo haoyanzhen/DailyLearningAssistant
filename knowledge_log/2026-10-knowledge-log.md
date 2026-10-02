@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-10/2026-10-03-learning-report.html">2026-10-03</a>
+      </td>
+      <td>检查窗口与提交证据边界</td>
+      <td>软件工程 / 计算机科学</td>
+      <td>★★</td>
+      <td>检查窗口先划定哪些 Git 证据能算作当天事实，未提交、窗口外或只看到指针引用的内容都不能自动升级为当天变化。</td>
+      <td>下一次可结合提交时间、作者时间和时区边界，讲解同一提交在多个检查窗口中如何归属。</td>
+    </tr>
+    <tr>
+      <td>资产 manifest 与交付契约</td>
+      <td>软件工程 / 计算机科学</td>
+      <td>★★★</td>
+      <td>资产 manifest 与交付契约把散落的素材文件组织成可追溯清单，并用来源、审查和验收记录证明资产从源到运行时的每一步。</td>
+      <td>下一次可结合生成资产来源、审查与验收记录，讲解 generation_manifest、provenance、acceptance.review 如何组成证据链。</td>
+    </tr>
+    <tr>
+      <td>难度测量与平衡选择</td>
+      <td>数学 / 软件工程</td>
+      <td>★★★★</td>
+      <td>难度测量与平衡选择把关卡难度从主观判断变成可重复模拟、工具汇总、选择记录和数据校验的工程过程。</td>
+      <td>下一次可结合配置注册表与运行时数据校验，讲解平衡选择结果如何进入 config_registry 并在启动时被验证。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-10/2026-10-02-learning-report.html">2026-10-02</a>
       </td>
       <td>多 ref 未变时的仓库级聚合措辞</td>

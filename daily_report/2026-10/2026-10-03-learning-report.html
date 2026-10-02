@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-10-03 学习笔记日报</title>
+    <meta name="description" content="当天主线把可确认证据变成可运行系统：检查窗口划定当天事实，资产清单绑定交付契约，难度测量形成可校验选择。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261003-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-10-03</p>
+        <h1>把可确认证据变成可运行系统</h1>
+        <p>今天不追单点功能，而是把 Git 证据、资产交付和难度调参放进同一条证据链。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>可确认证据到可运行系统</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>检查窗口与提交证据边界</strong>
+                <small>文件改了不等于当天事实，证据落在窗…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>资产 manifest 与…</strong>
+                <small>资产要有行李牌：清单、来源、验收和…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>难度测量与平衡选择</strong>
+                <small>难度不是“我觉得”，而是模拟、汇总…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念共同体现“证据入口—结构绑定—数据决策”的关系。检查窗口决定哪些 Git 提交和 ref 元数据能进入当天事实；资产 manifest 决定素材、生成物和运行时文件如何被清单、来源、审查和验收记录绑定；难度测量决定关卡参数如何从模拟数据变成可校验选择。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["可确认证据到可运行系统"])
+  concept1["检查窗口与提交证据边界"]
+  hub --&gt; concept1
+  concept2["资产 manifest 与交付契约"]
+  hub --&gt; concept2
+  concept3["难度测量与平衡选择"]
+  hub --&gt; concept3
+  related1["Git ref 指针变更检测"]
+  concept1 --&gt; related1
+  related2["只读远端监控"]
+  concept1 --&gt; related2
+  concept1 --&gt; concept2
+  related3["生成资产来源、审查与验收记录"]
+  concept2 --&gt; related3
+  related4["运行时分层"]
+  concept2 --&gt; related4
+  concept2 --&gt; concept1
+  related5["模拟实验"]
+  concept3 --&gt; related5
+  related6["配置注册表"]
+  concept3 --&gt; related6
+  related7["多层测试"]
+  concept3 --&gt; related7
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4,related5,related6,related7 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="check-window-commit-evidence-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>检查窗口与提交证据边界</h3>
+              <p>Check Window and Commit Evidence Boundary</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">文件改了不等于当天事实，证据落在窗口内才算。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>检查窗口给“今天”划定明确时间范围，只有窗口内可确认的 Git commit 或 ref 元数据才能作为当天证据。</li>
+                <li>未暂存、未提交、未跟踪文件即使本地存在，也不能自动算作当天变化。</li>
+                <li>远端 ref 是否变化必须结合访问状态和前后值判断，不能只凭标题或 HEAD 引用推断。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="check-window-commit-evidence-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="asset-manifest-delivery-contract">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>资产 manifest 与交付契约</h3>
+              <p>Asset Manifest and Delivery Contract</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">资产要有行李牌：清单、来源、验收和运行时接入缺一不可。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>manifest 是机器可读清单，把资产文件、用途、来源、生成记录、审查记录和运行时接入绑定在一起。</li>
+                <li>资产交付不是“文件存在即可”，而是要有可检查的证据链。</li>
+                <li>生成完成、验收通过和运行时可用是不同证据等级，不能互相替代。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="asset-manifest-delivery-contract" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="difficulty-measurement-balance-selection">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>难度测量与平衡选择</h3>
+              <p>Difficulty Measurement and Balance Selection</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">难度不是“我觉得”，而是模拟、汇总、选择和校验。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>难度调整依赖可比较数据，例如胜率模拟结果，而不是主观感觉。</li>
+                <li>调参工具汇总多个关卡数据，并把选择结果沉淀成可追溯记录。</li>
+                <li>平衡选择必须进入运行时数据校验，才能成为可使用的关卡配置。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="difficulty-measurement-balance-selection" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="check-window-commit-evidence-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>检查窗口与提交证据边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>检查窗口可以理解成给“今天”画一条明确的时间线。就像学校规定“今天 0 点到 24 点提交的作业才算今天完成”，Git 监控也会规定一个时间范围，例如 2026-10-02T00:00:00+08:00 到 2026-10-03T00:00:00+08:00。只有落在这个窗口内、并且能作为 Git commit 或 ref 元数据确认的内容，才能作为当天证据。未暂存、未提交、未跟踪的文件虽然可能存在于本地，但没有进入提交历史，因此不能自动算作当天变化。这个概念的关键不是“文件有没有改”，而是“系统有没有足够证据把它归到这一天”。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>时间窗口是状态判断的输入边界，先决定证据是否属于目标日期，再解释提交或 ref 变化。</li>
+                <li>Git 证据等级不同：提交历史、ref 元数据、本地未提交文件不能互相替代。</li>
+                <li>只读远端访问只能确认读取到的 ref 指针状态，不能补全未读到的提交详情。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设检查窗口是 2026-10-02T00:00:00+08:00 到 2026-10-03T00:00:00+08:00。某个仓库在 2026-10-03T01:00:00+08:00 有一个提交，这个提交不能算作 2026-10-03 当天窗口证据；如果本地还有未提交的修改，即使文件内容已经变化，也不能作为当天 Git 提交证据。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>看到某个文件存在、某个提交标题提到某个功能，或者看到 HEAD 被 origin/main 引用，就直接认为“远端当天发生了变化”。</li>
+                <li>把本地未提交修改或窗口外提交误判为当天新增。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>Git ref 指针变更检测</td><td>ref 是否变化必须放在明确时间窗口内解释。</td></tr>
+                <tr><td>只读远端监控</td><td>只读访问只能提供 ref 元数据，窗口决定这些元数据能否作为当天证据。</td></tr>
+                <tr><td>资产 manifest</td><td>资产文件的修改也必须落在窗口内提交中，才能进入当天交付记录。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果提交时间、作者时间和检查窗口使用不同时区，应如何设计归属规则？</li>
+                <li>当 rebase 或合并改写提交时间时，检查窗口如何避免把旧工作误判为当天新增？</li>
+                <li>未提交文件和未跟踪文件是否应该进入另一类本地草稿证据，而不是直接忽略？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="asset-manifest-delivery-contract">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>资产 manifest 与交付契约</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>资产 manifest 可以理解成“资产行李牌”或“道具清单”。游戏项目里有很多素材，比如音乐、音效、地图、角色头像，如果只把 .png、.wav、.ogg 等文件放进目录，系统并不知道它们属于哪个版本、从哪里来、是否经过审查、是否能被运行时使用。manifest 就是机器可读的清单，它把资产文件、用途、来源、生成记录、审查记录和运行时接入绑定在一起。当天材料中，音频资产有 music_manifest.json、sfx_manifest.json、catalog.json，地图资产有 manifest.json、layout_reference.json、input_manifest.json，角色头像有 delivery_review.json、postprocess_manifest.json 和契约检查工具。这些文件共同说明：资产交付不是“文件存在即可”，而是要有可检查的证据链。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>manifest 提供结构绑定，把文件从孤立资源变成可登记、可追溯的交付对象。</li>
+                <li>provenance、review、acceptance 分别回答来源、审查和验收问题，形成不同证据层。</li>
+                <li>运行时接入需要 manager、director 等对象使用资产，才能从“已交付文件”进入“可运行系统”。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一个音乐资产目录里有 music.wav、music_manifest.json、source_record.json、acceptance.review.json。music_manifest.json 记录这个音乐文件属于哪个系统、用途是什么；source_record.json 记录来源信息；acceptance.review.json 记录验收结论；运行时还需要 music_manager.gd、sound_manager.gd 等对象接入，音乐才能真正进入游戏流程。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把 manifest 当成内容审查本身，认为清单登记就能证明像素、音频或碰撞数据正确。</li>
+                <li>认为生成完成就等于验收通过，或者验收通过就等于运行时可用。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>生成资产来源、审查与验收记录</td><td>manifest 提供清单，provenance 和 acceptance 提供来源与验收证据。</td></tr>
+                <tr><td>运行时分层</td><td>清单中的 runtime 资产需要 manager、director 等对象接入才能被游戏使用。</td></tr>
+                <tr><td>检查窗口</td><td>只有窗口内提交的 manifest 和资产变化才能作为当天交付证据。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当 manifest 中登记了文件但文件缺失时，应该报错、跳过还是降级为待确认？</li>
+                <li>source、generated、runtime 三层资产如何命名和绑定，才能避免同名文件覆盖？</li>
+                <li>二进制资产只确认文件变化时，manifest 能证明哪些事实，不能证明哪些事实？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="difficulty-measurement-balance-selection">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 软件工程</p>
+                <h3>难度测量与平衡选择</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>游戏难度如果只靠“我觉得太难”或“我觉得太简单”，就很难稳定修改。难度测量与平衡选择把这个问题变成一条工程链路：先通过模拟实验得到可比较数据，例如 win_rate_20.json 这类胜率结果；再用调参工具汇总多个关卡的数据；然后把选择结果沉淀成 challenge_balance_selection.json 这样的选择记录；最后让关卡、目标、武器等运行时数据通过 config_registry.gd 等入口进行校验。这里的关键不是某个具体公式，而是“测量—比较—选择—校验”的流程。材料没有给出随机种子、置信区间或最终平衡效果，因此只能确认工具链和选择记录存在，不能断言它一定让游戏变得更好玩。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>模拟实验提供可比较数据，把“难”和“简单”转成可重复观察的胜率指标。</li>
+                <li>工具汇总和测试保证选择逻辑可检查，避免单次结果或手工判断直接决定参数。</li>
+                <li>选择记录与配置注册表、运行时校验绑定，使平衡结果可审计、可进入运行系统。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设关卡 m1 的模拟结果文件名为 level_m1_win_rate_20.json。tune_challenge_difficulty.py 可以汇总多个关卡的胜率数据，summarize_challenge_tuning.py 生成摘要，test_challenge_tuning.py 检查调参工具本身，challenge_balance_selection.json 记录最终选择。之后关卡 JSON、目标 JSON、武器 JSON 等数据再通过 config_registry.gd 和 validate integrated runtime data 相关提交进入运行时校验。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把胜率数字直接当成最终答案，认为胜率越高越好。</li>
+                <li>认为一次模拟结果就能决定关卡参数，忽略样本、随机性和关卡数据影响。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>模拟实验</td><td>胜率模拟提供可比较的数据基础。</td></tr>
+                <tr><td>配置注册表</td><td>平衡选择结果必须进入运行时数据校验后才能使用。</td></tr>
+                <tr><td>多层测试</td><td>调参工具本身也需要测试，避免汇总或选择逻辑出错。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果两次模拟胜率接近，如何设计选择规则来避免随机波动导致反复改参数？</li>
+                <li>win_rate_20.json 这类结果文件应如何记录样本数、随机种子和参数版本，以便复现？</li>
+                <li>平衡选择记录如何与关卡数据版本绑定，避免旧选择被新数据误用？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念共同体现“证据入口—结构绑定—数据决策”的关系。检查窗口决定哪些 Git 提交和 ref 元数据能进入当天事实；资产 manifest 决定素材、生成物和运行时文件如何被清单、来源、审查和验收记录绑定；难度测量决定关卡参数如何从模拟数据变成可校验选择。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">系统结论必须与访问到的证据等级匹配，不能把弱线索补全成强事实。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如果提交时间、作者时间和检查窗口使用不同时区，应如何设计归属规则？</li>
+            <li>当 manifest 中登记了文件但文件缺失时，应该报错、跳过还是降级为待确认？</li>
+            <li>如果两次模拟胜率接近，如何设计选择规则来避免随机波动导致反复改参数？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
