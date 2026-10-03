@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-10/2026-10-04-learning-report.html">2026-10-04</a>
+      </td>
+      <td>文件级证据与内容级证据的分离</td>
+      <td>软件工程 / 计算机科学</td>
+      <td>★★</td>
+      <td>文件级证据只证明对象存在或变化，内容级证据才能证明语义或行为变化。</td>
+      <td>下一次可结合二进制资产 hash 变化与解析器输出，讲解如何把 path_level、diff_level、runtime_level 字段写成可检查报告。</td>
+    </tr>
+    <tr>
+      <td>资产命名空间与同名校验</td>
+      <td>软件工程 / 计算机科学</td>
+      <td>★★★</td>
+      <td>资产命名空间用稳定身份区分不同层中的同名文件，避免把 source、generated、runtime 误认为同一对象。</td>
+      <td>下一次可结合 generation_manifest 的 source_path、generated_path、runtime_path 字段，讲解同名校验如何在生成前、生成后和运行前各做一次。</td>
+    </tr>
+    <tr>
+      <td>Agent 输出证据等级标签</td>
+      <td>大语言模型 / 软件工程</td>
+      <td>★★★★</td>
+      <td>Agent 输出必须绑定证据等级标签，使生成完成、评审通过、运行时可用等结论不能互相替代。</td>
+      <td>下一次可结合 receipt、review、registry 和 review.html 的状态字段，讲解如何为 Agent 输出设计可测试的证据等级校验器。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-10/2026-10-03-learning-report.html">2026-10-03</a>
       </td>
       <td>检查窗口与提交证据边界</td>
