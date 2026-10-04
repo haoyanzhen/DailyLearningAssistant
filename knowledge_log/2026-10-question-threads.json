@@ -3,6 +3,96 @@
   "year_month": "2026-10",
   "threads": [
     {
+      "id": "2026-10-05-concept-faa5379fce",
+      "question": "结果文件应如何记录样本数、随机种子、参数版本和关卡数据版本，以便复现和比较？",
+      "source_date": "2026-10-05",
+      "source_concept": "随机模拟的复现元数据",
+      "domain": "数学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-10-05T06:16:45.452729+08:00",
+      "updated_at": "2026-10-05T06:16:45.452729+08:00"
+    },
+    {
+      "id": "2026-10-05-concept-e9f0ac9dc9",
+      "question": "在只有脚本路径的情况下，如何设计后续验证来确认记录、聚合、报告链路真的可用？",
+      "source_date": "2026-10-05",
+      "source_concept": "记录、聚合与报告的数据边界",
+      "domain": "计算机科学 / 软件工程 / 数学",
+      "status": "open",
+      "created_at": "2026-10-05T06:16:45.452729+08:00",
+      "updated_at": "2026-10-05T06:16:45.452729+08:00"
+    },
+    {
+      "id": "2026-10-05-concept-e1babd63a8",
+      "question": "当两次模拟胜率接近时，如何设计选择规则来避免随机波动导致反复改参数？",
+      "source_date": "2026-10-05",
+      "source_concept": "随机模拟的复现元数据",
+      "domain": "数学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-10-05T06:16:45.452729+08:00",
+      "updated_at": "2026-10-05T06:16:45.452729+08:00"
+    },
+    {
+      "id": "2026-10-05-concept-dfb7fc9db1",
+      "question": "如何为记录、聚合、报告三层定义输入输出字段，使报告不会直接依赖界面状态或临时脚本状态？",
+      "source_date": "2026-10-05",
+      "source_concept": "记录、聚合与报告的数据边界",
+      "domain": "计算机科学 / 软件工程 / 数学",
+      "status": "open",
+      "created_at": "2026-10-05T06:16:45.452729+08:00",
+      "updated_at": "2026-10-05T06:16:45.452729+08:00"
+    },
+    {
+      "id": "2026-10-05-concept-9d2c3e7dad",
+      "question": "平衡选择记录如何与关卡数据版本绑定，避免旧选择被新数据误用？",
+      "source_date": "2026-10-05",
+      "source_concept": "随机模拟的复现元数据",
+      "domain": "数学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-10-05T06:16:45.452729+08:00",
+      "updated_at": "2026-10-05T06:16:45.452729+08:00"
+    },
+    {
+      "id": "2026-10-05-concept-95b7a81dbc",
+      "question": "当 pointer_status 为 changed 但 commit_detail_status 为 unknown 时，报告措辞应如何限制，避免补充提交数量、作者或文件列表？",
+      "source_date": "2026-10-05",
+      "source_concept": "监控字段的状态正交性",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-10-05T06:16:45.452729+08:00",
+      "updated_at": "2026-10-05T06:16:45.452729+08:00"
+    },
+    {
+      "id": "2026-10-05-concept-8cead198ee",
+      "question": "如果同一 ref 在一次检查中先访问失败、重试后成功，应如何在字段中同时保留重试前后状态而不互相覆盖？",
+      "source_date": "2026-10-05",
+      "source_concept": "监控字段的状态正交性",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-10-05T06:16:45.452729+08:00",
+      "updated_at": "2026-10-05T06:16:45.452729+08:00"
+    },
+    {
+      "id": "2026-10-05-concept-8ab19048d2",
+      "question": "当模拟报告用于回归测试时，哪些指标变化应触发失败，哪些只作为观察线索？",
+      "source_date": "2026-10-05",
+      "source_concept": "记录、聚合与报告的数据边界",
+      "domain": "计算机科学 / 软件工程 / 数学",
+      "status": "open",
+      "created_at": "2026-10-05T06:16:45.452729+08:00",
+      "updated_at": "2026-10-05T06:16:45.452729+08:00"
+    },
+    {
+      "id": "2026-10-05-concept-793ad35672",
+      "question": "如何为 access_status、pointer_status 和 commit_detail_status 设计枚举值，使它们可以被自动化检查且不会互相覆盖？",
+      "source_date": "2026-10-05",
+      "source_concept": "监控字段的状态正交性",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-10-05T06:16:45.452729+08:00",
+      "updated_at": "2026-10-05T06:16:45.452729+08:00"
+    },
+    {
       "id": "2026-10-04-concept-e8d2cd0761",
       "question": "如何从文件路径生成可验证假设，而不是直接把路径线索写成实现结论？",
       "source_date": "2026-10-04",

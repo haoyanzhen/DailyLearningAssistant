@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-10-05 学习笔记日报</title>
+    <meta name="description" content="今日围绕状态字段正交、记录聚合报告边界与随机模拟复现元数据，把观察升级为可复核事实。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261005-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-10-05</p>
+        <h1>从可观察到可复核：状态、边界与复现元数据</h1>
+        <p>今天没有新增工程提交，重点把最近反复出现的观察、字段、聚合与模拟结果串成一条主线。目标不是推进工程进展，而是让结论可以被复核、比较和限制。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>把观察变成可复核事实</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>监控字段的状态正交性</strong>
+                <small>访问失败不等于指针未变，指针变化不…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>记录、聚合与报告的数据边界</strong>
+                <small>报告只读稳定聚合，不读界面状态或临…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>随机模拟的复现元数据</strong>
+                <small>单个胜率不是结论，样本数、随机种子…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念共同解决同一个问题：如何避免把弱线索、界面状态或单个数字误当成事实。监控字段正交性保证每个状态只表达一个维度；记录、聚合与报告的数据边界保证统计和结论来自稳定输入；随机模拟复现元数据保证模拟结果能绑定可重复条件。三者从字段到链路再到实验条件，形成一条从“可观察”到“可复核”的升级路径。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["把观察变成可复核事实"])
+  concept1["监控字段的状态正交性"]
+  hub --&gt; concept1
+  concept2["记录、聚合与报告的数据边界"]
+  hub --&gt; concept2
+  concept3["随机模拟的复现元数据"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  related1["提交时间字段与窗口归属的时区规则"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept2
+  related2["配置字段与读取脚本的一致性"]
+  concept3 --&gt; related2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="monitoring-field-orthogonality">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>监控字段的状态正交性</h3>
+              <p>Orthogonal Monitoring Field States</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">访问失败不等于指针未变，指针变化不等于提交详情已知。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>access_status、pointer_status、commit_detail_status 分别回答访问是否成功、指针是否变化、提交详情是否获取。</li>
+                <li>字段之间不能互相覆盖，访问失败不能写成无变化，指针变化不能写成提交内容已变化。</li>
+                <li>正交字段让自动化检查可以组合状态，报告能准确描述“指针已变化但详情未知”。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="monitoring-field-orthogonality" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="record-aggregation-report-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程 / 数学</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>记录、聚合与报告的数据边界</h3>
+              <p>Record, Aggregation, and Report Data Boundary</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">报告只读稳定聚合，不读界面状态或临时变量。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>记录保存可追溯事实，聚合按固定规则计算，报告只展示聚合结果和必要元数据。</li>
+                <li>每层只依赖上一层稳定输出，避免报告直接读取界面状态、脚本内部变量或临时打印结果。</li>
+                <li>边界清晰后，回归测试才能判断哪些指标变化触发失败，哪些只是观察线索。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="record-aggregation-report-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="random-simulation-reproducibility-metadata">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>随机模拟的复现元数据</h3>
+              <p>Random Simulation Reproducibility Metadata</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">单个胜率不是结论，样本数、随机种子和版本才是复现条件。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>胜率只是结果，样本数、随机种子、参数版本和关卡数据版本才是可复核条件。</li>
+                <li>结果文件必须绑定这些元数据，别人才能判断结果在什么条件下得到。</li>
+                <li>元数据能帮助区分规则变化与随机波动，避免反复改参数却说不清原因。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="random-simulation-reproducibility-metadata" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="monitoring-field-orthogonality">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>监控字段的状态正交性</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>想象一份体检报告：是否发烧、是否咳嗽、是否做过血常规是不同项目。不能因为没量体温，就说没有咳嗽；也不能因为做了血常规，就说已经确认咳嗽原因。监控字段也是同样的道理。访问是否成功、指针是否变化、提交详情是否获取，是三个不同维度。access_status 只回答“这次访问是否成功”，pointer_status 只回答“ref 指针相对上次是否变化”，commit_detail_status 只回答“是否拿到提交详情”。每个字段只表达一个维度，自动化检查才能把字段组合起来，例如“访问成功、指针变化、详情未知”。这样报告就可以准确说“指针已变化，但提交内容尚未确认”，而不会把访问失败写成无变化，也不会把指针变化写成提交内容已变化。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>一个监控字段只回答一个维度，避免不同事实互相覆盖。</li>
+                <li>状态组合必须可枚举、可检查，使报告能准确表达部分未知。</li>
+                <li>访问状态、指针状态和详情状态分离后，弱线索不会被补全成完成事实。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一次只读远端检查中，access_status=success，pointer_status=changed，commit_detail_status=unknown。报告应写“该 ref 指针发生变化，但本次未获取提交详情”，不能写“新增提交若干”，也不能写“仓库无变化”。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把“访问失败”写成“仓库无变化”，把不同维度的事实混在一起。</li>
+                <li>把“指针变化”写成“提交内容已变化”，导致报告不可复核。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>记录、聚合与报告的数据边界</td><td>监控字段的状态正交性为记录、聚合与报告的数据边界提供干净输入，因为报告只有基于不互相覆盖的字段才能准确描述当前状态。</td></tr>
+                <tr><td>提交时间字段与窗口归属的时区规则</td><td>两者都要求把不同维度的事实分开表达，避免把时间改写或访问状态误判为变化。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果同一 ref 在一次检查中先访问失败、重试后成功，应如何在字段中同时保留重试前后状态而不互相覆盖？</li>
+                <li>当 pointer_status 为 changed 但 commit_detail_status 为 unknown 时，报告措辞应如何限制，避免补充提交数量、作者或文件列表？</li>
+                <li>如何为 access_status、pointer_status 和 commit_detail_status 设计枚举值，使它们可以被自动化检查且不会互相覆盖？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="record-aggregation-report-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程 / 数学</p>
+                <h3>记录、聚合与报告的数据边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>可以用班级考试成绩来理解。每个学生的原始分数是记录，平均分、及格率、分数分布是聚合，最后给老师或家长看的班级成绩报告是报告。报告不能直接说“黑板上抄的分数就是事实”，因为黑板可能抄错；也不能让平均分直接读取某个学生临时报数。数据链路也一样：战斗记录是原始事件，聚合指标是对记录按固定规则汇总，报告输出是面向人的表达。边界清晰意味着每层只依赖上一层的稳定输出：记录保存可追溯事实，聚合使用固定规则计算，报告只展示聚合结果和必要元数据。这样当报告用于回归测试时，才能判断哪些指标变化应触发失败，哪些只作为观察线索，而不是把界面状态或临时脚本状态直接写成事实。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>记录、聚合、报告是三层不同证据角色，不能互相替代。</li>
+                <li>每层只依赖上一层稳定输出，才能定位问题在记录、聚合还是展示层。</li>
+                <li>报告用于回归测试时，需要把指标变化区分为触发失败和观察线索。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>战斗模拟产生 1000 局原始记录，聚合脚本计算胜率、平均回合数和异常结束数，报告只展示这些聚合字段和样本数。若报告直接读取界面上的“当前胜率”文本，就跨过了聚合边界，无法保证和原始记录一致。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>让报告直接依赖界面状态、脚本内部变量或临时打印结果，导致同一事实出现多个来源。</li>
+                <li>把文件级存在或界面显示误升级为内容级结论，使报告无法复核。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>监控字段的状态正交性</td><td>记录、聚合与报告的数据边界依赖监控字段的状态正交性，因为记录层字段如果维度互相覆盖，聚合和报告就会继承错误。</td></tr>
+                <tr><td>随机模拟的复现元数据</td><td>记录、聚合与报告的数据边界为随机模拟的复现元数据提供位置，因为模拟结果文件既是记录或聚合输出，也需要绑定样本数、随机种子和参数版本。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当模拟报告用于回归测试时，哪些指标变化应触发失败，哪些只作为观察线索？</li>
+                <li>在只有脚本路径的情况下，如何设计后续验证来确认记录、聚合、报告链路真的可用？</li>
+                <li>如何为记录、聚合、报告三层定义输入输出字段，使报告不会直接依赖界面状态或临时脚本状态？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="random-simulation-reproducibility-metadata">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 软件工程</p>
+                <h3>随机模拟的复现元数据</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>抛硬币实验如果只写“正面出现 52 次”，信息是不完整的。还需要写抛了多少次、用什么随机规则、参数版本和关卡数据版本。随机模拟也一样，胜率只是结果，样本数、随机种子、参数版本和关卡数据版本才是条件。随机种子像随机数生成器的起点，相同种子和相同参数通常可得到相同随机序列；样本数决定结果稳定性；参数版本和关卡数据版本决定规则和数据是否一致。结果文件需要绑定样本数、随机种子、参数版本和关卡数据版本，而不是展开具体胜率公式。把这些元数据写入结果文件，别人才能判断“这个胜率是在什么条件下得到的”，也能避免两次胜率接近时因为随机波动反复改参数。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>随机结果必须绑定生成条件，才能判断是否可复现。</li>
+                <li>样本数、随机种子、参数版本和关卡数据版本共同决定结果可比性。</li>
+                <li>比较模拟结果时，先比较元数据，再判断是否调整参数。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>win_rate_20.json 不只保存 win_rate=0.52，还保存 sample_count=10000、random_seed=42、parameter_version=v17、level_data_version=2026-10-03。若第二次模拟 win_rate=0.53，先比较样本数和随机条件，再判断是否值得调整参数。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把单个胜率数字当成最终结论，忽略样本数、随机种子和参数版本。</li>
+                <li>两次胜率接近时直接改参数，而不先比较随机条件，导致无法判断差异来源。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>记录、聚合与报告的数据边界</td><td>随机模拟的复现元数据依赖记录、聚合与报告的数据边界，因为结果文件、聚合指标和报告输出必须使用同一组可复核字段。</td></tr>
+                <tr><td>配置字段与读取脚本的一致性</td><td>参数版本和关卡数据版本需要 schema、JSON 数据和读取脚本同步，才能避免旧参数被误用。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当两次模拟胜率接近时，如何设计选择规则来避免随机波动导致反复改参数？</li>
+                <li>平衡选择记录如何与关卡数据版本绑定，避免旧选择被新数据误用？</li>
+                <li>结果文件应如何记录样本数、随机种子、参数版本和关卡数据版本，以便复现和比较？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念共同解决同一个问题：如何避免把弱线索、界面状态或单个数字误当成事实。监控字段正交性保证每个状态只表达一个维度；记录、聚合与报告的数据边界保证统计和结论来自稳定输入；随机模拟复现元数据保证模拟结果能绑定可重复条件。三者从字段到链路再到实验条件，形成一条从“可观察”到“可复核”的升级路径。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">状态字段要正交：访问失败不等于指针未变，指针变化不等于提交详情已知。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何在状态表中同时保留重试前后状态，而不把当前状态覆盖为单一结论？</li>
+            <li>如何把模拟报告中“触发失败”和“观察线索”写成可检查规则，并保留原始记录用于复核？</li>
+            <li>如何在模拟启动前校验配置读取脚本与结果文件中的版本字段一致，防止旧参数被误用？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
