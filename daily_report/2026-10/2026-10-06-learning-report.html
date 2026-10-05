@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-10-06 学习笔记日报</title>
+    <meta name="description" content="今日围绕证据门槛复习：无变化措辞、回归指标分级、近似胜率比较，强调结论强度必须匹配证据，避免弱证据升级成强结论。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261006-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-10-06</p>
+        <h1>结论强度必须匹配证据门槛</h1>
+        <p>今天是无变更复习日，围绕最近 open 问题延展：从报告措辞、指标分级到胜率比较，学习如何根据证据门槛控制结论强度。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>证据门槛与结论降级</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>无变化措辞的证据门槛</strong>
+                <small>没查到变化不等于没有变化，措辞强度…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>回归指标分级与阈值语义</strong>
+                <small>指标变化先分级：失败触发、观察线索…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>近似胜率比较的置信边界与决…</strong>
+                <small>接近的胜率不能直接比较成优劣，先看…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念共同构成从证据到结论的链条：无变化措辞的证据门槛限定事实表述范围，回归指标分级与阈值语义限定指标变化的处理方式，近似胜率比较的置信边界与决策门槛限定随机结果能否支持选择。它们的共同点是都反对把弱证据升级成强结论：局部 ref 未变不能写成仓库无进展，微小指标变化不能直接写成回归失败，接近胜率不能直接写成参数更优。从易到难看，先学会控制语言边界，再学会给指标分级，最后学会处理随机模拟中的不确定性，这样可以把监控、测试和平衡选择放在同一套证据逻辑下。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["证据门槛与结论降级"])
+  concept1["无变化措辞的证据门槛"]
+  hub --&gt; concept1
+  concept2["回归指标分级与阈值语义"]
+  hub --&gt; concept2
+  concept3["近似胜率比较的置信边界与决策门槛"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  related1["声明与阻塞证据的冲突字段"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept3
+  concept2 --&gt; related1
+  concept3 --&gt; concept2
+  concept3 --&gt; concept1
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="unchanged-wording-evidence-threshold">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学 / 大语言模型</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>无变化措辞的证据门槛</h3>
+              <p>Evidence Threshold for Unchanged Wording</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">没查到变化不等于没有变化，措辞强度必须匹配证据门槛。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>无变化、未变、无工程进展等措辞必须绑定监控范围、检查窗口和证据来源。</li>
+                <li>某个 ref 访问失败或其他分支未覆盖时，不能把局部未变扩大为仓库整体无进展。</li>
+                <li>强措辞如 no engineering progress 需要窗口内提交证据或人工确认，否则写成未确认或当前证据不足。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="unchanged-wording-evidence-threshold" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="regression-metric-grading-threshold-semantics">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 软件工程 / 计算机科学</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>回归指标分级与阈值语义</h3>
+              <p>Regression Metric Grading and Threshold Semantics</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">指标变化先分级：失败触发、观察线索、待确认线索。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>指标变化应分级为失败触发、观察线索和待确认线索，而不是所有变化都报警。</li>
+                <li>阈值语义要说明变化到什么程度、在什么条件下才算问题，而不是只写一个固定数字。</li>
+                <li>分级需要结合样本量、指标重要性、历史波动和版本变化；新指标缺少稳定基线时先标记待确认。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="regression-metric-grading-threshold-semantics" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="approximate-win-rate-confidence-boundary-decision-threshold">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>近似胜率比较的置信边界与决策门槛</h3>
+              <p>Confidence Boundary and Decision Threshold for Approximate Win Rates</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">接近的胜率不能直接比较成优劣，先看样本、波动和前提条件。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>胜率是随机模拟得到的统计量，不是固定常数；接近差异可能只是样本波动。</li>
+                <li>比较前需要检查样本量、随机种子、参数版本、关卡数据版本是否一致。</li>
+                <li>只有差异足够大、证据足够稳、前提条件一致时，才能把胜率差异写成选择依据；否则降级为观察线索。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="approximate-win-rate-confidence-boundary-decision-threshold" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="unchanged-wording-evidence-threshold">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学 / 大语言模型</p>
+                <h3>无变化措辞的证据门槛</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>当我们说无变化、未变或无工程进展时，这些词听起来像事实，但必须看证据范围。比如监控只检查部分 ref，窗口是某一段时间，来源是指针读取结果；如果某个 ref 访问失败，其他 ref 未变，就不能直接说整个仓库没有进展。更稳妥的说法是：在指定监控范围、检查窗口和证据来源内，被检查的 ref 未变。这就像体检只查了血压，不能说整个人完全健康。措辞强度要和证据门槛匹配，需要同时考虑监控范围、检查窗口、证据来源、访问状态和人工确认。若出现 no engineering progress 这类强措辞，最好要求窗口内提交证据或人工确认，否则写成未确认或当前证据不足。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>先界定监控范围、检查窗口和证据来源，再决定自然语言结论能覆盖哪些对象。</li>
+                <li>访问失败、未覆盖、指针未变是不同状态，不能用同一个未变词覆盖。</li>
+                <li>强结论需要更强证据，如窗口内提交证据或人工确认；否则降级为未确认或当前证据不足。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>监控系统检查 main 和 release 两个 ref，窗口为 2026-10-05 到 2026-10-06。main 指针未变，release 访问失败。报告不能写仓库无工程进展，而应写：main 在窗口内指针未变，release 访问失败且状态未知，其他分支未覆盖。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把没查到变化当成没有变化。</li>
+                <li>把某个 ref 未变扩大为整个仓库无进展，或把访问失败写成未变化。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>回归指标分级与阈值语义</td><td>指标报告也必须说明检查范围、窗口和证据来源，避免把局部未变写成整体回归通过。</td></tr>
+                <tr><td>声明与阻塞证据的冲突字段</td><td>报告中的无变化结论需要同时保留声明来源、阻塞证据和证据强度，不能用一个状态词覆盖所有事实。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果监控范围只覆盖部分 ref，报告模板应如何强制显示监控范围、检查窗口和证据来源？</li>
+                <li>当某个 ref 访问失败而其他 ref 未变时，仓库级状态词应如何表达才能既不夸大也不隐瞒？</li>
+                <li>出现 no engineering progress 时，应要求哪些窗口内提交证据或人工确认才能使用这一措辞？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="regression-metric-grading-threshold-semantics">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 软件工程 / 计算机科学</p>
+                <h3>回归指标分级与阈值语义</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>回归指标分级是把模拟或测试报告里的数字变化分成三类：失败触发、观察线索、待确认线索。不是所有变化都该报警，也不是所有变化都只记录。阈值语义不是随便设一个数，而是说明变化到什么程度、在什么条件下才算问题。例如胜率从 52% 到 51.7% 可能只是波动，但关键路径成功率从 99% 到 90% 可能更值得失败触发。指标分级需要结合样本量、指标重要性、历史波动和版本变化。即使不确认具体阈值数值，也要先定义语义：哪些是硬约束，哪些是观察项，哪些需要人工确认。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>先定义指标变化的语义等级：失败触发、观察线索、待确认线索。</li>
+                <li>阈值不是孤立数字，而是与样本量、指标重要性、历史波动和版本条件绑定的判断条件。</li>
+                <li>缺少稳定基线的新指标不直接失败，先作为待确认线索等待复核。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>模拟报告包含平均胜率、最长战斗时长、崩溃次数。在示例规则中，可以把崩溃次数从 0 变 2 标为失败触发，把平均胜率从 52.0% 变 51.7% 标为观察线索，把新指标缺少基线标为待确认线索；这只是说明分级方式，不确认项目实际阈值。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把所有微小变化都设为失败，导致报告天天报警。</li>
+                <li>只记录不分级，导致关键问题被淹没在观察线索里。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>近似胜率比较的置信边界与决策门槛</td><td>胜率接近时的不确定性边界决定哪些变化只能作为观察线索，哪些才可能触发失败。</td></tr>
+                <tr><td>声明与阻塞证据的冲突字段</td><td>指标变化可以作为阻塞证据或观察线索，报告需要区分声明、证据和结论强度。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当模拟报告用于回归测试时，哪些指标变化应触发失败，哪些只作为观察线索？</li>
+                <li>当指标历史波动较大时，如何避免把正常波动误判为回归失败？</li>
+                <li>当新指标没有稳定基线时，报告应如何标记为待确认线索而不是直接失败？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="approximate-win-rate-confidence-boundary-decision-threshold">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 软件工程</p>
+                <h3>近似胜率比较的置信边界与决策门槛</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>胜率是随机模拟得到的统计量，不是固定常数。两次胜率接近时，差异可能来自参数真的不同，也可能只是样本波动。要判断能否选择，需要看置信边界：样本量、随机种子、参数版本、关卡数据版本是否一致，以及差异是否超过波动范围。决策门槛就是规定：只有当差异足够大、证据足够稳、前提条件一致时，才把胜率差异写成选择依据；否则只能作为观察线索，等待更多样本或复核。这不是要求精确公式，而是要求接近结果不要直接变成强结论。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>点估计接近时，先判断差异是否超过样本波动边界，再判断是否支持选择。</li>
+                <li>样本量、随机种子、参数版本、关卡数据版本不一致时，比较前提不成立，结论应降级。</li>
+                <li>决策门槛不是固定公式，而是规定何时能把胜率差异写成选择依据，何时只保留为观察线索。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>参数 A 胜率 51.2%，参数 B 胜率 50.8%，样本数都是 200，关卡版本相同，随机种子不同。由于差异接近且样本波动可能较大，报告应写差异未超过观察边界，暂不作为选择依据，而不是直接选 A。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>只比较两个胜率点估计，忽略样本波动。</li>
+                <li>记录了随机种子和样本数，却仍然把接近差异写成参数优劣。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>回归指标分级与阈值语义</td><td>胜率接近时哪些变化只能作为观察线索，需要由置信边界和样本条件决定。</td></tr>
+                <tr><td>无变化措辞的证据门槛</td><td>两者都要求不把弱证据、接近差异或局部未变写成强结论。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当两次模拟胜率接近时，如何设计选择规则来避免随机波动导致反复改参数？</li>
+                <li>当样本数、随机种子、参数版本或关卡数据版本不一致时，胜率比较应如何降级为观察线索？</li>
+                <li>当差异超过观察边界但仍缺少人工确认时，报告应使用什么措辞来保留选择门槛？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念共同构成从证据到结论的链条：无变化措辞的证据门槛限定事实表述范围，回归指标分级与阈值语义限定指标变化的处理方式，近似胜率比较的置信边界与决策门槛限定随机结果能否支持选择。它们的共同点是都反对把弱证据升级成强结论：局部 ref 未变不能写成仓库无进展，微小指标变化不能直接写成回归失败，接近胜率不能直接写成参数更优。从易到难看，先学会控制语言边界，再学会给指标分级，最后学会处理随机模拟中的不确定性，这样可以把监控、测试和平衡选择放在同一套证据逻辑下。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">结论强度必须匹配证据门槛；证据不足时，结论要降级。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如果监控范围只覆盖部分 ref，报告模板应如何强制显示监控范围、检查窗口和证据来源？</li>
+            <li>当模拟报告用于回归测试时，哪些指标变化应触发失败，哪些只作为观察线索？</li>
+            <li>当两次模拟胜率接近时，如何设计选择规则来避免随机波动导致反复改参数？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
