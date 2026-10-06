@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-10-07 学习笔记日报</title>
+    <meta name="description" content="今日围绕无变更复习日，梳理监控记录脱敏边界、重试事件状态保留与措辞断言、模拟结果版本一致性检查，避免把弱证据写成强结论。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261007-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-10-07</p>
+        <h1>无变更复习日：把弱证据整理成可复核边界</h1>
+        <p>今天是无变更复习日，不确认新的工程变更或平衡结论，而是把无变化、访问失败和版本不一致整理成可复核的知识边界。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>无变更复习日的证据边界</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>只读监控记录的最小脱敏边界</strong>
+                <small>记录要够复核，但不能把凭据和敏感路…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>重试事件下的状态保留与措辞…</strong>
+                <small>后事件不能覆盖前事件，强措辞必须有…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>模拟结果可比性前提的版本一…</strong>
+                <small>版本字段不一致，结果差异就不能直接…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念从易到难构成证据链：最小脱敏边界规定监控记录哪些字段可安全保留，重试状态保留规定事件序列如何不被覆盖，版本一致性检查规定模拟结果在什么前提下才能比较。它们共享同一逻辑：当字段缺失、事件冲突或版本不一致时，结论强度必须降级。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["无变更复习日的证据边界"])
+  concept1["只读监控记录的最小脱敏边界"]
+  hub --&gt; concept1
+  concept2["重试事件下的状态保留与措辞断言"]
+  hub --&gt; concept2
+  concept3["模拟结果可比性前提的版本一致性检查"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  related1["静态评审页面的双表示一致性边界"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept2
+  concept3 --&gt; related1
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="readonly-monitoring-minimal-redaction-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程 / 大语言模型</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>只读监控记录的最小脱敏边界</h3>
+              <p>Minimal Redaction Boundary for Read-Only Monitoring Records</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">记录要够复核，但不能把凭据和敏感路径带进日报。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>只记录判断访问状态、指针状态或详情状态所必需的字段。</li>
+                <li>凭据、token、私钥路径、完整敏感路径和可直接用于访问的完整命令必须脱敏或不记录。</li>
+                <li>脱敏边界只解决记录安全，不证明访问成功、ref 未变或提交事实。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="readonly-monitoring-minimal-redaction-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="retry-event-state-preservation-phrase-assertion">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学 / 大语言模型</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>重试事件下的状态保留与措辞断言</h3>
+              <p>State Preservation and Phrase Assertion for Retry Events</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">后事件不能覆盖前事件，强措辞必须有字段断言支撑。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>状态拆成 access_status、retry_status、pointer_status 和 detail_status 等正交字段。</li>
+                <li>事件追加而不是覆盖，当前状态由事件派生，历史轨迹可审计。</li>
+                <li>措辞必须由字段断言限制，局部 ref 未变或访问失败不能扩大为仓库整体无进展。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="retry-event-state-preservation-phrase-assertion" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="simulation-result-version-consistency-check">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 软件工程 / 计算机科学</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>模拟结果可比性前提的版本一致性检查</h3>
+              <p>Version Consistency Check for Simulation Result Comparability</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">版本字段不一致，结果差异就不能直接归因。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>结果文件应记录 sample_count、seed、params_version 和 level_data_version 等字段。</li>
+                <li>比较器先读取版本字段，再决定比较强度；只改变一个变量才可讨论该变量影响。</li>
+                <li>多个版本不一致或前提不成立时，结果只能作为观察线索，不能写成参数优劣或平衡结论。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="simulation-result-version-consistency-check" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="readonly-monitoring-minimal-redaction-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程 / 大语言模型</p>
+                <h3>只读监控记录的最小脱敏边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>只读监控记录的最小脱敏边界，讲的是监控报告应该记录到什么程度。只读监控本身不修改仓库，但它会生成日志、日报、状态表，这些内容会被人工阅读，也可能被 Agent 继续加工。因此记录字段既要足够说明状态，又不能把敏感信息扩散出去。判断一个字段是否该记录，可以问三个问题：是否用于判断访问状态、指针状态或详情状态；是否必须保留原文才能复核；是否可以用占位符、摘要或相对路径替代。如果答案是否定的，就应该脱敏或不记录。脱敏边界只规定记录内容，不证明访问成功，不证明 ref 未变，也不证明提交事实。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>最小暴露：只保留判断状态所必需字段，避免把敏感信息扩散到日志、日报和状态表。</li>
+                <li>字段三问：是否用于状态判断、是否必须保留原文、是否可用占位符或相对路径替代。</li>
+                <li>边界分离：脱敏解决记录安全，不替代访问事实、指针事实或提交事实。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>例如监控某仓库 main ref。可记录字段包括 repo_id、ref=main、previous_sha、current_sha、access_status=success、pointer_status=unchanged、window_start 和 window_end。需要脱敏字段包括远端 URL 中的 token、SSH 私钥路径、个人邮箱、完整访问命令和错误详情中的凭据。如果首次访问失败、重试成功，可记录 access_status=success、retry_status=success、pointer_status=unchanged，同时把错误信息中的敏感部分替换为 [REDACTED]。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为只读监控不会修改代码，所以记录可以随意完整。</li>
+                <li>把所有路径都脱敏到无法复核，或者把没记录敏感信息当成访问成功的证据。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>重试事件下的状态保留与措辞断言</td><td>为重试事件提供字段安全范围，使首次失败、重试成功和详情未知等事件能被记录而不泄露凭据或敏感路径。</td></tr>
+                <tr><td>静态评审页面的双表示一致性边界</td><td>人工可读页面和机器可读记录若使用同一最小字段集，就能避免页面展示未脱敏信息或出现两套事实。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当监控系统需要记录访问失败原因时，如何在保留错误类型和脱敏敏感凭据之间设计字段？</li>
+                <li>哪些路径字段可以保留为仓库内相对路径，哪些必须替换为占位符？</li>
+                <li>如果同一监控记录既用于人工日报又用于机器校验，最小字段集应如何划分？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="retry-event-state-preservation-phrase-assertion">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学 / 大语言模型</p>
+                <h3>重试事件下的状态保留与措辞断言</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>重试事件下的状态保留与措辞断言，处理的是事件序列和状态覆盖问题。一次监控检查可能先访问失败，再重试成功，最后读到 ref 指针未变；也可能某个 ref 访问失败，而其他 ref 未变。如果系统只保存最终状态，就会丢失曾经失败的事实；如果只保存失败，就会丢失重试成功的事实。因此需要把状态拆成多个正交字段，例如 access_status、retry_status、pointer_status 和 detail_status。事件应该追加而不是覆盖，当前状态由事件派生，历史轨迹可审计。措辞断言要求自然语言结论必须受字段组合限制：只有 access_status=success 且 pointer_status=unchanged 时，才能说被监控 ref 未变；如果 access_status=failure 或 pointer_status=unknown，只能说访问失败或详情未知。局部 ref 未变或访问失败不能扩大为整个仓库没有工程进展。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>事件追加：第一次失败、重试成功、指针未变等事实应保留为事件序列，而不是被最终状态覆盖。</li>
+                <li>字段正交：访问状态、重试状态、指针状态和详情状态分别表达不同维度，避免互相覆盖。</li>
+                <li>措辞断言：自然语言结论必须由字段组合触发，证据不足时措辞必须降级。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>例如检查仓库 A 的 main 和 develop。main 首次访问失败，重试成功，读到 main 指针与基线相同；develop 首次访问成功，指针与基线相同。允许措辞是 A 仓库 main 与 develop 在检查窗口内 ref 指针未变，且 main 曾发生访问失败并重试成功。不允许措辞是 A 仓库无工程进展，除非另有窗口内提交证据或人工确认。如果 main 重试后仍失败，则 main 的 pointer_status 应标为 unknown，不能写 main 未变。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为最终状态最重要，所以历史事件可以覆盖。</li>
+                <li>把重试成功当成提交内容已确认，或把某个 ref 访问失败扩大为仓库整体无进展。</li>
+                <li>认为措辞只要看起来谨慎就行，不写成可检查规则。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>只读监控记录的最小脱敏边界</td><td>事件字段既要保留失败、重试和详情未知，又要把错误信息中的凭据和敏感路径脱敏。</td></tr>
+                <tr><td>模拟结果可比性前提的版本一致性检查</td><td>当访问失败、详情未知或版本字段不一致时，结果都应降级为观察线索而不是强结论。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当一次检查窗口内同一 ref 发生多次失败和重试时，事件序列应如何压缩为可审计摘要而不丢失关键状态？</li>
+                <li>如何为 no engineering progress 设计字段断言，使只有窗口内提交证据或人工确认字段存在时才允许使用？</li>
+                <li>当某个 ref 访问失败而其他 ref 未变时，仓库级状态词应如何从字段组合自动派生？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="simulation-result-version-consistency-check">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 软件工程 / 计算机科学</p>
+                <h3>模拟结果可比性前提的版本一致性检查</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>模拟结果可比性前提的版本一致性检查，关注的是比较前的前提条件是否成立。胜率、平衡结果或模拟输出不是孤立数字，它们依赖样本数、随机种子、参数版本和关卡数据版本。如果两组结果的样本数不同、随机种子不同、参数版本不同或关卡数据版本不同，那么结果差异可能来自样本波动、随机路径、规则变化或关卡变化，不能稳定解释为某个参数更优。版本一致性检查可以看作实验条件对齐：结果文件应记录 sample_count、seed、params_version 和 level_data_version 等字段，比较器先读取这些字段，再决定比较强度。若字段一致，可以进入差异分析；若只有参数版本不同，其他字段一致，可以讨论参数影响；若多个版本不一致，结果只能作为观察线索，不能写成选择依据。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>实验条件对齐：比较前必须先确认样本数、随机种子、参数版本和关卡数据版本是否一致。</li>
+                <li>比较强度分级：字段一致可进入差异分析，单变量不同可讨论该变量影响，多变量不同只能作为观察线索。</li>
+                <li>结论降级：前提不成立时，结果不能直接支撑参数优劣或平衡选择，只能保留为待验证线索。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>例如 result_A 记录 sample_count=1000、seed=42、params_version=v1、level_data_version=v1、win_rate=0.52；result_B 记录 sample_count=1000、seed=42、params_version=v2、level_data_version=v1、win_rate=0.55。样本数、随机种子和关卡数据版本一致，只有参数版本不同，因此可以比较参数 v1 与 v2 的影响，但仍需保留波动说明。若 result_C 的 level_data_version=v2，则 result_A 与 result_C 不能直接比较，只能标记为关卡数据版本不一致的观察线索。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>只记录结果不记录版本，或认为样本数足够大就能弥补版本不一致。</li>
+                <li>把随机种子不同当成可忽略，或认为旧平衡选择可以自动适用于新关卡数据。</li>
+                <li>把结果文件存在当成可比性成立。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>重试事件下的状态保留与措辞断言</td><td>提供结果降级原则，当版本字段不一致、访问失败或详情未知时，结论都应降级为观察线索。</td></tr>
+                <tr><td>静态评审页面的双表示一致性边界</td><td>样本数、随机种子、参数版本和关卡数据版本等字段需要在机器可读结果文件和人工可读评审页面中保持一致。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当只有随机种子不同而样本数、参数版本和关卡数据版本一致时，如何设计多次种子聚合来降低单次波动影响？</li>
+                <li>当参数版本和关卡数据版本同时变化时，如何设计消融实验或最小对照来区分各自影响？</li>
+                <li>平衡选择记录应保存哪些字段，才能在新关卡数据版本出现时自动提示旧选择需要重新验证？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念从易到难构成证据链：最小脱敏边界规定监控记录哪些字段可安全保留，重试状态保留规定事件序列如何不被覆盖，版本一致性检查规定模拟结果在什么前提下才能比较。它们共享同一逻辑：当字段缺失、事件冲突或版本不一致时，结论强度必须降级。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">当字段缺失、事件冲突或版本不一致时，结论强度必须降级。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>当监控系统需要记录访问失败原因时，如何在保留错误类型和脱敏敏感凭据之间设计字段？</li>
+            <li>如何为 no engineering progress 设计字段断言，使只有窗口内提交证据或人工确认存在时才允许使用？</li>
+            <li>当参数版本和关卡数据版本同时变化时，如何设计最小对照来区分各自影响？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
