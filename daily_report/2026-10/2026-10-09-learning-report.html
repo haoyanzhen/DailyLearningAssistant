@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-10-09 学习笔记日报</title>
+    <meta name="description" content="今日围绕代码仓库证据边界展开，区分工作区草稿、自动提交与远端引用线索，避免弱证据被补全成强事实。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261009-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-10-09</p>
+        <h1>Git 证据边界：草稿、自动提交与 ref-only 线索</h1>
+        <p>当天不追具体代码功能变化，而是学习在有限 Git 证据下区分可确认事实、待确认线索和不可推断内容。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>有限 Git 证据下的结论强度控制</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>工作区状态排除边界</strong>
+                <small>草稿本上的改动不是归档，工作区状态…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>自生成提交排除</strong>
+                <small>自动打印纸不是人工报告，自生成提交…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>ref-only 证据下的…</strong>
+                <small>柜格编号变了，不等于知道柜格里放了…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念形成从易到难的递进：先处理本地工作区里容易被误判的草稿状态，再处理 Git 历史中看似提交但可能属于系统自动行为的事件，最后处理远端 ref 指针变化这种最弱但最常见的版本线索。它们的共同点是：证据的类型、来源和等级决定报告能说什么。工作区状态不是提交证据，自生成提交不是工程变化证据，ref-only 证据不是提交或文件证据。把这些边界讲清楚，可以帮助学习者在面对 Agent 生成的总结时，判断哪些句子是事实，哪些句子只是待确认线索，哪些句子超出了证据范围。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["有限 Git 证据下的结论强度控制"])
+  concept1["工作区状态排除边界"]
+  hub --&gt; concept1
+  concept2["自生成提交排除"]
+  hub --&gt; concept2
+  concept3["ref-only 证据下的结论强度限制与待确认线索标注"]
+  hub --&gt; concept3
+  related1["检查窗口与提交证据边界"]
+  concept1 --&gt; related1
+  related2["无变化措辞的证据门槛"]
+  concept1 --&gt; related2
+  concept1 --&gt; concept2
+  concept2 --&gt; related1
+  concept2 --&gt; related2
+  related3["Agent 输出证据约束"]
+  concept2 --&gt; related3
+  related4["Git 远端引用和 SHA 对象标识"]
+  concept3 --&gt; related4
+  concept3 --&gt; related3
+  concept3 --&gt; related2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="workspace-state-exclusion-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>工作区状态排除边界</h3>
+              <p>Workspace State Exclusion Boundary</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">草稿本上的改动不是归档，工作区状态不能写成提交证据。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>未暂存、已暂存但未提交、未跟踪文件和 worktree 工作区状态不采集，不作为变化或概念依据。</li>
+                <li>判断当天是否有工程变化，主要看检查窗口内是否有提交证据；窗口内提交数为 0 时不能因工作区改动写成完成开发。</li>
+                <li>工作区文件路径存在只是对象存在线索，不是检查窗口内提交证据，需要与提交证据分离。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="workspace-state-exclusion-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="self-generated-commit-exclusion">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>自生成提交排除</h3>
+              <p>Self-Generated Commit Exclusion</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">自动打印纸不是人工报告，自生成提交要单独分类。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>Git 历史中出现提交只说明仓库里多了一条提交记录，不自动说明这条记录来自人工工程进展。</li>
+                <li>DailyLearningAssistant 已忽略自身自动发布日报产生的 1 个提交，因此该提交不作为当日工程变化依据。</li>
+                <li>排除不是删除历史，而是把提交存在事实与工程变化证据分类，仍可作为系统事件保留。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="self-generated-commit-exclusion" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="ref-only-evidence-conclusion-limit">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学 / 大语言模型</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>ref-only 证据下的结论强度限制与待确认线索标注</h3>
+              <p>Ref-Only Evidence Conclusion Limit</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">柜格编号变了，不等于知道柜格里放了什么。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>远端 ref 指针变化只能确认某个引用从历史 SHA 变为当前 SHA，不直接包含提交数量、提交信息、作者、文件列表、diff 或功能意图。</li>
+                <li>ref 级证据不能升级为提交级、文件级或功能级证据，需要 commit log、提交对象、文件树或 diff 等额外证据。</li>
+                <li>Agent 输出应分成可确认事实、待确认线索和不可推断内容，避免证据不足时补全细节。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="ref-only-evidence-conclusion-limit" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="workspace-state-exclusion-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>工作区状态排除边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>可以把 Git 仓库想象成一个正式档案柜，工作区则是你桌上的草稿本。草稿本上写了什么、改了哪里、有没有新增文件，都只说明你正在准备材料，不代表这些材料已经正式归档。这里基于当日材料可确认的边界是：未暂存、已暂存但未提交、未跟踪文件和 worktree 工作区状态不采集，不作为变化或概念依据。也就是说，判断当天是否有工程变化，主要看检查窗口内是否有提交证据；如果窗口内提交数为 0，即使工作区看起来有很多改动，也不能直接写成当天完成了某项开发。这个边界不是否定草稿的价值，而是把草稿和已提交证据分开，避免把准备中的内容误判为已经完成的内容。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>工作区状态表达的是准备中的材料，不等同于已经提交归档的正式证据。</li>
+                <li>检查窗口内提交数是判断当天工程变化的主要证据门槛。</li>
+                <li>未暂存、已暂存、未跟踪文件和 worktree 状态只能作为待观察状态，不进入当日提交变化结论。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>某本地仓库检查窗口内提交数为 0，但工作区里有一个未跟踪文件 report.md，还有一个未暂存修改。当天总结只能写窗口内无提交，工作区状态不采集，不能写当天完成了 report.md 的开发或修复。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>看到工作区里有新增或修改文件，就认为当天一定发生了工程变化。</li>
+                <li>把未跟踪文件当成已提交资产，或者把某个 worktree 里的临时状态当成整个仓库的变化。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>检查窗口与提交证据边界</td><td>检查窗口只把窗口内提交视为当天变化，而工作区草稿不在窗口内提交证据范围内。</td></tr>
+                <tr><td>无变化措辞的证据门槛</td><td>窗口内提交数为 0 时才能写当日无变更，工作区有草稿不能推翻该结论。</td></tr>
+                <tr><td>自生成提交排除</td><td>两者都在回答哪些 Git 相关状态可以进入工程变化证据，哪些只能作为待观察状态。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果未来希望把本地草稿纳入另一类证据，需要为未暂存、已暂存、未跟踪文件设计哪些最小字段？</li>
+                <li>如何设计检查器，确保工作区状态不会自动进入当日提交变化结论？</li>
+                <li>当 worktree 中存在多个工作区时，如何避免把不同工作区的未提交状态误判为主仓库变化？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="self-generated-commit-exclusion">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>自生成提交排除</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>Git 历史里出现一个提交，只说明仓库里多了一条提交记录，并不自动说明这条记录来自人工工程进展。有些提交是系统自动产生的，例如自动发布日报、自动备份、自动脚本生成。这里基于当日材料可确认的是，DailyLearningAssistant 已忽略自身自动发布日报产生的 1 个提交，因此该提交不作为当日工程变化依据。这里的关键不是删除历史，而是做证据分类：提交存在是事实，但它是否属于工程变化证据，要看来源、意图和排除规则。若不排除自生成提交，系统每天自动运行一次，就可能被误读为每天有人推进了功能。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>提交存在是事实，但它是否属于工程变化证据，要看来源、意图和排除规则。</li>
+                <li>自动发布日报、自动备份、自动脚本生成等系统行为应从工程变化证据中单独分类。</li>
+                <li>排除自生成提交后，才能更准确判断当天是否存在人工或工程进展。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>DailyLearningAssistant 当天有 1 个自动发布日报提交。如果把它算入工程变化，可能误写成有人改进了学习助手；按当天材料，该提交被忽略后，不作为当日工程变化依据。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>只要 Git 历史里有提交，就说明当天有人做了工程进展。</li>
+                <li>认为排除自生成提交就是删除历史；实际上，排除只是把它从工程变化证据中分类出去，仍可作为系统事件保留。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>检查窗口与提交证据边界</td><td>即使提交落在检查窗口内，如果来源是自动发布日报，也可能被排除在工程变化证据之外。</td></tr>
+                <tr><td>无变化措辞的证据门槛</td><td>排除自生成提交后才能更准确地判断当天是否存在人工或工程进展。</td></tr>
+                <tr><td>Agent 输出证据约束</td><td>Agent 总结需要区分系统自动事件和人工工程变化，避免把自动提交补全成工程进展。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何根据提交作者、提交信息、时间规律和来源字段识别自生成提交？</li>
+                <li>自生成提交被排除后，是否应该保留为系统事件字段供审计？</li>
+                <li>多个仓库都有自动日报或自动发布提交时，如何统一设计排除规则而不误伤人工提交？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="ref-only-evidence-conclusion-limit">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学 / 大语言模型</p>
+                <h3>ref-only 证据下的结论强度限制与待确认线索标注</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>远端 ref 指针变化是 Git 监控中最常见的弱证据之一。当天多个远端仓库可确认的是 ref 状态从历史 SHA 变为当前 SHA，例如 refs/heads/main 的历史 SHA 与当前 SHA 不同，因此状态为 changed。但这个事实只说明某个引用现在指向了另一个 SHA，不直接包含中间新增了多少提交、提交信息是什么、作者是谁、文件列表是什么、diff 是什么或功能意图是什么。这里基于当日材料可确认的是：ref 级证据不能升级为提交级、文件级或功能级证据。Agent 生成总结时，应当把内容分成三类：可确认事实，例如 ref 指针变化；待确认线索，例如具体提交内容和文件变更；不可推断内容，例如没有 diff 时不能确认文件新增、删除、修改或功能实现。这样的输出才可靠。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>ref 指针变化只能通过历史 SHA 与当前 SHA 的比较来确认，属于远端版本变化线索。</li>
+                <li>提交、文件和功能结论需要更高等级证据支撑，例如 commit log、提交对象、文件树或 diff。</li>
+                <li>当提交详情状态未知时，报告应强制显示不可确认字段，而不是用自然语言补全提交数量、作者或文件列表。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>某远端仓库 refs/heads/main 历史 SHA 为 92d27ed，当前 SHA 为 e1a88c6，状态为 changed。可写该 ref 指针发生变化，属于远端版本变化线索；不可写当天新增 3 个提交并修复了登录问题，除非有 commit log 或 diff 证据。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为 ref 变化就等于提交内容变化，或者 SHA 不同就能推断新增提交数量和功能修改。</li>
+                <li>Agent 总结越详细越好，因此在证据不足时补全提交信息、作者或文件列表。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>Git 远端引用和 SHA 对象标识</td><td>ref 指针变化只能通过历史 SHA 与当前 SHA 的比较来确认。</td></tr>
+                <tr><td>Agent 输出证据约束</td><td>Agent 基于远端 ref 元数据生成总结时，必须把提交、文件和功能内容标为待确认或不可推断。</td></tr>
+                <tr><td>无变化措辞的证据门槛</td><td>ref unchanged 或 ref changed 都只能支撑对应 ref 级措辞，不能扩展到整个仓库或提交内容。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何为 ref-only、commit-level、diff-level 和 runtime-level 设计自动结论降级规则？</li>
+                <li>当 pointer_status 为 changed 且 commit_detail_status 为 unknown 时，报告模板如何强制显示不可确认字段？</li>
+                <li>如何把 ref 指针变化产生的待确认线索转成下一步验证任务，例如补充 commit log 或 diff？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念形成从易到难的递进：先处理本地工作区里容易被误判的草稿状态，再处理 Git 历史中看似提交但可能属于系统自动行为的事件，最后处理远端 ref 指针变化这种最弱但最常见的版本线索。它们的共同点是：证据的类型、来源和等级决定报告能说什么。工作区状态不是提交证据，自生成提交不是工程变化证据，ref-only 证据不是提交或文件证据。把这些边界讲清楚，可以帮助学习者在面对 Agent 生成的总结时，判断哪些句子是事实，哪些句子只是待确认线索，哪些句子超出了证据范围。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">工作区草稿、自动提交和 ref 变化都只是线索，必须按证据等级限制措辞。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何为未暂存、已暂存、未跟踪文件设计最小字段，使本地草稿与提交证据分离？</li>
+            <li>如何根据作者、提交信息、时间规律和来源字段识别自生成提交，并保留系统事件？</li>
+            <li>如何为 ref-only、commit-level、diff-level 设计自动结论降级规则，阻止补全提交数量或文件列表？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>

@@ -3,6 +3,96 @@
   "year_month": "2026-10",
   "threads": [
     {
+      "id": "2026-10-09-ref-only-a60c36acee",
+      "question": "如何把 ref 指针变化产生的待确认线索转成下一步验证任务，例如补充 commit log 或 diff？",
+      "source_date": "2026-10-09",
+      "source_concept": "ref-only 证据下的结论强度限制与待确认线索标注",
+      "domain": "软件工程 / 计算机科学 / 大语言模型",
+      "status": "open",
+      "created_at": "2026-10-09T06:15:49.098208+08:00",
+      "updated_at": "2026-10-09T06:15:49.098208+08:00"
+    },
+    {
+      "id": "2026-10-09-ref-only-45ecfe5d31",
+      "question": "如何为 ref-only、commit-level、diff-level 和 runtime-level 设计自动结论降级规则？",
+      "source_date": "2026-10-09",
+      "source_concept": "ref-only 证据下的结论强度限制与待确认线索标注",
+      "domain": "软件工程 / 计算机科学 / 大语言模型",
+      "status": "open",
+      "created_at": "2026-10-09T06:15:49.098208+08:00",
+      "updated_at": "2026-10-09T06:15:49.098208+08:00"
+    },
+    {
+      "id": "2026-10-09-ref-only-007bcc4aaf",
+      "question": "当 pointer_status 为 changed 且 commit_detail_status 为 unknown 时，报告模板如何强制显示不可确认字段？",
+      "source_date": "2026-10-09",
+      "source_concept": "ref-only 证据下的结论强度限制与待确认线索标注",
+      "domain": "软件工程 / 计算机科学 / 大语言模型",
+      "status": "open",
+      "created_at": "2026-10-09T06:15:49.098208+08:00",
+      "updated_at": "2026-10-09T06:15:49.098208+08:00"
+    },
+    {
+      "id": "2026-10-09-concept-d1a722dbda",
+      "question": "如何根据提交作者、提交信息、时间规律和来源字段识别自生成提交？",
+      "source_date": "2026-10-09",
+      "source_concept": "自生成提交排除",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-10-09T06:15:49.098208+08:00",
+      "updated_at": "2026-10-09T06:15:49.098208+08:00"
+    },
+    {
+      "id": "2026-10-09-concept-739084a315",
+      "question": "当 worktree 中存在多个工作区时，如何避免把不同工作区的未提交状态误判为主仓库变化？",
+      "source_date": "2026-10-09",
+      "source_concept": "工作区状态排除边界",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-10-09T06:15:49.098208+08:00",
+      "updated_at": "2026-10-09T06:15:49.098208+08:00"
+    },
+    {
+      "id": "2026-10-09-concept-5f4bd85d3e",
+      "question": "多个仓库都有自动日报或自动发布提交时，如何统一设计排除规则而不误伤人工提交？",
+      "source_date": "2026-10-09",
+      "source_concept": "自生成提交排除",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-10-09T06:15:49.098208+08:00",
+      "updated_at": "2026-10-09T06:15:49.098208+08:00"
+    },
+    {
+      "id": "2026-10-09-concept-293d8b3ac1",
+      "question": "如果未来希望把本地草稿纳入另一类证据，需要为未暂存、已暂存、未跟踪文件设计哪些最小字段？",
+      "source_date": "2026-10-09",
+      "source_concept": "工作区状态排除边界",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-10-09T06:15:49.098208+08:00",
+      "updated_at": "2026-10-09T06:15:49.098208+08:00"
+    },
+    {
+      "id": "2026-10-09-concept-1793f26e84",
+      "question": "自生成提交被排除后，是否应该保留为系统事件字段供审计？",
+      "source_date": "2026-10-09",
+      "source_concept": "自生成提交排除",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-10-09T06:15:49.098208+08:00",
+      "updated_at": "2026-10-09T06:15:49.098208+08:00"
+    },
+    {
+      "id": "2026-10-09-concept-170f753e8b",
+      "question": "如何设计检查器，确保工作区状态不会自动进入当日提交变化结论？",
+      "source_date": "2026-10-09",
+      "source_concept": "工作区状态排除边界",
+      "domain": "软件工程 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-10-09T06:15:49.098208+08:00",
+      "updated_at": "2026-10-09T06:15:49.098208+08:00"
+    },
+    {
       "id": "2026-10-08-concept-f8d55d9583",
       "question": "当某一层运行失败或字段缺失时，报告应如何降级措辞而不是写成链路可用？",
       "source_date": "2026-10-08",

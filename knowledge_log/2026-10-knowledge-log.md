@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-10/2026-10-09-learning-report.html">2026-10-09</a>
+      </td>
+      <td>工作区状态排除边界</td>
+      <td>软件工程 / 计算机科学</td>
+      <td>★★</td>
+      <td>工作区状态排除边界要求把未提交、未跟踪和工作区状态排除在当日提交证据之外，避免草稿被误判为已提交变化。</td>
+      <td>下一次可结合未暂存、已暂存、未跟踪文件的最小字段，讲解如何设计本地草稿证据与提交证据的分离表，并给出可检查断言。</td>
+    </tr>
+    <tr>
+      <td>自生成提交排除</td>
+      <td>软件工程</td>
+      <td>★★★</td>
+      <td>自生成提交排除要求把系统自动产生的提交从工程变化证据中单独分类，避免把自动行为误判为人工进展。</td>
+      <td>下一次可结合 author、committer、message pattern 和 source 字段，讲解如何设计自生成提交识别规则与保留系统事件字段。</td>
+    </tr>
+    <tr>
+      <td>ref-only 证据下的结论强度限制与待确认线索标注</td>
+      <td>软件工程 / 计算机科学 / 大语言模型</td>
+      <td>★★★★</td>
+      <td>ref-only 证据下的结论强度限制要求 Agent 只把 ref 指针变化写成远端版本变化线索，并把提交、文件和功能内容标为待确认或不可推断。</td>
+      <td>下一次可结合 pointer_status、commit_detail_status 和 evidence_level 字段，讲解如何为 ref-only 报告设计自动断言，阻止生成提交数量、作者或文件列表。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-10/2026-10-08-learning-report.html">2026-10-08</a>
       </td>
       <td>文件路径线索向可验证假设的证据升级边界</td>
