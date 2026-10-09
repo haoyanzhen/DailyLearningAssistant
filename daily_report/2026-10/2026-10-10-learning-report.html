@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-10-10 学习笔记日报</title>
+    <meta name="description" content="今日围绕部分 ref 失败、重试事件压缩与三层字段契约，学习把局部事实压缩成可审计摘要并谨慎派生仓库级措辞。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261010-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-10-10</p>
+        <h1>从局部事实到谨慎措辞：仓库监控日报学习</h1>
+        <p>今天从部分 ref 失败、重试事件压缩和三层字段契约出发，学习如何把监控证据变成可检查、可复核的日报措辞。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>从局部事实到仓库级谨慎措辞</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>部分 ref 失败下的仓库…</strong>
+                <small>局部失败只能说明局部不可确认，不能…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>重试事件序列的可审计压缩</strong>
+                <small>保留关键节点，合并重复细节，让结果…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>记录-聚合-报告三层最小字…</strong>
+                <small>缺字段就降级，不默认正常。</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念形成一条从字段到措辞的链路：部分 ref 失败提供局部事实，重试事件压缩提供时间维度上的关键状态，三层字段契约规定这些事实如何进入记录、聚合和报告。它们共同避免默认完整：没有字段就不写可用，没有全部 ref 成功就不写仓库整体无变化，没有完整事件摘要就不把重试写成一次成功。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["从局部事实到仓库级谨慎措辞"])
+  concept1["部分 ref 失败下的仓库级状态派生"]
+  hub --&gt; concept1
+  concept2["重试事件序列的可审计压缩"]
+  hub --&gt; concept2
+  concept3["记录-聚合-报告三层最小字段契约"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["从局部事实到仓库级谨慎措辞"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="partial-ref-failure-repo-status-derivation">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>部分 ref 失败下的仓库级状态派生</h3>
+              <p>Partial Ref Failure Repo Status Derivation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">局部失败只能说明局部不可确认，不能直接扩大为整体结论。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>仓库级状态词不能由单个 ref 的失败或成功直接推出。</li>
+                <li>需要组合监控 ref 数、成功数、失败数、指针状态、检查窗口和证据来源。</li>
+                <li>访问失败表示证据不足，不能替代指针未变，也不能扩大为仓库不可用或无变化。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="partial-ref-failure-repo-status-derivation" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="retry-event-auditable-compression">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>重试事件序列的可审计压缩</h3>
+              <p>Auditable Compression of Retry Event Sequences</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">保留关键节点，合并重复细节，让结果可追溯。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>重试事件不能只保留最终成功，也不能展开全部原始日志。</li>
+                <li>摘要应保留对象标识、检查窗口、首次失败、重试次数、最终状态和脱敏错误类型。</li>
+                <li>压缩要保留状态变化节点，例如首次失败、错误类型变化和最终状态。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="retry-event-auditable-compression" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="record-aggregate-report-field-contract">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>记录-聚合-报告三层最小字段契约</h3>
+              <p>Record-Aggregate-Report Minimal Field Contract</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">缺字段就降级，不默认正常。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>记录层保存原始状态，聚合层派生仓库级或链路级状态，报告层根据字段生成措辞。</li>
+                <li>字段缺失时应输出 missing_fields 和降级原因，不能默认正常。</li>
+                <li>报告不得依赖界面状态或临时脚本状态，每个结论应可追溯到字段。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="record-aggregate-report-field-contract" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="partial-ref-failure-repo-status-derivation">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>部分 ref 失败下的仓库级状态派生</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>可以把仓库监控想象成一次班级点名。监控对象不是整个仓库，而是一组被列出来的 ref，例如 main、develop、release 和 feature。如果其中某个 ref 访问失败，只是这一组对象里的一个局部状态，不能直接推出整个仓库不可用，也不能推出整个仓库没有任何变化。要派生仓库级状态词，需要同时看到一组字段：监控 ref 数、成功访问 ref 数、失败 ref 数、每个 ref 的指针状态、检查窗口和证据来源。若所有被监控 ref 都成功且指针未变，报告可以写“监控范围内被监控 ref 未变化”；若部分成功、部分失败，报告应写“部分 ref 不可确认，部分 ref 未变化”；若失败 ref 有重试，还要结合重试摘要，不能只看最后一次访问。这里重点是部分失败和仓库级派生，而不是重新讨论 ref 指针变化本身。这个概念的核心是：仓库级状态词不是由单个 ref 状态直接推出，而是由字段组合派生出来的谨慎结论。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>局部 ref 状态只是监控范围内的一个对象状态，不能直接等价于仓库整体状态。</li>
+                <li>仓库级措辞必须依赖字段组合：监控范围、成功数、失败数、指针状态、检查窗口和证据来源。</li>
+                <li>访问失败、指针未变和提交详情不可推断是不同维度，不能互相替代。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>具体例子：假设监控 main、develop、release、feature 四个 ref，其中 main、develop、feature 成功且指针未变，release 访问失败。记录层可写 monitored_refs=4、successful_refs=3、failed_refs=1、release pointer_status=unknown、window=2026-10-10、source=ref_only；聚合层派生 partial_unconfirmed；报告层应写“监控范围内 3 个 ref 指针未变，1 个 ref 访问失败不可确认”，不能写“仓库无变化”或“仓库不可用”。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把某个 ref 访问失败直接写成仓库不可用，或看到其他 ref 未变就写成仓库无变化。</li>
+                <li>把“没读到”当成“没变化”，忽略访问失败表示当前证据不足。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>重试事件序列的可审计压缩</td><td>当某个 ref 访问失败并伴随多次重试时，仓库级状态词需要引用重试摘要，而不是只看最后一次访问。</td></tr>
+                <tr><td>记录-聚合-报告三层最小字段契约</td><td>仓库级状态派生依赖记录层保留每个 ref 的访问状态和指针状态，并依赖聚合层输出派生状态。</td></tr>
+                <tr><td>从局部事实到仓库级谨慎措辞</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果失败 ref 的数量超过监控 ref 总数的一半，仓库级状态词是否应使用更谨慎的措辞？</li>
+                <li>如何设计一个可测试断言，阻止报告在 failed_refs 大于 0 时输出仓库整体无变化？</li>
+                <li>当失败 ref 的指针状态为 unknown 但错误类型可确认时，报告应保留哪些字段以支持后续审计？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="retry-event-auditable-compression">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>重试事件序列的可审计压缩</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>重试事件像快递派送记录。同一个 ref 在一次检查窗口内可能第一次访问失败，第二次失败，第三次成功。如果报告只保留最终成功，会丢失窗口内曾经失败的事实；如果把所有原始日志全部展开，报告又会变得冗长，关键状态反而不突出。可审计压缩的目标是保留关键状态，而不是保留所有细节。通常可以保留对象标识、检查窗口、首次失败事件、重试次数、最终状态、脱敏后的错误类型和访问方式。压缩时可以把同类重复错误合并，但要保留状态变化节点，例如首次失败、错误类型变化、最终成功或最终失败。脱敏也很重要：可以保留 timeout、network_error 这类错误类型，但不保留 token、敏感路径或可访问方式。这样后续审计可以回答“是否失败过、失败几次、最终是否成功、窗口内是否稳定”，报告也能写“重试后成功，期间曾发生访问失败”，而不是写成“从未失败”。这里重点是事件序列如何压缩为摘要，而不是重新展开单个字段是否正交。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>事件序列压缩不是删除事实，而是把重复细节合并为可审计状态节点。</li>
+                <li>首次失败、错误类型变化、最终状态等节点必须保留，否则无法回答窗口内是否失败过。</li>
+                <li>脱敏错误类型可以支持审计，同时避免暴露 token、敏感路径或可访问方式。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>具体例子：假设 release 在 2026-10-10 09:00 到 09:05 的检查窗口内前 3 次访问失败，错误类型为 timeout，第 4 次成功且指针未变。压缩摘要可写 object=release、window=2026-10-10 09:00-09:05、first_failure=09:00、retry_count=3、final_status=success、pointer_status=unchanged、error_type=timeout；报告层可写“重试后成功，期间曾发生访问失败，指针未变”，不能写成“从未失败”。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>只保留最终成功，把中间失败抹掉；或保留全部原始事件，使报告冗长且难以审计。</li>
+                <li>把重试次数本身当成工程进展，忽略重试是访问过程状态，不等于提交新内容或功能变化。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>部分 ref 失败下的仓库级状态派生</td><td>重试压缩提供失败次数、最终状态和指针状态等摘要字段，用于派生部分 ref 不可确认或重试后成功等措辞。</td></tr>
+                <tr><td>记录-聚合-报告三层最小字段契约</td><td>重试摘要需要进入记录层或聚合层字段，报告层才能稳定生成重试后成功或最终失败等措辞。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当同一 ref 在窗口内交替出现 timeout 和 auth_error_unknown 时，压缩摘要应如何保留错误类型变化而不暴露敏感详情？</li>
+                <li>如何定义重试次数的边界，使首次失败、重试成功和最终失败都能被一致统计？</li>
+                <li>当最终状态为 success 但指针状态为 unknown 时，报告应如何措辞以避免把访问成功写成内容未变？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="record-aggregate-report-field-contract">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>记录-聚合-报告三层最小字段契约</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>记录-聚合-报告三层最小字段契约可以理解为实验室数据流水线。记录层像原始测量记录，保存每个对象的访问状态、指针状态、事件摘要、检查窗口和证据来源；聚合层像统计表格，把多个对象的状态汇总成仓库级或链路级状态；报告层像给人看的结论，根据聚合层字段生成措辞。最小字段契约的作用是规定每层必须输入和输出哪些字段，使报告不依赖界面状态、临时脚本状态或人工口头确认。例如，记录层没有 access_status，聚合层就不能派生 unchanged；报告层没有 evidence_level，就不能写已验证。字段缺失时，系统应输出 missing_fields 和降级原因，而不是默认正常。这样每个报告句子都能追溯到具体字段，结论可检查、可复核，也能在链路状态缺失时自动降级措辞。这里重点是三层之间的输入输出边界，而不是单个监控字段。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>记录层负责保留原始事实，聚合层负责派生可确认范围，报告层负责生成措辞。</li>
+                <li>每层输入输出字段必须稳定，报告句子应能追溯到具体字段。</li>
+                <li>字段缺失应触发 unknown 和 missing_fields，而不是用默认正常补齐。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>具体例子：假设 records.json 记录 release 的 access_status=failed、pointer_status=unknown、window=2026-10-10、source=ref_only，并带有 retry_summary；summary.json 聚合 monitored_refs=4、successful_refs=3、failed_refs=1、derived_status=partial_unconfirmed、evidence_level=ref_only；report.md 输出“3 个 ref 指针未变，1 个 ref 访问失败不可确认，提交内容不可推断”。如果 records.json 缺少 access_status，summary.json 应输出 derived_status=unknown 和 missing_fields=[access_status]，report.md 应写“链路状态缺失，无法派生仓库级状态”。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>报告层直接读取界面状态或临时脚本变量，导致报告难以复核。</li>
+                <li>字段缺失时用默认正常补齐，把证据不足写成链路可用。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>部分 ref 失败下的仓库级状态派生</td><td>三层字段契约为仓库级状态派生提供记录层字段和聚合层派生规则，使状态词可追溯。</td></tr>
+                <tr><td>重试事件序列的可审计压缩</td><td>三层字段契约接收重试事件压缩摘要，使报告层能稳定表达重试后成功或最终失败。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何为记录层、聚合层和报告层分别设计最小字段清单，使每个报告句子都能追溯到具体字段？</li>
+                <li>当聚合层发现记录层缺少关键状态字段时，应输出哪些 missing_fields 和 derived_status 值？</li>
+                <li>如何把报告不得依赖界面状态或临时脚本状态写成可测试断言？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念形成一条从字段到措辞的链路：部分 ref 失败提供局部事实，重试事件压缩提供时间维度上的关键状态，三层字段契约规定这些事实如何进入记录、聚合和报告。它们共同避免默认完整：没有字段就不写可用，没有全部 ref 成功就不写仓库整体无变化，没有完整事件摘要就不把重试写成一次成功。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">仓库级状态词不是由单个 ref 状态直接推出，而是由字段组合派生出来的谨慎结论。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>当失败 ref 数量超过监控总数一半时，仓库级状态词应如何进一步降级措辞？</li>
+            <li>如何定义重试次数边界，使首次失败、重试成功和最终失败都能被一致统计？</li>
+            <li>如何为三层字段契约设计可测试断言，在字段缺失时自动输出不可用原因？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
