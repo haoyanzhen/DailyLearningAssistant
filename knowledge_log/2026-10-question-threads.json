@@ -3,6 +3,96 @@
   "year_month": "2026-10",
   "threads": [
     {
+      "id": "2026-10-11-concept-e25f191fd8",
+      "question": "如何设计检查器，自动发现文档已修改但对应测试未修改的契约断裂？",
+      "source_date": "2026-10-11",
+      "source_concept": "文档-实现-测试同步契约",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-10-11T06:23:08.276293+08:00",
+      "updated_at": "2026-10-11T06:23:08.276293+08:00"
+    },
+    {
+      "id": "2026-10-11-concept-c789ab9f36",
+      "question": "如何为 docs、scripts 和 tests 设计最小同步字段，使每个规则变化都能追溯到文档段落、实现文件和测试断言？",
+      "source_date": "2026-10-11",
+      "source_concept": "文档-实现-测试同步契约",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-10-11T06:23:08.276293+08:00",
+      "updated_at": "2026-10-11T06:23:08.276293+08:00"
+    },
+    {
+      "id": "2026-10-11-concept-ac0f26ab3c",
+      "question": "当审查数据缺失或审查未通过时，资产状态应如何降级，避免被误认为可发布？",
+      "source_date": "2026-10-11",
+      "source_concept": "角色远距战斗资产管线",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-10-11T06:23:08.276293+08:00",
+      "updated_at": "2026-10-11T06:23:08.276293+08:00"
+    },
+    {
+      "id": "2026-10-11-concept-7f1fe5cd8c",
+      "question": "如何设计资产 ID，使其同时包含源路径、生成路径、运行时路径、角色、战斗状态和版本？",
+      "source_date": "2026-10-11",
+      "source_concept": "角色远距战斗资产管线",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-10-11T06:23:08.276293+08:00",
+      "updated_at": "2026-10-11T06:23:08.276293+08:00"
+    },
+    {
+      "id": "2026-10-11-concept-56956f29ef",
+      "question": "当 source、generated 和 runtime 出现同名文件时，如何用命名空间和 manifest 字段避免误认为同一对象？",
+      "source_date": "2026-10-11",
+      "source_concept": "角色远距战斗资产管线",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-10-11T06:23:08.276293+08:00",
+      "updated_at": "2026-10-11T06:23:08.276293+08:00"
+    },
+    {
+      "id": "2026-10-11-concept-565b4b5393",
+      "question": "当测试只验证界面文本而没验证运行时行为时，如何区分“文档契约已验证”和“运行时行为已验证”？",
+      "source_date": "2026-10-11",
+      "source_concept": "文档-实现-测试同步契约",
+      "domain": "软件工程",
+      "status": "open",
+      "created_at": "2026-10-11T06:23:08.276293+08:00",
+      "updated_at": "2026-10-11T06:23:08.276293+08:00"
+    },
+    {
+      "id": "2026-10-11-agent-7dc1bca6e2",
+      "question": "当 pointer_status=changed 且 commit_detail_status=unknown 时，报告模板如何强制显示“提交数量、作者、文件列表不可确认”？",
+      "source_date": "2026-10-11",
+      "source_concept": "Agent 生成总结的证据边界",
+      "domain": "大语言模型 / 软件工程",
+      "status": "open",
+      "created_at": "2026-10-11T06:23:08.276293+08:00",
+      "updated_at": "2026-10-11T06:23:08.276293+08:00"
+    },
+    {
+      "id": "2026-10-11-agent-21b9c71f07",
+      "question": "如何为 Agent 输出设计 evidence_level 字段，使 ref-only、commit-level、diff-level 和 runtime-level 自动限制措辞？",
+      "source_date": "2026-10-11",
+      "source_concept": "Agent 生成总结的证据边界",
+      "domain": "大语言模型 / 软件工程",
+      "status": "open",
+      "created_at": "2026-10-11T06:23:08.276293+08:00",
+      "updated_at": "2026-10-11T06:23:08.276293+08:00"
+    },
+    {
+      "id": "2026-10-11-agent-03c8df4013",
+      "question": "如何把 AGENTS.md 或类似工作约定中的约束变成可检查字段和测试，避免 Agent 越过证据边界？",
+      "source_date": "2026-10-11",
+      "source_concept": "Agent 生成总结的证据边界",
+      "domain": "大语言模型 / 软件工程",
+      "status": "open",
+      "created_at": "2026-10-11T06:23:08.276293+08:00",
+      "updated_at": "2026-10-11T06:23:08.276293+08:00"
+    },
+    {
       "id": "2026-10-10-ref-f50a3c8eb1",
       "question": "如果失败 ref 的数量超过监控 ref 总数的一半，仓库级状态词是否应使用更谨慎的措辞？",
       "source_date": "2026-10-10",

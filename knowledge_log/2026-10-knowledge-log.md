@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-10/2026-10-11-learning-report.html">2026-10-11</a>
+      </td>
+      <td>文档-实现-测试同步契约</td>
+      <td>软件工程</td>
+      <td>★★</td>
+      <td>文档-实现-测试同步契约要求规则描述、代码实现和自动验证一起更新，使功能变化可追溯、可检查、可复核。</td>
+      <td>下一次可结合 docs/scripts/tests 文件路径和提交统计，讲解如何设计“文档-实现-测试同步检查器”，输出 missing_doc、missing_test、test_passed 和 evidence_level 等字段。</td>
+    </tr>
+    <tr>
+      <td>角色远距战斗资产管线</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★</td>
+      <td>角色远距战斗资产管线把美术源文件变成可配置、可审查、可被运行时稳定引用的资产链路。</td>
+      <td>下一次可结合 asset_catalog.gd、art_review JSON、config 文件和 export_presets.cfg，讲解资产 manifest 如何绑定 source_path、generated_path、runtime_path、review_status 和 package_status。</td>
+    </tr>
+    <tr>
+      <td>Agent 生成总结的证据边界</td>
+      <td>大语言模型 / 软件工程</td>
+      <td>★★★★</td>
+      <td>Agent 生成总结的证据边界要求自动化输出只能使用当前可确认证据，并把不足部分标为待确认或不可推断。</td>
+      <td>下一次可结合 pointer_status、commit_detail_status、evidence_level 和 missing_fields，讲解如何为 Agent 日报生成可测试断言，阻止把 ref-only 线索写成提交内容。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-10/2026-10-10-learning-report.html">2026-10-10</a>
       </td>
       <td>部分 ref 失败下的仓库级状态派生</td>

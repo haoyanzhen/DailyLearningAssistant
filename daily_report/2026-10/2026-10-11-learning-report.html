@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-10-11 学习笔记日报</title>
+    <meta name="description" content="今天围绕证据等级决定结论强度，讲解文档实现测试同步契约、角色远距战斗资产管线和自动化总结的证据边界。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261011-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-10-11</p>
+        <h1>证据等级决定结论强度</h1>
+        <p>今天从功能契约、资产管线到自动化总结，把变化线索整理成可追溯、可检查、可限制措辞的工程事实。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>证据等级决定结论强度</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>文档-实现-测试同步契约</strong>
+                <small>合同、施工和验收单必须一起更新，规…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>角色远距战斗资产管线</strong>
+                <small>资产接入不是把图片放进目录，而是让…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>Agent 生成总结的证据…</strong>
+                <small>证据等级不同，能说的结论强度也不同…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念共同回答一个问题：如何把“看起来发生了变化”变成“可追溯、可检查、可限制措辞”的工程事实。文档-实现-测试同步契约解决功能规则的一致性，角色远距战斗资产管线解决资产对象从源到运行时的身份和审查问题，Agent 生成总结的证据边界解决自动报告不能越过证据说话的问题。三者都依赖字段化记录：文档字段、资产字段、证据等级字段，使结论可以降级、复核和测试。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["证据等级决定结论强度"])
+  concept1["文档-实现-测试同步契约"]
+  hub --&gt; concept1
+  concept2["角色远距战斗资产管线"]
+  hub --&gt; concept2
+  concept3["Agent 生成总结的证据边界"]
+  hub --&gt; concept3
+  related1["功能提交伴随测试"]
+  concept1 --&gt; related1
+  related2["数据驱动进度与奖励一致性"]
+  concept1 --&gt; related2
+  concept1 --&gt; concept3
+  related3["资产目录及资产接口"]
+  concept2 --&gt; related3
+  related4["资产审查工具及审查数据"]
+  concept2 --&gt; related4
+  related5["Windows 导出预设及包资产清单"]
+  concept2 --&gt; related5
+  concept2 --&gt; concept1
+  related6["ref-only 证据边界"]
+  concept3 --&gt; related6
+  related7["记录-聚合-报告三层最小字段契约"]
+  concept3 --&gt; related7
+  concept3 --&gt; concept1
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4,related5,related6,related7 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="doc-impl-test-sync-contract">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>文档-实现-测试同步契约</h3>
+              <p>Doc-Implementation-Test Sync Contract</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">合同、施工和验收单必须一起更新，规则变化才不会被拆散。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>文档说明规则应该是什么，脚本或代码把规则做出来，测试自动检查规则是否真的被做对。</li>
+                <li>多个提交同时修改 docs、scripts 和 tests，形成设计层、实现层和验证层的文件级事实。</li>
+                <li>测试不是顺手文件，而是文档和实现之间的自动检查器，防止文档与实现脱节。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="doc-impl-test-sync-contract" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="character-far-combat-asset-pipeline">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>角色远距战斗资产管线</h3>
+              <p>Character Far Combat Asset Pipeline</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">资产接入不是把图片放进目录，而是让文件身份清楚、状态可查、可进入发布包。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>角色远距战斗资产不是散落图片，而是源文件、裁切规格、修订记录、处理后 body/rig 图、交付审查配置和远距战斗配置的链路。</li>
+                <li>资产目录与接口像吊牌和仓库索引，告诉运行时该拿哪一件、放在哪里、是否合格。</li>
+                <li>资产管线的价值不是“有文件”，而是文件身份清楚、状态可查、可进入发布包。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="character-far-combat-asset-pipeline" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="agent-summary-evidence-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">大语言模型 / 软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>Agent 生成总结的证据边界</h3>
+              <p>Agent Summary Evidence Boundary</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">证据等级不同，能说的结论强度也不同；ref-only 线索只能写成版本变化线索。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>Agent 写报告时不能自由发挥，只能根据当前拿到的证据说话。</li>
+                <li>ref-only 证据只能证明 ref 指针是否变化，不能证明新增提交数量、提交信息、作者、文件列表或 diff 内容。</li>
+                <li>正确做法是让 Agent 明确哪些字段可确认、哪些字段不可确认、哪些字段需要下一步证据。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="agent-summary-evidence-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="doc-impl-test-sync-contract">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程</p>
+                <h3>文档-实现-测试同步契约</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>文档-实现-测试同步契约，可以理解为“合同、施工和验收单必须一起更新”。在一个工程里，文档说明规则应该是什么，脚本或代码把规则做出来，测试则自动检查规则是否真的被做对。当天 tiny-sea-war 的多个提交同时修改 docs/、scripts/ 和 scripts/tests/，这不是偶然，而是把一次功能变化拆成三层证据：设计层、实现层和验证层。对高中基础读者来说，可以类比班级值日：公约写清楚谁负责哪块，值日表落实到具体人，检查表每天核对是否完成。如果只改公约不改检查表，后面就不知道规则有没有被执行；如果只改代码不改文档，别人接手时只能靠猜。这里基于当日材料可确认的是，多个提交形成了 docs、scripts、tests 同步变化的文件级事实，而不是具体算法或业务规则细节。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>文档是声明层，说明规则应该是什么；实现是执行层，把规则做出来；测试是验证层，自动检查规则是否真的被做对。</li>
+                <li>多个提交同时修改 docs、scripts 和 tests，形成设计层、实现层和验证层的文件级事实，使功能变化可追溯。</li>
+                <li>测试是文档和实现之间的自动检查器：文档说规则应该是什么，测试就验证实现是否真的符合；没有测试，文档和实现可能慢慢脱节。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>以菜单分类操作指南为例：文档说明主菜单中操作指南应如何分类，main_menu.gd 实现菜单项和跳转逻辑，operation_guide.gd 承载指南内容，菜单 QA 测试验证菜单项是否存在、分类是否正确、点击后是否进入指南。若其中任一环节缺失，后续维护者就无法确认这次变化是否完整。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为测试只是“顺手加的文件”，文档只是“给人看的说明”，真正有用的只有代码。</li>
+                <li>认为只改代码不改文档或测试也能保持可维护性，实际上会让后续维护者只能靠猜。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>功能提交伴随测试</td><td>测试文件是契约中可执行、可复跑的部分，让规则变化能被自动检查。</td></tr>
+                <tr><td>数据驱动进度与奖励一致性</td><td>进度数据、schema、流程脚本和测试也需要一起约束同一套规则，避免规则与数据脱节。</td></tr>
+                <tr><td>Agent 生成总结的证据边界</td><td>当文档、实现和测试都同步变化时，Agent 可以更谨慎地判断功能变化线索，但仍需绑定证据等级。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何设计检查器，自动发现文档已修改但对应测试未修改的契约断裂？</li>
+                <li>如何为 docs、scripts 和 tests 设计最小同步字段，使每个规则变化都能追溯到文档段落、实现文件和测试断言？</li>
+                <li>当测试只验证界面文本而没验证运行时行为时，如何区分“文档契约已验证”和“运行时行为已验证”？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="character-far-combat-asset-pipeline">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>角色远距战斗资产管线</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>角色远距战斗资产管线，可以理解成一条“从美术原图到游戏运行时可用资产”的流水线。当天 tiny-sea-war 的提交 80eb1bcf 中出现大量 assets/characters/&lt;角色&gt;/battle、meta、processed、config 文件，以及 asset_catalog.gd、资产接口设计文档和资产管线文档。这说明角色远距战斗资产不是散落的图片，而是有源文件、裁切规格、修订记录、处理后 body/rig 图、交付审查配置和远距战斗配置的链路。对高中基础读者来说，可以类比服装制作：先有设计稿，再按尺码表裁剪，再缝成成衣，再贴吊牌，最后质检员确认吊牌、尺码和实物一致。资产目录与接口就像吊牌和仓库索引，告诉运行时“该拿哪一件、放在哪里、是否合格”。这里基于当日材料可确认的是文件路径、目录分层、资产目录脚本、审查工具目录和文档线索，而不是具体图片效果或物理渲染参数。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>源文件、裁切规格、修订记录、处理后 body/rig 图、交付审查配置和远距战斗配置共同组成资产链路。</li>
+                <li>资产目录与接口提供稳定身份和引用路径，让运行时知道该拿哪一件、放在哪里、是否合格。</li>
+                <li>审查工具把人工判断变成 JSON、HTML 等可复核数据，使资产状态可查、可降级、可进入后续发布检查。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>某角色远距战斗需要一张处理后图：原图进入 assets/characters/&lt;角色&gt;/battle，裁切规格说明需要哪些区域，processed 目录生成运行时可用图，config 指定战斗状态下的引用，asset_catalog.gd 登记路径和接口，tools/art_review/far_view 生成 JSON 与 HTML 审查数据。只有这些环节都齐备，资产才能被稳定引用并进入后续发布检查。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为“把图片放进 assets 目录就算完成资产接入”。</li>
+                <li>认为只要文件存在就可以进入运行时或发布包，忽略目录索引、接口约束、审查数据和配置。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>资产目录及资产接口</td><td>目录索引和接口约束让资产能被运行时稳定引用，而不是靠人工猜路径。</td></tr>
+                <tr><td>资产审查工具及审查数据</td><td>审查工具把人工判断变成 JSON、HTML 等可复核数据，让资产状态可以被复核。</td></tr>
+                <tr><td>Windows 导出预设及包资产清单</td><td>管线产出的资产最终要进入导出包，并受包资产清单约束。</td></tr>
+                <tr><td>文档-实现-测试同步契约</td><td>资产接口文档、目录脚本、审查脚本和测试需要同步维护，避免资产规则与实现脱节。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何设计资产 ID，使其同时包含源路径、生成路径、运行时路径、角色、战斗状态和版本？</li>
+                <li>当 source、generated 和 runtime 出现同名文件时，如何用命名空间和 manifest 字段避免误认为同一对象？</li>
+                <li>当审查数据缺失或审查未通过时，资产状态应如何降级，避免被误认为可发布？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="agent-summary-evidence-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 大语言模型 / 软件工程</p>
+                <h3>Agent 生成总结的证据边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>Agent 生成总结的证据边界，意思是自动化助手写报告时，不能自由发挥，只能根据当前拿到的证据说话。当天远端仓库总结明确说明：总结由第 1 步 Agent 基于远端 Git ref 元数据生成，并且 ref-only 证据只能证明 ref 指针是否变化，不能证明新增提交数量、提交信息、作者、文件列表或 diff 内容。这里基于当日材料可确认的是“Agent 输出受 ref-only 证据边界约束”这一规则，而不是 Agent 具体使用了什么提示词或模型。对高中基础读者来说，可以类比学生写评语：如果只看到总分从 80 变成 85，只能说“总分有变化线索”；如果想说“数学进步了”，必须看到数学单科成绩；如果想说“上课更认真了”，还需要课堂观察记录。Agent 也一样：证据等级不同，能说的结论强度也不同。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>记录层提供 ref、历史 SHA、当前 SHA、指针状态、访问状态等字段，聚合层派生仓库级状态，报告层由 Agent 生成但必须被字段约束。</li>
+                <li>ref-only 证据只能证明 ref 指针是否变化，不能证明新增提交数量、提交信息、作者、文件列表或 diff 内容。</li>
+                <li>后续补充 commit log 或 diff，才能把结论升级为提交级或文件内容级；证据不足时，应显示不可确认字段。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>某远端仓库监控记录为：ref=refs/heads/main，historical_sha=A，current_sha=B，pointer_status=changed，commit_detail_status=unknown，access_status=success。Agent 可以生成：“该 ref 指针发生变化，形成远端版本变化线索。”但不可生成：“今日新增 5 个提交，修改了 12 个文件，其中包含战斗结算脚本。”若后续补充 commit log，才能把结论升级为提交级；若再补充 diff，才能升级为文件内容级。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为 Agent 很聪明，所以可以把缺失细节自动补全。</li>
+                <li>认为“让 Agent 尽量写完整”比明确证据边界更重要，实际上补全缺失事实就是幻觉风险。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>ref-only 证据边界</td><td>ref 指针变化只是弱证据，不能自动升级为提交、文件或功能结论。</td></tr>
+                <tr><td>记录-聚合-报告三层最小字段契约</td><td>Agent 的每句话都应能追溯到记录层字段，而不是依赖临时状态或界面状态。</td></tr>
+                <tr><td>文档-实现-测试同步契约</td><td>如果 Agent 要判断功能是否完成，需要文档、实现、测试三类证据共同支持，而不是只看提交标题。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何为 Agent 输出设计 evidence_level 字段，使 ref-only、commit-level、diff-level 和 runtime-level 自动限制措辞？</li>
+                <li>当 pointer_status=changed 且 commit_detail_status=unknown 时，报告模板如何强制显示“提交数量、作者、文件列表不可确认”？</li>
+                <li>如何把 AGENTS.md 或类似工作约定中的约束变成可检查字段和测试，避免 Agent 越过证据边界？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念共同回答一个问题：如何把“看起来发生了变化”变成“可追溯、可检查、可限制措辞”的工程事实。文档-实现-测试同步契约解决功能规则的一致性，角色远距战斗资产管线解决资产对象从源到运行时的身份和审查问题，Agent 生成总结的证据边界解决自动报告不能越过证据说话的问题。三者都依赖字段化记录：文档字段、资产字段、证据等级字段，使结论可以降级、复核和测试。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">证据等级决定结论强度：弱线索只能写成线索，不能补全成强结论。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何设计检查器，自动发现文档已修改但对应测试未修改的契约断裂？</li>
+            <li>如何设计资产 ID，使其同时包含源路径、生成路径、运行时路径、角色、战斗状态和版本？</li>
+            <li>如何为 Agent 输出设计 evidence_level 字段，使 ref-only、commit-level、diff-level 和 runtime-level 自动限制措辞？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
