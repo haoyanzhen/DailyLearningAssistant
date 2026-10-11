@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-10-12 学习笔记日报</title>
+    <meta name="description" content="今日围绕证据边界复习三个概念：界面文本断言与运行时行为断言分层、多随机种子波动聚合的观察边界、报告句子到字段的可追溯性契约。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261012-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-10-12</p>
+        <h1>2026-10-12 学习笔记日报</h1>
+        <p>今天没有新增工程事实，而是围绕局部证据、低层级证据和不可确认状态，复习三个可继续深化的概念。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>证据边界与结论降级</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>界面文本断言与运行时行为断…</strong>
+                <small>看到“已提交”不等于提交真的发生…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>多随机种子波动聚合的观察边界</strong>
+                <small>多跑几次只是形成观察范围，接近胜率…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>报告句子到字段的可追溯性契约</strong>
+                <small>每句话都要有出处，字段缺失或 un…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念都围绕“证据边界”展开。界面文本断言提醒我们，测试通过只证明被断言的对象，不证明未断言的运行时行为；多随机种子波动聚合提醒我们，数值结果受样本、种子和版本约束，不能把接近差异直接写成优劣；报告句子到字段的可追溯性契约则提供一套落地机制，让前两类证据在报告里可复核、可降级、可审计。它们的共同逻辑是：结论强度必须匹配证据层级。低层级证据只能支撑低层级结论，未知字段只能触发谨慎措辞，局部异常或局部波动不能自动扩大为整体判断。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["证据边界与结论降级"])
+  concept1["界面文本断言与运行时行为断言的证据分层"]
+  hub --&gt; concept1
+  concept2["多随机种子波动聚合的观察边界"]
+  hub --&gt; concept2
+  concept3["报告句子到字段的可追溯性契约"]
+  hub --&gt; concept3
+  concept1 --&gt; concept3
+  concept1 --&gt; concept2
+  concept2 --&gt; concept3
+  concept2 --&gt; concept1
+  related1["多 ref 监控下的仓库级状态词派生"]
+  concept3 --&gt; related1
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="ui-text-vs-runtime-assertion-evidence-layering">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>界面文本断言与运行时行为断言的证据分层</h3>
+              <p>UI Text Assertion vs Runtime Behavior Assertion Evidence Layering</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">看到“已提交”不等于提交真的发生，证据层级决定结论强度。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>界面文本断言的对象是用户可见字符串、按钮状态、弹窗文案，只能证明显示层表现。</li>
+                <li>运行时行为断言需要验证请求是否发出、状态码、数据库写入、任务队列或错误分支等状态变化。</li>
+                <li>只有界面层证据时，结论应自动降级为“界面表现已验证”，不能写成“运行时行为已验证”。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="ui-text-vs-runtime-assertion-evidence-layering" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="multi-random-seed-fluctuation-observation-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 软件工程 / 计算机科学</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>多随机种子波动聚合的观察边界</h3>
+              <p>Multi-Seed Fluctuation Aggregation Observation Boundary</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">多跑几次只是形成观察范围，接近胜率不能直接写成优劣。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>样本数、参数版本和关卡数据版本一致时，只有随机种子不同，多次种子聚合可以降低单次波动影响。</li>
+                <li>聚合形成观察边界，用于区分单次随机波动、稳定差异和证据不足。</li>
+                <li>版本字段不一致时结果不可比；版本一致但差距仍在波动范围内，只能写接近差异，不足以支持优劣结论。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="multi-random-seed-fluctuation-observation-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="report-sentence-to-field-traceability-contract">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>报告句子到字段的可追溯性契约</h3>
+              <p>Report Sentence to Field Traceability Contract</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">每句话都要有出处，字段缺失或 unknown 时不能默认无变化。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>记录层、聚合层和报告层之间需要最小字段清单，使每个报告句子都能追溯到具体字段。</li>
+                <li>字段缺失时输出 missing_fields 和 derived_status；字段状态为 unknown 时，报告句子应自动降级措辞。</li>
+                <li>报告不依赖界面状态、临时脚本状态或人的猜测，句子必须能映射到 source_fields 和 evidence_level。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="report-sentence-to-field-traceability-contract" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="ui-text-vs-runtime-assertion-evidence-layering">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>界面文本断言与运行时行为断言的证据分层</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>这个概念回答一个很实际的问题：测试看到某个东西，不等于测试证明了某个行为。界面文本断言的对象是用户可见的字符串、按钮状态、弹窗文案；运行时行为断言的对象是程序执行后产生的状态变化，例如请求是否发出、数据库是否写入、任务是否进入队列、错误分支是否被触发。可以把它理解为“看到招牌”和“吃到菜”的区别：招牌写着“已提交”，只能证明页面显示了这几个字；要证明提交真的发生，还需要看到请求、状态码、持久化记录或可复核日志。因此，报告里不能把“界面显示成功”写成“功能运行成功”。更稳妥的做法是给证据分层：界面层、数据层、运行时层。若只有界面层证据，结论强度应自动降级为“界面表现已验证”；若有运行时字段，例如 request_sent、status_code、db_record_exists，才能写“运行时行为已验证”。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>断言对象决定证明范围：断言界面文本只覆盖显示层，不覆盖执行路径或状态变化。</li>
+                <li>运行时结论需要可复核状态字段：请求是否发出、状态码、持久化记录、任务队列或错误分支。</li>
+                <li>证据不足时自动降级措辞：只有界面层证据时写“界面表现已验证”，不写“功能运行成功”。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设一个网页提交表单。测试 A 断言点击后页面出现“已提交”；测试 B 断言点击后发出 POST 请求、服务端返回 200、数据库新增一条记录。若只有测试 A，报告只能写“界面显示已提交”；若测试 B 通过，报告才能写“提交运行时行为已验证”。如果测试 B 中数据库检查失败，即使界面仍显示“已提交”，报告也必须把界面结论和运行时结论分开。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把“测试通过”当成“所有功能都正确”。</li>
+                <li>看到界面出现“成功”“完成”“已提交”等文本，就认为底层行为已经完成，忽略缓存、前端状态、默认文案或错误分支兜底显示。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>报告句子到字段的可追溯性契约</td><td>报告句子需要绑定 test_target 或 runtime_level 字段，避免把界面文本断言写成运行时行为验证。</td></tr>
+                <tr><td>多随机种子波动聚合的观察边界</td><td>两者都强调结论强度取决于证据对象和证据层级，而不是表面结果或单次观察。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果界面文本来自前端缓存，测试应如何设计字段来区分“真实运行时成功”和“仅界面显示成功”？</li>
+                <li>当文档契约只规定界面文案，而没有规定运行时状态时，报告应如何限制结论强度？</li>
+                <li>如何为 path_level、diff_level、runtime_level 字段设计自动降级规则，使界面文本断言不能生成运行时结论？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="multi-random-seed-fluctuation-observation-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 软件工程 / 计算机科学</p>
+                <h3>多随机种子波动聚合的观察边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>随机模拟像掷骰子：同一次参数可能因为随机种子不同得到不同结果。当样本数、参数版本和关卡数据版本一致，只有随机种子不同时，多次种子聚合可以降低单次波动影响，形成观察边界；核心不是直接判断优劣，而是区分单次随机波动、稳定差异和证据不足。可以把一次模拟理解成“抽一次奖”，把多次种子理解成“抽很多次后看范围”。如果两个方案胜率分别是 52% 和 51%，差距很小，不能马上说前者更好；要看样本数、随机种子集合、参数版本和关卡数据版本是否一致，以及差距是否稳定出现在多个种子里。若版本字段不一致，结果连比较前提都不具备，只能写不可比。若版本一致但差距仍在波动范围内，只能写“观察到接近差异，不足以支持优劣结论”。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>随机模拟结果受随机种子影响，单次高胜率可能只是波动，不是稳定优势。</li>
+                <li>可比性前提必须一致：样本数、随机种子集合、参数版本、关卡数据版本。</li>
+                <li>聚合输出观察范围，而不是直接优劣结论；没有显著性判断或决策门槛时不能放大。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>同一关卡 v3、样本数 1000、参数版本 v1 与 v2，分别运行种子 1 到 10。参数 v1 的十次胜率均值 51.2%，范围 49.1% 到 53.4%；参数 v2 的均值 50.9%，范围 48.8% 到 53.0%。由于两组范围重叠且版本字段一致，报告只能写“两组胜率接近，差异未超出观察波动边界”，不能写“v1 优于 v2”。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为“多跑几次”就等于“可以下结论”。</li>
+                <li>忽略版本一致性，把参数版本或关卡数据版本不同导致的差异误认为随机波动。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>报告句子到字段的可追溯性契约</td><td>波动结论必须绑定 seeds、samples、param_version、level_version 等字段，报告句子才能被复核。</td></tr>
+                <tr><td>界面文本断言与运行时行为断言的证据分层</td><td>两者都要求区分“可确认验证”和“仅观察线索”，避免把低层级证据放大为强结论。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当两次模拟胜率接近时，应如何设计选择规则，避免随机波动导致反复改参数？</li>
+                <li>如何决定需要运行多少个随机种子，才能形成有参考价值的波动观察范围？</li>
+                <li>当参数版本和关卡数据版本同时变化时，应如何输出不可比原因字段，而不是直接比较胜率？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="report-sentence-to-field-traceability-contract">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>报告句子到字段的可追溯性契约</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>这个概念把报告从“自然语言”变成“可追溯句子”。记录层、聚合层和报告层之间需要最小字段清单，使每个报告句子都能追溯到具体字段；当字段缺失时，应输出 missing_fields 和 derived_status；当字段状态为 unknown 时，报告句子应自动降级措辞。可以把它理解成“每句话都要有出处”。例如，报告写“仓库无变化”，这句话必须能追溯到 total_refs、failed_refs、pointer_status 等字段；如果 failed_refs 大于 0，就不能写整体无变化；如果 pointer_status 是 unknown，就不能补充提交数量、作者或文件列表。字段不是装饰，而是限制措辞的开关。记录层保存单次检查事实，如 ref、access_status、pointer_status、commit_detail_status、error_type、retry_count；聚合层把这些记录汇总成 failed_refs、total_refs、missing_fields、derived_status；报告层把聚合层字段变成句子，并记录 source_fields 和 evidence_level。这样，报告不依赖界面状态、临时脚本状态或人的猜测。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>报告句子必须绑定 source_fields，使结论可复核、可审计。</li>
+                <li>聚合层字段决定仓库级或整体状态词，局部失败不能扩大为整体无变化。</li>
+                <li>字段缺失或 unknown 是降级开关，不是默认成功或无变化。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>报告句子 S1 写“仓库 A 无变化”。若聚合层字段为 total_refs=5、failed_refs=0、pointer_status=unchanged、commit_detail_status=unknown，则 S1 只能写“被监控的 5 个 ref 指针未变，但提交内容未确认”。若字段变为 total_refs=5、failed_refs=2、pointer_status=unknown，则 S1 必须降级为“2 个 ref 访问失败，仓库整体状态不可确认”，并且不能补充提交数量、作者或文件列表。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为报告只要读起来清楚就行，不必绑定字段。</li>
+                <li>字段缺失时默认填“无变化”或“成功”，把不可确认状态伪装成事实。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>多 ref 监控下的仓库级状态词派生</td><td>仓库级状态词必须由 failed_refs、pointer_status、commit_detail_status 等字段组合派生，报告句子需要能追溯到这些字段。</td></tr>
+                <tr><td>界面文本断言与运行时行为断言的证据分层</td><td>报告句子应标明验证对象层级，避免把界面文本断言写成运行时行为验证。</td></tr>
+                <tr><td>多随机种子波动聚合的观察边界</td><td>波动结论需要样本数、随机种子、参数版本和关卡数据版本字段支撑，报告句子才能被复核。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何为记录层、聚合层和报告层分别设计最小字段清单，使每个报告句子都能追溯到具体字段？</li>
+                <li>当聚合层发现记录层缺少关键状态字段时，应输出哪些 missing_fields 和 derived_status 值？</li>
+                <li>如何把“报告不得依赖界面状态或临时脚本状态”写成可测试断言？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念都围绕“证据边界”展开。界面文本断言提醒我们，测试通过只证明被断言的对象，不证明未断言的运行时行为；多随机种子波动聚合提醒我们，数值结果受样本、种子和版本约束，不能把接近差异直接写成优劣；报告句子到字段的可追溯性契约则提供一套落地机制，让前两类证据在报告里可复核、可降级、可审计。它们的共同逻辑是：结论强度必须匹配证据层级。低层级证据只能支撑低层级结论，未知字段只能触发谨慎措辞，局部异常或局部波动不能自动扩大为整体判断。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">结论强度必须匹配证据层级：低层级证据只能支撑低层级结论，未知字段只能触发谨慎措辞。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何为 path_level、diff_level、runtime_level 字段设计自动降级规则，使界面文本断言不能生成运行时结论？</li>
+            <li>如何决定需要运行多少个随机种子，才能形成有参考价值的波动观察范围？</li>
+            <li>如何把“报告不得依赖界面状态或临时脚本状态”写成可测试断言？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
