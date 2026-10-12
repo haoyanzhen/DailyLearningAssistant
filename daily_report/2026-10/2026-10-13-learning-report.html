@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-10-13 学习笔记日报</title>
+    <meta name="description" content="当天主线围绕变更后的对齐：先把设计文档按职责分层并归档旧状态，再同步设计真源路径引用，最后用断言绑定 UI 配置项与数据源。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261013-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-10-13</p>
+        <h1>变更之后，让文档、引用与测试继续对齐</h1>
+        <p>2026-10-13 的输入里几乎都是“无新增变化”，唯一有新增技术线索的仓库出现了三个提交：重组设计文档、更新工具链中的设计真源路径、调整设置界面测试断言。它们不是三个互不相关的点，而是同一类工程问题——变更发生后，如何让文档、引用和测试继续对齐。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>变更后的对齐：文档分层、路径引用与…</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>设计文档职责分层与历史归档</strong>
+                <small>文档先分层，旧状态进历史，当前真源…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>设计真源路径迁移与引用一致性</strong>
+                <small>文档搬家，目录卡片也要一起搬。</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>UI 配置项与数据源一致性…</strong>
+                <small>标签要和后台清单对齐——先按角色找…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念连成一条线：文档职责分层先把信息架构整理清楚，历史归档为旧状态建立时间边界；目录一旦变化，设计真源路径迁移就要维护工具、README、Agent 技能等引用的一致性；设置界面测试则把 UI 控件、数据源和展示格式化规则绑定为可执行断言。它们共同说明，工程变更不是改一个文件，而是维护一整套引用和契约。同时必须保留证据边界：文件列表被截断、审计脚本规则未采样、测试没有执行结果，因此能确认的只是概念和局部实现线索，不能确认审计规则完整、路径迁移无遗漏或运行时行为已通过。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["变更后的对齐：文档分层、路径引用与 UI 断言"])
+  concept1["设计文档职责分层与历史归档"]
+  hub --&gt; concept1
+  concept2["设计真源路径迁移与引用一致性"]
+  hub --&gt; concept2
+  concept3["UI 配置项与数据源一致性断言"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  related1["文档-实现-测试同步契约"]
+  concept1 --&gt; related1
+  related2["历史归档与当前状态分离"]
+  concept1 --&gt; related2
+  concept2 --&gt; concept1
+  concept2 --&gt; related1
+  related3["文档审计自动化入口"]
+  concept2 --&gt; related3
+  related4["控件树遍历与语义选择器过滤"]
+  concept3 --&gt; related4
+  related5["二维整数向量到展示文本的格式化映射"]
+  concept3 --&gt; related5
+  related6["界面文本断言与运行时行为断言的证据分层"]
+  concept3 --&gt; related6
+  concept3 --&gt; related1
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4,related5,related6 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="design-doc-layering-and-history-archive">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 信息架构</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>设计文档职责分层与历史归档</h3>
+              <p>Design Document Responsibility Layering and History Archiving</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">文档先分层，旧状态进历史，当前真源才不会被旧快照污染。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>按职责给文档贴标签：contracts 放契约、gameplay 放玩法、presentation 放展示、technical 放技术、validation 放验证、history 放历史，每份文档都有明确角色。</li>
+                <li>历史归档与当前状态分离是同一思路的时间维度：旧状态迁入 history 目录，当前状态文档不再混入旧快照。</li>
+                <li>当天证据显示 00_project_status.md 被大幅删减，新增 docs/history/00_project_status_through_20261010.md 和 docs/history/96_documentation_restructure_20261012.md，能确认的是路径与统计线索，具体归档规则仍待确认。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="design-doc-layering-and-history-archive" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="design-source-path-migration-and-reference-consistency">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>设计真源路径迁移与引用一致性</h3>
+              <p>Design Source Path Migration and Reference Consistency</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">文档搬家，目录卡片也要一起搬。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>路径在工程系统里常常像身份证号或接口名：工具脚本、README、Agent 技能、QA 文档都通过路径找到设计真源。</li>
+                <li>当天两个提交正好构成迁移过程：30689934 重组文档，55b8976f 更新工具链中的设计真源路径字符串，例如 art pipeline、music README 等对 docs/presentation/... 的引用同步。</li>
+                <li>局部 diff 只能证明路径字符串被更新，不能证明所有引用都已找到，也不能证明工具已经运行成功。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="design-source-path-migration-and-reference-consistency" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="ui-config-and-datasource-consistency-assertion">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学 / 数学</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>UI 配置项与数据源一致性断言</h3>
+              <p>UI Configuration and Data Source Consistency Assertion</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">标签要和后台清单对齐——先按角色找到控件，再比对数量和文本。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>先从控件树里找到 OptionButton，再按语义过滤出窗口尺寸选择器（排除 menu.music_mode_selector），比只数 OptionButton 总数更稳。</li>
+                <li>断言窗口选择器数量为 1、item_count 等于 window_options.size()，并逐项比较文本是否等于 '%d × %d' % [window_options[index].x, window_options[index].y]。</li>
+                <li>它把界面展示变成可执行契约，但局部 diff 只证明断言被修改；即使测试通过，也只证明界面文本与控件状态，不自动证明运行时音乐播放或窗口切换正确。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="ui-config-and-datasource-consistency-assertion" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="design-doc-layering-and-history-archive">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 信息架构</p>
+                <h3>设计文档职责分层与历史归档</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>可以把一个项目的文档想象成学校里的资料柜。如果没有分类，合同、玩法说明、旧通知、界面规范全塞在一起，读者很难判断哪份是现在生效的。设计文档职责分层就是给资料柜贴标签：contracts 放契约，gameplay 放玩法，presentation 放展示，technical 放技术，validation 放验证，history 放历史。这样每份文档都有明确角色，谁引用谁、谁更新谁也更清楚。历史归档与当前状态分离是同一思路的时间维度：项目状态会不断变化，旧状态不能继续混在当前状态文档里，否则读者会把旧快照误当成当前事实。当天证据显示 00_project_status.md 被大幅删减，新增 docs/history/00_project_status_through_20261010.md 和 docs/history/96_documentation_restructure_20261012.md，说明旧状态被迁入历史目录。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>职责维度：把文档按功能角色分区，读者与工具都能凭目录判断一份文档承担什么职责，谁引用谁、谁更新谁变得更清楚。</li>
+                <li>时间维度：把当前状态与历史快照分离，旧状态不能继续混在当前状态文档里，否则旧快照会被误读为当前事实。</li>
+                <li>可判断性维度：文档职责和时间边界会影响读者与工具判断“哪一份是当前真源”，因此重组不只是排版美化，而是改变真源定位方式。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>当天 30689934 的提交主题是 docs: reorganize design docs by responsibility，并出现 docs/contracts/、docs/gameplay/、docs/history/、docs/presentation/、docs/technical/、docs/validation/ 等目录线索；00_project_status.md 大幅删减，同时新增 history 下的状态归档文件。这里能确认的是路径和统计线索，具体归档规则仍待确认。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把文档重组当成单纯的排版美化，觉得内容没变就不重要；实际上职责目录和时间边界会影响读者和工具判断哪一份是当前真源。</li>
+                <li>把 history 当成随便丢旧文件的地方；实际上 history 目录是给旧状态一个稳定的时间边界，而不是杂物间。</li>
+                <li>因为看到了 history 路径，就断言所有归档规则和自动审计已经完成——当天只有路径与统计线索，归档规则仍待确认。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>设计真源路径迁移与引用一致性</td><td>目录先按职责重组，才引发旧路径被替换，所以文档分层是路径迁移的前提。</td></tr>
+                <tr><td>文档-实现-测试同步契约</td><td>清楚的文档职责是后续让工具和测试找到真源的基础，同步契约需要先有可定位的真源。</td></tr>
+                <tr><td>历史归档与当前状态分离</td><td>history 目录为旧状态提供稳定的时间边界，是同一思路在时间维度上的体现。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何为 contracts、gameplay、presentation、technical、validation、history 这些目录定义不会互相重叠的职责边界？</li>
+                <li>怎样判断一份项目状态应该继续留在当前文档，还是应该归档到 history？</li>
+                <li>如果要自动检查当前状态文档是否混入历史快照，可以设计哪些最小校验规则？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="design-source-path-migration-and-reference-consistency">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>设计真源路径迁移与引用一致性</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>路径看起来只是文件夹位置，但在工程系统里，它常常像身份证号或接口名。工具脚本、README、Agent 技能、QA 文档都通过路径找到设计真源。比如某个脚本要读 docs/41_character_art_design.md，如果这个文件被移动到 docs/presentation/ 下，而脚本还写旧路径，脚本就会找不到真源。当天两个提交正好展示这个过程：30689934 重组文档，55b8976f 更新工具链中的设计真源路径字符串，例如 art pipeline、music README 等对 docs/presentation/... 的引用同步。这里核心原理是引用完整性：对象移动后，所有指向它的引用都要一起迁移。局部 diff 能证明路径字符串被更新，但不能证明所有引用都已找到，也不能证明工具已经运行成功。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>引用完整性：路径是引用标识符，对象移动后所有指向它的引用都必须一起迁移，否则出现悬空引用。</li>
+                <li>检索范围问题：路径可能出现在脚本、配置、说明文档和 Agent 技能里，有的引用还可能经过变量拼接，不能只靠肉眼判断。</li>
+                <li>证据层级限制：局部 diff 属于路径级证据，只能证明某个字符串被更新，不等于所有引用被找到，更不等于工具链运行通过。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>当天 art pipeline 脚本把 docs/41_character_art_design.md 等旧路径更新为 docs/presentation/...；tools/music/README.md、AGENTS.md、审计 skill 等也出现同步路径线索。这些线索能证明路径字符串被更新，但不能证明引用已经完整。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为文档移动只是写作者的事，工具和 README 不用管；实际上工具脚本、审计 skill、说明文档都会因为路径变化而断链。</li>
+                <li>以为做一次全局字符串替换就万事大吉；实际上引用可能散落在脚本、配置、说明文档和 Agent 技能中，还可能经过变量拼接。</li>
+                <li>因为看到一个路径被更新，就断言所有引用都完整、工具链已经完全可用——局部 diff 不能支撑这种结论。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>设计文档职责分层与历史归档</td><td>它由文档职责分层引发，因为目录按职责重组后旧路径失效，才需要迁移引用。</td></tr>
+                <tr><td>文档-实现-测试同步契约</td><td>路径迁移不只影响文档，还影响工具、README、Agent 技能和测试相关引用，是同步契约的局部表现。</td></tr>
+                <tr><td>文档审计自动化入口</td><td>当天只看到审计脚本和 validate_design_docs.py 的修改线索，具体是否会检查路径漂移尚未确认。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>怎样扫描一个仓库，找出所有可能指向已迁移设计文档的悬空路径？</li>
+                <li>路径字符串存在且能被脚本读到，是否就等于引用语义正确？还需要哪些校验？</li>
+                <li>如何为路径迁移检查器设计 missing_reference、updated_reference 和 evidence_level 等输出字段？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="ui-config-and-datasource-consistency-assertion">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学 / 数学</p>
+                <h3>UI 配置项与数据源一致性断言</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>设置界面里通常有一排选项，比如窗口尺寸、音乐模式。界面上的选项不是凭空出现的，它应该来自某个数据源，例如 window_size_options() 返回一组 Vector2i。UI 配置项与数据源一致性断言，就是用测试代码检查：界面上显示的选择器数量对不对，每个选项的文字是否等于数据源格式化后的结果。当天 cffc5555 的测试先从控件树里找 OptionButton。它用 _descendants_of_type(menu.content, 'OptionButton') 收集选择器，再按语义过滤出窗口尺寸选择器，也就是排除 menu.music_mode_selector。这样做比只数 OptionButton 总数更稳，因为页面以后多一个按钮，不等于窗口尺寸选项错了。然后测试检查窗口选择器数量为 1、item_count 等于 window_options.size()，并逐项比较文本是否等于 '%d × %d' % [window_options[index].x, window_options[index].y]。这里同时嵌入三个原理：控件树遍历负责找到控件，语义选择器过滤负责区分角色，数据源一致性断言负责比较数量和文本，二维整数向量格式化负责把 Vector2i 的 x、y 变成“宽 × 高”的人类可读文本。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>控件树遍历与语义选择器过滤：先从控件树收集候选控件，再按角色区分窗口尺寸选择器和音乐模式选择器，避免依赖控件树中的偶然位置或总数。</li>
+                <li>数据源一致性断言：比对界面选择器数量与 item_count 是否等于数据源返回的选项集合，把展示层与配置源绑定成可执行契约。</li>
+                <li>二维整数向量格式化：把 Vector2i 的 x、y 映射成“宽 × 高”的人类可读文本，使逐项文本比较成为可执行的格式化规则。</li>
+                <li>证据层级限制：断言被修改只是 diff 级证据；即使测试通过，也只覆盖界面文本和控件状态，不能自动升级为运行时行为已验证。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>当天 scene_presentation_test.gd 从单一 OptionButton 数量断言，扩展为窗口尺寸选择器与音乐模式选择器的组合断言：窗口选择器数量为 1，item_count 等于 window_options.size()，逐项文本等于 Vector2i 的 x、y 格式化结果；总选择器数量为 2，包含 menu.music_mode_selector，其 item_count == 3。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>只断言页面上有几个 OptionButton 就算测好了；其实按钮可能来自别的用途，数量相同不代表语义正确。</li>
+                <li>把界面文本断言通过当成运行时行为已经验证通过；测试检查的是控件数量、选择器存在性和文本格式，不等同于音乐模式真的会切换或窗口真的会改变。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>控件树遍历与语义选择器过滤</td><td>只有先按角色找到窗口选择器和音乐模式选择器，才能分别对两者做断言。</td></tr>
+                <tr><td>二维整数向量到展示文本的格式化映射</td><td>逐项文本比较依赖格式化规则，文本要等于 x、y 的格式化结果。</td></tr>
+                <tr><td>界面文本断言与运行时行为断言的证据分层</td><td>这种契约受证据层级限制，界面文本断言不能自动升级为运行时行为已验证。</td></tr>
+                <tr><td>文档-实现-测试同步契约</td><td>UI 设置变化后，测试断言需要和相关文档、实现一起对齐。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>怎样为设置界面设计更稳定的语义选择器，避免测试依赖控件树里的偶然位置？</li>
+                <li>如果要在界面文本断言之外验证运行时行为，应该观察哪些状态变化或执行路径？</li>
+                <li>如何让 UI 测试报告输出 path_level、diff_level、runtime_level 等证据字段，从而避免把局部 diff 写成运行时通过？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念连成一条线：文档职责分层先把信息架构整理清楚，历史归档为旧状态建立时间边界；目录一旦变化，设计真源路径迁移就要维护工具、README、Agent 技能等引用的一致性；设置界面测试则把 UI 控件、数据源和展示格式化规则绑定为可执行断言。它们共同说明，工程变更不是改一个文件，而是维护一整套引用和契约。同时必须保留证据边界：文件列表被截断、审计脚本规则未采样、测试没有执行结果，因此能确认的只是概念和局部实现线索，不能确认审计规则完整、路径迁移无遗漏或运行时行为已通过。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">工程变更不是改一个文件，而是维护一整套引用和契约。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何为 contracts、gameplay、presentation、technical、validation、history 定义不会互相重叠的职责边界，并判断一份状态该留在当前文档还是归档？</li>
+            <li>怎样扫描一个仓库，找出所有可能指向已迁移设计文档的悬空路径，并为路径迁移检查器设计 missing_reference、updated_reference、evidence_level 等输出字段？</li>
+            <li>如何让 UI 测试报告输出 path_level、diff_level、runtime_level 等证据字段，从而避免把局部 diff 写成运行时通过？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
