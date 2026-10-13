@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-10/2026-10-14-learning-report.html">2026-10-14</a>
+      </td>
+      <td>二维整数向量到展示文本的格式化映射</td>
+      <td>数学 / 软件工程</td>
+      <td>★★</td>
+      <td>二维整数向量到展示文本的格式化映射，就是把数据模型里的宽高整数对，按明确规则投影成人类可读字符串，并承认文本正确只是展示层证据。</td>
+      <td>下一次可结合 window_options、scene_presentation_test.gd 的局部文本断言，讲解格式化函数单一来源、国际化边界和展示层证据上限；需标注当天材料未提供测试运行结果。</td>
+    </tr>
+    <tr>
+      <td>控件树遍历与语义选择器过滤</td>
+      <td>计算机科学 / 软件工程</td>
+      <td>★★★</td>
+      <td>控件树遍历与语义选择器过滤，就是先扫描控件树收集候选，再按业务角色锁定目标，从而让界面测试不依赖偶然位置和数量。</td>
+      <td>下一次可结合 menu.content、_descendants_of_type 和 music_mode_selector 的排除逻辑，讲解语义选择器注册表、唯一性断言与隐藏节点过滤；需标注未提供测试执行结果。</td>
+    </tr>
+    <tr>
+      <td>可执行断言的证据分层与运行时结论降级</td>
+      <td>软件工程 / 计算机科学</td>
+      <td>★★★★</td>
+      <td>可执行断言的证据分层与运行时结论降级，就是承认断言能表达契约但证据强度不同，并在只有路径或局部 diff 证据时自动把结论降级为待运行验证。</td>
+      <td>下一次可结合 scene_presentation_test.gd 的局部断言和历史 open 问题 2026-10-13-ui-f455320881，设计 path_level、diff_level、runtime_level 的报告字段与自动降级措辞；需明确当天没有运行结果。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-10/2026-10-13-learning-report.html">2026-10-13</a>
       </td>
       <td>设计文档职责分层与历史归档</td>

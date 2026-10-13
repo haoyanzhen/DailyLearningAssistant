@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-10-14 学习笔记日报</title>
+    <meta name="description" content="无变更复习日，围绕二维整数向量到展示文本的格式化映射、控件树遍历与语义选择器过滤、可执行断言的证据分层三条线索复盘 UI 配置测试链。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261014-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-10-14</p>
+        <h1>无变更复习日：UI 配置测试链的三层投影</h1>
+        <p>今天没有新增提交或新增实现，内容回到 2026-10-13 的 tiny-sea-war 局部材料，沿数据投影、控件定位、证据分层三层复盘。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>UI 配置测试链：数据投影 → 控…</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>二维整数向量到展示文本的格…</strong>
+                <small>数据是坐标点，文本是路牌；路牌写对…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>控件树遍历与语义选择器过滤</strong>
+                <small>按“第三排第二个座位”找朋友会失败…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>可执行断言的证据分层与运行…</strong>
+                <small>预报文本改成“明天有雨”，不等于已…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">这三个概念互相关联：二维整数向量到展示文本的格式化映射提供“被测内容”，控件树遍历与语义选择器过滤提供“稳定找到目标”的方法，可执行断言的证据分层与运行时结论降级则规定“这些检查能证明什么、不能证明什么”。如果没有稳定控件定位，文本断言会依赖偶然位置；如果没有证据分层，展示文本正确就可能被误写成运行时行为已经通过。整体上，今天复习的是一条从数据模型到界面展示、再到测试报告的投影链条，链条每一步都可能丢失信息：二维点变成文本是有损投影，控件定位把业务角色映射到节点，断言把预期写成可执行契约，报告则必须把路径、局部 diff 和运行时结果分开。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["UI 配置测试链：数据投影 → 控件定位 → 证据分层"])
+  concept1["二维整数向量到展示文本的格式化映射"]
+  hub --&gt; concept1
+  concept2["控件树遍历与语义选择器过滤"]
+  hub --&gt; concept2
+  concept3["可执行断言的证据分层与运行时结论降级"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["UI 配置测试链：数据投影 → 控件定位 → 证据分层"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept2
+  concept3 --&gt; concept1
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="vector2i-to-display-text">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 软件工程</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>二维整数向量到展示文本的格式化映射</h3>
+              <p>Vector2i to Display Text Formatting</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">数据是坐标点，文本是路牌；路牌写对了，不代表道路真的按这个宽度修好了。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>数据模型层用 Vector2i 的 x 与 y 两个整数分量表示窗口配置的宽和高，它本身只是两个数，不含展示语义。</li>
+                <li>展示层需要一个明确的投影规则，例如 `%d × %d`，用来决定分量顺序、分隔符、空格与单位。</li>
+                <li>测试用同一规则算出期望字符串再与控件文本比较，检查的是展示层有没有偏离数据源契约，而不是运行时尺寸。</li>
+                <li>文本是数据的有损视图，投影规则必须单一来源，否则每处各写一遍格式化代码就失去可比性。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="vector2i-to-display-text" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="control-tree-traversal-semantic-selector">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>控件树遍历与语义选择器过滤</h3>
+              <p>Control Tree Traversal and Semantic Selector Filtering</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">按“第三排第二个座位”找朋友会失败，按“穿红衣服的篮球队长”认人才稳。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>界面测试的第一步常常不是“断言什么”，而是“找到谁”；控件以父子节点组成一棵控件树。</li>
+                <li>遍历负责扩大候选集，例如用 _descendants_of_type(menu.content, 'OptionButton') 收集所有同类型候选。</li>
+                <li>过滤负责缩小到目标：材料中看到的行为是排除 menu.music_mode_selector，从而定位窗口选择器。</li>
+                <li>语义选择器用业务角色命名控件，而不是“第几个按钮”，界面重排时只要角色没变，测试就不用跟着改。</li>
+                <li>排除法并非永远稳定，若未来新增第三个同类选择器，排除逻辑就需要重新设计。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="control-tree-traversal-semantic-selector" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="assertion-evidence-layering">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>可执行断言的证据分层与运行时结论降级</h3>
+              <p>Assertion Evidence Layering and Runtime Conclusion Downgrade</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">预报文本改成“明天有雨”，不等于已经下雨；要证明下雨，得明天真观测到降雨。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>断言是写进测试里的可执行契约，可以检查结构（控件是否存在）、数量（item_count）和文本格式。</li>
+                <li>证据分层：path_level 只说明路径或对象出现与变化，diff_level 说明局部代码或断言被修改，runtime_level 才需要实际运行与状态观察。</li>
+                <li>2026-10-13 的材料能看到数量、存在性、item_count 与文本格式断言，但没有提供测试运行结果与运行时状态变化。</li>
+                <li>证据只到 path_level 或 diff_level 时，报告应自动降级措辞为“已配置”“已断言”“待运行验证”，而不是“已生效”“运行通过”。</li>
+                <li>这不是文字游戏，而是防止弱证据被包装成强结论。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="assertion-evidence-layering" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="vector2i-to-display-text">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 软件工程</p>
+                <h3>二维整数向量到展示文本的格式化映射</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>二维整数向量可以想成平面上的一个点，也可以当成一对整数描述的两个量。在 2026-10-13 的 tiny-sea-war 局部材料里，window_options[index] 是一个 Vector2i，它有 x 和 y 两个整数分量，被用来表示窗口配置中的宽和高。展示层要让玩家看懂的却是“宽 × 高”这样的文字，于是代码用 `%d × %d` % [window_options[index].x, window_options[index].y] 把二维整数点投影成一个字符串。这里的关键词是“投影”：数据模型是一层，展示文本是另一层，文本是数据的一个有损视图。投影规则必须明确，例如哪个分量先写、用什么分隔符、要不要空格、是否带单位。测试逐项比较显示文本与数据源按同一规则格式化出的结果，本质上是在检查展示层有没有偏离数据源契约。要注意，这种检查只覆盖展示文本和控件状态，不等于证明窗口运行时真的按这个尺寸打开，也不等于音乐模式等行为已经生效。它是有用的最小契约，但证据强度有限。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>数据模型层用 Vector2i 的 x 与 y 两个整数分量表示宽和高，是一对没有展示语义的整数。</li>
+                <li>展示层必须补上一条明确的投影规则，规定分量顺序、分隔符、空格与单位，例如 `%d × %d`。</li>
+                <li>测试按同一规则独立算出期望字符串，再与控件上的展示文本比较，从而把“展示层是否偏离数据源契约”变成可执行检查。</li>
+                <li>由于投影是有损的，通过文本比较只能得到展示层或控件状态证据，不能自动升级为运行时尺寸证据。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设 window_options[1] 是 Vector2i(1280, 720)，格式化规则是 `%d × %d`，那么展示文本应当是“1280 × 720”。测试把这个文本和按同一规则算出的期望值比较，而不是去启动窗口测量真实像素。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>看到界面文字正确，就宣布窗口运行时行为也正确，把展示层证据当成行为证据。</li>
+                <li>把 x 和 y 当成没有语义的两个数字，随便颠倒顺序，或在不同地方各写一遍格式化代码，使展示文本没有单一规则可比。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>控件树遍历与语义选择器过滤</td><td>只有先稳定定位到显示这段文本的 OptionButton，才能读取并比较展示文本。</td></tr>
+                <tr><td>可执行断言的证据分层与运行时结论降级</td><td>格式化文本断言属于展示层或控件状态证据，不能自动升级为运行时结论。</td></tr>
+                <tr><td>UI 配置测试链：数据投影 → 控件定位 → 证据分层</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果界面要支持多语言或不同单位的显示，二维整数向量到展示文本的格式化规则应该如何保持单一来源？</li>
+                <li>当宽和高的顺序、空格或乘号样式变化时，测试应该比较最终字符串，还是比较一个独立的格式化函数输出？</li>
+                <li>展示文本与数据源一致之后，还需要观察哪些运行时状态，才能证明窗口真的按该尺寸生效？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="control-tree-traversal-semantic-selector">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>控件树遍历与语义选择器过滤</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>界面测试的第一件事常常不是“断言什么”，而是“找到谁”。在 Godot 这类场景树里，控件以父子节点组成一棵控件树。如果测试直接假设“第 3 个 OptionButton 就是窗口尺寸选择器”，那么界面一重排、加一个按钮或换一个容器，测试就可能找错对象。2026-10-13 的局部材料给出了更稳的思路：先遍历 menu.content 下的后代，用 _descendants_of_type(menu.content, 'OptionButton') 收集所有类型为 OptionButton 的候选，再按语义角色过滤。材料中看到的行为是排除 menu.music_mode_selector，从而定位窗口选择器。这里的“语义选择器”不是 CSS 那种选择器，而是用控件在业务上的角色来命名和区分，例如“音乐模式选择器”“窗口尺寸选择器”，而不是“第几个按钮”。遍历负责扩大候选集，过滤负责缩小到目标。这样界面重构时，只要语义角色没变，测试就不必跟着控件位置改。它是一种把“偶然结构”降级、把“业务身份”升级的工程习惯。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>控件树由父子节点组成，若用位置或数量定位控件，测试就绑在偶然结构上，一次重排即可失效。</li>
+                <li>遍历先把候选集扩大：按类型收集 menu.content 下的全部 OptionButton，不预设哪个是目标。</li>
+                <li>过滤再按业务角色缩小：排除 menu.music_mode_selector，剩下的候选才被认定为窗口选择器。</li>
+                <li>语义角色比偶然位置稳定，界面重构时只要求角色不变，测试无需跟随控件位置改动。</li>
+                <li>定位成功只说明测试找到了对象，它本身不构成断言被运行或行为被验证的证据。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>菜单里有两个 OptionButton：一个是窗口尺寸选择器，一个是音乐模式选择器。测试先调用 _descendants_of_type(menu.content, 'OptionButton') 得到两个候选，再排除 menu.music_mode_selector，剩下的候选就是窗口选择器，然后才读取它的 item_count 或文本。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为控件数量能当唯一身份，比如页面里只有一个音乐模式选择器，就永远用数量 1 来定位。</li>
+                <li>认为排除法一定稳定：排除 menu.music_mode_selector 能定位窗口选择器，但若未来新增第三个同类选择器，排除逻辑就需要重新设计。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>二维整数向量到展示文本的格式化映射</td><td>稳定的控件定位是读取并验证展示文本的前提，找不到正确的控件就无法比较文本。</td></tr>
+                <tr><td>可执行断言的证据分层与运行时结论降级</td><td>定位成功只说明测试找到了对象，仍不等于断言被运行或运行时行为被验证。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>怎样为控件定义稳定的语义角色，使测试不依赖控件树中的偶然位置或数量？</li>
+                <li>如果界面动态生成控件，控件树遍历与语义选择器过滤应该如何避免误选隐藏或未启用的节点？</li>
+                <li>排除 menu.music_mode_selector 这类过滤逻辑，怎样写成可复核的契约，而不是硬编码的脆弱假设？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="assertion-evidence-layering">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>可执行断言的证据分层与运行时结论降级</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>断言是写进测试里的可执行契约。它可以检查结构，例如某个控件是否存在；可以检查数量，例如 item_count 是否等于 window_options.size()；也可以检查文本格式，例如窗口尺寸是否显示成“1280 × 720”。这些断言很有价值，但它们证明的事情有强有弱。2026-10-13 的材料能看到测试检查控件数量、选择器存在性、item_count 和文本格式，但没有提供测试运行结果，也没有展示运行时状态变化。因此不能把“写了断言”或“改了断言”写成“运行时已经通过”。更成熟的做法是给报告标注证据层级。path_level 通常只能说明路径或对象出现、变化；diff_level 能说明局部代码或断言被修改；runtime_level 才需要实际运行、观察状态变化或执行路径。若当前证据只到 path_level 或 diff_level，报告就应该自动降级措辞，例如说“已配置”“已断言”“待运行验证”，而不是说“已生效”“运行通过”。这不是文字游戏，而是防止弱证据被包装成强结论。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>断言是可执行契约，它能检查结构、数量与文本格式，但不同断言的证明力强弱不同。</li>
+                <li>报告需要显式的证据层级：path_level 说明路径或对象出现与变化，diff_level 说明局部代码或断言被修改，runtime_level 才需要实际运行与状态观察。</li>
+                <li>当证据只到 path_level 或 diff_level 时，结论措辞应按规则自动降级为已配置、已断言、待运行验证。</li>
+                <li>只有引入分层，才能防止“断言被修改”或“界面文本正确”被包装成运行时行为已通过的强结论。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>测试断言 menu.music_mode_selector.item_count == 3，这能说明控件当前配置里音乐模式选择器有三项；但它不能单独证明运行时玩家切换音乐模式时，三项都按预期生效。若没有运行结果，报告只能写“已断言 item_count 为 3，运行验证待补”。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把测试文件存在、断言被修改、断言逻辑看起来正确，当成运行通过；或把界面文本断言当成运行时行为断言。</li>
+                <li>报告只写“passed”，却不说明证据停在路径、局部 diff 还是运行时，导致读者无法判断结论强度。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>控件树遍历与语义选择器过滤</td><td>只有先稳定定位到正确的控件，数量、存在性和文本断言才不会被偶然位置污染。</td></tr>
+                <tr><td>二维整数向量到展示文本的格式化映射</td><td>它验证格式化映射，但必须承认这种验证停在展示文本或控件状态层，不能自动变成窗口尺寸的运行时证据。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>怎样设计报告字段，让 path_level、diff_level、runtime_level 不只是标签，而能自动决定结论措辞？</li>
+                <li>对于界面文本断言，哪些运行时状态变化或执行路径可以作为补充证据，避免把展示层证据升级为行为结论？</li>
+                <li>当断言失败、未运行或证据缺失时，失败条件和降级措辞应该如何写成可复核规则？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">这三个概念互相关联：二维整数向量到展示文本的格式化映射提供“被测内容”，控件树遍历与语义选择器过滤提供“稳定找到目标”的方法，可执行断言的证据分层与运行时结论降级则规定“这些检查能证明什么、不能证明什么”。如果没有稳定控件定位，文本断言会依赖偶然位置；如果没有证据分层，展示文本正确就可能被误写成运行时行为已经通过。整体上，今天复习的是一条从数据模型到界面展示、再到测试报告的投影链条，链条每一步都可能丢失信息：二维点变成文本是有损投影，控件定位把业务角色映射到节点，断言把预期写成可执行契约，报告则必须把路径、局部 diff 和运行时结果分开。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">展示文本正确只说明展示层一致，证据不足时必须把结论降级为待运行验证。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>怎样为控件定义稳定的语义角色，使测试不依赖控件树中的偶然位置或数量？</li>
+            <li>如果界面要支持多语言或不同单位的显示，二维整数向量到展示文本的格式化规则应该如何保持单一来源？</li>
+            <li>怎样设计报告字段，让 path_level、diff_level、runtime_level 不只是标签，而能自动决定结论措辞？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
