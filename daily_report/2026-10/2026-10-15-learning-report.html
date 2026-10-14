@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-10-15 学习笔记日报</title>
+    <meta name="description" content="2026-10-15 没有可确认的技术概念新增：用检查窗口划定哪些证据算当天事实，用证据分层限制每条结论的强度，再用三层字段契约合法表达“空结果”，串起一条从证据到结论的完整链路。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261015-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-10-15</p>
+        <h1>一次没有内容的检查，应该长什么样才算诚实</h1>
+        <p>当天 14 个输入仓库中 13 个明确无新增变化，唯一有动静的仓库只留下一个远端引用指针变化。今天要复习的不是新实现，而是判断规则本身：窗口怎么划、层级怎么定、空结果怎么写。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>从证据到结论的三道关卡</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>检查窗口与提交证据边界</strong>
+                <small>灯亮只说明状态变了，不等于柜子里有…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>文件级证据与内容级证据的分离</strong>
+                <small>信封到没到是引用级，信里写了什么要…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>记录-聚合-报告三层最小字…</strong>
+                <small>报告的可信度，往往体现在它怎么处理…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念不是三件互不相干的事，而是同一条“从证据到结论”流水线上的三道关卡。窗口关卡回答“这条信息算不算今天的事实”，层级关卡回答“这条事实最多能说明什么”，字段关卡回答“最后写出来的那句话有没有对应字段撑着”。把它们放在一起看，就能理解为什么 2026-10-15 的产出是“无有效候选”而不是“疑似有新功能”：cannbot-skills 的引用指针变化只通过第一关的一半（有变化信号），没过第二关（没有内容级证据），于是第三关只能诚实地写“待确认变化线索”和“证据层级：无”。这也是对历史主题的复习而不是重复：之前讲这些规则时，手上是有真实 diff 和测试断言的；今天的特殊之处在于，手上什么都没有，规则第一次以“空输入”的形式被完整检验了一遍。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["从证据到结论的三道关卡"])
+  concept1["检查窗口与提交证据边界"]
+  hub --&gt; concept1
+  concept2["文件级证据与内容级证据的分离"]
+  hub --&gt; concept2
+  concept3["记录-聚合-报告三层最小字段契约"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["从证据到结论的三道关卡"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="check-window-and-commit-evidence-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>检查窗口与提交证据边界</h3>
+              <p>Check Window &amp; Commit Evidence Boundary</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">灯亮只说明状态变了，不等于柜子里有什么。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>先划范围：看哪些仓库、看哪一段时间、看哪一类记录，只有落在范围内且真的被采集到的提交才算“当天的事实”。</li>
+                <li>三件事必须分开：有没有变化信号、变化的内容是什么、这个变化在时间上属于哪一天，混成一件就会误判。</li>
+                <li>宁可把结论降级，也不要把信号当事实：不追求写得多，而追求每句话都能指回一条被采集到的证据。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="check-window-and-commit-evidence-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="file-level-vs-content-level-evidence">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>文件级证据与内容级证据的分离</h3>
+              <p>File-Level vs Content-Level Evidence Separation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">信封到没到是引用级，信里写了什么要拆开才知道。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>四级阶梯从弱到强：引用级（指针位置变了）→ 文件级（路径存在或被改动）→ 内容级（能看到 diff 或文本）→ 运行级（真的跑过并得到结果）。</li>
+                <li>引用级最弱：位置变化可能由新提交、回退、标签移动等多种原因造成，且本身不携带“改了什么”的信息。</li>
+                <li>不许越级：每一级只能证明自己那一级的事，一旦允许越级，整个知识体系的所有结论都得重新怀疑一遍。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="file-level-vs-content-level-evidence" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="record-aggregate-report-minimal-field-contract">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>记录-聚合-报告三层最小字段契约</h3>
+              <p>Record–Aggregate–Report Minimal Field Contract</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">报告的可信度，往往体现在它怎么处理“没做的那几项”。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>三层分工明确：原始记录层如实记下看到的东西，聚合层负责统计和归类，报告层负责写给人看的话。</li>
+                <li>每一层都要规定最少要有哪些字段，尤其是——当没有东西可写的时候，怎么写。</li>
+                <li>空结果不能留空、删行或不输出，要用固定字段写出状态和原因，因为报告里每句话都应该能指回某个字段。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="record-aggregate-report-minimal-field-contract" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="check-window-and-commit-evidence-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>检查窗口与提交证据边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>“检查窗口”就是先划出一个范围：看哪些仓库、看哪一段时间、看哪一类记录。只有落在这个范围里、而且真的被采集到的提交，才算“当天的事实”。这里必须把三件事分开：第一，有没有变化信号；第二，变化的内容是什么；第三，这个变化在时间上属于哪一天。很多误判就发生在把这三件事混成一件。以 2026-10-15 为例，材料里 13 个仓库明确写“无新增变化”，这是内容级的确认——意思是检查者看过之后，确认窗口内没有新的提交或 diff。而 cannbot-skills 只有“远端 ref 指针变化”，这属于变化信号：某个远程引用指向的位置变了，但提交内容没有采集。指针动了，可能来自一次新提交，也可能来自一次回退、一次标签移动，甚至只是别人推了东西；在没打开看内容之前，你只能知道“位置变了”，不能知道“什么被改了”。所以窗口规则的核心态度是：宁可把结论降级，也不要把信号当事实。它不追求“尽量多写点东西”，而追求每一句话都能指回一条被采集到的证据。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>第一步是划范围：仓库集合、时间区间、记录类型共同决定哪些证据有资格进入“当天事实池”，范围之外或被过滤掉的记录一律不作数。</li>
+                <li>第二步是分离三件事：变化信号、变化内容、时间归属必须各自独立判断，否则“指针动了”会被顺手写成“功能改了”。</li>
+                <li>第三步是降级优先：当证据只到信号层，结论就必须停在信号层，措辞强度由证据强度决定，而不是由报告篇幅决定。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>小区快递柜的提示灯亮了，说明柜门状态发生了变化。但如果你还没打开柜门，你就不能说“里面是一台新电脑”，甚至不能说“里面一定有东西”。灯亮是信号，柜门里的内容才是事实。值班记录本上写“灯亮过”是诚实的，写“收到电脑一台”就是编的。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把“监控到有变化”直接写成“某功能被修改了”。变化信号和修改内容之间隔着一次采集，跳过这一步就是造假。</li>
+                <li>认为“无新增变化”是敷衍了事的结论。其实恰恰相反，它是检查者完成内容级确认后才能下的判断，比一条模糊的“疑似有更新”强得多。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>文件级证据与内容级证据的分离</td><td>窗口决定证据算不算数，层级决定这条证据能撑多强的结论，两者是先后两道筛子。</td></tr>
+                <tr><td>记录-聚合-报告三层最小字段契约</td><td>窗口判定完，最终要靠字段把“确认无变化”“待确认线索”这些状态固定下来，否则判断结果留不下来。</td></tr>
+                <tr><td>从证据到结论的三道关卡</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果同一次提交的作者时间在窗口内、提交时间在窗口外，它应该归属到哪一天，为什么？</li>
+                <li>当检查工具只能看到引用指针变化时，报告里最少必须写出哪几个字段，才能让读者自己判断可信度？</li>
+                <li>如何设计一条规则，让“无新增变化”和“未检查”在输出中永远不会被写成同一句话？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="file-level-vs-content-level-evidence">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>文件级证据与内容级证据的分离</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>这一轮在原有“文件级 vs 内容级”的基础上再往前推一层，变成一条从弱到强的阶梯：引用级证据（某个指针、某个引用位置变了）→ 文件级证据（某个路径存在、被提到、被改动）→ 内容级证据（能看到 diff 或文本内容）→ 运行级证据（真的跑过并得到结果）。每一级只能证明自己那一级的事，不能越级替上一级说话。为什么引用级最弱？因为引用指向的是一个位置，位置变化可以由很多原因造成，而且引用变化本身不携带“改了什么”的信息。就像收件箱上贴了张纸条说“有新邮件”，纸条只证明系统状态更新过，不证明邮件内容是什么。2026-10-15 的材料正好停在这条阶梯的最低一级：cannbot-skills 给了引用级信号，但内容没采集。所以哪怕你非常想写“某个技能被更新了”，也必须停下，因为中间少了三级证据。这条规则看起来保守，实际上保护的是整个知识体系的可信度——一旦允许越级，以后所有结论都得重新怀疑一遍。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>强度阶梯是定义出来的，不是猜出来的：引用级、文件级、内容级、运行级各有明确的可证明范围，边界先写清楚再谈结论。</li>
+                <li>结论强度必须与证据层级对齐：站在引用级，就只能说“某个引用位置被观测到变化”，语义层与行为层的措辞一律不许出现。</li>
+                <li>层级标签是把弱证据隔离住的容器：同一张表里给不同来源的证据打上不同等级标签，读者才不会误以为它们同等可信。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>信箱里多了一封没拆的信。信封上的邮戳告诉你“信在今天到了”，这是引用级信息；信封存在，这是文件级信息；但信里写了什么，你得拆开才知道，那才是内容级信息。如果有人在日记里写“今天收到一封同意我调岗的信”，而他根本没拆信，那这本日记后面的所有记录都会变得不可信。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为“有变化信号就说明有内容变化”。这是把弱证据当强证据用，直接把引用级结论升级成了内容级结论。</li>
+                <li>认为“我没看到内容，说明没有变化”。其实你只是没采集，这两件事完全不同——这是把“不知道”当成了“没有”。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>检查窗口与提交证据边界</td><td>窗口先筛掉不算数的信息，层级再给留下来的信息定强度，顺序不能颠倒。</td></tr>
+                <tr><td>记录-聚合-报告三层最小字段契约</td><td>它是字段契约的输入前提，因为“证据层级”这一栏填什么，完全取决于这里站在哪一级。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果只看到某个二进制资产的文件哈希变了，但没有解析器输出，这个证据应该归到哪一级，为什么？</li>
+                <li>在设计证据等级标签时，是否需要区分“采集了但内容为空”和“根本没有采集”，这两种状态对结论的影响有什么不同？</li>
+                <li>如何写一条自动检查规则，让引用级证据永远无法生成内容级措辞？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="record-aggregate-report-minimal-field-contract">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>记录-聚合-报告三层最小字段契约</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>这条契约把信息流拆成三层：原始记录层负责“如实记下看到的东西”，聚合层负责“统计和归类”，报告层负责“写给人看的话”。每一层都必须规定最少要有哪些字段，尤其是——当没有东西可写的时候，怎么写。本轮深化的重点是“空结果的合法表达”。很多人下意识觉得：没有内容，那就留空、删行、或者干脆不输出这一节。但这三种做法都会让读者分不清“确认没有”和“根本没查”。正确做法是保留结构，用固定字段写出状态：概念候选写“无有效候选”，证据层级写“无”，并额外写一段说明为什么没有，比如“未采集提交内容”。这看起来像形式主义，其实是可追溯性的地基。因为报告里每一句话都应该能指回某个字段；如果“没有结论”这件事没有字段承载，那么后面任何人复核时，都无法判断当初是真的确认了没有，还是漏了、忘了、工具挂了。空结果被合法表达之后，整条链路才真正闭环。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>分层是为了让每一层只承担一种职责：记录不管措辞，聚合不管叙事，报告不直接依赖临时状态，字段因此可检查。</li>
+                <li>“最小字段”的意义在于缺失可检测：规定了下限，就能自动判断哪一层没交够信息，而不是靠人肉看报告像不像话。</li>
+                <li>空结果必须携带原因：保留结构 + 固定字段 + 原因说明，三者一起才能把“确认无”与“未检查”永久区分开。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>体检报告里有一项检查没做。负责任的做法是那一栏写“未检测”，然后备注原因；不负责任的做法是直接删掉这一栏。删掉之后，拿到报告的人会以为“这项正常”，甚至以为体检项目本来就不含这项。一张体检报告的可信度，往往就体现在它怎么处理“没做的那几项”上。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为“没有内容就不必输出”，结果让人无法区分“确认无”与“未检查”，复核时也查不出到底是确认过还是漏了。</li>
+                <li>把缺失值填成 0、“无”或空字符串，看起来整齐，实际上抹掉了原因，让读者无法判断结论的边界。</li>
+                <li>为了让报告显得有内容，把弱线索强行包装成一条候选，这恰恰是证据分级最反对的做法。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>检查窗口与提交证据边界</td><td>它是窗口判定的输出载体：窗口得出的“确认无变化”和“未检查”，最终要靠字段区分开。</td></tr>
+                <tr><td>文件级证据与内容级证据的分离</td><td>它依赖证据分层，因为“证据层级”这一栏填什么，完全由证据本身站在哪一级决定。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何设计一个字段，让“确认没有变化”“未采集内容”“采集失败”这三种状态在报告里无法互相冒充？</li>
+                <li>当候选列表为空时，报告层应该保留哪些固定字段，才能让读者自行判断这次检查的覆盖范围？</li>
+                <li>怎样把“空结果必须携带原因”这条规则写成可测试断言，并在缺失原因字段时自动阻止生成整体结论？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念不是三件互不相干的事，而是同一条“从证据到结论”流水线上的三道关卡。窗口关卡回答“这条信息算不算今天的事实”，层级关卡回答“这条事实最多能说明什么”，字段关卡回答“最后写出来的那句话有没有对应字段撑着”。把它们放在一起看，就能理解为什么 2026-10-15 的产出是“无有效候选”而不是“疑似有新功能”：cannbot-skills 的引用指针变化只通过第一关的一半（有变化信号），没过第二关（没有内容级证据），于是第三关只能诚实地写“待确认变化线索”和“证据层级：无”。这也是对历史主题的复习而不是重复：之前讲这些规则时，手上是有真实 diff 和测试断言的；今天的特殊之处在于，手上什么都没有，规则第一次以“空输入”的形式被完整检验了一遍。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">看到“有变化信号”和“知道变了什么”是两件事；空结果也必须用固定字段写出原因，才算诚实。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>同一次提交的作者时间在窗口内、提交时间在窗口外时，它应该归属到哪一天，为什么？</li>
+            <li>当检查工具只能看到引用指针变化时，报告里最少必须写出哪几个字段，才能让读者自己判断可信度？</li>
+            <li>如何设计一条规则，让“无新增变化”和“未检查”在输出中永远不会被写成同一句话？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
