@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-10-17 学习笔记日报</title>
+    <meta name="description" content="从设计契约出发，讲稳定全序与游标分页、修订号乐观并发控制、资源槽独占与构建状态机，分别守住读取、写入与资源互斥三条不变量。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261017-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-10-17</p>
+        <h1>用明确契约维护不变量：读取确定、写入可防、资源互斥</h1>
+        <p>今天的三项知识都来自设计契约与设计规则，分别落在读取确定性、并发写入防护和领域资源槽三个层面。它们互相配合却不可替代，并且都仍需在证据边界内理解。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>用明确契约维护不变量</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>稳定全序与游标分页</strong>
+                <small>排序加唯一键打破平局，翻页记住坐标…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>基于修订号的乐观并发控制</strong>
+                <small>写入前先报出“我基于哪一版改”，版…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>资源槽独占与构建运行状态机</strong>
+                <small>构建资格是一把钥匙：排队不拿钥匙…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">整体上，C9、C2、C5 分别站在读取、并发写入和领域资源三个层面。稳定排序和游标让读取可复现；修订号让写入冲突可见；资源槽让构建资格互斥。C9 维护“列表有确定位置”，C2 维护“旧版本不能悄悄覆盖新版本”，C5 维护“同一项目至多一个构建资格”。这些概念都来自设计契约或设计规则，未实现、未运行验证，所以学习时要把“设计写了什么”与“系统实际做了什么”分开，它们也提醒我们技术执行状态不能自动升级为业务终态。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["用明确契约维护不变量"])
+  concept1["稳定全序与游标分页"]
+  hub --&gt; concept1
+  concept2["基于修订号的乐观并发控制"]
+  hub --&gt; concept2
+  concept3["资源槽独占与构建运行状态机"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["封闭输入契约"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept3
+  related2["幂等键"]
+  concept2 --&gt; related2
+  related3["确认令牌"]
+  concept2 --&gt; related3
+  concept3 --&gt; concept2
+  concept3 --&gt; concept1
+  related4["UI 局部分层与草稿隔离"]
+  concept3 --&gt; related4
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="stable-total-order-cursor-pagination">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 计算机科学</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>稳定全序与游标分页</h3>
+              <p>Stable Total Order &amp; Cursor Pagination</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">排序加唯一键打破平局，翻页记住坐标而不是页码。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>只有 created_at 一个排序键时，时间相同的记录之间没有确定次序，翻页边界就可能重复或漏项；加上唯一第二排序键 id，created_at DESC,id DESC 让每条记录都有唯一坐标。</li>
+                <li>游标分页不记页码，而是记住上一页最后一条的坐标，下一页请求从这个坐标之后继续取，meta.next_cursor 保存坐标，meta.has_more 表示是否还有下一页。</li>
+                <li>本质是两步转换：先把“排序”变成稳定全序，再把“翻页”变成基于坐标的继续读取。</li>
+                <li>分页参数和响应字段的语义必须清楚，游标才可解释，因此它依赖明确的输入契约。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="stable-total-order-cursor-pagination" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="revision-based-optimistic-concurrency-control">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程 / 分布式系统</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>基于修订号的乐观并发控制</h3>
+              <p>Revision-based Optimistic Concurrency Control</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">写入前先报出“我基于哪一版改”，版本对得上才允许覆盖。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>不提前上锁，而是在写入时检查客户端“以为的版本”：客户端发送 expected_revision=7，表示“我是基于第 7 版改的”。</li>
+                <li>服务端比较当前 revision：仍是 7 就接受并生成第 8 版；已经是 8 说明别人先改过，返回 412，让客户端重新读取、合并或提示用户。</li>
+                <li>客户端没带 expected_revision 时返回 428，要求补上这个前提。</li>
+                <li>本质是把“当前版本等于我期望的版本”作为写入前提，避免旧版本悄悄覆盖新版本。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="revision-based-optimistic-concurrency-control" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="resource-slot-exclusivity-and-construction-run-state-machine">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程 / 领域建模</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>资源槽独占与构建运行状态机</h3>
+              <p>Resource Slot Exclusivity &amp; Construction Run State Machine</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">构建资格是一把钥匙：排队不拿钥匙、暂停不还钥匙、重跑是新钥匙接管老钥匙作废。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>把“构建资格”看成一把唯一的钥匙，关键不变量是：同一项目至多只有一个持有构建资格的 ConstructionRun。</li>
+                <li>ConstructionRun 处于 paused 时仍持有钥匙；取消才释放；继续使用原实例，不新建。</li>
+                <li>重跑会创建新 Run，旧 Run 变成 cancelled，新 Run 接管钥匙，并记录替代原因和关联的新 Run。</li>
+                <li>queued 只是排队，不占钥匙，因此不能被当成“正在构建”。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="resource-slot-exclusivity-and-construction-run-state-machine" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="stable-total-order-cursor-pagination">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 计算机科学</p>
+                <h3>稳定全序与游标分页</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>假设你在看一个按时间倒序排列的列表。如果只按 created_at 排序，两个记录如果时间完全相同，谁在前谁在后可能每次都不一样。翻页时，上一页的最后一条和下一页的第一条就可能重复，或者中间漏掉。解决方法是加一个唯一的第二排序键，例如 id：created_at DESC,id DESC。这样每一条记录都有一个唯一的坐标。游标分页不是记页码，而是记住上一页最后一条的坐标；下一页请求从这个坐标之后继续取。meta.next_cursor 保存这个坐标，meta.has_more 告诉前端还有没有下一页。它的本质是把“排序”变成稳定全序，再把“翻页”变成基于坐标的继续读取。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>单一时间键不唯一：created_at 可能重复，重复值之间没有确定次序，翻页边界因此不稳定。</li>
+                <li>加入唯一键后形成稳定全序：created_at DESC 与 id DESC 组合使每条记录获得唯一坐标，顺序可复现。</li>
+                <li>把翻页表达为坐标续读：用 meta.next_cursor 记录上一页最后一条的坐标，用 meta.has_more 表达是否还有下一页，避免页码在数据插入时发生偏移。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>论文列表第一页按 created_at DESC,id DESC 返回，最后一条是 created_at=10:00:03、id=105。next_cursor 记下这个坐标；第二页取 created_at 小于 10:00:03，或 created_at 等于 10:00:03 且 id 小于 105 的记录。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把游标分页当成页码分页，以为页号是可以长期引用的稳定位置。</li>
+                <li>以为只要有 created_at 就足够稳定；其实时间戳可能重复，插入新数据也会让页码偏移，稳定全序才能让游标有确定位置。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>基于修订号的乐观并发控制</td><td>两者都依赖明确的状态标识：分页靠排序坐标定位，并发控制靠修订号识别状态版本。</td></tr>
+                <tr><td>资源槽独占与构建运行状态机</td><td>稳定排序与游标分页为运行记录、事件和候选列表提供稳定翻页基础，否则同一时间产生的事件可能顺序漂移。</td></tr>
+                <tr><td>封闭输入契约</td><td>分页参数和响应字段的语义必须清楚，游标才可解释，因此它和封闭输入契约相关。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果 created_at 或 id 也可能相同，排序还足够吗？需要怎样选择联合排序键？</li>
+                <li>游标分页和页码分页在数据频繁插入时分别会遇到什么问题？</li>
+                <li>如果用户手动改了某条记录的排序字段，游标分页应如何避免重复或漏项？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="revision-based-optimistic-concurrency-control">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程 / 分布式系统</p>
+                <h3>基于修订号的乐观并发控制</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>多个客户端可能同时修改同一条数据。如果系统只让后到的写入直接覆盖，先写入的人就会丢失。乐观并发控制的思路是：不提前上锁，而是在写入时检查客户端“以为的版本”。每个对象有一个 revision。客户端发送 expected_revision=7，表示“我是基于第 7 版改的”。服务端比较当前 revision：如果还是 7，就接受并生成第 8 版；如果已经是 8，说明别人先改过，就返回 412，让客户端重新读取、合并或提示用户。若客户端根本没带 expected_revision，服务端返回 428，要求补上这个前提。它的本质是把“当前版本等于我期望的版本”作为写入前提，避免旧版本悄悄覆盖新版本。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>先假设不冲突：不提前加锁，让读写可以并行进行，只在提交写入时做版本检查。</li>
+                <li>把版本等式当作写入前提：expected_revision 与服务端当前 revision 相等才允许写入并生成新版本号。</li>
+                <li>用明确的协议状态表达结果：版本失配返回 412 让客户端处理冲突，前提缺失返回 428 要求补齐 expected_revision。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>更新论文元数据时，客户端发送 RevCommand={expected_revision:7,...}。服务端当前 revision=8，于是返回 412 Precondition Failed；如果请求缺少该字段，则返回 428 Precondition Required。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为 expected_revision 是权限或锁；其实它不阻止别人同时读或改，只在提交时发现冲突。</li>
+                <li>把 412 当成系统错误，其实它是要求客户端处理冲突的正常协议状态。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>资源槽独占与构建运行状态机</td><td>两者都在维护写一致性：修订号避免旧写入覆盖新状态，资源槽确保同一项目至多一个构建写入者。</td></tr>
+                <tr><td>幂等键</td><td>同属写路径防线，但修订号解决并发覆盖，幂等键解决重复提交，不能互相替代。</td></tr>
+                <tr><td>确认令牌</td><td>确认令牌关注风险确认与职责分离，不能代替 expected_revision 的并发检查。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果服务端比较修订号和写入不是原子操作，会发生什么？</li>
+                <li>收到 412 后客户端应该自动重试、合并，还是让用户决定？</li>
+                <li>乐观并发控制适合高冲突场景吗？什么情况下该用悲观锁？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="resource-slot-exclusivity-and-construction-run-state-machine">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程 / 领域建模</p>
+                <h3>资源槽独占与构建运行状态机</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>构建一个项目可能很重，系统需要保证同一项目不会同时被两个构建任务写入。资源槽独占就是这个意思：把“构建资格”看成一把唯一的钥匙。ConstructionRun 处于 paused 时仍持有钥匙；取消才释放；继续使用原实例，不新建；重跑会创建新 Run，旧 Run 变成 cancelled，新 Run 接管钥匙，并记录替代原因和关联的新 Run；queued 只是排队，不占钥匙。这个状态机的关键不变量是：同一项目至多只有一个持有构建资格的 Run。它不是简单的“状态标签”，而是用资源槽和状态转移把互斥写资格表达清楚。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>资格与状态分层：资源槽表达“谁有写资格”，状态机表达“当前处于哪个阶段”，两者不能混为一张状态标签。</li>
+                <li>迁移规则固定：paused 仍持槽、取消释放槽、继续沿用原实例、重跑新建实例并由新 Run 接管槽。</li>
+                <li>以不变量约束迁移：同一项目至多一个持有构建资格的 Run，重跑时必须保证旧 Run 被标记 cancelled，避免两个 Run 同时持槽。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>Project P 的 ConstructionRun R1 处于 paused，仍持有独占构建资格。此时重跑：创建 R2，把 R1 标记为 cancelled，R2 接管原槽，记录 replaced_by=R2 和原因；如果 R2 还在 queued，则它不占槽，不能被认为已经构建。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把 queued 当成正在构建；其实排队只是等位，不占构建资格。</li>
+                <li>以为 paused 会释放资源，或以为重跑就是继续旧 Run；其实暂停仍持槽，重跑会创建新 Run 接管钥匙。</li>
+                <li>把某个 attempt 的局部失败显示成整轮失败，忽略了资格、实例和局部尝试是不同层次。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>基于修订号的乐观并发控制</td><td>两者都在维护写一致性：修订号避免旧写入覆盖新状态，资源槽确保同一项目至多一个构建写入者。</td></tr>
+                <tr><td>稳定全序与游标分页</td><td>Run、attempt 和事件列表需要稳定排序与游标分页，才能可靠翻页审计。</td></tr>
+                <tr><td>UI 局部分层与草稿隔离</td><td>领域状态在 UI 中要投影为 Run、attempt、candidate 分层显示，因此与局部分层、草稿隔离同源，但不混为一谈。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果 paused 的 Run 长时间不恢复，资源槽应不应该有过期机制？</li>
+                <li>重跑时旧 Run 和新 Run 的状态迁移应如何保证原子性，避免两个 Run 同时持槽？</li>
+                <li>queued 不占槽，但若资源一直不可用，排队任务应如何超时、取消或重新校验权限？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">整体上，C9、C2、C5 分别站在读取、并发写入和领域资源三个层面。稳定排序和游标让读取可复现；修订号让写入冲突可见；资源槽让构建资格互斥。C9 维护“列表有确定位置”，C2 维护“旧版本不能悄悄覆盖新版本”，C5 维护“同一项目至多一个构建资格”。这些概念都来自设计契约或设计规则，未实现、未运行验证，所以学习时要把“设计写了什么”与“系统实际做了什么”分开，它们也提醒我们技术执行状态不能自动升级为业务终态。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">用明确契约维护不变量：列表有确定位置、旧版本不能悄悄覆盖新版本、同一项目至多一个构建资格。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如果 created_at 或 id 也可能相同，排序还足够吗？需要怎样选择联合排序键？</li>
+            <li>如果服务端比较修订号和写入不是原子操作会发生什么？收到 412 后客户端应该自动重试、合并，还是让用户决定？</li>
+            <li>如果 paused 的 Run 长时间不恢复，资源槽应不应该有过期机制？重跑时旧 Run 和新 Run 的状态迁移应如何保证原子性？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
