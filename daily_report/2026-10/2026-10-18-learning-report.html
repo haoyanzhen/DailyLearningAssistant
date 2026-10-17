@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-10-18 学习笔记日报</title>
+    <meta name="description" content="围绕幂等键、字段存在性语义与业务状态/技术投影分离，梳理从请求入口到执行投影的三层边界。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261018-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-10-18</p>
+        <h1>从设计契约到执行投影的边界治理</h1>
+        <p>今天以无变更复习日材料为边界，复习幂等键、字段存在性语义与业务状态/技术投影分离；所有结论只到设计契约文本层面，不升级为运行验证。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>边界治理：入口、字段与状态</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>有副作用请求的幂等性键</strong>
+                <small>幂等键是业务请求的订单号：只防重复…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>业务状态与技术执行投影分离</strong>
+                <small>Task 成功只是执行步骤完成，业…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>封闭输入契约与字段存在性语义</strong>
+                <small>字段不只有值，还有存在状态：没填…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念都在处理“不同层级的语义不能互相替代”。幂等性键守请求入口，防重复提交造成重复副作用；封闭输入契约守字段入口，区分未提供、显式空值、只读与未知；业务状态与技术执行投影分离守状态边界，防止 Task 成功冒充业务完成。它们分别守住入口、字段和状态三层边界，且都只能说明设计契约要求，不能自动升级为实现或运行验证结论。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["边界治理：入口、字段与状态"])
+  concept1["有副作用请求的幂等性键"]
+  hub --&gt; concept1
+  concept2["业务状态与技术执行投影分离"]
+  hub --&gt; concept2
+  concept3["封闭输入契约与字段存在性语义"]
+  hub --&gt; concept3
+  concept1 --&gt; concept3
+  concept1 --&gt; concept2
+  related1["边界治理：入口、字段与状态"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="idempotency-key-for-side-effectful-requests">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 分布式系统</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>有副作用请求的幂等性键</h3>
+              <p>Idempotency Key for Side-Effectful Requests</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">幂等键是业务请求的订单号：只防重复下单，不负责权限、版本和业务完成。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>用唯一编号标识同一件业务请求，服务端据此识别重复提交。</li>
+                <li>目标是防止重复提交造成重复副作用，而不是保证请求一定成功。</li>
+                <li>不能替代并发匹配、权限、锁或状态检查。</li>
+                <li>当天材料只有设计契约中的 Idempotency-Key 约定，没有实现或运行验证。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="idempotency-key-for-side-effectful-requests" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="business-state-vs-technical-execution-projection">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程 / 状态建模</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>业务状态与技术执行投影分离</h3>
+              <p>Separation of Business State and Technical Execution Projection</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">Task 成功只是执行步骤完成，业务是否完成要看业务状态。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>Task 是应用执行的技术投影，不替代 ConstructionRun、ResearchSession、ReviewRun、内容确认或 KnowledgeVersion 的业务状态。</li>
+                <li>任务成功不必然表示知识发布或内容被人工采纳。</li>
+                <li>重跑、接管、取消与资源占用属于业务状态迁移，不能只改技术执行投影。</li>
+                <li>当天证据停留在设计契约文本，未实现、未运行验证。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="business-state-vs-technical-execution-projection" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="closed-input-contract-field-presence-semantics">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程 / API 设计</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>封闭输入契约与字段存在性语义</h3>
+              <p>Closed Input Contract and Field Presence Semantics</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">字段不只有值，还有存在状态：没填、清空、只读、未知不能混为一谈。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>字段存在状态包括未提供、显式 null、只读和未知，业务含义可能完全不同。</li>
+                <li>未知写字段要拒绝；只读字段不得回传为更新指令；PATCH 省略表示保持原值，null 仅用于明确允许清空的字段；POST 省略使用明列默认值。</li>
+                <li>封闭语义是为了减少接口歧义，防止没填、清空、不能填和不知道互相冒充。</li>
+                <li>写出契约不等于实现、测试或运行验证已经通过。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="closed-input-contract-field-presence-semantics" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="idempotency-key-for-side-effectful-requests">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 分布式系统</p>
+                <h3>有副作用请求的幂等性键</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>有副作用的请求一旦执行就会改变外部世界，例如创建订单、扣款、发邮件或生成业务记录。网络不稳定时，客户端可能没收到响应就重试；若服务端把重试当成全新请求，就可能产生两遍副作用。幂等性键给“同一件业务请求”一个唯一编号，客户端重复提交时携带同一编号，服务端据此识别并避免重复产生副作用。当天材料可确认的是设计契约中约定有副作用业务 POST 使用 Idempotency-Key，但没有实现或运行验证；它处理重复提交，不替代并发匹配、权限、锁或状态检查。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>有副作用请求会改变外部世界，失败重试与响应丢失会带来重复执行风险。</li>
+                <li>客户端为同一业务请求携带稳定幂等键，服务端据键识别重复提交并去重。</li>
+                <li>幂等键只覆盖重复提交问题，版本冲突、权限、锁和业务终态仍需其他机制判断。</li>
+                <li>契约中出现 Idempotency-Key 只是设计层证据，不能推出实现或运行验证已完成。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设客户端发起“创建订单”的 POST 请求，并携带 Idempotency-Key: order-abc。第一次请求其实已经在服务端创建成功，但响应在网络上丢失；客户端用同一个键重试。服务端若按设计识别出这是同一业务请求，就不应再创建第二张订单。若客户端换了一个新键再提交，则从契约上看它可能被视为另一件业务请求。这里讲的是设计机制，不是当天已验证的运行结果。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为加了幂等性键就万事大吉，把它当成乐观并发控制、权限校验或状态机的替代品。</li>
+                <li>以为设计里写了幂等键，就说明系统已经实现并验证了重复请求处理。</li>
+                <li>以为幂等键能证明业务状态已经完成。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>封闭输入契约与字段存在性语义</td><td>幂等性键本身也是输入字段，需要明确出现时机、格式与校验语义；字段写进契约不等于实现完成。</td></tr>
+                <tr><td>业务状态与技术执行投影分离</td><td>幂等键只能防止重复副作用，不能证明订单、构建或知识发布等业务状态已经完成。</td></tr>
+                <tr><td>边界治理：入口、字段与状态</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果同一个幂等键对应不同请求体，服务端应该拒绝、覆盖还是返回第一次的结果？这需要怎样写进契约？</li>
+                <li>幂等键的有效期应该由业务类型决定还是由统一基础设施决定？过期后重复提交应如何被识别？</li>
+                <li>有副作用请求收到 412 后，客户端自动重试、合并请求和让用户决定这三种策略分别需要哪些额外状态检查？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="business-state-vs-technical-execution-projection">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程 / 状态建模</p>
+                <h3>业务状态与技术执行投影分离</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>系统中常同时存在技术执行层状态与业务层终态。技术执行投影把执行过程投影成可观察任务状态，例如 Task 是否跑完；它不能替代 ConstructionRun、ResearchSession、ResearchResponseAttempt、ReviewRun、内容确认或 KnowledgeVersion 等业务状态。任务成功不必然表示知识发布或内容被人工采纳。当天材料中的设计契约明确指出 Task 是应用执行的技术投影，但证据停留在设计契约文本，未实现、未运行验证。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>技术执行层回答执行步骤是否发生，业务层回答业务对象是否到达终态。</li>
+                <li>Task 等投影是可观察的执行状态，不能直接等价于 ReviewRun 通过、人工确认或 KnowledgeVersion 发布。</li>
+                <li>重跑、接管与取消属于业务状态迁移，不能只改技术执行投影。</li>
+                <li>设计契约中的状态划分是设计层证据，不等于实现或运行验证。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设一个文档生成 Task 显示 success，这只说明生成步骤执行成功。它不自动说明 ReviewRun 已通过、内容已被人工确认，也不自动说明 KnowledgeVersion 已发布。报告里应区分“生成任务成功”“评审通过”“人工确认”“知识版本发布”等不同状态，不能用一个 Task success 概括全部业务结果。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把任务 success 直接当成业务完成，例如生成任务成功就宣布知识已发布。</li>
+                <li>以为该概念能直接解决重跑时旧 Run 和新 Run 的原子性问题；它只划清边界，不单独给出原子性实现。</li>
+                <li>把执行队列完成当成内容已被人工采纳。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>有副作用请求的幂等性键</td><td>请求入口防重复副作用之后，仍需业务状态层判断最终是否完成，不能以执行任务成功替代业务终态。</td></tr>
+                <tr><td>封闭输入契约与字段存在性语义</td><td>状态字段必须区分未知、未提供、执行成功和业务完成，不能让字段缺失被解释为完成。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果 Task 成功但业务 Run 仍处于待确认状态，报告应该怎样分层表达，避免读者误解为已完成？</li>
+                <li>重跑场景中，旧 Run 的取消和新 Run 的接管应如何建模为业务状态迁移，而不是只修改技术执行投影？</li>
+                <li>哪些业务状态必须由人工确认，哪些可以由系统自动推进？这条边界应写在契约的哪个位置？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="closed-input-contract-field-presence-semantics">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程 / API 设计</p>
+                <h3>封闭输入契约与字段存在性语义</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>API 输入字段不只有值，还有存在状态：未提供、显式 null、只读、未知可能在业务上完全不同。当天设计契约可确认的规则包括：未知写字段要拒绝；只读字段不得回传为更新指令；PATCH 省略表示保持原值，null 仅用于明确允许清空的字段；POST 省略使用明列默认值。把这些语义写封闭是为了减少接口歧义，避免把“用户没填”误当成“用户填了空”，把只读字段回传误当成更新命令，或把未知字段静默忽略后产生隐性错误。证据停留在设计契约文本，未实现、未运行验证。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>字段的存在状态与字段值是两个维度，未提供、显式空值、只读和未知需要不同语义。</li>
+                <li>封闭输入契约用拒绝未知写字段、限制只读回传、区分 PATCH 省略与 null、规定 POST 默认值来消除歧义。</li>
+                <li>明确字段语义可避免没填、清空、不能填和不知道互相冒充。</li>
+                <li>写出契约不等于实现、测试或运行验证已经通过。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设更新用户资料的 PATCH 请求。若传入 nickname 并省略 bio，按契约 bio 应保持原值；若传入 bio: null，且 bio 是明确允许清空的字段，才表示清空；若请求里带只读字段 id 并试图更新，应拒绝；若请求里出现未知字段，按当天设计契约应拒绝。POST 请求若省略某个字段，则使用契约中明列的默认值，而不是让服务端猜。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把 null 当成省略，认为不传和传空值是一回事。</li>
+                <li>认为未知字段静默忽略更兼容，但这会让拼写错误或越权字段悄悄混过去。</li>
+                <li>看到字段出现就推断身份、去重或入库结果；字段存在性只是输入契约的一部分。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>有副作用请求的幂等性键</td><td>幂等键也是输入契约的一部分，必须明确何时出现、如何校验；字段存在不等于幂等机制已经运行验证。</td></tr>
+                <tr><td>业务状态与技术执行投影分离</td><td>状态字段也要区分未知、未提供和已完成，不能让字段缺失被解释成业务完成。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>PATCH 中哪些字段允许显式 null 清空，哪些字段即使传 null 也必须拒绝？这条规则应如何被机器检查？</li>
+                <li>未知写字段应该统一拒绝，还是按版本兼容策略降级处理？两种策略分别会带来什么风险？</li>
+                <li>如何为报告字段设计“未采集、无变化、采集失败、未知”四种状态，使它们在聚合时无法互相冒充？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念都在处理“不同层级的语义不能互相替代”。幂等性键守请求入口，防重复提交造成重复副作用；封闭输入契约守字段入口，区分未提供、显式空值、只读与未知；业务状态与技术执行投影分离守状态边界，防止 Task 成功冒充业务完成。它们分别守住入口、字段和状态三层边界，且都只能说明设计契约要求，不能自动升级为实现或运行验证结论。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">设计上要求这样做，不等于系统已经这样运行；入口防重、字段辨义、状态分层都不能互相替代。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>同一个幂等键对应不同请求体时，契约应要求拒绝、覆盖还是返回第一次结果？</li>
+            <li>Task 成功而业务 Run 仍待确认时，报告应如何分层表达，避免被误解为已完成？</li>
+            <li>PATCH 中哪些字段允许显式 null 清空，哪些即使传 null 也必须拒绝？这条规则如何被机器检查？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
