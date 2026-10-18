@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-10-19 学习笔记日报</title>
+    <meta name="description" content="无变更复习日聚焦三条边界：归档候选片段的隔离与承诺降级、非严格JSON输出的宽容解析与严格验证分责、确认令牌与执行控制的分责。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261019-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-10-19</p>
+        <h1>把局部材料放回它该在的位置</h1>
+        <p>今天没有新增工程进展，只有三条边界值得重新组织：一段归档片段、一次宽容解析、一枚确认令牌，都不能替别的层说话。理解它们的原理，比把它们误升级为“已经实现、已经验证”更重要。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>证据边界与职责分责</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>C14 归档候选片段的隔离…</strong>
+                <small>归档像储藏室：保留不等于恢复上岗。</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>C16 非严格JSON输出…</strong>
+                <small>解析器只脱外套，安检还得另外做。</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>C4 确认令牌的职责分离</strong>
+                <small>签了知情同意书，不等于跳过整套安全…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念共同围绕一个判断：局部材料可以支撑“设计上存在某机制”或“归档片段中出现了某逻辑”，但不能自动支撑“已经实现、已经运行、已经验证或已经成为当前核心”。C14 把旧片段放入隔离目录并通过 README 降低承诺；C16 把解析成功与验证通过分开；C4 把风险确认凭证与并发控制、权限、锁和状态检查分开。它们不是同一主题的三节重复课，而是三个不同边界：资产治理中的承诺降级、外部输出处理中的解析与验证分责、安全架构中的确认凭证与执行控制分责。C1 的证据分离是上位边界，C13 的当前真源与历史附录分离可作为 C14 的邻近参照。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["证据边界与职责分责"])
+  concept1["C14 归档候选片段的隔离与承诺降级"]
+  hub --&gt; concept1
+  concept2["C16 非严格JSON输出的宽容解析与严格验证边界"]
+  hub --&gt; concept2
+  concept3["C4 确认令牌的职责分离"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  related1["C1 证据分离"]
+  concept1 --&gt; related1
+  related2["C13 当前真源与历史附录分离"]
+  concept1 --&gt; related2
+  related3["C17 字段投影"]
+  concept2 --&gt; related3
+  concept2 --&gt; related1
+  related4["封闭输入契约与字段存在性语义"]
+  concept2 --&gt; related4
+  related5["有副作用请求的幂等性键"]
+  concept3 --&gt; related5
+  concept3 --&gt; related1
+  related6["C13 契约显式化"]
+  concept3 --&gt; related6
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4,related5,related6 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="archive-candidate-isolation">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 资产治理</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>C14 归档候选片段的隔离与承诺降级</h3>
+              <p>Archival Candidate Isolation and Commitment Downgrade</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">归档像储藏室：保留不等于恢复上岗。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>隔离目录加归档 README 一起把“可能以后有用”和“当前可用”区分开：保留可追溯性，但不提升实现等级。</li>
+                <li>承诺降级不是贬低材料价值，而是把证据身份写清楚：可参考、可考古、可作未来候选，但不能冒充当前核心实现或可运行入口。</li>
+                <li>文件列表与归档 README 只能支撑归档治理的设计线索，无法升级为运行验证或当前核心事实。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="archive-candidate-isolation" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="lenient-parsing-strict-validation">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">大语言模型 / 软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>C16 非严格JSON输出的宽容解析与严格验证边界</h3>
+              <p>Lenient Parsing and Strict Validation Boundary for Non-strict JSON Output</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">解析器只脱外套，安检还得另外做。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>解析层只承担“拆包装”：有限地去掉完整外围 Markdown 围栏，拿到里面那段文本。</li>
+                <li>Schema 验证、字段语义确认与非有限数值（NaN、Infinity）拒绝，都必须由调用方严格完成。</li>
+                <li>解析成功只说明文本能被拆出结构，不能冒充字段齐全、语义正确、可以入库。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="lenient-parsing-strict-validation" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="confirmation-token-separation">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 安全 / 软件架构</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>C4 确认令牌的职责分离</h3>
+              <p>Separation of Duties for Confirmation Token</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">签了知情同意书，不等于跳过整套安全检查。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>确认 token 由服务端生成，绑定操作者、对象、动作、目标修订、影响范围与有效期。</li>
+                <li>token 只证明“风险已被明确确认”这一项职责，不替代 expected_revision、权限、锁或状态机检查。</li>
+                <li>设计契约中出现 token，只证明设计上存在风险确认机制，不能证明执行控制已经正确或已经运行验证。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="confirmation-token-separation" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="archive-candidate-isolation">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 资产治理</p>
+                <h3>C14 归档候选片段的隔离与承诺降级</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>归档候选片段的隔离与承诺降级，说白了就是：有些旧东西可能以后有用，不能直接丢掉，但也不能继续摆在客厅当新主家具。做法是把它搬进一个明确标注的储藏室，贴上说明“这里只是候选片段，不是新核心，也不是运行入口”。这样既保留了可追溯性，又降低了它对当前系统的承诺：别人不能因为看到这个文件，就以为它已经被当前程序调用、已经被维护、已经被验证。这里的“承诺降级”不是贬低材料价值，而是把它的证据身份说清楚：它可以用于参考、考古、未来候选，但不能冒充当前核心实现或可运行入口。可以想象一个学校社团整理旧器材：坏掉但零件还有用的麦克风被放进“也许有用”箱子，箱子上写着“不要直接拿去演出”，谁想用必须先检查、测试、登记。归档候选片段就是那个箱子，保留不等于恢复上岗。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>保留可追溯性与提升实现等级是两件事：前者靠目录与说明保留，后者要靠内容级、运行级证据。</li>
+                <li>隔离目录是一种显式声明边界，它用物理位置告诉读者：这里只是候选片段，不是新核心，也不是运行入口。</li>
+                <li>承诺等级属于证据身份信息，它决定读者能拿这份材料支撑什么结论，而不评价材料本身的价值。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>0cda6e4 删除了大量旧应用文件，包括后端、前端、E2E、迁移、测试与依赖配置，同时新增 archive/maybe_useful/ 隔离候选片段，并由归档 README 明确这些片段不是新核心或运行入口。这个例子说明的是资产治理设计线索，不是今天新增的运行验证。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>只要归档片段还在仓库里，就说明它仍是当前可用代码。实际上目录隔离恰恰是在降低承诺，而不是提升实现等级。</li>
+                <li>只要 README 写了“也许有用”，就等于已经验证它能用。文档声明说明的是用途与承诺等级，不是运行验证结果。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>C16 非严格JSON输出的宽容解析与严格验证边界</td><td>两者同来自 0cda6e4 归档线索：C14 把旧片段放入隔离目录并降低承诺，C16 说明即使归档片段里有解析函数，也只能作为待确认证据。</td></tr>
+                <tr><td>C1 证据分离</td><td>文件列表和归档 README 只能支撑归档治理的设计线索，不能升级为运行验证或当前核心事实。</td></tr>
+                <tr><td>C13 当前真源与历史附录分离</td><td>历史附录与归档候选都保留可追溯性，但都不冒充当前真源或新核心运行入口，二者是同一种边界思路的邻近参照。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>归档目录的 README 最少应写清哪些字段，才能让读者知道片段来源、用途、承诺等级和未验证项？</li>
+                <li>如果要自动检查归档片段没有被当前运行入口引用，可以设计哪些最小检查规则和输出字段？</li>
+                <li>当某个归档片段后来被证明有用，把它升级为新核心需要补哪些证据、审查步骤和运行验证？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="lenient-parsing-strict-validation">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 大语言模型 / 软件工程</p>
+                <h3>C16 非严格JSON输出的宽容解析与严格验证边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>大语言模型有时不会老老实实只输出一段 JSON，而会包上 Markdown 代码围栏，或者在前后加说明。宽容解析就像拆快递时允许剪开外层泡沫：它只负责把常见的完整外围 Markdown fence 去掉，拿到里面那段文本。但拆开包装不等于里面货物合格，所以还要有一层严格验证：由调用方检查 JSON Schema，拒绝 NaN 和 Infinity 这类非有限数值。核心边界是“解析层可以有限宽容，验证层必须严格”，不能让“我能把它解出来”冒充“这份数据已经合格可用”。像机场安检先帮你把外套脱下来放进托盘，这叫宽容处理包装；但外套脱了不代表人一定通过安检，真正的身份和违禁品检查还在后面。解析器只负责拆包装，Schema 验证才是安检。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>模型输出可能带围栏或前后说明，因此解析层需要被允许处理一种明确限定的包装形态。</li>
+                <li>拆开包装只得到一段文本，文本是否合格必须由 Schema 与字段语义检查来判断，两者是不同职责。</li>
+                <li>NaN 与 Infinity 这类非有限数值即使能被解析器读入，也必须在验证层被拒绝，否则“可解出”会被当成“可用”。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>归档 fragments.py 中的 decode_json_text 只解开完整外围 Markdown fence，JSON Schema 由未来调用方验证，并拒绝 NaN 和 Infinity。这个例子来自 archive/maybe_useful 归档片段局部 diff，待确认，不是新核心，也没有运行验证。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>只要 JSON 解析成功，就说明模型输出可靠、字段齐全、可以入库。实际上解析成功只说明文本能被拆出结构，Schema 验证、字段语义、身份确认和入库判断仍是不同职责。</li>
+                <li>宽容解析意味着可以容忍任意前后说明。宽容应被限定为常见完整外围 Markdown fence 的白名单，而不是对所有包装都放行。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>C17 字段投影</td><td>解析、验证、字段投影、身份确认和入库分属不同职责，不能用解析成功替代整条处理链的结论。</td></tr>
+                <tr><td>C1 证据分离</td><td>能解开 Markdown fence 只说明解析层局部成功，不等于 Schema 验证通过，更不等于运行级事实成立。</td></tr>
+                <tr><td>封闭输入契约与字段存在性语义</td><td>宽容解析不能把字段存在性语义混在一起，未提供、显式空值、只读与未知仍需由严格验证层分别判定。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何为宽容解析器设计白名单，只允许解开完整外围 Markdown fence，而不把任意前后说明都当作合法包装？</li>
+                <li>当模型输出 NaN 或 Infinity 时，解析层、验证层和调用方各自应如何报告失败原因，才能让问题可复核？</li>
+                <li>如何把解析、Schema 验证、字段投影、身份确认和入库写成一条职责清楚、可检查的处理流水线？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="confirmation-token-separation">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 安全 / 软件架构</p>
+                <h3>C4 确认令牌的职责分离</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>确认令牌可以理解成一张“我已经知道风险并明确同意”的签字单。服务端生成 token，并把它绑定到操作者、对象、动作、目标修订、影响范围和有效期。它的作用是证明风险确认这件事发生过，但它不是万能通行证：签字单不能代替门禁权限，不能代替版本匹配，不能代替锁，也不能代替状态机检查。换句话说，确认令牌只负责“风险确认”这一项职责，其他执行控制必须各司其职。像医院做有风险的检查：患者签了知情同意书，不等于医院可以跳过身份核对、设备检查、医生资质和手术排期，同意书只证明患者知情同意，不能替代整套医疗安全流程。常见误区是只要请求里带了确认 token，就可以自动重试、跳过并发检查或直接推进业务状态，而 token 只证明风险确认，不能替代 expected_revision、权限、锁或状态检查。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>有副作用请求同时牵涉多种控制：风险确认、并发匹配、权限、锁与状态检查，各自解决不同失败模式，不能互相顶替。</li>
+                <li>确认 token 的意义来自它的绑定字段：一旦操作者、对象、动作、目标修订、影响范围或有效期不匹配，这份确认就不再指向当前这次操作。</li>
+                <li>把人工确认边界、凭证有效期和风险 id 写进当前契约，才能让“风险确认”这件事可审计；但契约文本本身只是设计证据。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>设计契约中出现 Confirmation={confirmation_token:string!, acknowledged_risk_ids:string[]!}。有副作用请求收到 412 后，如果考虑自动重试，不能只看 token 是否存在，还要检查 token 是否仍绑定同一操作者、对象、动作、目标修订、影响范围和有效期，同时仍需 expected_revision 匹配、权限、锁和状态检查。这里只有设计契约文本，未实现、未运行验证。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>只要请求里带了确认 token，就可以自动重试、跳过并发检查或直接推进业务状态。token 只证明风险确认，不能替代 expected_revision、权限、锁或状态检查。</li>
+                <li>确认 token 与幂等键可以互替。幂等键防止重复提交产生重复副作用，确认 token 记录风险确认，二者服务同一请求但不承担同一职责。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>有副作用请求的幂等性键</td><td>幂等键防止重复副作用，确认 token 记录风险确认，二者都不能替代 expected_revision、权限、锁或状态检查。</td></tr>
+                <tr><td>C1 证据分离</td><td>确认 token 出现在设计契约中，只能证明设计上存在风险确认机制，不能证明执行控制已经正确或已经运行验证。</td></tr>
+                <tr><td>C13 契约显式化</td><td>人工确认边界、确认凭证有效期和风险 id 需要写进当前契约，历史文档不能冒充当前确认规则。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>有副作用请求收到 412 后，自动重试前必须检查哪些与确认 token 绑定的字段，才能避免把旧确认误用到新目标修订上？</li>
+                <li>哪些业务状态必须由人工确认，哪些可以由系统自动推进？这条边界应写在契约的哪个位置？</li>
+                <li>如果确认 token 过期但 expected_revision 仍然匹配，服务端应返回什么错误，并如何记录这次风险确认失效？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念共同围绕一个判断：局部材料可以支撑“设计上存在某机制”或“归档片段中出现了某逻辑”，但不能自动支撑“已经实现、已经运行、已经验证或已经成为当前核心”。C14 把旧片段放入隔离目录并通过 README 降低承诺；C16 把解析成功与验证通过分开；C4 把风险确认凭证与并发控制、权限、锁和状态检查分开。它们不是同一主题的三节重复课，而是三个不同边界：资产治理中的承诺降级、外部输出处理中的解析与验证分责、安全架构中的确认凭证与执行控制分责。C1 的证据分离是上位边界，C13 的当前真源与历史附录分离可作为 C14 的邻近参照。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">解析成功不等于验证通过，存在片段不等于当前可用，带了确认 token 也不等于可以跳过执行控制。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如果要为“承诺等级”“证据等级”“风险确认凭证”同时设计报告字段，最小字段集合应该包含哪些，才能让每句话都被复核？</li>
+            <li>当一份材料同时具备归档片段局部 diff 与设计契约文本时，结论强度应由哪一层决定，又该如何自动降级措辞？</li>
+            <li>如何为“局部成功”设计可复核的失败报告，让解析失败、Schema 验证失败与执行控制失败互不冒充？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
