@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-10-20 学习笔记日报</title>
+    <meta name="description" content="无变更复习日聚焦证据分层：文档当前真源与历史附录分离、字段投影与身份去重入库分责、设计契约与实现状态分离。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261020-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-10-20</p>
+        <h1>证据有层级，局部成功不等于整体完成</h1>
+        <p>今天没有新增工程变化，学习主线转向三条边界：文档真源、处理职责与证据层级。它们共同提醒我们，局部材料只能支撑有限强度的结论。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>证据分层与职责边界</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>C13 文档版本契约与历史…</strong>
+                <small>当前主文件是户口本，历史附录是老相…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>C17 字段投影与身份/去…</strong>
+                <small>扫描面单只读出信息，不代表已经验明…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>C1 设计契约与实现状态的…</strong>
+                <small>设计图不是验收报告，施工照片也不是…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">C13、C17、C1 可以看成三层防线。C13 管文档层：当前有效状态以主文件为准，历史细节进入附录，版本规则明确递增和日期更新。C17 管处理链层：字段投影只做字段选择，不负责请求、去重、身份确认或入库。C1 管结论层：设计契约、局部 diff、运行验证属于不同证据层级，结论强度不能越过证据来源。三者共同说明：文档规则存在不等于运行验证完成，字段出现在投影结果中不等于身份已确认或数据已入库，设计已完成不等于代码已实现或业务已完成。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["证据分层与职责边界"])
+  concept1["C13 文档版本契约与历史附录分离"]
+  hub --&gt; concept1
+  concept2["C17 字段投影与身份/去重/入库职责分离"]
+  hub --&gt; concept2
+  concept3["C1 设计契约与实现状态的证据分离"]
+  hub --&gt; concept3
+  concept1 --&gt; concept3
+  concept1 --&gt; concept2
+  related1["证据分层与职责边界"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept3
+  concept2 --&gt; concept1
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="c13-document-version-contract">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 信息架构</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>C13 文档版本契约与历史附录分离</h3>
+              <p>Document Version Contract &amp; Historical Appendix Separation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">当前主文件是户口本，历史附录是老相册，旧照片不能证明现在的住址。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>设计文档保持 v1.x，有显式版本修改时递增次版本并更新日期；未版本化文档从 v1.0 开始。</li>
+                <li>源码由 Git 跟踪；PROJECT_STATUS_APPENDIX.md 保存历史细节，当前有效状态以主文件为准。</li>
+                <li>这提供的是文档治理级证据，只能支撑“设计上要求分离”，不能升级为运行验证已经通过。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="c13-document-version-contract" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="c17-field-projection-responsibility">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">大语言模型 / 数据工程 / 软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>C17 字段投影与身份/去重/入库职责分离</h3>
+              <p>Field Projection &amp; Identity/Dedup/Persistence Responsibility Separation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">扫描面单只读出信息，不代表已经验明身份、合并包裹并放上货架。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>外部响应处理可拆成解析、验证、字段投影、身份确认、去重和持久化等阶段。</li>
+                <li>归档片段 semantic_scholar_fields 对单条已解码响应做字段投影，只负责选择字段，不负责请求、去重、身份确认或入库。</li>
+                <li>该证据来自 archive/maybe_useful 中的归档片段，只能标为待确认，不是今天的新核心实现，也没有运行验证。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="c17-field-projection-responsibility" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="c1-design-contract-evidence-separation">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学 / 方法论</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>C1 设计契约与实现状态的证据分离</h3>
+              <p>Evidence Separation Between Design Contract and Implementation Status</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">设计图不是验收报告，施工照片也不是入住许可。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>AGENTS.md 要求区分计划工作、已执行工作和已验证结果；625a7a4 明确所有设计完成不等于代码实现。</li>
+                <li>PROJECT_STATUS.md 写明 P0 API 与应用编排为“已同步（设计；实现待开始）”。</li>
+                <li>设计文档、API 契约、领域规则属于设计级证据；局部 diff 属于实现片段级证据；构建、测试、部署、运行结果才是运行级证据。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="c1-design-contract-evidence-separation" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="c13-document-version-contract">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 信息架构</p>
+                <h3>C13 文档版本契约与历史附录分离</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>文档版本契约与历史附录分离，核心是让读者一眼分清“现在有效的规则”和“过去发生过什么”。根据当天材料可确认的是，设计文档保持 v1.x，有显式版本修改时递增次版本并更新日期；未版本化文档从 v1.0 开始；源码由 Git 跟踪；PROJECT_STATUS_APPENDIX.md 保存历史细节，当前有效状态以主文件为准。为什么不能混在一起？因为文档一长，历史细节很容易冒充当前规则。读者看到一段旧描述，可能以为它仍然有效；维护者也可能因为历史附录写得多，就忘了主文件才是当前真源。把当前真源、版本历史和历史附录分责，就是让每类信息待在自己的位置，承担自己的语义职责。这个机制并不自动证明文档内容正确，也不等于已经有自动检查器在运行。它提供的仍是文档治理级证据：规则上要求这样分层，提交文件列表或局部 diff 显示有相关文档约定。它能支撑“设计上要求分离”，不能升级为“运行验证已经通过”。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>当前真源负责表达现在有效的状态，历史附录负责保存来龙去脉，两者语义职责不同。</li>
+                <li>版本号与日期更新是文档治理规则，用来标识显式修改，而不是运行验证结果。</li>
+                <li>文档治理级证据只能支撑规则存在，不能自动升级为内容正确或行为已确认。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>可以把项目文档想成一本家庭册子：户口本记录当前住址和成员，老相册保存过去的照片。老照片很有价值，但不能拿它证明现在的住址。历史附录就像相册，当前主文件就像户口本。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>看到历史附录写得很详细，就把其中的旧状态当成当前有效规则。</li>
+                <li>以为文档版本号递增或日期更新就自动证明内容已经通过运行验证；其实版本规则只是文档治理证据。</li>
+                <li>以为主文件与历史附录分离后，文档内容就自动正确；分离只解决职责边界，不证明内容正确。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>C1 设计契约与实现状态的证据分离</td><td>当前主文件、历史附录和版本规则都是文档治理证据，写出当前状态并不等于完成运行验证。</td></tr>
+                <tr><td>C17 字段投影与身份/去重/入库职责分离</td><td>文档要区分当前真源与历史附录，处理流水线也要区分字段投影、身份确认、去重和入库，两者都强调显式职责边界。</td></tr>
+                <tr><td>证据分层与职责边界</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>怎样设计最小校验规则，自动发现当前状态文档混入了历史快照内容？</li>
+                <li>当一份项目状态既像当前说明又像历史记录时，应依据哪些字段判断它该留在主文件还是归档到附录？</li>
+                <li>版本号递增与日期更新应如何与文档内容变更绑定，才能避免只改日期不改语义？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="c17-field-projection-responsibility">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 大语言模型 / 数据工程 / 软件工程</p>
+                <h3>C17 字段投影与身份/去重/入库职责分离</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>字段投影与身份/去重/入库职责分离，说的是外部响应处理可以拆成多个阶段：解析、验证、字段投影、身份确认、去重和持久化。根据当天材料可确认的是，归档片段 semantic_scholar_fields 对单条已解码响应做字段投影，只负责选择字段，不负责请求、去重、身份确认或入库。为什么不能把这些职责混成一个“成功”？因为字段投影只是一个纯转换步骤：它从已经解码的响应中挑出需要的字段。字段出现在投影结果中，只能说明转换函数选择了它，不能说明这条记录的身份已经确认，也不能说明重复记录已经合并，更不能说明数据已经写入存储。每一步都有不同的判断条件和证据强度。这里要特别谨慎：该证据来自 archive/maybe_useful 中的归档片段，只能标为待确认，不是今天的新核心实现，也没有运行验证。因此今天能讲的是职责分离原理：局部转换成功不能升级为完整处理链成功。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>字段投影是纯转换步骤，只从已解码响应中选择字段，不承担请求、身份确认、去重或入库职责。</li>
+                <li>每个处理阶段有不同判断条件与证据强度，一个阶段成功不能代表后续阶段完成。</li>
+                <li>归档片段证据只能标为待确认，职责分离原理成立不等于该实现已成为新核心或通过运行验证。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>快递站里，扫描面单只能读出姓名和电话，不等于已经核实收件人身份，也不等于已经合并重复包裹，更不等于已经放上货架。字段投影就像扫描面单，后面的身份确认、去重和入库还要分别完成。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>看到投影结果里出现了某个字段，就认为这条记录已经完成身份确认、去重或入库。</li>
+                <li>把“函数成功返回字段”当成“整条数据处理流水线成功”；其实它只完成了一个阶段。</li>
+                <li>把归档片段中的局部实现当成今天的新核心实现，并忽略其待确认、无运行验证的边界。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>C1 设计契约与实现状态的证据分离</td><td>字段投影成功只说明局部转换完成，不能升级为身份确认、去重完成或入库成功这类整体事实。</td></tr>
+                <tr><td>C13 文档版本契约与历史附录分离</td><td>文档需要区分当前真源与历史附录，处理流水线也需要区分字段投影、身份确认、去重和入库，两者都要求职责边界显式化。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何把解析、Schema 验证、字段投影、身份确认和入库写成一条职责清楚、可检查的处理流水线？</li>
+                <li>字段投影函数返回了某个字段，能否据此推断身份已经确认或数据已经入库？如果不能，报告应如何分层表达？</li>
+                <li>当某个归档片段后来被证明有用，把它升级为新核心需要补哪些审查步骤和运行验证？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="c1-design-contract-evidence-separation">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学 / 方法论</p>
+                <h3>C1 设计契约与实现状态的证据分离</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>设计契约与实现状态的证据分离，是把“计划做什么”“已经改了什么”“实际运行验证了什么”分成不同证据层级。根据当天材料可确认的是，AGENTS.md 要求区分计划工作、已执行工作和已验证结果；625a7a4 明确所有设计完成不等于代码实现；PROJECT_STATUS.md 写明 P0 API 与应用编排为“已同步（设计；实现待开始）”。它的底层逻辑是：结论强度不能越过证据层级。设计文档、API 契约、领域规则属于设计级证据；局部 diff 属于实现片段级证据；构建、测试、部署、运行结果才是运行级证据。看到设计完成，最多能说“设计上已同步”；看到局部 diff，最多能说“某处代码片段有改动”；只有拿到运行验证，才有资格说“行为已确认”。这不是咬文嚼字，而是防止把局部材料升级成整体事实。任务成功也不等于业务完成，技术执行成功也不等于业务终态完成。当天材料没有实现或运行验证，因此今天只能讲证据分层原则，不能宣称这些设计已经实现或通过验证。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>证据分层把计划工作、已执行工作和已验证结果分开，不同层级只能支撑不同强度的结论。</li>
+                <li>设计级证据说明计划或契约，局部 diff 说明片段改动，运行级证据才说明行为已被验证。</li>
+                <li>结论强度不能越过证据来源；任务成功也不自动等于业务完成或运行验证完成。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>盖房子时有设计图、施工照片和验收报告。设计图画完不能说房子已验收，施工照片只能证明某面墙砌了，验收报告才证明能住。证据不同，能说的话也不同。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把“设计完成”写成“代码完成”，把“局部 diff 出现”写成“功能已实现”，把“任务成功”写成“业务已完成”。</li>
+                <li>认为弱证据反复出现就能自动合并成强结论；其实反复出现仍要保留来源层级和未验证边界。</li>
+                <li>把“已同步（设计；实现待开始）”误读为“P0 API 已完成”，忽略实现与运行验证尚未提供。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>C13 文档版本契约与历史附录分离</td><td>当前主文件、历史附录和版本规则都只是文档治理证据；文档写出当前状态，不等于完成运行验证。</td></tr>
+                <tr><td>C17 字段投影与身份/去重/入库职责分离</td><td>字段在投影结果中出现，只能说明转换函数选择了该字段，不能推断身份已确认、去重已完成或持久化已成功。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何设计一个字段，让“确认没有变化”“未采集内容”“采集失败”这三种状态在报告里无法互相冒充？</li>
+                <li>当同一条原理在不同仓库反复出现但每次都只有弱证据时，是否应该合并成一条更强的结论？合并会不会反而放大不确定性？</li>
+                <li>如果 Task 成功但业务 Run 仍处于待确认状态，报告应该怎样分层表达，避免读者误解为已完成？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">C13、C17、C1 可以看成三层防线。C13 管文档层：当前有效状态以主文件为准，历史细节进入附录，版本规则明确递增和日期更新。C17 管处理链层：字段投影只做字段选择，不负责请求、去重、身份确认或入库。C1 管结论层：设计契约、局部 diff、运行验证属于不同证据层级，结论强度不能越过证据来源。三者共同说明：文档规则存在不等于运行验证完成，字段出现在投影结果中不等于身份已确认或数据已入库，设计已完成不等于代码已实现或业务已完成。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">局部材料只能支撑有限强度的结论，局部成功不能升级为整体事实。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>怎样设计最小校验规则，自动发现当前状态文档混入了历史快照内容？</li>
+            <li>字段投影函数返回某个字段后，报告应如何分层表达身份确认、去重和入库状态？</li>
+            <li>当同一条原理反复出现但每次都只有弱证据时，是否应合并成更强结论？合并会不会放大不确定性？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
