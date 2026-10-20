@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-10-21 学习笔记日报</title>
+    <meta name="description" content="无变更复习日聚焦稳定标识与可复核边界：复合排序键稳定翻页，幂等键绑定请求体指纹，资源槽以状态迁移互斥管理生命周期。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261021-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-10-21</p>
+        <h1>稳定标识，守住可复核边界</h1>
+        <p>从游标分页的稳定全序，到幂等请求的内容绑定，再到资源槽的状态迁移互斥，复习如何用稳定标识守住可复核边界。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>稳定标识与可复核边界</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>D2 复合排序键与游标分页…</strong>
+                <small>游标不是页码，而是稳定全序上的一枚…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>D3 幂等键与请求体指纹的…</strong>
+                <small>编号认意图，指纹认内容，同键不同体…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>D4 资源槽生命周期与状态…</strong>
+                <small>槽位不是布尔标签，而是受状态机约束…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三者共同点是用稳定标识守住可复核边界：D2 用复合排序键定位记录，D3 用幂等键加请求体指纹定位请求意图，D4 用状态机定位资源槽的获取与释放。差别在对象不同：有序集合定位、重复请求等价类、资源状态生命周期；标识不稳或边界不清会导致重复、漏项、误合并或双持槽。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["稳定标识与可复核边界"])
+  concept1["D2 复合排序键与游标分页的全序稳定性"]
+  hub --&gt; concept1
+  concept2["D3 幂等键与请求体指纹的绑定语义"]
+  hub --&gt; concept2
+  concept3["D4 资源槽生命周期与状态迁移互斥"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["D1 修订号比较与写入的原子性边界"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept2 --&gt; related1
+  concept3 --&gt; related1
+  concept3 --&gt; concept2
+  concept3 --&gt; concept1
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="d2-composite-sort-key-cursor-pagination">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 计算机科学</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>D2 复合排序键与游标分页的全序稳定性</h3>
+              <p>Composite Sort Key and Cursor Pagination Stability</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">游标不是页码，而是稳定全序上的一枚书签。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>游标记住上一页最后一条记录在排序中的位置，而不是简单记住第几页。</li>
+                <li>created_at 等时间字段可能并列，需与唯一 id 组成复合排序键，形成更稳定的全序。</li>
+                <li>全序稳定不自动解决排序字段变化、翻页插入与快照一致性，分页契约仍需说明游标失效与快照规则。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="d2-composite-sort-key-cursor-pagination" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="d3-idempotency-key-body-fingerprint">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 分布式系统 / API 设计</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>D3 幂等键与请求体指纹的绑定语义</h3>
+              <p>Idempotency Key with Request Body Fingerprint</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">编号认意图，指纹认内容，同键不同体必须显式冲突。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>幂等键只是客户端声明的请求编号，不能单独证明请求体相同。</li>
+                <li>应先规范化请求体再计算指纹，服务端存储键、指纹、首次结果或处理状态。</li>
+                <li>同键同指纹可按契约返回首次结果或同样处理结果；同键不同指纹必须明确冲突策略，有效期也须定义。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="d3-idempotency-key-body-fingerprint" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="d4-resource-slot-lifecycle-state-transition">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程 / 领域建模</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>D4 资源槽生命周期与状态迁移互斥</h3>
+              <p>Resource Slot Lifecycle and Mutually Exclusive State Transitions</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">槽位不是布尔标签，而是受状态机约束的执行许可证。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>resource slot 是执行许可证，queued 通常不占槽，running 可能占槽，paused 是否占槽必须由规则写清。</li>
+                <li>paused 长期占槽需要过期机制，但恢复时可能需要重新校验和重新申请；queued 长期等不到资源也要定义超时、取消或重新校验规则。</li>
+                <li>重跑时旧 Run 释放槽与新 Run 接管槽必须在同一个可复核状态迁移边界内完成，避免调度器观察到双持槽。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="d4-resource-slot-lifecycle-state-transition" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="d2-composite-sort-key-cursor-pagination">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 计算机科学</p>
+                <h3>D2 复合排序键与游标分页的全序稳定性</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>游标分页不是记住第几页，而是记住上一页最后一条记录在排序中的位置。若只用 created_at 等时间字段排序，并列值会使数据库返回顺序不稳定，下一页条件用大于或大于等于都可能漏项或重复。把 created_at 与唯一 id 组成复合排序键，按一致方向形成更稳定的全序，才能准确定位边界。全序稳定并不自动解决排序字段被修改、翻页期间插入新记录以及快照一致性等问题，因此分页契约还要说明排序字段变化时游标是否失效、是否使用快照、是否选用不可变排序键。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>游标记录的是排序位置边界，不是页码偏移量。</li>
+                <li>单字段时间排序可能出现并列值，需用唯一 id 等字段补足，形成更稳定的全序。</li>
+                <li>全序稳定只解决定位条件，排序字段变化、插入可见性和快照一致性仍须由分页契约规定。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>三条记录都在 10:00，id 分别为 1、2、3，下一条是 10:01、id 为 4。只用 created_at 做游标时，大于 10:00 会漏掉 id 3，大于等于 10:00 又可能重复前两条；改用 created_at 加 id 的联合键，游标记为 10:00 加 id 2，才能稳定继续找到 id 3 和 id 4。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为游标分页只是把页码换成 id。</li>
+                <li>以为 created_at 一定唯一，单字段游标就能自动保证全序稳定。</li>
+                <li>以为全序稳定会自动解决排序字段修改和跨页快照不一致。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>D3 幂等键与请求体指纹的绑定语义</td><td>分页联合键为记录提供稳定定位，幂等键加请求体指纹为请求意图提供稳定标识，二者都在设计可复核的等价类边界。</td></tr>
+                <tr><td>D4 资源槽生命周期与状态迁移互斥</td><td>游标需要稳定全序来避免相邻翻页间的重复或漏项，资源槽接管也需要稳定状态迁移来避免相邻调度观察间的双持槽。</td></tr>
+                <tr><td>D1 修订号比较与写入的原子性边界</td><td>修订号比较与写入的原子性边界强调检查和写入不可拆，和游标定位需要稳定条件一样，都反对把关键判断建立在易变窗口上。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果排序字段允许用户手动修改，游标应该失效、改用快照，还是改用不可变排序键？各自代价是什么？</li>
+                <li>复合排序键应如何选择，才能既减少并列又不会让索引和查询条件过于复杂？</li>
+                <li>在频繁插入的场景下，稳定全序能解决并列重复，但能否解决跨页快照不一致？还缺什么机制？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="d3-idempotency-key-body-fingerprint">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 分布式系统 / API 设计</p>
+                <h3>D3 幂等键与请求体指纹的绑定语义</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>幂等键像给有副作用的业务请求发一个编号，重复提交时服务端可尝试识别同一次请求的重复发送。但幂等键只证明客户端声明同一编号，不能证明请求内容相同；同一个键可能被不同请求体复用。因此需先规范化请求体并计算指纹，服务端存储键、指纹、首次结果或处理状态。同键同指纹时可按契约返回首次结果或同样处理结果；同键不同指纹时应明确拒绝、覆盖或返回首次结果等冲突策略。幂等键有效期以及过期后的重复识别规则也必须定义。幂等键负责标识请求意图，请求体指纹负责证明内容同一，二者不能互相冒充。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>幂等键标识请求意图，请求体指纹证明内容同一，二者共同划定重复请求的等价类。</li>
+                <li>同键同指纹与同键不同指纹要有不同处理语义，冲突策略必须写进契约而不能靠猜。</li>
+                <li>幂等键有效期是时间边界，过期后的重复提交通行规则会影响同一请求的判定。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>客户端第一次发送付款请求，幂等键是 K1，请求体是金额 100。网络超时后仍用 K1 和金额 100 重试，服务端可以返回第一次结果，避免重复扣款。若另一个请求也带 K1，但金额变成 200，服务端不应默默返回第一次的 100 结果，而应按契约返回冲突，提示同一个幂等键被不同请求体复用。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为幂等键相同就代表请求内容相同。</li>
+                <li>以为幂等就是服务端永远不重复执行。</li>
+                <li>忽略同键不同体、有效期和过期后的重复识别规则。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>D2 复合排序键与游标分页的全序稳定性</td><td>复合排序键和请求体指纹都属于稳定标识设计，一个定位记录，一个定位请求意图。</td></tr>
+                <tr><td>D4 资源槽生命周期与状态迁移互斥</td><td>幂等键有效期和 paused 资源槽过期都涉及时间边界，以及过期后如何重新识别。</td></tr>
+                <tr><td>D1 修订号比较与写入的原子性边界</td><td>幂等键冲突和修订号失配都需要明确失败返回，不能把冲突后的重试误当成功。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>同一个幂等键对应不同请求体时，拒绝、覆盖和返回首次结果三种策略分别适合什么业务风险？</li>
+                <li>请求体指纹前应如何规范化 JSON，才能避免字段顺序、空白或默认值导致同一意图被误判为不同？</li>
+                <li>幂等键有效期应由业务类型决定还是统一基础设施决定？过期后的重复提交应如何被识别或提示？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="d4-resource-slot-lifecycle-state-transition">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程 / 领域建模</p>
+                <h3>D4 资源槽生命周期与状态迁移互斥</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>资源槽可理解为执行许可证，构建、任务或 Run 只有拿到它才能使用受限资源。资源槽不是普通布尔标记，而是与生命周期状态绑定：queued 通常不占槽，running 可能占槽，paused 是否继续占槽必须由规则写清。paused 长时间不恢复可能一直占槽，因此需要过期机制；但过期释放后恢复时可能需要重新校验和重新申请。queued 长期等不到资源也需定义超时、取消或重新校验权限。重跑场景中，旧 Run 释放槽与新 Run 接管槽必须在同一个可复核状态迁移边界内完成，否则调度器可能观察到旧 Run 未释放、新 Run 已获取的双持状态。资源槽必须由状态机迁移约束，占用、释放、过期和接管都要有明确边界。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>资源槽持有关系必须与 queued、running、paused 等生命周期状态显式绑定。</li>
+                <li>占用、释放、过期和接管都需由状态迁移规则约束，避免标签冒充实际持槽状态。</li>
+                <li>重跑时旧 Run 释放与新 Run 接管应在同一可复核边界内原子完成，防止并发拆开关键状态变更。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>Run A 处于 paused 并占着资源槽，用户触发重跑生成 Run B。合法迁移应把 A 从 paused 转为释放状态，同时把 B 从 queued 转为 running 并获得槽，这两个结果在可复核边界内一起生效。若先让 B 获得槽、过一会儿才释放 A，中间就可能出现 A 和 B 同时持槽的双持状态。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为 queued、running、paused 这些标签自动等于资源槽状态。</li>
+                <li>以为 paused 一定继续占槽，或者一定可以随时释放。</li>
+                <li>以为设计契约或状态标签能自动证明实际持槽状态，不需要状态迁移规则和运行证据。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>D1 修订号比较与写入的原子性边界</td><td>旧 Run 释放槽与新 Run 接管槽的原子迁移，和修订号比较后写入一样，都要求状态变更不可被并发操作拆开。</td></tr>
+                <tr><td>D3 幂等键与请求体指纹的绑定语义</td><td>paused 长时间占槽的过期和幂等键有效期都需要定义时间边界，并说明过期后的重新判定规则。</td></tr>
+                <tr><td>D2 复合排序键与游标分页的全序稳定性</td><td>资源槽状态迁移需要可复核的当前状态，类似游标分页需要稳定全序来避免同一对象在相邻观察之间被误认。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>paused 的 Run 应该继续占槽还是释放槽？如果继续占槽，过期机制应如何避免误杀正在等待人工恢复的任务？</li>
+                <li>重跑时旧 Run 释放槽和新 Run 接管槽的原子迁移，在状态机里应如何定义合法迁移和冲突返回？</li>
+                <li>queued 长期不占槽但资源一直不可用时，超时、取消和重新校验权限应由哪一层负责？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三者共同点是用稳定标识守住可复核边界：D2 用复合排序键定位记录，D3 用幂等键加请求体指纹定位请求意图，D4 用状态机定位资源槽的获取与释放。差别在对象不同：有序集合定位、重复请求等价类、资源状态生命周期；标识不稳或边界不清会导致重复、漏项、误合并或双持槽。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">翻页、重试和占槽都要有可复核边界，关键状态变更不能被并发拆开。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>排序字段允许用户修改时，游标应失效、改用快照还是改用不可变排序键？各自代价是什么？</li>
+            <li>同一个幂等键对应不同请求体时，拒绝、覆盖和返回首次结果分别适合什么业务风险？</li>
+            <li>paused 的 Run 应继续占槽还是释放槽？重跑时旧 Run 释放槽与新 Run 接管槽应如何定义原子迁移与冲突返回？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
