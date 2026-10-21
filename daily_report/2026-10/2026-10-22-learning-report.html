@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-10-22 学习笔记日报</title>
+    <meta name="description" content="今日围绕机器契约与人工文档对账、写入所有权与业务事实提交边界、固定版本事实与当前使用资格分离三条主线，理解不同证据与资格不能越级。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261022-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-10-22</p>
+        <h1>把契约、提交与资格放回各自的证据层</h1>
+        <p>今天的三个概念共同回答：什么证据能支撑什么结论，谁有资格做什么。它们分别守住契约、提交和授权三个边界。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>机器契约、提交边界与使用资格的分层</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>机器契约与人工文档的静态一…</strong>
+                <small>对账员只核对菜单编号，不负责试做菜…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>写入所有权与业务事实提交边界</strong>
+                <small>填单、审核、记账是三件事，能转账不…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>固定版本事实、作用域政策与…</strong>
+                <small>知道书号不等于能借书，昨天的借书条…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">C3 说明静态检查只能证明文档与机器契约的签名一致，不能越级生成运行验收结论；C4 说明 Agent 输出只是待校验提案，只有具备写入所有权的应用模块能提交业务事实；C7 说明知识版本固定的是事实，资料政策决定的是当前使用资格。三者共同防止三种越级：静态检查不越级成运行验收，Agent 不越级成提交凭证，标识命中不越级成授权通过。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["机器契约、提交边界与使用资格的分层"])
+  concept1["机器契约与人工文档的静态一致性检查"]
+  hub --&gt; concept1
+  concept2["写入所有权与业务事实提交边界"]
+  hub --&gt; concept2
+  concept3["固定版本事实、作用域政策与当前使用资格分离"]
+  hub --&gt; concept3
+  related1["设计契约与实现状态的证据分离"]
+  concept1 --&gt; related1
+  related2["跨模块不变量验收与故障注入断言"]
+  concept1 --&gt; related2
+  concept1 --&gt; concept2
+  related3["Agent 输出的提案态与提交凭证分离"]
+  concept2 --&gt; related3
+  related4["端口-适配器依赖方向与知识服务边界"]
+  concept2 --&gt; related4
+  concept2 --&gt; concept3
+  related5["资料标识命中不等于授权通过"]
+  concept3 --&gt; related5
+  related6["按操作族的授权判定矩阵与无副作用拒绝"]
+  concept3 --&gt; related6
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4,related5,related6 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="static-api-contract-consistency-check">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / API 设计 / 计算机科学</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>机器契约与人工文档的静态一致性检查</h3>
+              <p>Static Consistency Check Between Machine Contracts and Human Documentation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">对账员只核对菜单编号，不负责试做菜，更不能证明餐厅今天营业正常。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>脚本从操作文档表格和 prose-only 路由里抽取签名，再与 OpenAPI 的 paths 中的方法和路径比对，并处理 $ref。</li>
+                <li>检查有意排除行号，避免编辑性插入造成行号漂移误报；脚本不启动应用、不联系 provider。</li>
+                <li>脚本跑通只证明文档与契约签名一致，不能证明功能正确或运行通过。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="static-api-contract-consistency-check" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="write-ownership-and-fact-commit-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 领域建模</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>写入所有权与业务事实提交边界</h3>
+              <p>Write Ownership and Business Fact Commit Boundary</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">填单、审核、记账是三件事，能转账不等于有权决定报销成立。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>writer 是有权组织领域校验并提交业务事实的应用模块；repository/adapter 只是端口实现，不是另一业务写者。</li>
+                <li>Agent 输出是待校验的结果提案，不是提交凭证；Knowledge 服务可准备隔离产物，但不能独立切换默认版本或改写 Session/Review 绑定。</li>
+                <li>产生候选、校验候选、提交事实是三件事，不能因为某个模块能写数据库就让它成为业务写者。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="write-ownership-and-fact-commit-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="fixed-version-facts-scope-policy-and-current-entitlement">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">大语言模型 / 数据工程 / 软件工程 / 安全</span>
+                <span class="tag warm">★★★★★</span>
+              </div>
+              <h3>固定版本事实、作用域政策与当前使用资格分离</h3>
+              <p>Fixed-Version Facts, Scope Policy, and Current Entitlement Separation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">知道书号不等于能借书，昨天的借书条也不能证明今天仍有权限。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>KnowledgeVersion 固定知识事实，资料政策表示当前使用资格；政策按 (user_id, project_id) 保存，新作用域默认只允许公开资料。</li>
+                <li>用户可选择允许本项目私人资料，切换时提示风险且双向立即生效；文件 ID、DOI、缓存命中、全局论文身份和正文长度都不能跳过授权判定。</li>
+                <li>缓存的预组装上下文和 Worker 持有的政策快照必须在下一边界重验；知道书号不等于有权限，昨天有权限不等于今天还有权限。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="fixed-version-facts-scope-policy-and-current-entitlement" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="static-api-contract-consistency-check">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / API 设计 / 计算机科学</p>
+                <h3>机器契约与人工文档的静态一致性检查</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>可以把 API 看成两份菜单：操作文档给人看，OpenAPI 给机器读。25aa469 新增了 contracts/p0.openapi.json、contracts/p0.coverage.json 和 scripts/check_api_contracts.py，脚本会从操作文档表格和 04-01/04-02 的 prose-only 路由里抽取签名，再从 OpenAPI 的 paths 里提取方法和路径，并用 resolve_refs() 处理 $ref。它有意排除行号，避免因为插入几行文字就误报“漂移”；也不启动应用、不联系 provider。因此它像一位对账员，只核对两份菜单的编号是否一致，并不负责试做菜，更不能证明餐厅今天能正常营业。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>人工文档与机器契约是同一接口承诺的两种表达，静态一致性检查通过抽取签名并比对来发现漂移。</li>
+                <li>排除行号、处理 $ref、限定检查对象，是为了让检查聚焦签名一致性，减少编辑性变化带来的误报。</li>
+                <li>静态检查属于内容级证据，证据上限是文档与契约签名一致，不能自动推导运行可用性。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>操作文档表格写 GET /papers/{id}，OpenAPI 写成 GET /paper/{id}；脚本抽取两边签名后发现路径不一致并报告漂移，但不会启动服务或调用论文接口。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>脚本跑通就说明 API 能正常工作。</li>
+                <li>文档一致可以替代运行验收。</li>
+                <li>新增测试文件就等于测试已经执行并产生运行级证据。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>设计契约与实现状态的证据分离</td><td>静态检查属于内容级证据，只能证明文档与契约签名一致，不能替代运行级验收。</td></tr>
+                <tr><td>跨模块不变量验收与故障注入断言</td><td>静态检查覆盖契约签名漂移，动态验收覆盖并发、故障、副作用和完整链路，两者证据层级不同。</td></tr>
+                <tr><td>写入所有权与业务事实提交边界</td><td>契约检查保证接口签名一致，但不决定谁有权把候选结果提交为业务事实。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何设计覆盖清单，确保每个 OpenAPI 路径都能映射到操作文档或 prose-only 路由？</li>
+                <li>当 $ref 解析遇到循环引用或外部引用时，静态检查应如何报告而不产生误报？</li>
+                <li>如何区分“编辑性插入造成的行号漂移”和“真正的签名漂移”，并把这种区分写进检查报告？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="write-ownership-and-fact-commit-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 领域建模</p>
+                <h3>写入所有权与业务事实提交边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>可以把业务系统想成一家公司：员工可以填报销单，财务可以审核，但只有记账模块有权把这笔钱记为“已报销”。5296ae6 在 05-01_internal_module_contracts.md 里把 writer 定义为“有权组织领域校验并提交业务事实的应用模块”；repository/adapter 只是这个模块的端口实现，不是另一个业务写者。6635076 又补了一层：Agent 输出是待校验的结果提案，不是提交凭证；Knowledge 服务可以准备隔离产物，但不能独立切换默认版本或改写 Session/Review 绑定。换句话说，产生候选、校验候选、提交事实是三件事，不能因为某个模块能写数据库，就让它成为业务写者。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>业务事实的成立需要领域校验与提交授权，写入所有权把这种职责集中到明确的应用模块。</li>
+                <li>repository/adapter 只实现持久化端口，不能因为具备写库能力就获得业务写者身份。</li>
+                <li>Agent 输出与 Knowledge 隔离产物停留在提案层，只有 writer 在授权重验后才能把它们提交为业务事实。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>Agent 从论文中抽取“某实验结论”作为候选知识，Knowledge 服务把候选内容准备成隔离产物；只有具备写入所有权的应用模块在完成领域校验和当前授权判定后，才把它提交为新的 KnowledgeVersion。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>Agent 已经生成结构化结果，就可以直接入库。</li>
+                <li>repository 能写数据库，所以它也是业务写者。</li>
+                <li>Knowledge 能准备隔离产物，就能切换默认版本或改写 Session/Review 绑定。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>Agent 输出的提案态与提交凭证分离</td><td>Agent 输出只能作为待校验提案，不能直接成为提交凭证。</td></tr>
+                <tr><td>端口-适配器依赖方向与知识服务边界</td><td>依赖方向限制谁可以组织校验、谁可以提交事实，适配器不能变成另一业务写者。</td></tr>
+                <tr><td>固定版本事实、作用域政策与当前使用资格分离</td><td>即使 writer 有权提交，也必须先通过当前资料政策和授权判定，不能绕过使用资格。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何用代码结构保证 repository/adapter 不能绕过 writer 直接提交业务事实？</li>
+                <li>当 Agent 输出被 Knowledge 服务准备成隔离产物后，哪些校验必须由 writer 重新执行，哪些可以复用？</li>
+                <li>如果一次提交涉及多个模块，如何划分写入所有权而不产生双重写者？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="fixed-version-facts-scope-policy-and-current-entitlement">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 大语言模型 / 数据工程 / 软件工程 / 安全</p>
+                <h3>固定版本事实、作用域政策与当前使用资格分离</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>可以把知识系统想成图书馆：一本书的 ISBN 和内容版本是固定的，这叫知识事实；但你能不能把书带出去，取决于你当前的借书证和借阅政策，这叫使用资格。7d4bf93 明确区分：KnowledgeVersion 固定知识事实，资料政策表示当前使用资格。政策按 (user_id, project_id) 保存，新作用域默认只允许公开资料，用户可以选择允许本项目私人资料，切换时提示风险，而且双向立即生效。更关键的是，文件 ID、DOI、缓存命中、全局论文身份都不能跳过判定；正文长度也不是权限边界。缓存的预组装上下文和 Worker 持有的政策快照，必须在下一边界重验。也就是说，知道书号不等于有权限，昨天有权限不等于今天还有权限。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>知识版本负责固定“事实是什么”，资料政策负责表达“当前谁能在哪个作用域使用它”，两者是不同维度。</li>
+                <li>政策按 (user_id, project_id) 保存并双向立即生效，使授权从静态标识判断转为当前作用域下的动态判定。</li>
+                <li>文件 ID、DOI、缓存命中、全局论文身份和正文长度都不是授权凭证；缓存上下文与 Worker 政策快照必须在边界处重验。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>用户 A 在项目 P 中默认只能读公开资料；后来选择允许本项目私人资料，政策按 (user_id, project_id) 保存并立即生效。若 Worker 缓存了旧政策快照，它不能因为已经拿到某个文件 ID 就继续读私人正文，而必须在下一个边界重新检查当前政策。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>拿到文件 ID、DOI 或缓存命中，就等于授权通过。</li>
+                <li>KnowledgeVersion 固定，就代表永久可用。</li>
+                <li>启动时拿到的权限上限就是当前授权。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>资料标识命中不等于授权通过</td><td>固定版本事实不代表当前使用资格，文件 ID、DOI、缓存命中都不能绕过当前政策。</td></tr>
+                <tr><td>按操作族的授权判定矩阵与无副作用拒绝</td><td>授权矩阵按操作族规定允许与拒绝条件，C7 说明政策在读取、上下文发送和提交边界如何重验。</td></tr>
+                <tr><td>写入所有权与业务事实提交边界</td><td>即使有写入所有权的 writer，也必须先通过当前资料政策和授权判定，才能提交业务事实。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当政策在 Worker 执行中途发生变化时，下一边界重验应检查哪些字段，如何避免已发送到上下文的私人资料继续被使用？</li>
+                <li>如何设计按 (user_id, project_id) 保存的政策，使其双向立即生效且可审计？</li>
+                <li>缓存上下文和 Worker 政策快照的失效策略，应如何与 KnowledgeVersion 的固定版本解耦？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">C3 说明静态检查只能证明文档与机器契约的签名一致，不能越级生成运行验收结论；C4 说明 Agent 输出只是待校验提案，只有具备写入所有权的应用模块能提交业务事实；C7 说明知识版本固定的是事实，资料政策决定的是当前使用资格。三者共同防止三种越级：静态检查不越级成运行验收，Agent 不越级成提交凭证，标识命中不越级成授权通过。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">静态检查不越级成运行验收，Agent 输出不越级成提交凭证，标识命中不越级成授权通过。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何让静态契约检查、动态验收和写入提交各自保留清晰的证据边界？</li>
+            <li>如何用代码结构阻止 repository/adapter 绕过 writer 直接提交业务事实？</li>
+            <li>当资料政策在 Worker 执行中途变化时，下一边界重验应检查哪些字段并如何审计？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>

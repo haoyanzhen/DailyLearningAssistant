@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-10/2026-10-22-learning-report.html">2026-10-22</a>
+      </td>
+      <td>机器契约与人工文档的静态一致性检查</td>
+      <td>软件工程 / API 设计 / 计算机科学</td>
+      <td>★★★</td>
+      <td>机器契约与人工文档的静态一致性检查，就是用脚本给两份“接口菜单”对账，发现签名漂移，但不把对账结果当成运行验收。</td>
+      <td>下一次若拿到 `scripts/check_api_contracts.py` 完整实现、测试执行结果或 CI 记录，可逐项核对操作文档表格、prose-only 路由、OpenAPI `paths` 和 `$ref` 解析的映射；必须标注今天只有内容级局部 diff，测试执行待确认。</td>
+    </tr>
+    <tr>
+      <td>写入所有权与业务事实提交边界</td>
+      <td>软件工程 / 领域建模</td>
+      <td>★★★★</td>
+      <td>写入所有权与业务事实提交边界，就是规定只有具备写入所有权的应用模块能把候选结果提交为业务事实，Agent 输出和适配器都不能越级。</td>
+      <td>下一次若拿到 `05-01_internal_module_contracts.md`、`05_application_use_cases.md` 的完整契约或可编译模型，可逐项核对 writer、repository/adapter、Agent 提案和 Knowledge 隔离产物的调用边界；必须标注今天只有内容级设计文档，未实现可编译模型。</td>
+    </tr>
+    <tr>
+      <td>固定版本事实、作用域政策与当前使用资格分离</td>
+      <td>大语言模型 / 数据工程 / 软件工程 / 安全</td>
+      <td>★★★★★</td>
+      <td>固定版本事实、作用域政策与当前使用资格分离，就是知识版本只回答“事实是什么”，资料政策回答“现在谁能在哪个项目里使用它”，两者不能互相冒充。</td>
+      <td>下一次若拿到 `7d4bf93`、`6bdf08c`、`abf1fa4` 的完整文档 diff 或实现，可逐项核对 KnowledgeVersion、按 `(user_id, project_id)` 保存的资料政策、缓存上下文和 Worker 政策快照的重验点；必须标注今天只有内容级设计文档，未实现、未发布 API/schema，也无运行验收。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-10/2026-10-21-learning-report.html">2026-10-21</a>
       </td>
       <td>D2 复合排序键与游标分页的全序稳定性</td>
