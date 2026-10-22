@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-10-23 学习笔记日报</title>
+    <meta name="description" content="无变更复习日聚焦三项概念：版本化迁移单一真源、按操作族授权判定与无副作用拒绝、跨模块不变量验收与故障注入断言。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261023-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-10-23</p>
+        <h1>同一结构、同一授权、同一验收</h1>
+        <p>今天不把旧设计重复成新事实，而是从结构真源、授权判定到跨模块验收，复习三项可迁移概念，并保留设计、内容与运行证据的边界。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>可执行结构、授权矩阵与跨模块不变量</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>版本化迁移作为可执行模式的…</strong>
+                <small>可执行结构只认版本化迁移，旧草案不…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>按操作族的授权判定矩阵与无…</strong>
+                <small>先看操作族，再看当前资格；拒绝要干…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>跨模块不变量验收与故障注入…</strong>
+                <small>先搭场景，再故意出错；正反断言一起…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三项概念构成从结构、权限到验收的层层约束：C10 先保证大家面对同一份可执行结构；C9 在这类结构之上规定操作族如何允许或拒绝，并要求拒绝不产生副作用；C13 把跨模块不变量、并发屏障、故障注入和正负断言写成验收设计，其中可把 C9 的无副作用拒绝转化为负向断言。证据边界同时保留：C10 只有提交级加内容级依据，C9 是设计文档级依据，C13 是验收设计而非已运行测试。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["可执行结构、授权矩阵与跨模块不变量"])
+  concept1["版本化迁移作为可执行模式的单一真源"]
+  hub --&gt; concept1
+  concept2["按操作族的授权判定矩阵与无副作用拒绝"]
+  hub --&gt; concept2
+  concept3["跨模块不变量验收与故障注入断言"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["C11 业务修订与执行隔离语义"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  related2["C8 资料标识命中不等于授权通过"]
+  concept2 --&gt; related2
+  concept3 --&gt; concept2
+  concept3 --&gt; concept1
+  related3["C1 设计契约与实现状态的证据分离"]
+  concept3 --&gt; related3
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="versioned-migration-single-source">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 数据工程</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>版本化迁移作为可执行模式的单一真源</h3>
+              <p>Versioned Migration as the Single Source of Executable Schema</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">可执行结构只认版本化迁移，旧草案不能平行维护。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>可执行表结构只能有一个真源：版本化迁移；旧草案不能与迁移平行维护。</li>
+                <li>逻辑记录名是迁移实现中的逻辑映射，并不要求“一记录一张表”。</li>
+                <li>材料仅提供提交级和内容级依据，未建库、未运行迁移，不能写成数据库已经验证成功。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="versioned-migration-single-source" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="operation-family-authorization-no-side-effects">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 安全</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>按操作族的授权判定矩阵与无副作用拒绝</h3>
+              <p>Operation-Family Authorization Matrix with Side-Effect-Free Denial</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">先看操作族，再看当前资格；拒绝要干净，不能留痕。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>权限不能只看资料 ID、DOI、缓存命中或正文长度，要按操作族判定。</li>
+                <li>矩阵同时写允许条件、必须拒绝条件，以及拒绝时不得发生的副作用。</li>
+                <li>拒绝不仅不能执行目标操作，也不得创建隔离产物、状态变更或外部调用痕迹。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="operation-family-authorization-no-side-effects" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="cross-module-invariant-acceptance-fault-injection">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学</span>
+                <span class="tag warm">★★★★★</span>
+              </div>
+              <h3>跨模块不变量验收与故障注入断言</h3>
+              <p>Cross-Module Invariant Acceptance with Fault-Injection Assertions</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">先搭场景，再故意出错；正反断言一起写，设计不等于已运行。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>用例记录稳定 ID、规范来源、前置数据、动作与并发屏障、故障注入点、正负断言、禁止副作用、诊断证据和清理方式。</li>
+                <li>并发屏障让多个执行者同时冲入危险区；故障注入模拟数据库失败、权限中途变化或外部服务超时。</li>
+                <li>这是验收设计而非已运行测试；没有运行结果不能写成测试通过。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="cross-module-invariant-acceptance-fault-injection" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="versioned-migration-single-source">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 数据工程</p>
+                <h3>版本化迁移作为可执行模式的单一真源</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>可以把数据库表结构想成班级座位的“正式座位表”。如果墙上贴一张旧草稿、系统里又有一份新表、迁移脚本里还有第三份写法，大家就会按不同版本行事。C10 讲的是：真正可执行的表结构只能有一个真源，也就是版本化迁移；旧的手写 SQL 草案应退役，不能与迁移平行维护。截至今天材料可确认的是：ef9136e 删除了旧的 docs/design/07_data_schema.sql 草案；6bdf08c 明确真正可执行的表结构以后仅由版本化迁移维护，不再平行手写第二份 SQL 草案。材料还说明，逻辑记录名是迁移实现中的逻辑映射，并不要求“一记录一张表”。但今天没有建库、没有运行迁移，因此这只能作为提交级加内容级的原则来理解，不能写成数据库已经验证成功。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>单一可执行入口避免开发、测试和部署面对不同表结构。</li>
+                <li>迁移是结构真源，设计文档只解释逻辑记录与物理表的映射，不重新充当第二真源。</li>
+                <li>证据需要分层：提交与内容级只能支撑原则，建库、运行迁移和回滚结果才支撑运行级结论。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设业务上有一个“订单”逻辑记录。迁移实现可能把它落在 orders 和 order_items 两张表里，也可能把部分历史信息放到别的表；这不违反单一真源。真正违反的是：迁移里有 orders 表结构，设计目录里又手写一份不同 SQL 草案让人照着建库，使开发、测试和部署面对两套结构。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把 SQL 文件换个目录就叫版本化迁移。</li>
+                <li>设计文档里画了表结构，就以为数据库已经建好。</li>
+                <li>以为每个逻辑记录都必须对应一张物理表。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>按操作族的授权判定矩阵与无副作用拒绝</td><td>授权判定会涉及业务状态和资源状态字段，这些字段应来自同一份可执行结构，否则权限规则可能依据陈旧表结构。</td></tr>
+                <tr><td>跨模块不变量验收与故障注入断言</td><td>验收用例的前置数据、清理方式和断言对象必须建立在同一可执行模式上，否则故障注入可能打在一个旧草案上。</td></tr>
+                <tr><td>C11 业务修订与执行隔离语义</td><td>C10 管可执行结构，C11 管业务修订与内部执行 epoch 的语义区分，二者是配套关系但不能互相替代。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>怎样设计一个检查器，用来发现项目里又出现了与版本化迁移平行的第二份手写 SQL 草案？</li>
+                <li>当逻辑记录映射到多张表时，怎样让设计文档只解释映射关系，而不重新变成可执行结构的第二真源？</li>
+                <li>如果迁移需要回滚或数据回填，怎样在保持单一真源的同时记录操作证据和运行结果？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="operation-family-authorization-no-side-effects">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 安全</p>
+                <h3>按操作族的授权判定矩阵与无副作用拒绝</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>把系统想成一栋有多个窗口的办公楼。你在大厅屏幕上查到一个房间号，甚至看到某个门禁刷卡记录，并不等于你有权进入档案室。C9 讲的是：权限不能只看“我知道这个资料的 ID、DOI，或者缓存里已经有它”，而要看“当前这个人、当前项目、当前业务状态、当前资料政策，是否允许执行这一类操作”。这类操作要按操作族来分组，例如读取资料、把资料送入上下文、调用外部服务、提交业务事实，它们不是同一种权限。C8 的核心“资料标识命中不等于授权通过”可以并入这里：文件 ID、DOI、缓存命中、全局论文身份、正文长度，都不能跳过判定。C9 进一步要求：授权矩阵不仅写什么情况允许，还要写什么情况必须拒绝，以及拒绝时不得发生哪些副作用。截至今天材料可确认的是：abf1fa4 记录了按操作族索引的授权判定矩阵，列出主体与允许条件、必须拒绝及不得发生的副作用、依据与测试；7d4bf93 记录了从当前主体与 Project 权限，经业务状态或候选范围、资料读取政策、来源依赖，再到受控读取或外部调用的判定链。材料还明确，工程接入不等于运行验收；今天没有新的运行验证。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>操作族把读取资料、送入上下文、调用外部服务、提交业务事实分开判定，不以文件 ID、DOI、缓存命中或正文长度替代授权。</li>
+                <li>判定链逐层检查当前主体与 Project 权限、业务状态或候选范围、资料读取政策、来源依赖，再决定受控读取或外部调用。</li>
+                <li>拒绝条件与允许条件同样重要：拒绝必须是事务性、无副作用的，不能留下隔离产物、状态变更或敏感调用记录。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一个用户在搜索结果里看到某篇论文的文件 ID，并请求把这篇论文发送到外部模型做摘要。系统不能因为文件 ID 命中或缓存命中就直接发送，而要检查当前用户和项目、论文使用政策、来源依赖以及外部调用操作族是否允许。如果判定拒绝，系统不仅不能发送请求，也不得创建带正文的导出文件、上下文快照或外部调用记录中的敏感内容。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>拿到文件 ID、DOI 或缓存命中，就以为已经获得使用授权。</li>
+                <li>只区分能不能看资料，却不区分看、复制到上下文、发给外部模型、提交为业务事实等操作族。</li>
+                <li>只写允许条件，不写拒绝时的副作用禁令，结果返回失败却已创建隔离产物或改动状态。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>版本化迁移作为可执行模式的单一真源</td><td>授权判定依赖业务状态和资源状态字段，这些字段应来自版本化迁移维护的同一份可执行结构，不能一部分来自迁移、一部分来自旧 SQL 草案。</td></tr>
+                <tr><td>跨模块不变量验收与故障注入断言</td><td>C13 可以把拒绝时不得发生的副作用写成负向断言，并用故障注入检查授权失败时是否真的没有留下隔离产物、状态变更或外部调用痕迹。</td></tr>
+                <tr><td>C8 资料标识命中不等于授权通过</td><td>标识命中只是线索，必须经过当前主体、Project、业务状态、资料政策和来源依赖的逐层判定；C9 更完整地覆盖允许、拒绝与无副作用要求。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>操作族应该划分到多细，读取、写入、导出、送入上下文、外部调用是否必须分别建族？</li>
+                <li>拒绝时不得发生的副作用应如何写成可检查的负向断言，并保留足够的诊断证据而不泄露敏感内容？</li>
+                <li>当政策在 Worker 执行中途发生变化时，下一边界重验应检查哪些字段，才能避免已经进入上下文的私人资料继续被使用？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="cross-module-invariant-acceptance-fault-injection">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学</p>
+                <h3>跨模块不变量验收与故障注入断言</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>不变量可以理解为“无论中间发生什么，都必须始终成立的条件”。例如一个通用系统里，订单不能既显示未付款又已经已发货；一个资料引用不能一边标记为已隔离，一边又被当作正式业务事实使用。跨模块不变量验收，就是不只是测某个按钮能不能点，而是设计用例验证多个模块连在一起时这些条件是否仍然成立。C13 要求用例记录稳定 ID、规范来源或 FR 子条目、前置数据、动作与并发屏障、故障注入点、正向与负向断言、预期不发生的副作用、诊断证据和清理方式。通俗地说：先搭好场景，再故意让某个环节出错，检查该发生的有没有发生，也检查不该发生的有没有被阻止。并发屏障是为了让多个执行者故意在同一时刻冲进危险区；故障注入是为了模拟数据库失败、权限中途变化或外部服务超时。材料明确说，这是核心架构级用例的验收设计，不是已运行测试；今天更没有新增运行结果，所以不能把设计写成测试通过。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>跨模块不变量验收验证多个模块连在一起时条件仍成立，因为每个模块单独正确不等于组合后不产生双重写者、错误提交或残留副作用。</li>
+                <li>用例需记录稳定 ID、规范来源或 FR 子条目、前置数据、动作与并发屏障、故障注入点、正向与负向断言、预期不发生的副作用、诊断证据和清理方式。</li>
+                <li>并发屏障制造可控竞争，故障注入模拟数据库失败、权限中途变化或外部服务超时；正向断言检查应发生结果，负向断言检查不该发生的副作用。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>用一个通用多模块流程说明：提交候选结果前需要检查授权和写入边界。验收设计可设置并发屏障，让两个执行者同时尝试提交；再在写入前注入一次失败，并模拟授权状态中途变化。正向断言是只有获得授权的写入能生成正式业务版本；负向断言是失败或拒绝路径不得改写已有绑定、不得生成发货任务、不得留下未清理的隔离产物。诊断证据要说明失败发生在哪一步，清理步骤要删除测试产生的隔离数据。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>写了验收用例就以为已经完成运行验证。</li>
+                <li>只写正向断言，不写不应该发生什么。</li>
+                <li>把故障注入当成故意制造混乱，而不是用来证明异常路径不会破坏不变量。</li>
+                <li>只测单个模块，忽略跨模块承诺：每个模块单独看都对，连起来却可能产生双重写者、错误提交或残留副作用。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>按操作族的授权判定矩阵与无副作用拒绝</td><td>C9 要求拒绝时不得产生副作用，C13 可以把这些要求写成负向断言，并用故障注入验证异常路径是否仍然遵守。</td></tr>
+                <tr><td>版本化迁移作为可执行模式的单一真源</td><td>验收用例的前置数据、状态字段和清理动作必须建立在同一份可执行表结构上，否则断言可能验证的是旧草案中的世界。</td></tr>
+                <tr><td>C1 设计契约与实现状态的证据分离</td><td>即使写出了完整验收设计，也只能说明设计了要验证什么，不能自动说明测试已经运行并通过；结论强度受证据分层约束。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>怎样为跨模块不变量选择稳定 ID 和规范来源，使一个验收用例在需求变化后仍能追溯它验证的是哪条承诺？</li>
+                <li>并发屏障和故障注入点应如何设计，才能既覆盖真实风险，又不让用例变成难以复现的随机测试？</li>
+                <li>怎样记录正向断言、负向断言和诊断证据，才能证明不该发生的事没有发生，同时避免诊断材料泄露敏感数据？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三项概念构成从结构、权限到验收的层层约束：C10 先保证大家面对同一份可执行结构；C9 在这类结构之上规定操作族如何允许或拒绝，并要求拒绝不产生副作用；C13 把跨模块不变量、并发屏障、故障注入和正负断言写成验收设计，其中可把 C9 的无副作用拒绝转化为负向断言。证据边界同时保留：C10 只有提交级加内容级依据，C9 是设计文档级依据，C13 是验收设计而非已运行测试。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">没有运行结果时，设计承诺、内容级差异与运行验收必须分层，不能把验收设计写成已通过测试。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>怎样设计检查器，发现项目里又出现与版本化迁移平行的第二份手写 SQL 草案？</li>
+            <li>操作族应划分到多细，拒绝时不得发生的副作用如何写成可检查的负向断言？</li>
+            <li>怎样为跨模块不变量选择稳定 ID、并发屏障与故障注入点，使验收既可追溯又可复现？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
