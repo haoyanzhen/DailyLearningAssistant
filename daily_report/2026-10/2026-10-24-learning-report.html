@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-10-24 学习笔记日报</title>
+    <meta name="description" content="无变更复习日梳理三条状态边界：现行设计与历史归档分层、Agent 提案与提交凭证分离、资料标识不等于授权通过。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261024-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-10-24</p>
+        <h1>状态边界复习：从文档入口到资料授权</h1>
+        <p>今天以历史材料复习三类边界：旧材料不能冒充现行规则，生成结果不能冒充提交凭证，标识命中不能冒充使用许可。所有结论停在内容级或提交级，不写运行验证。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>状态边界与证据克制</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>C2 现行设计、历史归档与…</strong>
+                <small>现行、归档、工作单，三个入口三种身…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>C6 Agent 输出的提…</strong>
+                <small>生成只是提案，提交才算事实。</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>C8 资料标识命中不等于授…</strong>
+                <small>知道门牌号，不等于拿到房卡。</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三项可以串成一条链：C2 先把现行设计与历史归档、工作单分开；C6 再把 Agent 候选结果与提交凭证分开；C8 进一步指出文件 ID、DOI 或缓存命中仍不能跳过授权。它们共同强调：不要让弱线索、旧材料或生成结果直接升级为业务事实。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["状态边界与证据克制"])
+  concept1["C2 现行设计、历史归档与工作单的索引分层"]
+  hub --&gt; concept1
+  concept2["C6 Agent 输出的提案态与提交凭证分离"]
+  hub --&gt; concept2
+  concept3["C8 资料标识命中不等于授权通过"]
+  hub --&gt; concept3
+  related1["C1 设计契约与实现状态的证据分离"]
+  concept1 --&gt; related1
+  concept1 --&gt; concept2
+  related2["C1 证据分层对归档升级的约束"]
+  concept1 --&gt; related2
+  concept2 --&gt; concept3
+  concept2 --&gt; related1
+  concept2 --&gt; concept1
+  concept3 --&gt; concept2
+  related3["C11 乐观并发与状态语义"]
+  concept3 --&gt; related3
+  concept3 --&gt; related1
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="c2-current-archive-workorder-layering">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 信息架构</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>C2 现行设计、历史归档与工作单的索引分层</h3>
+              <p>Layering Current Design, Archive and Work Orders</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">现行、归档、工作单，三个入口三种身份。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>现行设计回答“现在按什么规则做”，历史归档回答“过去曾经怎么想”，工作单回答“为什么发生变更、后续还要做什么”。</li>
+                <li>README、设计映射、项目状态、file_map 与归档目录整理只能证明内容级或提交级整理，manifest 校验仍需额外证据。</li>
+                <li>目录隔离与清单不是治理完成，必须区分当前可参考、已退役材料与待执行清理计划。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="c2-current-archive-workorder-layering" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="c6-agent-proposal-commit-credential">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">大语言模型 / 软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>C6 Agent 输出的提案态与提交凭证分离</h3>
+              <p>Agent Proposal vs. Commit Credential</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">生成只是提案，提交才算事实。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>Agent 生成与 Knowledge 隔离产物只是候选结果或待校验对象，不等于默认版本已切换，也不等于 Session/Review 绑定已改写。</li>
+                <li>提交为业务事实需要 writer 或相应应用模块重新检查 Schema、权限、业务状态、版本绑定和审计要求。</li>
+                <li>6635076 只是内容级设计线索，未显示已实现，也没有运行验证，不能写成系统已经自动重新校验。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="c6-agent-proposal-commit-credential" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="c8-identifier-hit-authorization">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">安全 / 软件工程 / 大语言模型</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>C8 资料标识命中不等于授权通过</h3>
+              <p>Identifier Hit Is Not Authorization</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">知道门牌号，不等于拿到房卡。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>文件 ID、DOI、缓存命中、全局论文身份和正文长度只是定位线索或输入信息，不是使用许可。</li>
+                <li>授权要从当前主体与 Project 权限出发，再检查业务状态、候选范围、资料读取政策与来源依赖。</li>
+                <li>7d4bf93 的局部 diff 只是内容级线索，未显示实现，也无运行验收；拒绝时还应保证不产生读取或上下文副作用。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="c8-identifier-hit-authorization" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="c2-current-archive-workorder-layering">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 信息架构</p>
+                <h3>C2 现行设计、历史归档与工作单的索引分层</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>你可以把项目文档想成一座图书馆。现行设计入口像今天仍在使用的借阅目录，历史归档像闭架书库里的旧版本，工作单像管理员记录为什么要清理某本旧书的便签。三者都可能提到同一个对象，但身份完全不同：现行设计回答现在按什么规则做，历史归档回答过去曾经怎么想，工作单回答为什么发生变更、后面还要做什么。索引分层就是让读者一进来就知道自己在看哪一层，而不是把旧版本误当成当前说明书。材料中可确认 README、设计映射、项目状态和 file_map 同步更新，退役设计文件被移入归档目录，并出现归档 README、manifest.json 和清理工作单；但这些只能说明历史材料中有过提交级和内容级的整理动作，manifest 全文与校验输出没有展示，所以不能声称归档治理已经通过运行验证。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>入口分层保护承诺等级：现行入口代表当前可参考设计，历史归档代表已退役或降级材料，工作单代表追溯原因和后续动作。</li>
+                <li>同一个对象可以同时出现在三类入口中，但读者必须能通过目录、声明和字段判断它当前处于什么状态。</li>
+                <li>内容级或提交级线索只能支撑“已整理”这类结论，不能自动升级为“校验通过”或“治理运行完成”。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>仓库里有 docs/current/design.md、docs/archive/2025-old-design.md 和 work_orders/cleanup-001.md。design.md 是当前设计入口，旧设计文件应标明“历史归档，不得作为现行规则”，工作单记录归档原因与后续动作。若 manifest 只列清单但没有校验输出，只能写“已完成归档入口整理，manifest 校验待确认”。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>只要文件放进 archive 目录，就算治理完成。</li>
+                <li>有 manifest.json 就说明校验已经通过。</li>
+                <li>把工作单当成现行设计说明，仿佛计划中的清理动作已经等于完成状态。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>C1 设计契约与实现状态的证据分离</td><td>现行入口、历史归档和工作单本身就是不同来源的证据，不能互相冒充，报告措辞必须停在对应证据层级。</td></tr>
+                <tr><td>C6 Agent 输出的提案态与提交凭证分离</td><td>C2 区分文档的现行、归档和工作单，C6 区分 Agent 的提案态和提交凭证，二者都在处理状态分层。</td></tr>
+                <tr><td>C1 证据分层对归档升级的约束</td><td>归档片段要升级为新核心，必须补齐内容级、实现级甚至运行级证据，不能仅凭“看起来有用”就升级。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当一份项目状态既像当前说明又像历史记录时，应依据哪些字段判断它该留在主文件还是归档到附录？</li>
+                <li>怎样设计最小校验规则，自动发现当前状态文档混入了历史快照内容？</li>
+                <li>当某个归档片段后来被证明有用，把它升级为新核心需要补哪些证据、审查步骤和运行验证？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="c6-agent-proposal-commit-credential">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 大语言模型 / 软件工程</p>
+                <h3>C6 Agent 输出的提案态与提交凭证分离</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>Agent 输出很像实习生写好的草稿：它可能很有用，也可能已经引用了正确的资料编号，但草稿不等于已经盖章生效的合同。C6 的核心是：LLM/Agent 产生的是待校验的结果提案，不是提交凭证。Knowledge 服务可以把候选结果准备成隔离产物，但它不能凭自己就把默认版本切过去，也不能改写 Session/Review 的绑定关系。真正把提案变成业务事实的，是经过校验、授权和提交边界之后的 writer 或相应应用模块。材料中可确认的是 6635076 的设计文档线索：Agent 输出是提案，Knowledge 服务可准备隔离产物，但不能独立切换默认版本或改写绑定。这里必须标明证据层级：这是内容级设计材料，未显示已实现，也没有运行验证。因此不能把“设计上应该重新校验”写成“系统已经自动重新校验”。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>生成只回答候选答案长什么样，没有回答它是否满足当前 Schema、权限、业务状态、版本绑定和审计要求。</li>
+                <li>隔离产物只是待校验对象，默认版本切换、Session/Review 绑定改写和业务事实提交需要额外授权与提交边界。</li>
+                <li>哪些校验可以复用 Agent 自检、哪些必须由 writer 重新执行，必须逐项确认，不能让生成者自己批准自己的结果。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>Agent 读了几篇论文，提出“把 KnowledgeVersion 的默认内容换成新摘要”，并生成一个隔离产物。Knowledge 服务可以把这个产物放在临时区域，但默认版本仍是旧版本，Session 和 Review 仍绑定原来的知识版本。只有当 writer 重新检查 Schema、业务状态、授权和版本绑定，并通过提交接口写入后，新摘要才可能成为业务事实。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>模型已经生成完整结果，所以任务已经完成。</li>
+                <li>Knowledge 服务已经生成隔离产物，所以默认版本已经更新。</li>
+                <li>所有校验都可以复用 Agent 的自检结果，不需要 writer 重新执行。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>C8 资料标识命中不等于授权通过</td><td>Agent 输出即使包含文件 ID、DOI 或缓存命中，也只是提案和线索，不能绕过当前主体、Project、业务状态和资料政策的授权判定。</td></tr>
+                <tr><td>C1 设计契约与实现状态的证据分离</td><td>Agent 生成属于提案级，writer 重新校验和提交才可能进入实现级或运行级事实，报告必须按证据层级表达。</td></tr>
+                <tr><td>C2 现行设计、历史归档与工作单的索引分层</td><td>C2 区分文档的现行、归档和工作单，C6 区分 Agent 候选结果、隔离产物和提交凭证，二者都在处理状态分层。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当 Agent 输出被 Knowledge 服务准备成隔离产物后，哪些校验必须由 writer 重新执行，哪些可以复用？</li>
+                <li>如果 Task 成功但业务 Run 仍处于待确认状态，报告应该怎样分层表达，避免读者误解为已完成？</li>
+                <li>如何验证 Knowledge 服务不能独立切换默认版本或改写 Session/Review 绑定？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="c8-identifier-hit-authorization">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 安全 / 软件工程 / 大语言模型</p>
+                <h3>C8 资料标识命中不等于授权通过</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>知道一本书的书架编号，不等于你有借阅权限。C8 说的是：文件 ID、DOI、缓存命中、全局论文身份，甚至正文长度，都只是定位线索或输入信息，不能直接推出现在可以使用这份资料。授权判定要从当前主体和 Project 权限出发，再检查业务状态、版本或候选范围，接着检查本次执行的资料读取政策，再判断资料本身和来源依赖是否满足政策，最后才进入受控读取、上下文构造或外部调用。材料中可确认的是 7d4bf93 的局部 diff 线索：标识命中不能跳过授权，正文长度不是权限边界。但这是内容级证据，未显示已实现，也没有运行验收，因此不能写成某个 Worker 已经在中途政策变化后完成了重验。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>标识命中只说明系统知道资料是谁，授权通过才说明当前主体在特定 Project、业务状态和资料政策下可以使用它。</li>
+                <li>授权判定应按主体与项目权限、业务状态与候选范围、资料读取政策、资料与来源依赖分层执行，而不是从文件 ID 直接跳到读取。</li>
+                <li>执行中途政策变化可能触发边界重验，缓存命中也不能跳过；拒绝路径还要保持无副作用。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>你住酒店时知道某个房间号，甚至看到门牌上写着房型，但房卡打不开门。前台要检查你是不是当前住客、房间是否已分配、是否在有效时段内、有没有特殊限制，才会给你开门权限。资料系统也一样：DOI 和文件 ID 只是门牌号，不是万能房卡。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>有文件 ID 就能读，或者 DOI 是公开的所以全文一定能进上下文。</li>
+                <li>缓存命中就说明当前用户有权限，正文越长越像公开资料。</li>
+                <li>拒绝时只返回“没权限”却已经产生了读取或上下文副作用。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>C6 Agent 输出的提案态与提交凭证分离</td><td>Agent 输出即使包含文件 ID、DOI 或缓存命中，也只是提案和线索，不能据此绕过授权成为提交凭证。</td></tr>
+                <tr><td>C11 乐观并发与状态语义</td><td>授权判定需要区分业务 revision、内部执行 epoch 和快照版本，不能把执行序号或缓存标识误当作业务授权依据。</td></tr>
+                <tr><td>C1 设计契约与实现状态的证据分离</td><td>授权条件、拒绝后果和证据记录必须标明是设计级、实现级还是运行级，设计文档不能冒充运行验收。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当政策在 Worker 执行中途发生变化时，下一边界重验应检查哪些字段，如何避免已发送到上下文的私人资料继续被使用？</li>
+                <li>如何设计按 (user_id, project_id) 保存的政策，使其双向立即生效且可审计？</li>
+                <li>缓存上下文和 Worker 政策快照的失效策略，应如何与 KnowledgeVersion 的固定版本解耦？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三项可以串成一条链：C2 先把现行设计与历史归档、工作单分开；C6 再把 Agent 候选结果与提交凭证分开；C8 进一步指出文件 ID、DOI 或缓存命中仍不能跳过授权。它们共同强调：不要让弱线索、旧材料或生成结果直接升级为业务事实。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">弱线索、旧材料和生成结果，都不能直接升级为业务事实。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>怎样判断一份项目状态应留在现行主文件，还是进入历史归档或工作单？</li>
+            <li>Agent 隔离产物进入提交边界前，哪些校验必须由 writer 重新执行？</li>
+            <li>资料标识命中后，如何按主体、项目、状态与政策完成授权并保证拒绝无副作用？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
