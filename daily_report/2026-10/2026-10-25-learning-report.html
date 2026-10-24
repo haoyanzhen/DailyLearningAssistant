@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-10-25 学习笔记日报</title>
+    <meta name="description" content="今日复习设计承诺、实现状态与运行证据的分层，区分业务修订与内部执行 epoch，并把负结论拆成确认无变化、未采集和失败三态。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261025-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-10-25</p>
+        <h1>把结论放回它所属的证据层</h1>
+        <p>今天是无变更复习日，只复习三条历史材料中的证据纪律、状态语义与负证据报告规则；不把设计、字段或空结果包装成新的运行事实。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>证据分层与状态语义</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>C1 设计承诺与实现/运行…</strong>
+                <small>设计是承诺，diff 是动作，运行…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>C11 业务修订与内部执行…</strong>
+                <small>revision 是书的第几版，e…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>无变化、未采集、失败三态不…</strong>
+                <small>空结果不是结论，先问是没变、没看…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">C1 提供最上位的证据纪律，C11 把状态元数据落到版本与持久化语义，三态负证据则把同一纪律应用到“没有看到变化”的报告实践；三者共同阻止字段、局部 diff、执行序号或空结果自动升级为业务完成或运行验收。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["证据分层与状态语义"])
+  concept1["C1 设计承诺与实现/运行证据分层"]
+  hub --&gt; concept1
+  concept2["C11 业务修订与内部执行 epoch 的语义区分"]
+  hub --&gt; concept2
+  concept3["无变化、未采集、失败三态不可互相冒充"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  related1["提案与凭证、标识与授权"]
+  concept2 --&gt; related1
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  related2["索引与授权分层"]
+  concept3 --&gt; related2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="c1-design-implementation-runtime-evidence-layering">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 方法论</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>C1 设计承诺与实现/运行证据分层</h3>
+              <p>Design Commitment, Implementation and Runtime Evidence Layering</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">设计是承诺，diff 是动作，运行记录才是验收。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>设计文档中的验收方案只证明设计承诺已记录，不等于已运行测试。</li>
+                <li>代码或配置中的局部 diff 只证明实现有动作，不等于工程接入完成或运行验收。</li>
+                <li>只有检查、测试、CI 或端到端记录才能支撑运行层的有效结论。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="c1-design-implementation-runtime-evidence-layering" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="c11-business-revision-internal-execution-epoch">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程 / 数据建模</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>C11 业务修订与内部执行 epoch 的语义区分</h3>
+              <p>Business Revision versus Internal Execution Epoch</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">revision 是书的第几版，epoch 是印刷批次号。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>revision 对客户端有意义，常用于并发控制与审计；epoch 只对内部执行流程有意义。</li>
+                <li>身份由服务端生成 UUID，时间统一使用 UTC；可变业务对象有 revision、created_at、updated_at，不可变事实不强制伪造 updated_at。</li>
+                <li>API DTO 不能直接当作 ORM 保存对象，凭据更新不能改写历史业务配置快照。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="c11-business-revision-internal-execution-epoch" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="no-change-not-collected-failure-tri-state">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 信息架构 / 证据报告</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>无变化、未采集、失败三态不可互相冒充</h3>
+              <p>No Change, Not Collected, Failure: Distinct Negative Evidence States</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">空结果不是结论，先问是没变、没看，还是看坏了。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>确认无变化：已经采集并比较，结果显示没有差异。</li>
+                <li>未采集：没有去看或数据源没有覆盖，不能据此推出没有变化。</li>
+                <li>失败：采集或比较时遇到错误，空白可能是故障，不是结论。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="no-change-not-collected-failure-tri-state" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="c1-design-implementation-runtime-evidence-layering">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 方法论</p>
+                <h3>C1 设计承诺与实现/运行证据分层</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>这个概念的底层意思是：一句工程结论必须先说清楚，它到底是“我们计划这样做”“代码或配置里已经有一部分这样做”，还是“实际运行和测试已经证明这样做有效”。设计文档里的验收设计，像建筑图纸上的消防通道，只能证明设计师承诺这里应该有一条通道；局部 diff 像工地里出现了一扇门框，只能证明实现有动作；只有检查、测试或运行记录，才能证明通道真的能走人。历史材料中的“验收设计不是已运行测试”“未实现”“工程接入不等于运行验收”“未建库、未运行并发或恢复测试”，都在提醒读者不要把不同层的证据混成一句话。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>证据层级从弱到强可表述为设计承诺、实现状态、运行证据，报告结论只能与手中证据同级。</li>
+                <li>字段被返回、某次提交改了文件、设计文档写了验收方案，都只能作为线索，不能自动升级为功能已完成并验证。</li>
+                <li>准确措辞应分别标明设计层是否有方案、实现层是否有局部 diff、运行层是否有测试、CI 或端到端结果。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>历史设计文档写了“验收设计完成”，代码 diff 里也出现相关字段；报告只能写成设计层有验收方案记录、实现层可见局部 diff、运行层未提供测试、CI 或端到端结果，不能直接写“已通过验收”。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>看到某个字段被返回或某次提交改了文件，就写成“功能已完成并验证”。</li>
+                <li>看到设计文档写了验收方案，就写成“已通过验收”，忽略运行层证据尚未提供。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>C11 业务修订与内部执行 epoch 的语义区分</td><td>revision、epoch、时间戳和 DTO 字段都属于状态元数据，字段存在不能自动升级为运行验证或业务事实。</td></tr>
+                <tr><td>无变化、未采集、失败三态不可互相冒充</td><td>负证据也要标明证据层级和采集状态，不能把空结果当成运行结论。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果要在报告里设计 evidence_level 字段，应该怎样定义设计层、实现层和运行层的判定条件？</li>
+                <li>当只有内容级局部 diff 而没有测试记录时，报告措辞应如何自动降级才不误导读者？</li>
+                <li>怎样审计一条历史结论，判断它当初是否把设计承诺误写成了运行事实？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="c11-business-revision-internal-execution-epoch">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程 / 数据建模</p>
+                <h3>C11 业务修订与内部执行 epoch 的语义区分</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>这个概念要解决的是“版本号长得像，但意思完全不同”的问题。业务修订 revision 是给业务对象用的、对客户端有意义的版本标识，常用于并发控制和审计；内部执行 epoch 是系统内部用来隔离某一次执行、重跑或任务实例的序号，它不是客户端 revision。可以用文档来打比方：revision 像一本书的第 3 版，读者和图书馆都用它判断内容版本；epoch 像印刷厂这次印刷任务的批次号，只对内部生产流程有意义。历史材料还强调：身份由服务端生成 UUID，时间统一使用 UTC；可变业务对象有 revision、created_at、updated_at；不可变事实不强制伪造 updated_at；API DTO 不能直接当作 ORM 保存对象；凭据更新不能改写历史业务配置快照。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>版本语义分离：业务修订回答“对象内容是哪一版”，执行序号回答“这是哪次执行、重跑或任务实例”。</li>
+                <li>持久化边界：DTO 是传输结构，ORM 是保存结构，DTO 里出现 revision 字段不等于已经落库。</li>
+                <li>审计边界：服务端 UUID、UTC 时间、历史配置快照和凭据更新都要保持语义稳定，不能因一次重跑或凭据更新改写历史。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>某次运行实例的 epoch 是 7，而业务对象的 revision 是 3，报告不能写成“业务对象 revision 变成 7 了”；一个 API DTO 里带着 revision 字段，但 ORM 保存对象并未落库，也不能声称业务修订已持久化。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>看到任何递增数字都当成业务版本号，把执行 epoch 当作客户端可以提交的 revision。</li>
+                <li>看到 DTO 里有 revision 字段就认为已经保存到 ORM；更新用户凭据时顺手改写历史业务配置快照。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>C1 设计承诺与实现/运行证据分层</td><td>revision、epoch、时间戳和 DTO 字段都属于证据线索，不能把字段存在当成运行验证或业务事实。</td></tr>
+                <tr><td>无变化、未采集、失败三态不可互相冒充</td><td>执行序号可以帮助定位某次采集或执行，但不能替代负证据报告中的采集状态语义。</td></tr>
+                <tr><td>提案与凭证、标识与授权</td><td>提案不等于提交，标识命中不等于授权，同样，执行 epoch 不等于业务 revision，DTO 不等于 ORM 事实。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>在数据模型和 API 命名上，怎样设计字段名称和注释，才能让调用方不会把 epoch 当成 revision？</li>
+                <li>如果凭据更新不能改写历史业务配置快照，那么快照需要记录哪些最小字段才能支持审计？</li>
+                <li>当重跑发生时，旧执行实例的 epoch、新执行实例的 epoch 与业务 revision 应如何在报告中并列表达？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="no-change-not-collected-failure-tri-state">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 信息架构 / 证据报告</p>
+                <h3>无变化、未采集、失败三态不可互相冒充</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>这个概念处理的是负证据：当我们说“没有发现变化”时，到底发生了哪种情况？第一种是“确认无变化”，也就是确实采集了、比较了，结果显示没有差异；第二种是“未采集”，也就是根本没有去看，或者数据源没有覆盖；第三种是“失败”，也就是尝试采集或比较时遇到了错误。这三种状态看起来都可能表现为空结果，但含义完全不同。就像医生做检查：身体健康、没有做这项检查、检查机器坏了，不能都写成“没问题”。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>负结论至少要有采集状态、覆盖范围、比较方法和未覆盖项，空结果本身不是结论。</li>
+                <li>空白字段、空数组、没有告警、没有 diff 可能分别对应确认无变化、未采集或失败，不能统一渲染成“无变化”。</li>
+                <li>报告应保留失败原因和覆盖边界，避免把部分仓库、部分时间段或部分数据源的结论扩大为全局结论。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>今天多个 work_summary 写明“无新增变化；仅保留仓库状态”。这只能作为这些文件范围内的确认无变化证据，不能自动推广成“所有仓库、所有运行环境都确认无变化”；某个仓库没有采集应写“未采集”，采集工具报错应写“失败”。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>空白字段、空数组、没有告警、没有 diff，就一律写成“无变化”。</li>
+                <li>当前目录没看到某条目，就认为它不存在；实际上可能被归档或未采集。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>C1 设计承诺与实现/运行证据分层</td><td>负证据同样需要证据层级，确认无变化、未采集和失败各自能证明的内容不同。</td></tr>
+                <tr><td>C11 业务修订与内部执行 epoch 的语义区分</td><td>执行 epoch、时间戳或状态字段可以帮助定位某次采集，但不能把未采集自动包装成无变化。</td></tr>
+                <tr><td>索引与授权分层</td><td>当前索引没有条目不等于历史不存在，标识未命中也不等于授权失败或业务无变化，必须说明实际采集和判断过程。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>一份负证据报告最少应包含哪些字段，才能让读者区分确认无变化、未采集和失败？</li>
+                <li>如果只采集了部分仓库或部分时间段，报告应怎样表达覆盖范围，避免读者把部分结论当成全局结论？</li>
+                <li>怎样设计报告校验规则，使得空白结果不能自动渲染成“无变化”这句话？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">C1 提供最上位的证据纪律，C11 把状态元数据落到版本与持久化语义，三态负证据则把同一纪律应用到“没有看到变化”的报告实践；三者共同阻止字段、局部 diff、执行序号或空结果自动升级为业务完成或运行验收。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">字段存在、局部 diff、执行序号或空结果，都不能自动升级为业务完成或运行验收。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何为报告设计 evidence_level 字段，明确设计层、实现层和运行层的判定条件？</li>
+            <li>怎样在数据模型和 API 命名上防止调用方把执行 epoch 当成业务 revision？</li>
+            <li>一份负证据报告最少应包含哪些字段，才能区分确认无变化、未采集和失败？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
