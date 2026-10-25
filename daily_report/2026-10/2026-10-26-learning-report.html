@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-10-26 学习笔记日报</title>
+    <meta name="description" content="今日围绕可审计表达链，学习不可变配置快照的审计最小信息、结论覆盖域量化范围与多执行实例状态坐标。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261026-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-10-26</p>
+        <h1>可审计表达链：快照、范围与执行坐标</h1>
+        <p>今天以“拍照留底、抽查范围、多次会诊记录”为阅读顺序，理解历史快照、结论覆盖域与多执行实例坐标。所有内容按历史问题级或内容级线索理解，不表示今天已有新实现或运行验证。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>可审计表达链：最小快照、结论范围与…</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>K2 不可变配置快照的审计…</strong>
+                <small>拍照留底：快照保存审计够用的最小信…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>K1 覆盖域证明与结论量化…</strong>
+                <small>抽查范围：先标出真正检查过的地图…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>K5 多执行实例状态坐标与…</strong>
+                <small>多次会诊：病历并列保留，不能撕掉旧…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念构成一条“可审计表达链”：K2 管历史快照中该留下什么最小信息，K1 管结论能覆盖到多大范围，K5 管重跑时多个执行实例和业务修订如何并列展示。它们分别约束“过去用了什么配置”“现在这句话能说多大”“同一业务对象经历多次执行时状态如何不互相覆盖”。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["可审计表达链：最小快照、结论范围与执行坐标"])
+  concept1["K2 不可变配置快照的审计最小充分信息"]
+  hub --&gt; concept1
+  concept2["K1 覆盖域证明与结论量化范围"]
+  hub --&gt; concept2
+  concept3["K5 多执行实例状态坐标与业务修订的并列表达"]
+  hub --&gt; concept3
+  related1["K4 易混淆标识的语义类型与命名隔离"]
+  concept1 --&gt; related1
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related2["K3 证据充分性谓词"]
+  concept2 --&gt; related2
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; related2
+  concept3 --&gt; concept1
+  concept3 --&gt; related1
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="k2-immutable-config-snapshot-audit-minimum">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数据建模 / 安全审计 / 软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>K2 不可变配置快照的审计最小充分信息</h3>
+              <p>Audit-Minimal Information for Immutable Configuration Snapshots</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">拍照留底：快照保存审计够用的最小信息，不让后来凭据更新污染历史。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>不可变快照不能被后续凭据更新改写语义，必须能重建当时“用了什么配置或策略、作用于谁、何时生效、来自哪个修订或执行上下文”。</li>
+                <li>最小充分信息至少包括作用域、来源修订或执行上下文、生效时间、内容摘要和完整性标记；凭据本身可用非敏感引用。</li>
+                <li>目标是审计够用，而不是复制所有敏感信息；既要可追溯，也要控制隐私与存储负担。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="k2-immutable-config-snapshot-audit-minimum" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="k1-coverage-domain-proof-quantified-scope">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 软件工程 / 信息架构</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>K1 覆盖域证明与结论量化范围</h3>
+              <p>Coverage-Domain Proof and Quantified Scope of Conclusions</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">抽查范围：先标出真正检查过的地图，再决定这句话能说多大。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>结论必须绑定覆盖集合 C 与时间窗；当 C 是全局范围 U 的真子集时，只能写“在 C 上未发现变化”。</li>
+                <li>空白结果或部分覆盖不能自动升级为全局无变化，必须说明成功、失败和未采集状态。</li>
+                <li>覆盖域不仅约束“无变化”，也约束报告结论能覆盖哪些仓库、哪些采集任务和哪些时间范围。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="k1-coverage-domain-proof-quantified-scope" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="k5-multi-execution-instance-status-coordinates">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 分布式系统 / 软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>K5 多执行实例状态坐标与业务修订的并列表达</h3>
+              <p>Parallel Representation of Multi-Execution-Instance Status Coordinates and Business Revisions</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">多次会诊：病历并列保留，不能撕掉旧记录，也不能把检查成功写成已经治愈。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>不应把旧执行实例、新执行实例和业务修订压成一个状态。</li>
+                <li>报告应并列保留业务对象及修订、执行实例标识或 epoch、发生时间、结果和替代关系。</li>
+                <li>执行成功只是执行层证据，不能自动覆盖业务状态；旧实例被替代的关系也不能省略。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="k5-multi-execution-instance-status-coordinates" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="k2-immutable-config-snapshot-audit-minimum">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数据建模 / 安全审计 / 软件工程</p>
+                <h3>K2 不可变配置快照的审计最小充分信息</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>不可变配置快照像给一次重要决定拍了一张“配置照片”。后来系统里的密码、密钥或当前配置改了，但这张照片不能跟着变，否则就说不清当时到底按什么规则做了决定。不可变配置快照要求：当凭据更新不能改写历史业务配置快照时，快照必须留下足以重建“当时使用了什么配置或策略、作用于谁、何时生效、来自哪个修订或执行上下文、内容摘要与完整性标记”的最小信息。它不是保存越多人越隐私的信息越好，而是保存“审计时够用”的最小充分集合。关键不是凭据本身，而是历史快照要可审计、不能被后续凭据更新污染。当前材料只能确认这是历史设计线索和历史问题方向，没有新的 schema、迁移、测试或运行验证。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>历史业务配置快照具有不可变性：后续密码、密钥或当前配置更新只能改变当前状态，不能反过来改写当时快照的语义。</li>
+                <li>审计重建需要一组最小字段：配置或策略内容及非敏感引用、作用域、来源修订或执行上下文、生效时间、内容摘要与完整性标记。</li>
+                <li>充分性由审计需求界定：字段太少会不可审计，字段太多会扩大隐私和存储负担，因此追求最小充分集合。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>某系统根据“审批策略快照”自动处理报销。后来管理员更新 API 密钥和审批策略，历史记录不能只写“使用当前策略”，而应至少能还原：当时作用于哪个项目或用户、策略来源修订是什么、何时生效、由哪个执行上下文触发、内容摘要是什么、完整性标记是否匹配，以及凭据的非敏感引用。这样即使密钥后来更换，历史审批仍可审计。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>快照里保存当前凭据的引用就够了；这会被后续凭据更新间接改写历史语义。</li>
+                <li>快照就是复制所有敏感信息；正确方向是保留审计所需最小充分信息，凭据可用非敏感引用。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>K4 易混淆标识的语义类型与命名隔离</td><td>快照中的修订、执行上下文、时间和来源标识需要语义类型隔离，否则审计字段仍可能被误读。</td></tr>
+                <tr><td>K1 覆盖域证明与结论量化范围</td><td>K2 与 K1 都要求显式记录来源、范围和时间边界：K1 约束报告结论的覆盖域，K2 约束历史快照的审计充分信息。</td></tr>
+                <tr><td>K5 多执行实例状态坐标与业务修订的并列表达</td><td>历史快照可能需要记录执行上下文或来源坐标，但当前材料没有提供快照 schema 或重跑实现。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>怎样判定一组快照字段已经达到“最小充分”，而不是太少导致不可审计、太多导致隐私和存储负担过重？</li>
+                <li>凭据的非敏感引用应该怎样设计，才能既支持追溯又不把敏感凭据写进历史快照？</li>
+                <li>如果后续策略或凭据更新，如何用完整性标记和内容摘要证明历史快照没有被污染？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="k1-coverage-domain-proof-quantified-scope">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 软件工程 / 信息架构</p>
+                <h3>K1 覆盖域证明与结论量化范围</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>把“未发现变化”想成一句带范围的话。设真正想说的是全局范围 U，但实际只检查了覆盖集合 C。若只在 C 内没有发现变化，结论只能写成“在 C 上未发现变化”；当 C 是 U 的真子集时，不能升级成“U 中无变化”。这就是覆盖域证明与结论量化范围：结论必须说明它覆盖了哪些仓库、哪个时间窗、哪些采集任务成功或失败。空白结果或部分覆盖不能自动写成全局无变化。今天不是重复“无变化、未采集、失败三态”，而是进一步问：即使记录了状态，是否说明了这个状态覆盖到哪里？当前材料没有新的报告 schema、检查器或运行记录，只有历史问题级依据。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>全局范围 U 与实际覆盖集合 C 应显式区分；局部未发现变化不能推出全局无变化。</li>
+                <li>结论强度受覆盖域限制；状态字段必须与仓库集合、时间窗、采集任务成功或失败绑定。</li>
+                <li>空白结果至少可能表示确认无变化、未采集、采集失败或部分覆盖，必须用覆盖域字段区分。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设全局范围 U 是 10 个仓库，时间窗是 2026-10-26 全天。实际覆盖集合 C 只包含 3 个仓库：2 个采集成功且未发现变化，1 个采集失败，其余 7 个未采集。报告应写成：“在已成功采集的 2 个仓库、指定时间窗内未发现变化；1 个仓库采集失败；7 个仓库未采集。”不能写成“10 个仓库全局无变化”。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>结果为空就等于没有变化；空结果也可能表示没有采集、采集失败、只采集了一部分，甚至时间窗没覆盖到。</li>
+                <li>只要写了一个状态字段就够了；如果状态没有绑定覆盖范围，读者仍会把局部结论当成全局结论。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>K3 证据充分性谓词</td><td>覆盖域不完整时，即使有局部证据，也不能计算为全局强结论，K3 的结论强度需要以 K1 的作用域为前提。</td></tr>
+                <tr><td>K2 不可变配置快照的审计最小充分信息</td><td>K1 与 K2 都强调来源、范围和时间边界：一个约束报告结论的覆盖域，一个约束历史快照的审计充分信息。</td></tr>
+                <tr><td>K5 多执行实例状态坐标与业务修订的并列表达</td><td>多执行实例报告中的“成功、待确认、替代”也要说明覆盖了哪些执行实例和时间范围，不能只看一个实例就下全局结论。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>怎样用字段或规则自动判断覆盖集合 C 是否等于全局范围 U，从而避免把局部结论升级为全局结论？</li>
+                <li>一份负证据报告最少应包含哪些覆盖域字段，才能让读者区分确认无变化、未采集和失败？</li>
+                <li>如果只采集了部分仓库或部分时间段，报告措辞应如何按覆盖比例和失败状态自动降级？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="k5-multi-execution-instance-status-coordinates">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 分布式系统 / 软件工程</p>
+                <h3>K5 多执行实例状态坐标与业务修订的并列表达</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>重跑时，系统里可能同时存在旧执行实例、新执行实例和同一个业务对象的不同修订。K5 的核心是：不要把这三类东西压成一个状态。报告或模型应保留多维坐标：业务对象及其修订、执行实例标识或 epoch、发生时间、结果、与旧实例的替代关系。这样读者才能看清“哪个业务对象在哪个修订上，被哪个执行实例处理过，旧实例是否被新实例替代，执行结果和业务状态分别是什么”。它要避免两个方向的误读：用执行成功覆盖业务状态，或用业务状态掩盖执行失败。当前材料只提供历史问题级问题方向，没有新的状态机、资源槽或运行验证。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>同一业务对象可同时关联多个执行实例和多个业务修订，它们属于不同维度，不可折叠为单一状态。</li>
+                <li>重跑报告需要业务对象及 revision、实例标识或 epoch、时间、结果、替代关系等坐标并列表达。</li>
+                <li>执行层结果与业务层状态必须分开判断，避免用执行成功覆盖业务状态，或用业务状态掩盖执行失败。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>某论文构建任务重跑。业务对象 paper-123 当前业务修订是 revision 7。旧执行实例 A 的 epoch 是 1，结果失败，已被替代；新执行实例 B 的 epoch 是 2，执行成功，但业务审核仍处于待确认。报告应并列写成：业务对象 paper-123 / revision 7；实例 A / epoch 1 / 失败 / 已被 B 替代；实例 B / epoch 2 / 执行成功 / 业务审核待确认。不能只写一句“构建成功”，也不能只保留最新实例而丢掉替代关系。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>新执行实例成功，所以业务必然完成；执行成功只是执行层证据，业务可能仍在待确认、待审核或被旧实例替代。</li>
+                <li>旧实例失败或过期就可以完全省略；审计和重跑排查往往需要知道旧实例如何被替代、替代发生在什么时间、新实例对应哪个业务修订。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>K3 证据充分性谓词</td><td>多执行实例报告中的“成功、待确认、替代”需要按证据层计算结论强度，不能把执行成功直接写成业务完成。</td></tr>
+                <tr><td>K2 不可变配置快照的审计最小充分信息</td><td>历史快照可能需要记录执行上下文或来源坐标，但当前只有历史问题方向，没有快照 schema 或重跑实现。</td></tr>
+                <tr><td>K4 易混淆标识的语义类型与命名隔离</td><td>epoch、revision、实例标识和时间戳需要通过语义类型与领域化命名隔离，否则报告中的坐标容易被误读。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>旧执行实例与新执行实例的替代关系应该用哪些字段表达，才能既保留历史又可判断当前有效实例？</li>
+                <li>当同一业务对象有多个 revision 和多个执行 epoch 时，怎样设计报告结构避免读者把执行成功当成业务完成？</li>
+                <li>多执行实例报告中的结论强度，如何与 K3 的证据充分性谓词结合，自动区分执行层成功和业务层待确认？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念构成一条“可审计表达链”：K2 管历史快照中该留下什么最小信息，K1 管结论能覆盖到多大范围，K5 管重跑时多个执行实例和业务修订如何并列展示。它们分别约束“过去用了什么配置”“现在这句话能说多大”“同一业务对象经历多次执行时状态如何不互相覆盖”。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">一个可审计的表达，必须写出范围、来源、时间和状态坐标，而不能只给一句漂亮结论。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>怎样判定一组不可变配置快照字段已经达到“最小充分”，并兼顾隐私和存储负担？</li>
+            <li>怎样用字段或规则自动判断覆盖集合 C 是否等于全局范围 U，避免局部结论升级为全局结论？</li>
+            <li>当同一业务对象有多个 revision 和多个执行 epoch 时，怎样设计报告结构避免把执行成功当成业务完成？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
