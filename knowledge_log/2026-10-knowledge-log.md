@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-10/2026-10-31-learning-report.html">2026-10-31</a>
+      </td>
+      <td>PDF 获取的内容协商与重定向边界</td>
+      <td>计算机科学 / 网络安全 / 软件工程</td>
+      <td>★★</td>
+      <td>PDF 获取边界就是在向服务器要 PDF 时，既说明要什么，又不盲目跟随任何重定向地址。</td>
+      <td>下一次若拿到 `llm_provider.py` 的完整 PDF 分支、重定向次数上限、内部地址判定函数、测试用例或运行日志，可核对 Location 长度 8192 的边界、HTTP/HTTPS 分支和失败路径；今天只有局部 diff，不能声称已完成注入测试或运行验证。</td>
+    </tr>
+    <tr>
+      <td>运行域不可变处理对象与已发布知识隔离</td>
+      <td>软件工程 / 数据建模</td>
+      <td>★★★</td>
+      <td>运行域不可变处理对象就是给每次运行的中间产物贴上 run_id 和 digest，把它们关在草稿区，不让它们冒充已发布知识。</td>
+      <td>下一次若拿到 `0015_processing_objects.py` 完整迁移、ORM 模型、`digest` 计算代码、不可变约束实现和清理/审计测试，可核对 `run_id` 级联删除、`digest` 生成方式以及处理对象与已发布知识表的实际隔离边界；今天只有局部 diff，不能声称已有运行验证。</td>
+    </tr>
+    <tr>
+      <td>长任务状态门控与读取-派发-提交三阶段一致性校验</td>
+      <td>软件工程 / 分布式系统 / 安全</td>
+      <td>★★★★</td>
+      <td>长任务三阶段一致性校验就是让任务在读取、派发和提交前都重新问一句：我现在还有资格把这件事写下去吗？</td>
+      <td>下一次若拿到 `paper_analysis.py` 与 `paper_analysis_worker.py` 的完整实现、状态机定义、事务边界、并发测试或运行日志，可逐项核对 `busy`/`writable` 条件、read/dispatch/commit 的检查清单、`STATE_REVISION_CONFLICT` 触发路径以及 `processing_confirmation` 的实际校验；今天只有局部 diff 和 docstring，不能声称已有并发运行验证。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-10/2026-10-30-learning-report.html">2026-10-30</a>
       </td>
       <td>无损来源保留与派生身份决策分离</td>

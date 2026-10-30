@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-10-31 学习笔记日报</title>
+    <meta name="description" content="今天围绕 PDF 获取边界、运行域处理对象隔离与长任务三阶段一致性校验，串起从外部材料进入、草稿存储到提交资格的防线。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261031-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-10-31</p>
+        <h1>从进入边界到提交资格的三层防线</h1>
+        <p>今天的材料支撑三条工程边界：PDF 如何安全进入系统，中间产物为何只能留在运行域，以及长任务如何反复确认提交资格。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>外部材料进入、运行域隔离与提交资格…</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>PDF 获取的内容协商与重…</strong>
+                <small>先说明要什么，再检查被引导到哪里。</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>运行域不可变处理对象与已发…</strong>
+                <small>运行中间产物先放草稿区，不能自动变…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>长任务状态门控与读取-派发…</strong>
+                <small>不是进门查一次票，而是关键节点反复…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念共同构成一条防线：PDF 获取边界负责外部材料怎么进来，运行域不可变处理对象负责进来后先放在哪里，三阶段一致性校验负责什么时候才有资格提交出去。它们不是三个孤立技巧，而是从入口、存储到提交的三层隔离。证据边界也需要记住：今天能确认的主要是局部 diff、迁移字段、docstring 和配置线索，没有展示解析校验结果、并发测试结果或运行日志。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["外部材料进入、运行域隔离与提交资格门控"])
+  concept1["PDF 获取的内容协商与重定向边界"]
+  hub --&gt; concept1
+  concept2["运行域不可变处理对象与已发布知识隔离"]
+  hub --&gt; concept2
+  concept3["长任务状态门控与读取-派发-提交三阶段一致性校验"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["外部材料进入、运行域隔离与提交资格门控"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept2
+  concept3 --&gt; concept1
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="pdf-content-negotiation-redirect-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 网络安全 / 软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>PDF 获取的内容协商与重定向边界</h3>
+              <p>PDF Content Negotiation and Redirect Boundary</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">先说明要什么，再检查被引导到哪里。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>请求 PDF 时通过 `Accept: application/pdf` 表达内容协商。</li>
+                <li>对 301、302、303、307、308 返回重定向信息，并检查 Location 是否为空或超过 8192。</li>
+                <li>PDF 格式下还存在内部地址与 HTTP/HTTPS 条件分支，形成获取前的显式边界。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="pdf-content-negotiation-redirect-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="run-owned-immutable-processing-objects">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 数据建模</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>运行域不可变处理对象与已发布知识隔离</h3>
+              <p>Run-owned Immutable Processing Objects and Published Knowledge Isolation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">运行中间产物先放草稿区，不能自动变成已发布知识。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>`construction_processing_objects` 含 `run_id`、`candidate_id`、`project_id`、`file_bytes`、`text`、`digest` 等字段。</li>
+                <li>`run_id` 外键指向 `construction_runs.id` 并级联删除，处理对象归属某次运行。</li>
+                <li>迁移 docstring 称其为 run-owned immutable processing objects，并与已发布知识明确分离。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="run-owned-immutable-processing-objects" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="long-task-state-gating-three-phase-consistency">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 分布式系统 / 安全</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>长任务状态门控与读取-派发-提交三阶段一致性校验</h3>
+              <p>Long-running Task State Gating and Read-Dispatch-Commit Consistency Checks</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">不是进门查一次票，而是关键节点反复核对。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>`paper_analysis.py` 的 busy/writable 检查运行、分析与处理状态。</li>
+                <li>`paper_analysis_worker.py` 要求在 read、dispatch、commit 校验当前授权。</li>
+                <li>`check` 校验运行状态、phase、候选 revision、`processing_basis`、`processing_stale`、`processing_confirmation`，不一致抛出 `STATE_REVISION_CONFLICT`。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="long-task-state-gating-three-phase-consistency" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="pdf-content-negotiation-redirect-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 网络安全 / 软件工程</p>
+                <h3>PDF 获取的内容协商与重定向边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>系统向服务器请求 PDF 时，不能只说“给我文件”，而要明确表达“我要的是 PDF”，这就是内容协商。服务器也可能不直接返回文件，而是通过 301、302、303、307、308 指向另一个地址，这就是重定向。重定向本身并不坏，但如果客户端盲目跟随任意地址，就可能被带到不该去的地方。在 `llm_provider.py` 的局部 diff 中，当 `response_format` 为 `pdf` 时会设置 `Accept: application/pdf`，对重定向状态返回重定向信息，并且 Location 为空或超过 8192 时失败；PDF 格式下还存在内部地址与 HTTP/HTTPS 条件分支。因此可确认的是一条获取边界：先说明要什么，再检查被引导到哪里、地址是否有效、地址长度是否离谱。今天只有局部 diff，不能声称已经完成完整安全审计或注入测试。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>内容协商用于表达客户端期望的文件类型，让服务器知道请求目标是 PDF。</li>
+                <li>重定向状态码表示服务器要求转到另一个地址，需要被显式处理，而不是无条件跟随。</li>
+                <li>Location 为空或超过 8192 时失败，内部地址与 HTTP/HTTPS 分支进一步限定可跟随范围。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设 `response_format` 是 `pdf`，客户端发出请求头 `Accept: application/pdf`。服务器返回 302，并给出 `Location: https://example.org/paper.pdf`。按今天局部 diff 可确认的机制，客户端会把它作为重定向信息处理；如果 Location 是空字符串，或长度超过 8192，就失败。这个例子说明的是“获取前先设边界”，而不是“拿到 PDF 后如何解析”。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为设置了 `Accept: application/pdf` 就万事大吉，忽略重定向边界。</li>
+                <li>以为所有重定向都可以自动跟随，而不检查目标地址是否为空、超长或属于内部地址。</li>
+                <li>把 Location 为空或超长时失败当成多余的小规则，而不是入口边界的一部分。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>运行域不可变处理对象与已发布知识隔离</td><td>PDF 获取成功后，文件和处理文本可以成为运行域处理对象，因此网络获取边界是运行域隔离的前置入口。</td></tr>
+                <tr><td>长任务状态门控与读取-派发-提交三阶段一致性校验</td><td>获取成功只说明材料进来了，不等于有资格提交知识，后续仍需经过长任务三阶段校验。</td></tr>
+                <tr><td>外部材料进入、运行域隔离与提交资格门控</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果要继续深入，应该怎样定义和测试“内部地址”的判定规则，才能避免漏判或误判？</li>
+                <li>重定向是否还需要限制最大跳转次数和循环检测，今天的局部 diff 没有展示这部分时应如何标注证据边界？</li>
+                <li>收到 PDF 响应后，是否还应校验 `Content-Type` 与文件头，而不只依赖请求时设置的 `Accept`？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="run-owned-immutable-processing-objects">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 数据建模</p>
+                <h3>运行域不可变处理对象与已发布知识隔离</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>系统处理外部材料时会产生很多中间结果，比如提取出的文本、文件字节、摘要指纹等。这些中间结果属于某一次运行，应该被当作运行域草稿保存，而不是一处理完就自动进入正式知识库。`0015_processing_objects.py` 的局部 diff 新增了 `construction_processing_objects`，包含 `run_id`、`candidate_id`、`project_id`、`file_bytes`、`text`、`digest` 等字段；`run_id` 外键指向 `construction_runs.id` 并级联删除。迁移 docstring 称其为 run-owned immutable processing objects，并明确与已发布知识分离。可确认的原理是：处理对象归属某次运行，带内容摘要 `digest` 便于追溯，并且在生命周期内不被原地改写；它与已发布知识之间有明确边界。“不可变”不等于永远不能删，而是不要在运行过程中被悄悄改写；运行级联清理是生命周期问题，不等于已发布知识也跟着删。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>处理对象以 `run_id` 归属某次运行，运行结束可按生命周期级联清理。</li>
+                <li>`digest` 作为内容指纹与追溯信息，帮助识别处理对象内容。</li>
+                <li>不可变强调运行过程中不被原地改写，并与已发布知识保持隔离边界。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设一次运行 `run_id=123` 处理一篇论文，生成一条 `construction_processing_objects` 记录，带有 `text` 和 `digest=abc`。分析命令可以读取这条记录作为处理基础，但按照 docstring 的设计，它仍然属于这次运行，不应因为被分析过就自动写入已发布知识。只有后续经过人审确认和提交边界，才可能从运行局部结果走向正式知识。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为“处理对象”就是“知识”，只要文本被清洗过、分析过，就应该自动进入正式库。</li>
+                <li>把 `digest` 只当成去重工具；在今天的材料里，它更像内容指纹和可追溯信息，但具体算法未展示。</li>
+                <li>把“不可变”理解成“永远不能删除”，忽略这里强调的是运行域对象不被原地改写，以及它与已发布知识的隔离。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>PDF 获取的内容协商与重定向边界</td><td>PDF 获取边界把文件带进系统后，文件和处理文本可以成为运行域处理对象，因此前者是后者的入口。</td></tr>
+                <tr><td>长任务状态门控与读取-派发-提交三阶段一致性校验</td><td>处理对象及其状态提供 `processing_basis`、资格、`stale` 和处理状态，成为长任务状态门控与三阶段校验的判断基础。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>`digest` 具体是对文件字节、清洗后文本还是其他内容计算，今天的材料没有展示算法，下一次应如何核对？</li>
+                <li>“不可变”是由数据库约束、迁移触发器还是应用层写入规则保证，是否需要测试来证明对象不会被原地改写？</li>
+                <li>`run_id` 级联删除与审计保留之间如何平衡，运行清理后是否还需要保留某些摘要或追溯信息？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="long-task-state-gating-three-phase-consistency">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 分布式系统 / 安全</p>
+                <h3>长任务状态门控与读取-派发-提交三阶段一致性校验</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>长任务不是“进门查一次票”就一路通行。任务开始时状态正确，不代表执行中途状态没变；如果只在入口检查，就可能拿旧授权去做新状态下的提交。`paper_analysis.py` 的局部 diff 中，`busy` 检查 `analysis_jobs` 是否已有 queued/running，`writable` 同时检查分析、筛选、处理是否忙碌，并要求运行状态为 `waiting_user`、phase 为 `analysis` 或 `ingestion_preview`，随后校验候选 revision、处理资格、`processing_stale` 和处理状态 `available/degraded`。`paper_analysis_worker.py` 的 docstring 又写明要在 read、dispatch、commit 校验当前授权；`check` 会校验运行状态、phase、候选 revision、`processing_basis`、`processing_stale`、`processing_confirmation`，不一致时抛出 `STATE_REVISION_CONFLICT`。这合并了两个同源候选：入口状态门控和长任务三阶段校验，它们共同表达“授权和状态必须在关键时点重新确认”。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>长任务的状态、revision、stale 与 confirmation 可能在执行期间变化。</li>
+                <li>入口 busy/writable 只解决开始时的资格判断，不能替代提交前复核。</li>
+                <li>read、dispatch、commit 三阶段重新校验，不一致时以 `STATE_REVISION_CONFLICT` 显式失败。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设用户启动一次论文分析，入口检查时候选 revision 是 5，任务开始读取处理对象；派发前用户修正了候选，revision 变成 6；到 commit 时 worker 重新校验，发现当前候选 revision 与任务记录的 revision 不一致，于是抛出 `STATE_REVISION_CONFLICT`，不写入结果。这个例子说明：入口通过只是开始，提交前还要再确认。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为入口 `writable` 通过后就可以一路写到结束。</li>
+                <li>以为“分析成功”等于“知识写入完成”，忽略 commit 前对 `processing_confirmation` 的检查。</li>
+                <li>把三阶段检查当成重复劳动，忽视它是在防止执行期间 revision 变化、处理变 stale、确认状态变化后仍用旧授权提交。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>运行域不可变处理对象与已发布知识隔离</td><td>运行域不可变处理对象提供 `processing_basis`、`processing_stale` 和资格状态，是三阶段校验能够判断“当前是否还能用”的数据基础。</td></tr>
+                <tr><td>PDF 获取的内容协商与重定向边界</td><td>PDF 获取成功只说明材料进来了，不等于提交资格成立，三阶段校验负责在执行和提交时重新确认授权。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>read、dispatch、commit 三个阶段之间如果状态发生变化，应该设计哪些并发测试来证明旧任务不会误提交？</li>
+                <li>客户端收到 `STATE_REVISION_CONFLICT` 后应该重新读取、重新分析还是提示用户确认，恢复策略如何避免重复副作用？</li>
+                <li>检查与提交之间如何保证原子性，是否需要事务、锁或 compare-and-set 机制来避免检查后又被抢先修改？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念共同构成一条防线：PDF 获取边界负责外部材料怎么进来，运行域不可变处理对象负责进来后先放在哪里，三阶段一致性校验负责什么时候才有资格提交出去。它们不是三个孤立技巧，而是从入口、存储到提交的三层隔离。证据边界也需要记住：今天能确认的主要是局部 diff、迁移字段、docstring 和配置线索，没有展示解析校验结果、并发测试结果或运行日志。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">获取成功不等于提交资格，入口检查也不等于提交前仍被授权。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何定义并测试“内部地址”的判定规则，同时补上重定向次数上限与循环检测？</li>
+            <li>`digest` 具体基于文件字节、清洗后文本还是其他内容计算，不可变约束由数据库、触发器还是应用层保证？</li>
+            <li>检查与提交之间如何保证原子性，并用并发测试证明旧任务不会误提交？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
