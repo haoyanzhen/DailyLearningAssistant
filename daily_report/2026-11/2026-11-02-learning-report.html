@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-11-02 学习笔记日报</title>
+    <meta name="description" content="无变更复习日：从上下文窗口容量校验，到冻结参数请求的显式失败边界，再到人审确认作为知识写入前置闸门，串起分析结果进入知识域的三道边界。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261102-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-11-02</p>
+        <h1>从上下文容量到人审闸门：分析结果如何进入知识域</h1>
+        <p>今天仓库没有新增变化，是一次无变更复习日；我们沿着 2026-11-01 的概念关联线，继续拆解三个尚未讲过的底层原理：容量边界、失败边界与写入边界。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>模型分析结果进入知识域的三道边界</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>模型上下文窗口容量配置与参…</strong>
+                <small>先量好工作台尺寸，再开工。</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>单次冻结参数请求与显式失败…</strong>
+                <small>条件先冻结，失败就亮灯。</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>人审确认作为知识写入前置边界</strong>
+                <small>草稿要签字，才能进病历。</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">这三个概念共同回答一个朴素问题：模型分析结果怎样才算可靠地进入知识域。上下文窗口容量配置与参数校验先限定模型一次能看到和生成的范围；单次冻结参数请求与显式失败边界再规定这次请求如何执行、失败如何显现；人审确认作为知识写入的前置边界最后决定这次运行结果只是提案，还是可以被采纳为正式知识。它们不是三套孤立规则，而是一条边界链：容量和参数让输入输出有可检查的范围，显式失败让调用方知道结果是否可信，人审确认把“执行成功”与“业务完成”分开。需要强调，当日材料没有展示容量算法、运行日志、完整事务或并发验证，因此讲解只展开设计原理和边界意识，不把这些设计承诺写成已经验证的运行事实。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["模型分析结果进入知识域的三道边界"])
+  concept1["模型上下文窗口容量配置与参数校验"]
+  hub --&gt; concept1
+  concept2["单次冻结参数请求与显式失败边界"]
+  hub --&gt; concept2
+  concept3["人审确认作为知识写入前置边界"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["固定 JSON 结构化输出与长度/条目约束"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  related2["STATE_REVISION_CONFLICT 类开放问题"]
+  concept2 --&gt; related2
+  concept3 --&gt; concept2
+  concept3 --&gt; concept1
+  concept3 --&gt; related1
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="context-window-capacity-validation">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">大语言模型 / 软件工程 / 数学</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>模型上下文窗口容量配置与参数校验</h3>
+              <p>Context Window Capacity Validation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">先量好工作台尺寸，再开工。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>llm.py 在模型选项中增加 context_window_tokens，在配置输出中加入 model_context_windows，说明容量已进入模型配置层。</li>
+                <li>context_window、validate_context_windows 等入口表明容量不只被记录，还进入了参数校验环节。</li>
+                <li>目的是让超限或配置不一致在请求之前或请求边界就暴露，而不是运行时才发现或静默失败。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="context-window-capacity-validation" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="frozen-parameter-request-explicit-failure">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">大语言模型 / 软件工程 / 分布式系统</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>单次冻结参数请求与显式失败边界</h3>
+              <p>Frozen-Parameter Request with Explicit Failure Boundary</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">条件先冻结，失败就亮灯。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>paper_analysis_provider.py 的 docstring 写明：一次全文分析请求使用冻结参数（frozen parameters）。</li>
+                <li>同一句还写明 no implicit fallback or retry，即不通过隐式回退或重试改变调用语义。</li>
+                <li>失败、冲突或契约不满足时应显式暴露，由上层决定是否重试、换路径或提示用户，并保留证据。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="frozen-parameter-request-explicit-failure" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="human-review-gate-before-knowledge-write">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">大语言模型 / 软件工程 / 安全</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>人审确认作为知识写入前置边界</h3>
+              <p>Human Review Gate Before Knowledge Write</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">草稿要签字，才能进病历。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>paper_analysis.py 的 docstring 写明“Run-local analysis commands. No knowledge writes or implicit content adoption.”，把局部分析与正式知识写入分开。</li>
+                <li>writable 要求 waiting_user 与特定 phase，worker 在 commit 前检查 processing_confirmation，构成写入前的状态门控。</li>
+                <li>执行成功不等于业务完成：模型返回合理内容只说明这次运行完成，不代表它应进入正式知识库。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="human-review-gate-before-knowledge-write" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="context-window-capacity-validation">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 大语言模型 / 软件工程 / 数学</p>
+                <h3>模型上下文窗口容量配置与参数校验</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>可以把模型上下文窗口想成一张有限大小的工作台：一次能摊开的资料和写下的内容都有上限。当日材料里，llm.py 在模型选项中增加 context_window_tokens，在配置输出中加入 model_context_windows，并引入 context_window、validate_context_windows 这些入口；这里能确认的是“容量进入了模型配置与参数校验”，不能确认具体容量公式或 token 估算算法，因为 context_capacity.py 只有路径线索。它的底层理念是：既然上下文窗口是有限资源，就不要等到运行时才突然发现输入太长或配置不对，而应把容量写成可配置、可检查的参数，让超限或不一致在请求之前或请求边界暴露。这样做不是为了追求某个复杂算法，而是为了让系统对“一次能处理多少内容”有明确契约。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>上下文窗口是有限资源，容量应像尺寸表一样被显式登记在配置里，而不是隐含在代码行为中。</li>
+                <li>把容量写成可配置、可检查的参数，等于给系统一条可验证的契约：超限或不一致应在请求前暴露。</li>
+                <li>这里追求的是边界清晰而非算法复杂：先明确“一次能处理多少”，再谈处理结果是否合格。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设配置表里模型 A 的 context_window_tokens 是 8000，模型 B 是 32000。一次分析请求预计输入 7000 token、输出 3000 token，那么使用模型 A 就应在请求前被校验发现可能超限，而不是等模型运行到一半才失败；若配置值缺失或不合规则由 validate_context_windows 这类入口报错。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为只要配置了上下文窗口字段，系统就会自动截断、摘要或正确处理超长输入。</li>
+                <li>以为窗口越大结果一定越正确，忽略了容量只是资源边界而非质量保证。</li>
+                <li>把配置字段与校验入口的存在，当成已经具备容量算法或运行验证的事实。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>单次冻结参数请求与显式失败边界</td><td>它为单次冻结参数请求提供可检查的输入边界：容量和参数不合规时，应在请求边界显式失败，而不是留到运行中隐式处理。</td></tr>
+                <tr><td>人审确认作为知识写入前置边界</td><td>两者共同限制知识域：容量决定一次分析能看到和生成什么，人审确认决定这些分析结果是否进入正式知识。</td></tr>
+                <tr><td>固定 JSON 结构化输出与长度/条目约束</td><td>它延续了固定 JSON 输出约束中的“边界”思想，但关注的是模型可处理规模，而不是字段与数组条目的具体结构。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>token 数量应如何估算，估算误差应如何在请求前保留为可检查的证据？</li>
+                <li>容量校验的边界应该由模型能力、下游存储还是展示需求共同决定，三者冲突时如何处理？</li>
+                <li>当输入或预期输出超过上下文窗口时，系统应显式返回什么样的错误信息，才能让调用方安全地调整请求？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="frozen-parameter-request-explicit-failure">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 大语言模型 / 软件工程 / 分布式系统</p>
+                <h3>单次冻结参数请求与显式失败边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>一次请求可以类比为一次有记录的实验：开始前确定实验条件，执行期间不偷偷换条件。当日材料中，paper_analysis_provider.py 的 docstring 写明“One full-text analysis request with frozen parameters; no implicit fallback or retry.”，能确认的是一种设计承诺：一次全文分析请求使用冻结参数，不通过隐式回退或重试来改变调用语义。为什么要冻结参数？因为如果系统内部悄悄换成备用模型、改掉参数再重试，调用方就不知道结果究竟来自哪组条件，也不知道是否产生了重复副作用。显式失败边界的意思是：失败、冲突或契约不满足时，让错误清楚地暴露出来，由上层决定是否重试、是否换路径、是否提示用户。这里不是说所有重试都坏，而是说重试必须是显式策略，不能藏在调用链里把失败伪装成成功。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>冻结参数保证结果与条件可对应：结果来自哪组模型与参数必须是确定的，而不是事后推测的。</li>
+                <li>隐式 fallback 或 retry 会改变调用语义，可能产生调用方无法解释的重复副作用。</li>
+                <li>显式失败边界把决策权交还上层：失败先暴露，再决定是否重试，而不是由调用链偷偷决定。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一次论文全文分析请求已经冻结了模型、输入范围和输出契约。如果模型返回内容缺少必需字段，系统应明确报告契约失败，而不是自动换一个模型重试并把第二次结果当作第一次结果交付。若上层决定重试，也应作为显式动作记录下来，并考虑幂等性和是否产生重复副作用。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为自动重试越多越可靠，或 fallback 总是提升可用性；实际上它们可能改变模型、参数或副作用语义，让结果无法比较。</li>
+                <li>把 docstring 中的设计承诺当成已经运行验证的事实；材料没有展示失败日志、重试策略实现或运行验证。</li>
+                <li>以为显式失败会降低健壮性，忽略了失败被隐藏才是调用方最难以处理的情况。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>模型上下文窗口容量配置与参数校验</td><td>它承接容量与参数校验：容量或参数不合法时，应在请求边界显式失败，而不是运行中静默处理。</td></tr>
+                <tr><td>人审确认作为知识写入前置边界</td><td>请求失败、冲突或结果不确定时，不应自动升级为知识，人工确认或明确状态条件决定是否采纳运行结果。</td></tr>
+                <tr><td>STATE_REVISION_CONFLICT 类开放问题</td><td>冲突需要显式暴露并进入明确恢复路径，恢复动作不能通过隐式重试掩盖重复副作用。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>哪些失败可以安全重试，哪些失败必须交给上层或人工决定，判断标准应如何写入契约？</li>
+                <li>失败时应保留哪些证据，才能既解释原因又不泄露不必要的敏感内容？</li>
+                <li>如果确实需要具名 fallback，怎样保证它与主输出契约一致，避免结构漂移和失败语义不清楚？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="human-review-gate-before-knowledge-write">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 大语言模型 / 软件工程 / 安全</p>
+                <h3>人审确认作为知识写入前置边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>运行局部分析结果不是正式知识，而更像一份“分析提案”。当日材料中，paper_analysis.py 的 docstring 写明“Run-local analysis commands. No knowledge writes or implicit content adoption.”；writable 要求 waiting_user 和特定 phase；worker 在 commit 前检查 processing_confirmation。这里能确认的是：材料把局部分析与正式知识写入分开，并设置人工确认或明确状态条件作为写入前置边界。它的核心逻辑是：执行成功不等于业务完成。模型返回了一段看似合理的内容，只说明这次运行完成了，不代表这段内容应该进入正式知识库。人工确认或特定状态条件像一道闸门，只有闸门打开，运行结果才从“候选内容”变成“被采纳知识”。这道闸门既保护知识质量，也保护责任边界。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>运行局部与正式知识是两层：局部分析可以自由生成候选结论，但默认不具备写入权。</li>
+                <li>状态门控把“是否采纳”编码为可检查条件：waiting_user、phase 与 commit 前的 processing_confirmation 检查。</li>
+                <li>这道闸门同时保护两件事：知识质量不被未审核内容污染，责任边界不被模糊。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一次论文分析在运行局部生成候选结论“这篇论文的方法属于某类”。系统把它保持在 run-local 状态，只有进入 waiting_user 且 phase 符合要求，并且 worker 在 commit 前检查到 processing_confirmation 后，才允许进入正式知识写入。否则它只是提案，不能被当作已确认知识。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为模型返回结果就应该自动写入，自动写入只是提高效率；实际上没有确认边界时，错误、过期或冲突的分析会直接污染知识域。</li>
+                <li>认为有一个人工按钮就足够了；材料还显示状态门控和 commit 前检查，但并未证明完整事务或并发原子性。</li>
+                <li>把状态检查当成已经具备原子提交证明，把设计线索写成已完成的运行事实。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>单次冻结参数请求与显式失败边界</td><td>失败、冲突或结果不确定时，不应自动升级为知识；人审确认或明确状态条件决定是否采纳这次运行结果。</td></tr>
+                <tr><td>模型上下文窗口容量配置与参数校验</td><td>两者共同限制知识域：容量决定一次分析能看到什么，人审确认决定这些结果是否进入正式知识。</td></tr>
+                <tr><td>固定 JSON 结构化输出与长度/条目约束</td><td>结构合格只是候选资格，不等于可以自动采纳；契约正确性与是否写入是两道独立的关。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>人工确认应留下哪些确认凭证和审计记录，才能证明某条知识确实经过了前置边界？</li>
+                <li>检查与提交之间如何保证原子性，是否需要事务、锁或 compare-and-set 机制来避免确认后又被旧状态污染？</li>
+                <li>当同一业务对象有多个 revision 和多个执行 epoch 时，报告结构应如何区分运行成功、候选分析和正式知识写入？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">这三个概念共同回答一个朴素问题：模型分析结果怎样才算可靠地进入知识域。上下文窗口容量配置与参数校验先限定模型一次能看到和生成的范围；单次冻结参数请求与显式失败边界再规定这次请求如何执行、失败如何显现；人审确认作为知识写入的前置边界最后决定这次运行结果只是提案，还是可以被采纳为正式知识。它们不是三套孤立规则，而是一条边界链：容量和参数让输入输出有可检查的范围，显式失败让调用方知道结果是否可信，人审确认把“执行成功”与“业务完成”分开。需要强调，当日材料没有展示容量算法、运行日志、完整事务或并发验证，因此讲解只展开设计原理和边界意识，不把这些设计承诺写成已经验证的运行事实。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">执行成功不等于业务完成：容量限定范围，显式失败说明结果是否可信，人审确认才让一份提案变成知识。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>token 数量应如何估算，估算误差应如何在请求前保留为可检查的证据？</li>
+            <li>哪些失败可以安全重试，哪些必须交给上层或人工决定，判断标准如何写入契约？</li>
+            <li>检查与提交之间如何保证原子性，是否需要事务、锁或 compare-and-set 机制？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
