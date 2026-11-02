@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-11-03 学习笔记日报</title>
+    <meta name="description" content="今日主线围绕输入身份、对外可见版本与检索范围证明三项展开：文件元组只是轻量身份线索，head 指针决定当前可见版本，检索完整需版本化多条件证明。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261103-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-11-03</p>
+        <h1>从输入身份到可见版本：可靠性链上的三重证明</h1>
+        <p>当天可确认的技术线索是一条围绕论文知识构建、检索与发布可见性的链路：先识别输入对象，再证明检索范围完整，最后把结果放进版本与 head 指针的可见性结构中。三项分别回答“是不是同一个输入”“对外可见哪个版本”“这次检索有没有资格支持无变更判断”。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>输入身份 · 对外可见性 · 范围…</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>文件系统元组身份与不可变对…</strong>
+                <small>元组认身份，摘要证内容；元组相同不…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>知识版本身份与项目 hea…</strong>
+                <small>版本是厚档案，head 是当前指示…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>完整检索的多条件证明与证明…</strong>
+                <small>零结果不算终点，条件齐了才算翻完；…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念形成一条从输入到输出的可靠性链。文件系统元组提供轻量的对象身份线索，但它不是内容摘要，也不能单独证明不可变；完整检索证明把分页标记、计数一致、跳过事实、来源穷尽、集合一致性和证明版本联合起来，避免把计数相等误当成范围穷尽；知识版本身份与项目 head 指针则把版本记录和当前可见指针分开，说明构建完成或版本密封不等于项目已经对外可见。检索证明与作用域摘要可以约束 no-change 与确认的范围，版本记录通过 manifest、manifest_digest、ready_proof、sealed 等字段表达就绪与密封状态，head 指针再表达当前可见版本。材料能确认的是这些字段、路径和协议边界存在；事务、锁、比较并交换、摘要哈希算法和不可变的强制机制仍未被完整展示，只能作为需要后续证据的开放问题。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["输入身份 · 对外可见性 · 范围证明"])
+  concept1["文件系统元组身份与不可变对象识别"]
+  hub --&gt; concept1
+  concept2["知识版本身份与项目 head 指针"]
+  hub --&gt; concept2
+  concept3["完整检索的多条件证明与证明版本化"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["基线快照上的增量知识发布"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept3
+  related2["构建视图与发布协议隔离"]
+  concept2 --&gt; related2
+  concept2 --&gt; concept1
+  related3["作用域摘要作为范围指纹"]
+  concept3 --&gt; related3
+  related4["只读预览与 no-change 提交分离"]
+  concept3 --&gt; related4
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="filesystem-tuple-identity">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 操作系统 / 安全</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>文件系统元组身份与不可变对象识别</h3>
+              <p>Filesystem Tuple Identity &amp; Immutable Object Recognition</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">元组认身份，摘要证内容；元组相同不等于内容没变。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>stamp 返回 st_dev、st_ino、st_size、st_mtime_ns、st_ctime_ns 五个值，对应设备、inode、大小、修改时间纳秒值与状态变更时间纳秒值，用于在不加载文件字节的情况下快速判断是否为同一对象、有无明显变化线索。</li>
+                <li>元组身份与内容摘要必须区分：摘要是读内容后算出的指纹，元组是文件系统记账信息，提供对象身份和变更线索，不是完整内容真实性证明。</li>
+                <li>它适合做前置检查，例如入库前后比较同一路径文件的 stamp 是否变化；但材料没有证明 stamp 单独足以强制不可变，也没有证明其碰撞性质等同于内容摘要。</li>
+                <li>要真正强制不可变，需要权限、写入规则或内容摘要等组合证据，而不仅是元组相等。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="filesystem-tuple-identity" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="knowledge-version-and-project-head">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 数据建模</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>知识版本身份与项目 head 指针</h3>
+              <p>Knowledge Version Identity &amp; Project Head Pointer</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">版本是厚档案，head 是当前指示牌；盖章在馆不等于读者已看到。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>knowledge_versions 含 source_run_id 唯一约束、base_version_id、manifest、manifest_digest、ready_proof、sealed、published_at；knowledge_project_heads 保存项目当前版本指针。</li>
+                <li>版本记录像厚档案，记录来源运行、基版本关系、清单摘要、就绪证明和密封状态；head 指针像一块小小的当前指示牌。</li>
+                <li>一个版本可以已被构建、甚至有就绪证明，但只要 head 没换，它就不是项目当前可见版本，构建完成不等于对外可见。</li>
+                <li>材料没有展示 head 更新是否使用事务、锁或比较并交换，因此不能把数据模型直接等同于完整原子发布协议。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="knowledge-version-and-project-head" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="complete-retrieval-multi-condition-proof">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 数学 / 数据工程</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>完整检索的多条件证明与证明版本化</h3>
+              <p>Complete Retrieval Multi-Condition Proof &amp; Proof Versioning</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">零结果不算终点，条件齐了才算翻完；证明也要带版本。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>paper_retrieval.py 的 normalize 会返回 complete；arXiv 在 total 等于 0 时，还要求没有 rel=next 且 startIndex 为 0；一致性判断改为 complete 并且 total 等于 first_total。</li>
+                <li>run_worker.py 校验 provider 的 items 是 list、长度不超过预算、skipped_date 是非负整数，并写入 retrieval_proof_version 等于 2；exhausted_sources 的事实要求是四元组且第四项为整数；_complete_retrieval 还校验 term 集合、source/config 集合与冻结来源一致。</li>
+                <li>完整性等于分页标记、计数一致、跳过事实、来源穷尽事实、集合一致和证明版本的联合谓词；空结果尤其不能草率判断。</li>
+                <li>证明版本化很关键：旧 worker 写下的旧证明，不能自动冒充新版本完整性证明。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="complete-retrieval-multi-condition-proof" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="filesystem-tuple-identity">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 操作系统 / 安全</p>
+                <h3>文件系统元组身份与不可变对象识别</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>文件系统元组身份，是指用文件系统自带的一组元数据来识别一个文件对象。当天可确认的 stamp 返回 st_dev、st_ino、st_size、st_mtime_ns、st_ctime_ns 五个值，分别对应设备、inode、大小、修改时间纳秒值和状态变更时间纳秒值。它的目标是：在不加载文件字节的情况下，快速判断眼前的文件是不是同一个对象、有没有明显变化线索。要把它和内容摘要区分开。内容摘要是读内容后算出的指纹，元组身份是文件系统记账信息。元组很适合做前置检查，例如入库前后比较同一路径文件的 stamp 是否变化；但材料没有证明 stamp 单独足以强制不可变，也没有证明它碰撞性质等同于内容摘要。更准确地说，它提供的是对象身份和变更线索，不是完整内容真实性证明。可以把它想成图书馆借书卡：书架位置和设备像馆藏编号，大小像书本厚度，修改时间像最后一次被翻动的记录。管理员不读整本书，也能凭卡发现这本书可能被换过或动过；但如果有人把内容秘密替换却让厚度和记录看起来差不多，借书卡本身仍不能证明每一页都没变。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>身份识别与内容真实性是两个层次：元组读取的是文件系统记账字段，不读取内容字节，因此只能支撑对象身份判断。</li>
+                <li>元组适合放进前置检查：入库前后各读一次 stamp，元组变化即说明输入可能被替换或修改，可据此拒绝提交并重新读取。</li>
+                <li>组合证据思想：单一字段不足以证明整体状态，元组能证明什么、不能证明什么必须说清楚，强制不可变仍需权限、写入规则或内容摘要补足。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设论文 PDF 入库前记录 stamp 为设备号、inode、大小、mtime_ns、ctime_ns。处理结束准备提交时再次读取 stamp；如果元组变化，就可以拒绝提交并要求重新读取输入。反过来，即使元组相同，也仍不能仅凭这一点宣布文件永久不可变，系统还需要额外策略或摘要检查。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为文件元组相同就等于内容完全没变，甚至把它当作不可变证明。材料只能说明 stamp 用于不加载字节时识别文件身份，并未证明它单独足以强制不可变。</li>
+                <li>认为 mtime 和 size 足以发现一切内容变化。某些情况下它们不足以暴露替换，因此还需要权限、写入规则或内容摘要等组合证据。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>知识版本身份与项目 head 指针</td><td>文件元组描述输入文件对象身份，而版本记录描述知识版本的身份、来源运行和密封状态，二者同属身份建模但对象不同。</td></tr>
+                <tr><td>完整检索的多条件证明与证明版本化</td><td>二者都属于组合证据思想：单一字段不足以证明整体状态，必须说明字段能证明什么、不能证明什么。</td></tr>
+                <tr><td>基线快照上的增量知识发布</td><td>增量发布至少要处理输入身份问题，但当天材料没有展示去重算法或来源保留策略。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>哪些输入校验场景可以只用文件系统元组，哪些场景必须再计算内容摘要？</li>
+                <li>文件跨机器复制、备份恢复或 inode 复用时，基于文件系统元组的身份判断会怎样失效？</li>
+                <li>如果要真正强制不可变，数据库约束、文件权限、应用层写入规则和内容摘要应如何分层配合？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="knowledge-version-and-project-head">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 数据建模</p>
+                <h3>知识版本身份与项目 head 指针</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>知识版本身份与项目 head 指针，是把两件事拆开记录：第一，系统里存在哪些知识版本，每个版本是什么来历、基于哪个旧版本、是否就绪或密封；第二，某个项目当前对外可见的到底是哪一个版本。当天材料中，knowledge_versions 含 source_run_id 唯一约束、base_version_id、manifest、manifest_digest、ready_proof、sealed、published_at；knowledge_project_heads 保存项目当前版本指针。这种拆分很实用：版本记录像厚档案，记录来源运行、基版本关系、清单摘要、就绪证明和密封状态；head 指针像一块小小的当前指示牌。一个版本可以已经被构建、甚至有就绪证明，但只要 head 没换，它就不是项目当前可见版本。材料能确认这些字段和指针结构存在，但没有展示 head 更新是否使用事务、锁或比较并交换，所以不能把数据模型直接等同于完整原子发布协议。可以类比馆里多种版本的百科全书：每本都有版本号、修订来源和盖章状态，但前台不是把所有新书都摊给读者，而是有一块当前推荐指示牌；新版本到馆、盖章、写好来源，不等于前台指示牌已经换过去，读者看到哪一版由指示牌决定。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>身份分层：版本记录回答“系统里有哪些版本、来历如何”，head 指针回答“项目当前对外可见哪一个”，两个问题由不同数据结构承担。</li>
+                <li>可见性由指针决定：sealed、ready_proof、published_at 等状态线索只说明版本自身状态，不自动等于读取方可见，必须经由 head 指向。</li>
+                <li>数据模型不等于发布协议：材料只确认字段与指针结构存在，head 更新的并发控制方式未被展示，需要事务、锁或比较并交换等后续证据。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>项目 P 构建了版本 v7，记录来源运行、基版本 v6、manifest 和 manifest_digest，并带有 ready_proof 与 sealed 状态。但 knowledge_project_heads 仍指向 v6 时，按当前指针读取的项目仍应看到 v6；只有发布协议把 head 更新到 v7，v7 才成为当前可见版本。当天材料没有展示更新 head 的完整并发控制，因此这个例子只说明数据模型的分工。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为知识版本构建完成、sealed 为真或已写入 published_at，就等于所有读取方立刻看到它。材料把版本记录与项目 head 指针分开表达，说明当前可见性还需要指针指向。</li>
+                <li>认为 head 指针指向的版本内容可以随意修改。材料并未证明版本不可变的强制方式，只能确认存在 sealed、ready_proof 等状态线索。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>完整检索的多条件证明与证明版本化</td><td>检索是否完整会影响 no-change 或发布判断，进而影响是否形成新知识版本。</td></tr>
+                <tr><td>构建视图与发布协议隔离</td><td>构建视图产生候选产物，而版本与 head 指针处理对外可见性，二者不是同一个阶段。</td></tr>
+                <tr><td>文件系统元组身份与不可变对象识别</td><td>同属身份建模：一个识别输入文件对象，一个识别知识版本及其当前项目指针。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>head 指针从旧版本切换到新版本时，如何保证版本密封、发布记录和指针更新处于一致状态？</li>
+                <li>知识版本的不可变性到底由数据库约束、迁移触发器还是应用层写入规则保证？</li>
+                <li>manifest_digest 具体对哪些内容计算，算法变化后旧版本应如何解释和核验？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="complete-retrieval-multi-condition-proof">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 数学 / 数据工程</p>
+                <h3>完整检索的多条件证明与证明版本化</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>完整检索的多条件证明，是指判断一次检索是否完整时，不能只看一个计数。当天材料显示，paper_retrieval.py 的 normalize 会返回 complete；arXiv 在 total 等于 0 时，还要求没有 rel=next 且 startIndex 为 0；一致性判断改为 complete 并且 total 等于 first_total。run_worker.py 还校验 provider 的 items 是 list、长度不超过预算、skipped_date 是非负整数，并写入 retrieval_proof_version 等于 2；exhausted_sources 的事实要求是四元组且第四项为整数；_complete_retrieval 还校验 term 集合、source/config 集合与冻结来源一致。这背后的逻辑是：完整性等于分页标记、计数一致、跳过事实、来源穷尽事实、集合一致和证明版本的联合谓词。空结果尤其不能草率，因为 total 等于 0 可能只是没翻完、起始位置不对或来源没穷尽。证明版本化也很关键：旧 worker 写下的旧证明，不能自动冒充新版本完整性证明。可以类比管理员去图书馆查某主题的书，回来说没有：你不能只听这一句，要问目录是否翻到最后一页、起始索引是否从正确位置开始、有没有跳过某些日期、所有应查来源是否穷尽、查询词与来源清单是否与最初冻结的同一套，只有这些条件一起成立，没有找到书才算一次完整的空结果。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>完整性是联合谓词：分页标记、计数一致、跳过事实、来源穷尽事实、集合一致与证明版本必须同时成立，任何单项都只是必要条件。</li>
+                <li>空结果与计数相等都是弱证据：total 等于 0 可能只是没翻完、起始位置不对或来源未穷尽；数量相同但范围不同不能视为等价。</li>
+                <li>证明需要版本化：retrieval_proof_version 标明证明所用规则版本，旧版本证明不能自动冒充新版本完整性证明，no-change 或确认必须引用对应版本。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一次 arXiv 查询返回 total 等于 0。如果还存在下一页标记，或者 startIndex 不是 0，就不能判定 complete。又比如 total 等于 first_total，但 selected_terms 形成的集合与预期 term 集合不一致，_complete_retrieval 也不能通过。运行结果会带上 retrieval_proof_version 等于 2，后续 no-change 或确认必须引用这个版本化证明，而不是只看一个零结果。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为 total 等于 0 或 total 等于 first_total 就证明检索完整。材料明确把零结果与 rel=next、startIndex 等条件联合判断，还检查 skipped_date、exhausted_sources 和集合一致性。</li>
+                <li>忽略 retrieval_proof_version，把旧版本证明当成新版本证明；证明版本不同就不能直接视为等价。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>作用域摘要作为范围指纹</td><td>材料显示 retrieval_proof_version 会被条件性纳入 match_scope_digest，证明版本变化会改变范围指纹。</td></tr>
+                <tr><td>只读预览与 no-change 提交分离</td><td>只有完整检索证明成立时，只命中既有论文或空检索才更适合作为 no-change 判断的依据。</td></tr>
+                <tr><td>知识版本身份与项目 head 指针</td><td>检索完整性影响是否进入无变更分支或形成新版本，但最终对外可见性仍由版本与 head 指针表达。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>不同论文提供方的分页、游标和总数字段不一致时，如何设计统一的完整性证明接口？</li>
+                <li>retrieval_proof_version 升级后，旧运行结果应如何解释、重放或标记为不可直接复用？</li>
+                <li>空检索与来源服务异常应如何区分，并如何记录集合一致性失败的具体原因？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念形成一条从输入到输出的可靠性链。文件系统元组提供轻量的对象身份线索，但它不是内容摘要，也不能单独证明不可变；完整检索证明把分页标记、计数一致、跳过事实、来源穷尽、集合一致性和证明版本联合起来，避免把计数相等误当成范围穷尽；知识版本身份与项目 head 指针则把版本记录和当前可见指针分开，说明构建完成或版本密封不等于项目已经对外可见。检索证明与作用域摘要可以约束 no-change 与确认的范围，版本记录通过 manifest、manifest_digest、ready_proof、sealed 等字段表达就绪与密封状态，head 指针再表达当前可见版本。材料能确认的是这些字段、路径和协议边界存在；事务、锁、比较并交换、摘要哈希算法和不可变的强制机制仍未被完整展示，只能作为需要后续证据的开放问题。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">单一字段不能冒充完整结论：文件元组不等于内容摘要，total 计数不等于检索完整，构建完成也不等于项目 head 已指向新版本。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>哪些输入校验场景可以只用文件系统元组，哪些场景必须再计算内容摘要？</li>
+            <li>head 指针从旧版本切换到新版本时，如何保证版本密封、发布记录和指针更新处于一致状态？</li>
+            <li>不同论文提供方的分页、游标和总数字段不一致时，如何设计统一的完整性证明接口？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>

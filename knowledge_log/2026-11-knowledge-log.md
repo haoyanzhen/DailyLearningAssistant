@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-11/2026-11-03-learning-report.html">2026-11-03</a>
+      </td>
+      <td>文件系统元组身份与不可变对象识别</td>
+      <td>计算机科学 / 操作系统 / 安全</td>
+      <td>★★</td>
+      <td>文件系统元组是轻量的对象身份与变更线索，不是内容完整性或不可变性的单独证明。</td>
+      <td>下一次可结合 manifest_digest 等内容摘要以及数据库约束、应用层写入规则继续深化；需要补充哈希算法、权限模型和强制不可变的运行证据，今天只讲到 immutable_files.py 的 stamp 字段层。</td>
+    </tr>
+    <tr>
+      <td>知识版本身份与项目 head 指针</td>
+      <td>软件工程 / 数据建模</td>
+      <td>★★★</td>
+      <td>版本记录回答系统有哪些知识版本，项目 head 指针回答当前对外可见的是哪一个版本。</td>
+      <td>下一次可结合版本不可变约束、head 切换原子性和 manifest_digest 算法继续深化；需要补充迁移约束、事务或比较并交换实现证据，今天只讲到 0017_knowledge_versions 的数据模型层。</td>
+    </tr>
+    <tr>
+      <td>完整检索的多条件证明与证明版本化</td>
+      <td>计算机科学 / 数学 / 数据工程</td>
+      <td>★★★★</td>
+      <td>检索完整是一组联合谓词和一个版本化证明，而不是一个 total 计数。</td>
+      <td>下一次可结合作用域摘要、只读预览、no-change 提交和集合相等失败路径继续深化；需要补充提供方适配层、摘要算法和异常记录证据，今天只到 paper_retrieval.py 与 run_worker.py 可见字段和判断条件层。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-11/2026-11-02-learning-report.html">2026-11-02</a>
       </td>
       <td>模型上下文窗口容量配置与参数校验</td>
