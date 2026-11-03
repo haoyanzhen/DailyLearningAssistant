@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-11-04 学习笔记日报</title>
+    <meta name="description" content="先按结构校验把非法请求挡在业务逻辑外，再把排除决策绑定到已发布版本与固定成员，最后由数据库触发器对构建固定保护做受控释放。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261104-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-11-04</p>
+        <h1>从请求形状到受控放行：三层边界的一天</h1>
+        <p>今天用三个不同原理的局部证据，串起一条从外部请求到内部保护的链：接口先校验形状，版本化派生决策再绑定快照，数据库触发器最后把关放行条件。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>请求形状校验 → 版本化派生决策…</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>结构化目标选择契约与显式校…</strong>
+                <small>先定形状再谈业务：结构不合法报 4…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>显式排除作为版本化派生决策</strong>
+                <small>排除不是销毁，而是在某一版目录上做…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>终态运行对构建固定保护的受…</strong>
+                <small>运行终态只是一把钥匙，开门还要凑齐…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念构成一条从外部请求到内部保护的链：第一个规定哪些目标可以合法进入操作，解决“请求结构是否成立”；第二个规定合法目标如何相对于某个已发布版本和固定成员集合形成排除决策，解决“决策绑定到哪份知识快照”；第三个从数据库边界保护运行和构建固定，解决“在什么状态组合下才允许释放保护”。它们共同体现：接口校验、版本身份和数据库不变量不属于同一层，不能用一个层面的检查替代另一个层面。证据边界上，422、head、pinned_manifest 与触发器条件都有局部 diff 支撑，但完整算法、后续视图、异常到 API 错误的映射仍需完整材料确认。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["请求形状校验 → 版本化派生决策 → 数据库受控释放"])
+  concept1["结构化目标选择契约与显式校验错误"]
+  hub --&gt; concept1
+  concept2["显式排除作为版本化派生决策"]
+  hub --&gt; concept2
+  concept3["终态运行对构建固定保护的受控释放"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["请求形状校验 → 版本化派生决策 → 数据库受控释放"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept2
+  concept3 --&gt; concept1
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="structured-target-selection-contract">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>结构化目标选择契约与显式校验错误</h3>
+              <p>Structured Target Selection Contract</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">先定形状再谈业务：结构不合法报 422，状态不允许才是 409。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>当 scope 等于 selected 时，顶层只允许出现 scope 与 targets，targets 必须是非空列表。</li>
+                <li>每个 target 只能有 kind 和 id 两个字段，kind 只能取 paper 或 material，id 必须是字符串。</li>
+                <li>不满足形状时返回 VALIDATION_FIELD_INVALID 与 422；422 表示结构或字段值不合法，409 表示结构合法但当前状态不允许操作。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="structured-target-selection-contract" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="explicit-exclusion-versioned-derived-decision">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数据建模 / 软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>显式排除作为版本化派生决策</h3>
+              <p>Versioned Derived Exclusion Decision</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">排除不是销毁，而是在某一版目录上做标记；目录换了，旧标记不能悄悄沿用。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>显式排除不是把论文或材料实体从数据库删掉，而是记录相对于某个已发布版本、固定成员中哪些目标被排除。</li>
+                <li>操作会读取项目当前 heads.version_id，不存在时返回 409；pinned_manifest 与 pinned_revisions 用不可变 ID 表达成员关系，而不是打开实体按当前内容临时判断。</li>
+                <li>文件说明提到写入冲突保护，说明版本在检查与提交之间变化时需有冲突处理；但完整移除、冲突与回收算法在采样中被截断，只能确认设计方向。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="explicit-exclusion-versioned-derived-decision" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="controlled-release-of-build-pin">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 数据库</span>
+                <span class="tag warm">★★★★★</span>
+              </div>
+              <h3>终态运行对构建固定保护的受控释放</h3>
+              <p>Controlled Release of Build Pin Protection</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">运行终态只是一把钥匙，开门还要凑齐清理申请、运行归属、版本未封和尝试编号。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>迁移 0019_run_temporary_cleanup.py 重定义了 rpb_guard_build_pin_mutation()，在 DELETE 场景下执行受控释放。</li>
+                <li>释放需要同时满足：construction_runs 状态为 failed/cancelled/succeeded；payload 中 temporary_cleanup.state 为 queued；source_run_id 与当前运行匹配；版本未密封；ready_proof 中 attempt_id 与当前尝试匹配。</li>
+                <li>否则触发器抛出 build protection needs controlled release，把“能否释放”从单一判断变成数据库边界上的多条件不变量。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="controlled-release-of-build-pin" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="structured-target-selection-contract">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程</p>
+                <h3>结构化目标选择契约与显式校验错误</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>这段代码处理的是当 scope 等于 selected 时的请求。它要求顶层只能有 scope 和 targets；targets 必须是非空列表；每个 target 只能有 kind 和 id；kind 只能是 paper 或 material；id 必须是字符串。不合法时返回 VALIDATION_FIELD_INVALID 和 422。背后的理念是：先定义合法请求域，把不符合形状的输入挡在业务逻辑外面，让后面的排除决策只处理可预期数据。它像填表时必须按栏目填写，不能多填、漏填或把项目写错——像体育比赛报名表，一张表只允许填姓名和项目，项目只能是跑步或跳远；多填一栏、项目写错、名单为空，报名系统直接退回，而不是让裁判到赛场再猜。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>先定义合法请求域：顶层只允许 scope 与 targets，targets 必须为非空列表，从入口收窄输入空间。</li>
+                <li>再约束成员形状与取值：每个 target 只允许 kind 与 id，kind 是 paper 或 material 的枚举，id 必须是字符串。</li>
+                <li>不合法时立即以 VALIDATION_FIELD_INVALID 和 422 显式失败，使后续排除决策只面对可预期数据，与状态类失败 409 分层。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>scope 为 selected，targets 里放一个 {kind:"paper", id:"p1"} 是合法形状；如果 target 多出 title 字段、kind 写成 dataset，或 targets 为空，就会进入 VALIDATION_FIELD_INVALID 或 422。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为接口收到 paper 或 material 就能处理，忽略了字段集合、枚举取值与非空列表这些形状约束。</li>
+                <li>把 422 和 409 混为一谈：422 表示请求结构或字段值不合法，409 表示结构可能合法但当前状态不允许操作。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>显式排除作为版本化派生决策</td><td>前者规定哪些目标形状可以进入排除决策，后者再处理这些目标相对于哪个已发布版本被排除。</td></tr>
+                <tr><td>终态运行对构建固定保护的受控释放</td><td>前者是外部请求的结构校验，后者是数据库触发器执行的内部不变量，两者处在不同边界，不能互相替代。</td></tr>
+                <tr><td>请求形状校验 → 版本化派生决策 → 数据库受控释放</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>完整 OpenAPI 契约是否把 scope、targets、kind、id 的约束表达得和局部 diff 一致？</li>
+                <li>前端 AssociationRemoval.tsx 如何把 422 校验错误展示给用户，是否存在字段级错误映射？</li>
+                <li>系统是否拒绝未知字段，还是只校验已知字段？这需要完整实现或测试证据确认。</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="explicit-exclusion-versioned-derived-decision">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数据建模 / 软件工程</p>
+                <h3>显式排除作为版本化派生决策</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>在今天的提交主题中，显式排除不是把论文或材料实体从数据库里删掉，而是记录“相对于某个已发布版本、这些固定成员中的哪些目标被排除”。局部证据显示操作会读取项目当前 heads.version_id；不存在时返回 409。固定清单线索进一步说明，系统通过 pinned_manifest 和 pinned_revisions 用不可变 ID 表达成员关系，而不是打开论文实体按当前内容临时判断。这样，排除决策绑定的是精确的已发布修订和成员集合。文件说明还提到写入冲突，说明如果版本在检查和提交之间发生变化，需要有冲突保护；但完整移除、冲突和回收算法在采样中被截断，只能确认设计方向。它像博物馆的某一版展品目录：决定某件展品“本次不展”时，不是把藏品销毁，而是在这一版目录上做标记；下一版目录可以重新决定，若目录版本换了，旧标记不能悄悄套到新目录上。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>排除的对象是派生决策而非实体：论文或材料实体保留，排除结果只存在于针对某个已发布版本的派生层。</li>
+                <li>决策绑定精确快照：读取项目当前 heads.version_id，成员关系由 pinned_manifest 与 pinned_revisions 的不可变 ID 表达，不按实体当前内容临时判断。</li>
+                <li>版本状态是前置条件：head 不存在时返回 409；版本在检查与提交之间变化时需要冲突保护，具体算法待确认。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>版本 A 的固定清单包含论文 p1 和材料 m1，用户选择从版本 A 排除 p1；论文实体 p1 仍在，只是版本 A 的这次发布派生结果不含它。若操作期间 head 已切到版本 B，则需要冲突保护或拒绝，不能把针对 A 的排除直接作用到 B。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把排除理解成删除原实体，以为排除之后论文或材料本身就不存在了。</li>
+                <li>以为 head 一变旧的排除还能自动适用，忽略排除应绑定已发布修订和固定成员，冲突检测算法仍待确认。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>结构化目标选择契约与显式校验错误</td><td>前者用 scope 和 targets 规定可进入排除请求的目标形状，后者再把这些目标绑定到已发布版本和固定成员集合。</td></tr>
+                <tr><td>终态运行对构建固定保护的受控释放</td><td>前者依赖版本是否已发布、是否密封等状态，后者的触发器也检查版本未密封等条件，二者都说明版本状态会影响允许的操作。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>完整排除算法如何检测写入冲突，是使用事务、锁、compare-and-set，还是其他机制？</li>
+                <li>当 head 从版本 A 切换到版本 B 时，针对 A 的排除决策应拒绝、重试还是保留为历史派生记录？</li>
+                <li>排除决策如何审计和回收，才能既保留可追溯性又不影响后续发布？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="controlled-release-of-build-pin">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 数据库</p>
+                <h3>终态运行对构建固定保护的受控释放</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>迁移 0019_run_temporary_cleanup.py 重定义了 rpb_guard_build_pin_mutation()。在 DELETE 场景下，一个运行要释放自己的构建固定保护，必须同时满足多个条件：construction_runs 状态是 failed、cancelled 或 succeeded；payload 里的 temporary_cleanup.state 是 queued；source_run_id 与当前运行匹配；版本未密封；ready_proof 里的 attempt_id 与当前尝试匹配。否则触发器抛出 build protection needs controlled release。这个机制把“能不能释放保护”从单一判断变成数据库边界上的不变量：运行终态只是条件之一，资源归属、清理请求、版本状态和尝试身份也必须对上。它像银行保险库的多把钥匙：账户已结清只是第一把钥匙，还要有清理申请、本人身份、保险库未被封存、本次操作编号一致，缺一项都不能开门。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>释放条件是多条件合取：运行终态、清理请求状态、运行归属、版本密封状态、尝试身份五项必须同时成立，缺一项即失败。</li>
+                <li>保护由数据库层执行：触发器在 DELETE 时判断条件并抛出 build protection needs controlled release，应用层检查过也不足够。</li>
+                <li>版本状态作为共享前置条件：与版本化派生决策一样，未密封状态决定了操作是否被允许。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一个运行已经 succeeded，但 ready_proof.attempt_id 与当前尝试不一致，或版本已经 sealed，或 source_run_id 不匹配，那么 DELETE 释放保护会被触发器拒绝，并给出 build protection needs controlled release。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为运行成功或失败之后就能直接删除保护，忽略了整理清理请求、运行归属、版本状态与尝试身份。</li>
+                <li>以为应用层检查过就够了，忽略这里的证据显示触发器会在数据库层拒绝不满足组合条件的释放。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>显式排除作为版本化派生决策</td><td>后者的排除决策依赖已发布版本和固定成员，前者的释放条件也检查版本未密封与运行身份，说明版本状态是多种操作共同的前置条件。</td></tr>
+                <tr><td>结构化目标选择契约与显式校验错误</td><td>一个是接口层 422 结构校验，一个是数据库层触发器不变量；材料分别展示二者，但没有证明触发器异常如何映射成外部 API 错误。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>完整迁移是否还包含其他释放路径、后续视图或补偿任务，当前采样为何被截断？</li>
+                <li>当 attempt_id 或 source_run_id 不匹配时，系统如何恢复、重试或人工修复，而不破坏保护？</li>
+                <li>数据库触发器抛出的 build protection needs controlled release 最终如何映射到 API 错误和审计记录？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念构成一条从外部请求到内部保护的链：第一个规定哪些目标可以合法进入操作，解决“请求结构是否成立”；第二个规定合法目标如何相对于某个已发布版本和固定成员集合形成排除决策，解决“决策绑定到哪份知识快照”；第三个从数据库边界保护运行和构建固定，解决“在什么状态组合下才允许释放保护”。它们共同体现：接口校验、版本身份和数据库不变量不属于同一层，不能用一个层面的检查替代另一个层面。证据边界上，422、head、pinned_manifest 与触发器条件都有局部 diff 支撑，但完整算法、后续视图、异常到 API 错误的映射仍需完整材料确认。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">接口校验、版本身份和数据库不变量不是同一层的事情，不能用一个层面的检查替代另一个层面。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>完整 OpenAPI 契约是否把 scope、targets、kind、id 的约束表达得与局部 diff 一致？</li>
+            <li>完整排除算法如何检测写入冲突，是事务、锁、compare-and-set，还是其他机制？</li>
+            <li>数据库触发器抛出的 build protection needs controlled release 最终如何映射到 API 错误和审计记录？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>

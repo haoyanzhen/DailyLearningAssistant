@@ -3,6 +3,96 @@
   "year_month": "2026-11",
   "threads": [
     {
+      "id": "2026-11-04-concept-fe69295c63",
+      "question": "当 head 从版本 A 切换到版本 B 时，针对 A 的排除决策应拒绝、重试还是保留为历史派生记录？",
+      "source_date": "2026-11-04",
+      "source_concept": "显式排除作为版本化派生决策",
+      "domain": "数据建模 / 软件工程",
+      "status": "open",
+      "created_at": "2026-11-04T06:04:50.695816+08:00",
+      "updated_at": "2026-11-04T06:04:50.695816+08:00"
+    },
+    {
+      "id": "2026-11-04-concept-fe60eb766c",
+      "question": "完整 OpenAPI 契约是否把 scope、targets、kind、id 的约束表达得和局部 diff 一致？",
+      "source_date": "2026-11-04",
+      "source_concept": "结构化目标选择契约与显式校验错误",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-11-04T06:04:50.695816+08:00",
+      "updated_at": "2026-11-04T06:04:50.695816+08:00"
+    },
+    {
+      "id": "2026-11-04-concept-ddcd24a620",
+      "question": "前端 AssociationRemoval.tsx 如何把 422 校验错误展示给用户，是否存在字段级错误映射？",
+      "source_date": "2026-11-04",
+      "source_concept": "结构化目标选择契约与显式校验错误",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-11-04T06:04:50.695816+08:00",
+      "updated_at": "2026-11-04T06:04:50.695816+08:00"
+    },
+    {
+      "id": "2026-11-04-concept-b35b4d52a5",
+      "question": "完整迁移是否还包含其他释放路径、后续视图或补偿任务，当前采样为何被截断？",
+      "source_date": "2026-11-04",
+      "source_concept": "终态运行对构建固定保护的受控释放",
+      "domain": "软件工程 / 数据库",
+      "status": "open",
+      "created_at": "2026-11-04T06:04:50.695816+08:00",
+      "updated_at": "2026-11-04T06:04:50.695816+08:00"
+    },
+    {
+      "id": "2026-11-04-concept-8226ca59d8",
+      "question": "排除决策如何审计和回收，才能既保留可追溯性又不影响后续发布？",
+      "source_date": "2026-11-04",
+      "source_concept": "显式排除作为版本化派生决策",
+      "domain": "数据建模 / 软件工程",
+      "status": "open",
+      "created_at": "2026-11-04T06:04:50.695816+08:00",
+      "updated_at": "2026-11-04T06:04:50.695816+08:00"
+    },
+    {
+      "id": "2026-11-04-concept-63dc61d444",
+      "question": "数据库触发器抛出的 build protection needs controlled release 最终如何映射到 API 错误和审计记录？",
+      "source_date": "2026-11-04",
+      "source_concept": "终态运行对构建固定保护的受控释放",
+      "domain": "软件工程 / 数据库",
+      "status": "open",
+      "created_at": "2026-11-04T06:04:50.695816+08:00",
+      "updated_at": "2026-11-04T06:04:50.695816+08:00"
+    },
+    {
+      "id": "2026-11-04-concept-1604f7121f",
+      "question": "系统是否拒绝未知字段，还是只校验已知字段？这需要完整实现或测试证据确认。",
+      "source_date": "2026-11-04",
+      "source_concept": "结构化目标选择契约与显式校验错误",
+      "domain": "计算机科学 / 软件工程",
+      "status": "open",
+      "created_at": "2026-11-04T06:04:50.695816+08:00",
+      "updated_at": "2026-11-04T06:04:50.695816+08:00"
+    },
+    {
+      "id": "2026-11-04-concept-15f0c19c7e",
+      "question": "完整排除算法如何检测写入冲突，是使用事务、锁、compare-and-set，还是其他机制？",
+      "source_date": "2026-11-04",
+      "source_concept": "显式排除作为版本化派生决策",
+      "domain": "数据建模 / 软件工程",
+      "status": "open",
+      "created_at": "2026-11-04T06:04:50.695816+08:00",
+      "updated_at": "2026-11-04T06:04:50.695816+08:00"
+    },
+    {
+      "id": "2026-11-04-concept-0799e526d3",
+      "question": "当 attempt_id 或 source_run_id 不匹配时，系统如何恢复、重试或人工修复，而不破坏保护？",
+      "source_date": "2026-11-04",
+      "source_concept": "终态运行对构建固定保护的受控释放",
+      "domain": "软件工程 / 数据库",
+      "status": "open",
+      "created_at": "2026-11-04T06:04:50.695816+08:00",
+      "updated_at": "2026-11-04T06:04:50.695816+08:00"
+    },
+    {
       "id": "2026-11-03-head-d46a2eb97a",
       "question": "manifest_digest 具体对哪些内容计算，算法变化后旧版本应如何解释和核验？",
       "source_date": "2026-11-03",
