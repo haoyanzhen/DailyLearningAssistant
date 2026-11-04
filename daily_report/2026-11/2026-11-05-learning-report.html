@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-11-05 学习笔记日报</title>
+    <meta name="description" content="当天无新增可确认变化，主线转为就近深化：以合取守卫受控释放，用集合相等证明检索完整，以冻结参数守住调用边界。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261105-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-11-05</p>
+        <h1>把“我觉得没问题”换成可复核的判据</h1>
+        <p>当天没有可确认的新增技术变化，学习从既有证据继续深化：动作如何被放行、结果如何被证明、请求如何被冻结。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>显式判据：守卫、证明与冻结</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>终态运行对构建固定保护的受…</strong>
+                <small>五个条件同时成立才放行，数据库触发…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>完整检索的多条件证明与证明…</strong>
+                <small>数量对上不算齐，集合相等且证明带版…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>单次冻结参数请求与显式失败…</strong>
+                <small>参数一次冻结，条件不成立就显式失败。</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念共享同一内核：把隐式的、靠感觉的判断，换成显式的、可被他人复核的判据。守卫把“运行结束了，那就清掉吧”换成“五个条件同时成立才可以清”；集合相等证明把“数量对上了，那就齐了吧”换成“应有集合与实得集合相等，且这个相等绑定在可复现的版本条件上”；参数冻结把“缺字段给默认值、冲突就重试几次”换成“参数不许变，不符合就明确失败”。三者还互相解释：清理条件需要 attempt_id，是因为尝试身份必须被冻结；检索证明要带版本与摘要，是因为证明不绑定条件就无法复核。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["显式判据：守卫、证明与冻结"])
+  concept1["终态运行对构建固定保护的受控释放"]
+  hub --&gt; concept1
+  concept2["完整检索的多条件证明与证明版本化"]
+  hub --&gt; concept2
+  concept3["单次冻结参数请求与显式失败边界"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["显式判据：守卫、证明与冻结"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="controlled-release-terminal-run">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 数据库</span>
+                <span class="tag warm">★★★★★</span>
+              </div>
+              <h3>终态运行对构建固定保护的受控释放</h3>
+              <p>Controlled Release of Build-Fixed Protection at Terminal Run</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">五个条件同时成立才放行，数据库触发器做唯一裁判。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>释放许可必须是合取条件：终态、清理状态、运行归属、版本密封状态与 attempt_id 同时成立才放行。</li>
+                <li>把判断与执行放进数据库触发器，让多个应用实例共享同一个裁判，并在一次事务里原子完成裁决与清理。</li>
+                <li>attempt_id 是每次尝试的专用通行证，旧流程不能拿过期身份清理当前运行。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="controlled-release-terminal-run" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="complete-retrieval-proof-versioning">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 数学 / 数据工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>完整检索的多条件证明与证明版本化</h3>
+              <p>Multi-condition Proof of Complete Retrieval and Proof Versioning</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">数量对上不算齐，集合相等且证明带版本才算完整。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>计数相等只是必要条件：128 条里可能有重复、越界，同时又漏掉真正该有的条目。</li>
+                <li>完整性要用双向集合判定：应有集合与实际集合相等，少了要报，多了、重复、越界也要报。</li>
+                <li>证明必须带作用域、时间、提供方与期望集合摘要；检查通过且无变化也要留下 no-change 记录。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="complete-retrieval-proof-versioning" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="frozen-request-failure-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">大语言模型 / 软件工程 / 分布式系统</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>单次冻结参数请求与显式失败边界</h3>
+              <p>Single Frozen-Parameter Request and Explicit Failure Boundary</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">参数一次冻结，条件不成立就显式失败。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>请求发出时冻结模型、温度、提示词、状态版本和超时等参数，整条调用链只看到同一份。</li>
+                <li>缺字段、内容超长、状态版本冲突都要显式失败；默认值、截断和静默重试会把契约破坏推迟到更难排查的位置。</li>
+                <li>分布式下用期望状态版本做比较并交换，冲突就返回，让调用方重新读取，而不是覆盖别人的修改。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="frozen-request-failure-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="controlled-release-terminal-run">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 数据库</p>
+                <h3>终态运行对构建固定保护的受控释放</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>系统跑一次任务时，常会临时搭一套“脚手架”，比如构建固定、临时表或缓存目录；任务结束后，这套脚手架应被拆掉。最直觉的写法是“任务进入终态，就删掉脚手架”。问题是，“进入终态”只是某一个进程认为“我这边结束了”：可能还有重试拿着旧引用读它，版本密封流程可能还没走完，清理本身也可能没做完。此时一刀删掉，别人就会踩空。更稳的做法是把“能不能拆”写成必须同时成立的清单：运行已到终态、清理状态符合、这次运行确实归属这条记录、版本密封状态允许、attempt_id 对得上。五个条件全会合为真，才允许放行；只要有一个不成立，就什么都不做。这个判断不放在应用代码里，而放在数据库触发器里，因为应用可能有多个实例：A 和 B 同时判断“可以清理”，就会重复清理；数据库是它们共同的裁判，能把“判断与执行”做成一次原子动作。attempt_id 的意思是“这是第几次尝试”。上一次失败的旧流程可能还活着，手里握着第 6 次尝试的身份来请求清理，而当前已是第 7 次；如果只检查“运行结束了没”，旧流程就会被误认为合法清理者。把尝试身份写进条件，等于给每次尝试发一张只能自己用的通行证。所以，这个机制的本质不是“多加几个 if 更安全”，而是把“释放”从一个事件升级为一次有资格审核的受控动作。条件是合取而不是析取；现实里最容易出的错是“终态了或者清理状态是 pending 就放行”这类弱化写法，它会让某个单点信号独自拥有一条删除权限。合取的意义就是：任何单一信号都不够，必须凑齐。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>把释放许可写成合取条件：终态、清理状态、运行归属、版本密封状态、attempt_id 必须同时成立，任何单一信号都不足以授权删除。</li>
+                <li>把判断与执行放到数据库触发器中，让多个应用实例共享同一个裁判，并在一次事务里原子完成裁决与清理。</li>
+                <li>把 attempt_id 纳入条件，等于给每次尝试发一张专用通行证，避免旧流程用过期身份清理当前运行。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>住酒店退房时，客人说“我走了”，房间不会立刻被清空重卖。前台要先确认账结清了、没有借用物品未归还、房间确实挂在这位客人名下、房间状态允许再售；几个条件都对上，清洁才被允许进门。若只凭一句“客人说他走了”，上一个客人刚出门，下一个客人就可能撞见还没收拾的房间。数据库触发器扮演前台，attempt_id 相当于房卡编号：昨天的旧房卡不能打开今天的房间。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为运行进入终态，临时资源就该立刻回收，把生命周期终点直接当成回收许可。</li>
+                <li>认为条件写在应用层就够了，忽略多个实例并发判断时，两次“可以”会变成两次删除。</li>
+                <li>把多重条件当成冗余的防御性编程，觉得去掉几个条件代码更清爽；每去掉一个条件，就等于把一条删除权限交给某个单独信号。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>完整检索的多条件证明与证明版本化</td><td>守卫回答“这一个动作能不能做”，证明回答“这一批结果全不全”，两者都把模糊感觉换成必须同时成立的明确判据。</td></tr>
+                <tr><td>单次冻结参数请求与显式失败边界</td><td>attempt_id 本身就是一种参数冻结；尝试身份一旦允许被改写，清理条件里的比对就失去分辨力，所以冻结是守卫能成立的前提。</td></tr>
+                <tr><td>显式判据：守卫、证明与冻结</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果已经放行清理之后，版本密封状态又被回滚成未密封，这次清理需不需要补偿，补偿应该由谁发起？</li>
+                <li>触发器里拒绝时应该抛错还是静默返回，才能既不让清理任务丢失、又不产生重复清理？</li>
+                <li>五个条件里哪一个最容易在并发下读到旧值，应该靠行锁、唯一约束还是隔离级别来兜底？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="complete-retrieval-proof-versioning">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 数学 / 数据工程</p>
+                <h3>完整检索的多条件证明与证明版本化</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>我们想让系统回答一个问题：“该找的东西，都找齐了吗？”直觉做法是数数：目标是 128 篇，抓到 128 条，就认为齐了。这个推理其实不成立。数字相等只是必要条件，不是充分条件：128 条里可能有 3 条重复、2 条其实是别的年份的，同时又漏掉了 5 条真正该有的。数量对上了，集合却不相等。真正能当证据的是集合相等：一侧是“按作用域应该有的集合”，另一侧是“实际拿到的集合”，两者相等才算完整；而且这种比较要双向，少了要报，多了、重复、越界也要报。数学上这就是把“完整性”从一个计数问题变成一个集合判定问题。计数是对集合的一个投影，投影相等推不出原集合相等，这就是为什么“total 对上”永远不能单独作为结论。第二个要点是版本化。一句“我检查过，是完整的”，如果不绑定当时的条件，比如作用域是什么、什么时候查的、数据来自哪个提供方、期望集合的指纹是什么，三个月后就没法复核，甚至没法判断这句话是否还适用。所以证明必须带着一份“当时是什么条件”的快照一起存下来。摘要在这里很有用：把一个大集合压成一个短指纹，既能快速比对，也能在事后发现“清单被换过了”。第三点容易被忽视：检查通过、什么都没变，也要留痕。因为“检查过没问题”和“根本没检查”在日志里长得一模一样，只有把 no-change 也记下来，事后才能区分这两件事。这也是为什么完整性的证明不只是一次判断，而是一条可追溯的记录。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>计数是对集合的投影，投影相等推不出原集合相等，因此 total 对上只能算必要条件。</li>
+                <li>完整性要用双向集合判定：应有集合与实际集合相等，少了要报，多了、重复、越界也要报。</li>
+                <li>证明必须绑定作用域、时间、提供方与期望集合摘要，并记录 no-change，才能事后复核。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>仓库盘点时，老板问“货齐不齐”，员工回答“我数了 100 箱，跟清单上的 100 箱一样多”。这可能有问题：两箱是同一批货拆出的重复计数，一箱是别家寄存的，同时还少了一箱真正该在的。只有拿清单逐项核对，既确认每一项都在，又确认没有清单外的东西混进来，才叫盘点完成。考试收卷也一样：数出 30 张卷子，不代表 30 个人都交了，可能有人交了两张，有人一张没交。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为数量对上了就等于完整，忽略重复、越界与缺失可能同时存在。</li>
+                <li>认为检索没有报错就等于完整；正常返回空结果和调用失败是两件完全不同的事，前者是结论，后者是没有结论。</li>
+                <li>认为检查没发现问题就不用记录，结果事后无法区分“查过且没问题”和“忘了查”。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>终态运行对构建固定保护的受控释放</td><td>两者共享同一套表达方式：把“应该没问题”换成一组合取判据，只不过守卫判断的是一个动作，证明判断的是一批结果。</td></tr>
+                <tr><td>单次冻结参数请求与显式失败边界</td><td>检索证明绑定作用域与摘要，参数冻结绑定状态版本，两者都是为了让事后复核有据可依。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>集合相等需要双向比较，那么“多了”这一侧应该用什么字段表达，重复项和越界项要不要分开报？</li>
+                <li>摘要算法如何选择，两个不同集合产生相同指纹的概率该如何评估和接受？</li>
+                <li>当数据提供方分页返回且中途内容发生变化时，一开始确定的期望集合还能成立吗，需要快照语义还是重试语义？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="frozen-request-failure-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 大语言模型 / 软件工程 / 分布式系统</p>
+                <h3>单次冻结参数请求与显式失败边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>一次请求在发出去的那一刻，就应该把它的各项参数定下来：用哪个模型、什么温度、提示词是什么、基于哪个状态版本、超时多久。之后整条调用链看到的必须是同一份，不能在中途被谁悄悄改掉。原因很朴素：如果中途能变，你就无法复现，也无法判断最终结果是由哪一版条件产生的，日志和审计会集体失效。第二件事是失败要显式。缺字段、内容超长、状态版本冲突，都应该明确抛出来，而不是“缺了就用默认值”“太长就截断”“冲突了就重试三次”。默认值和截断看似友好，实际是把一个契约破坏从“立刻能看见”推迟到“几十层调用之后以奇怪形式爆掉”。静默重试更麻烦：重试可能有副作用，比如同一次写入被执行两遍。让调用方知道“你基于的是一个旧状态”，比替它偷偷重试更负责任。第三点是分布式环境下特别明显：读到的状态版本和写入时的状态版本之间有一个时间窗口。带上一份期望的状态版本，服务端发现对不上就明确返回冲突，而不是覆盖别人的修改，这就是比较并交换这类思路的朴素版本。它把“谁后写谁赢”的混战，变成“你基于旧数据，请重新读一遍再决定”。所以冻结和显式失败是一体两面：冻结保证这一次执行的条件是确定的，显式失败保证一旦条件不成立就立刻停下，而不是带着被篡改的条件继续跑。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>请求发出时冻结模型、温度、提示词、状态版本、超时等参数，整条调用链只看到同一份。</li>
+                <li>缺字段、超长、版本冲突必须显式失败；默认值、截断、静默重试会把契约破坏推迟到更难排查的位置。</li>
+                <li>分布式下用期望状态版本做比较并交换，冲突就返回，让调用方重新读取，而不是覆盖别人的修改。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>网上买机票时，你点下确认的那一刻，航班、舱位、价格、乘机人就被锁定成一张订单；系统不会在你付款途中悄悄换成另一个更贵的舱位，也不会因为“字段缺失”就默认给你买另一天的票。医院做手术前的核对单也是同理：病人姓名、部位、术式要一项项核对并签字，中途不许换人换部位。核对单存在的意义，就是让“万一不对”必须在开始之前被发现。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为参数只是一个随时能改的字典，忽略可复现性和审计价值。</li>
+                <li>认为缺字段给默认值更友好，实际上是把契约破坏藏到更难排查的地方。</li>
+                <li>认为重试总能提高成功率，忽略重试可能带来的重复写入与副作用。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>终态运行对构建固定保护的受控释放</td><td>attempt_id 就是一种参数冻结；一旦允许被改写，清理条件里的比对就失去分辨力。</td></tr>
+                <tr><td>完整检索的多条件证明与证明版本化</td><td>检索证明绑定作用域与摘要，请求冻结绑定状态版本，本质都是让事后复核有据可依。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>参数冻结之后，如果上游必须变化，比如某个模型下线，失败边界应该划在哪一层，由谁负责通知调用方？</li>
+                <li>重试要如何保证幂等：靠请求摘要、幂等键，还是靠服务端去重表，三者能否叠加使用？</li>
+                <li>分布式下读到的状态版本与写入时的状态版本之间存在窗口，应该用比较并交换、乐观锁还是别的机制收窄这个窗口？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念共享同一内核：把隐式的、靠感觉的判断，换成显式的、可被他人复核的判据。守卫把“运行结束了，那就清掉吧”换成“五个条件同时成立才可以清”；集合相等证明把“数量对上了，那就齐了吧”换成“应有集合与实得集合相等，且这个相等绑定在可复现的版本条件上”；参数冻结把“缺字段给默认值、冲突就重试几次”换成“参数不许变，不符合就明确失败”。三者还互相解释：清理条件需要 attempt_id，是因为尝试身份必须被冻结；检索证明要带版本与摘要，是因为证明不绑定条件就无法复核。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">守卫、证明、冻结不是三块拼图，而是同一套边界思想在动作、结论、调用三个位置上的三次落点。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>已放行清理后，若版本密封状态又被回滚，这次清理是否需要补偿，补偿应由谁发起？</li>
+            <li>集合相等中的“多了”一侧应如何表达，重复项与越界项是否需要分开报？</li>
+            <li>参数冻结后上游必须变化时，失败边界应划在哪一层，重试幂等又该如何保证？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
