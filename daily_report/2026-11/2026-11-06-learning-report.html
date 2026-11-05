@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-11-06 学习笔记日报</title>
+    <meta name="description" content="今天沿项目作用域、后台刷新与头指针投影三个概念，理解数据库约束、前端状态合并和读模型显式失败如何共同守住状态边界。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261106-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-11-06</p>
+        <h1>从约束到投影：状态边界如何协作</h1>
+        <p>今天用三个由易到难的概念，串联数据库约束、前端异步合并与知识读模型投影，观察状态一致性如何靠边界协作而非单点刷新完成。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>状态边界链：约束 → 合并 → 投影</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>项目作用域聚合与会话生命周…</strong>
+                <small>会话属于项目，合法状态由数据库兜底。</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>后台刷新与本地编辑状态保护</strong>
+                <small>服务器字段更新，用户编辑不丢；过期…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>已发布知识头指针解析与读模…</strong>
+                <small>头指针指方向，密封条件定可用，缺失…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念连成一条状态边界链：数据库约束先定义项目聚合内哪些会话结构合法，头指针解析再把已发布知识版本解析并投影成项目读模型字段，前端后台刷新最后消费这个字段，并且只合并缺失字段以保护本地编辑。它们共同说明：状态一致性不是靠一个“刷新”或一个“字段”完成，而是靠约束、只读边界、显式失败和合并策略协作。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["状态边界链：约束 → 合并 → 投影"])
+  concept1["项目作用域聚合与会话生命周期约束"]
+  hub --&gt; concept1
+  concept2["后台刷新与本地编辑状态保护"]
+  hub --&gt; concept2
+  concept3["已发布知识头指针解析与读模型投影"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["状态边界链：约束 → 合并 → 投影"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept3
+  concept2 --&gt; concept1
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="project-scope-session-lifecycle">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 数据库</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>项目作用域聚合与会话生命周期约束</h3>
+              <p>Project-scoped Aggregate &amp; Session Lifecycle Constraints</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">会话属于项目，合法状态由数据库兜底。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>research_sessions 通过 project_id 外键绑定 projects.id，并设置级联删除，表达会话生命周期从属于项目。</li>
+                <li>(project_id, id) 唯一约束保证项目内地址稳定，status 仅允许 active/archived，标题长度限制为 1–200。</li>
+                <li>数据库约束是最后一道结构边界，调用方绕过应用代码也不能写入非法状态。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="project-scope-session-lifecycle" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="background-refresh-local-edit-protection">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 前端状态管理</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>后台刷新与本地编辑状态保护</h3>
+              <p>Background Refresh &amp; Local Edit State Protection</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">服务器字段更新，用户编辑不丢；过期请求要取消。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>项目已经 active、但还没有 default_knowledge_version_id 时，启动约 5 秒一次的后台轮询，页面隐藏时跳过。</li>
+                <li>用 AbortController 取消过期请求，显式处理 401/403/404，避免旧响应晚到覆盖新状态。</li>
+                <li>拿到新默认版本后只更新当前项目的 default_knowledge_version_id，而不是替换整个项目对象；测试断言编辑中的名称和焦点仍保留。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="background-refresh-local-edit-protection" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="published-knowledge-head-projection">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 数据建模 / 软件工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>已发布知识头指针解析与读模型投影</h3>
+              <p>Published Knowledge Head Resolution &amp; Read Model Projection</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">头指针指方向，密封条件定可用，缺失就显式失败。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>heads.version_id 标量子查询把默认版本投影成 default_knowledge_version_id。</li>
+                <li>latest_published 按 project_id、version_id 关联并只读取 sealed = true 的已发布版本。</li>
+                <li>找不到可用版本时抛出 PERMISSION_RESOURCE_UNAVAILABLE 404，而不是静默返回空。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="published-knowledge-head-projection" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="project-scope-session-lifecycle">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 数据库</p>
+                <h3>项目作用域聚合与会话生命周期约束</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>可以把“项目”想成一间教室，“研究会话”是教室里的座位。座位不能脱离教室单独存在，也不能随便写一个非法状态。当天 5d17517 的 research_tables.py 和 0020_research_sessions 迁移里，research_sessions 通过 project_id 外键绑定 projects.id，并设置级联删除；它还有 (project_id, id) 唯一约束，保证项目内地址稳定；status 只允许 active/archived；标题长度限制为 1–200。这些约束共同表达一个底层理念：研究会话是项目聚合内的对象，生命周期从属于项目，合法状态由数据库边界兜底，而不是只靠应用代码自觉检查。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>聚合归属：project_id 外键把研究会话绑定到项目，级联删除把生命周期从属关系写进数据库结构。</li>
+                <li>稳定性与合法性：(project_id, id) 唯一约束保证项目内地址稳定，status 枚举和标题长度检查限定合法状态与输入范围。</li>
+                <li>边界兜底：约束在数据库层生效，即使调用方绕过应用代码，也不能随便写入非法状态或制造无归属会话。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>项目 P1 下创建一个标题为“文献综述”、状态为 active 的会话可以成功；如果把标题写成空字符串，或把状态写成 pending，就会被约束拒绝。删除项目 P1 时，其研究会话按级联规则一起删除；项目 P2 下的会话不受影响。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为外键只是“引用一下”，不表达生命周期；这里的外键加级联删除明确表达了从属关系。</li>
+                <li>以为状态合法性和长度限制只该写在前端或业务代码里；数据库约束提供最后一道结构边界。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>后台刷新与本地编辑状态保护</td><td>项目处于 active 是启动轮询的条件之一，项目状态约束因此成为前端刷新的触发条件之一。</td></tr>
+                <tr><td>已发布知识头指针解析与读模型投影</td><td>项目作用域提供 project_id 关联，默认知识版本和研究会话读模型都围绕项目定位。</td></tr>
+                <tr><td>状态边界链：约束 → 合并 → 投影</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>研究会话应该采用级联删除还是归档保留，二者的数据生命周期边界如何选择？</li>
+                <li>复合唯一约束 (project_id, id) 与全局主键之间的关系应该怎样设计，才能既保证项目内稳定又不产生歧义？</li>
+                <li>数据库约束能否表达状态迁移而不仅是状态取值，例如从 active 到 archived 的合法路径？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="background-refresh-local-edit-protection">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 前端状态管理</p>
+                <h3>后台刷新与本地编辑状态保护</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>当前端项目已经 active、但还没有 default_knowledge_version_id 时，12c408b 的 BusinessApp.tsx 会启动约 5 秒一次的后台轮询，等待这个字段出现。关键不在于“定时刷新”，而在于刷新方式：页面隐藏时跳过轮询；用 AbortController 取消过期请求；处理 401/403/404；拿到新默认版本后只更新当前项目的 default_knowledge_version_id，而不是替换整个项目对象。测试代码还断言后台刷新期间正在编辑的名称和焦点仍保留。底层理念是：服务器后台数据和用户本地编辑是两个状态源，合并时必须做字段级更新和请求生命周期管理，否则刷新会把用户正在写的内容冲掉。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>双状态源：服务器后台数据与用户本地编辑状态分离，合并时必须做字段级更新，而不是整体对象覆盖。</li>
+                <li>请求生命周期：用 AbortController 取消过期请求，并显式处理 401/403/404，防止旧响应晚到覆盖新状态。</li>
+                <li>触发条件：项目 active 且缺少 default_knowledge_version_id 时才低频轮询，页面隐藏时跳过，减少无意义请求。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>用户正在把项目名称改成“2026 实验”，此时后台轮询发现 default_knowledge_version_id 从空变成 v3。前端只把 v3 写进该字段，项目名称输入框里的文字和光标位置保持不变；如果页面切到后台隐藏，轮询就跳过，避免无意义请求。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为后台轮询就是定时整页刷新或整个对象覆盖；这里的实现恰恰相反，是字段级合并。</li>
+                <li>认为只要请求成功就更安全；如果旧请求晚回来覆盖新状态，也会制造竞态，所以需要 AbortController 取消过期请求。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>已发布知识头指针解析与读模型投影</td><td>后台刷新等待并消费项目读模型中的 default_knowledge_version_id，因此它是头指针投影的下游使用者。</td></tr>
+                <tr><td>项目作用域聚合与会话生命周期约束</td><td>项目处于 active 是启动轮询的条件之一，这与项目作用域和项目状态约束相连。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当服务器返回的新值与本地未保存编辑冲突时，应该自动合并、提示用户还是显式失败？</li>
+                <li>AbortController 取消请求后，如何避免旧响应晚到并覆盖新响应？</li>
+                <li>轮询间隔、页面可见性判断和 401/403/404 处理应该如何统一成可测试的策略？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="published-knowledge-head-projection">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 数据建模 / 软件工程</p>
+                <h3>已发布知识头指针解析与读模型投影</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>可以把知识版本想成图书馆里的书，heads.version_id 是“当前推荐书架”的标牌，versions.sealed = true 表示这本书已经正式上架密封。12c408b 的 project_commands.py 通过 heads.version_id 标量子查询，把默认版本投影成 default_knowledge_version_id；5d17517 的 knowledge_read.py 和 research.py 再通过 latest_published 按 project_id、version_id 关联解析最新已发布版本，找不到时抛出 PERMISSION_RESOURCE_UNAVAILABLE 404。底层理念是：版本事实表和当前头指针分开，读模型不直接暴露原始表，而是把“当前指向哪个版本”和“该版本是否已发布”解析成可用字段。当天能确认的是读路径：heads 指向、sealed 条件、关联解析、字段投影和显式失败；头指针切换时如何保证事务一致性，材料没有完整展示。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>事实与指针分离：版本记录回答系统有哪些知识版本，head 指针只说明当前对外指向哪一个版本。</li>
+                <li>解析与投影：读模型不直接暴露原始表，而是联合 heads 指向、sealed 条件和 latest_published 关联生成可用字段。</li>
+                <li>显式失败：找不到 sealed = true 的可用版本时抛出 PERMISSION_RESOURCE_UNAVAILABLE 404，避免把不可用误当成空结果。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>项目 P 的 heads.version_id 指向 v2，而 v2 的 sealed = true，于是读模型得到 default_knowledge_version_id = v2，研究会话读模型也能暴露 latest_knowledge_version_id = v2。若 heads 缺失，或指向的版本不是已发布状态，latest_published 找不到可用版本，就抛出 PERMISSION_RESOURCE_UNAVAILABLE 404。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把 head 指针当成版本内容本身；头指针只是“当前指向哪个版本”的线索，内容还在版本记录里。</li>
+                <li>以为有版本记录就能读；当天实现只读取 sealed = true 的已发布版本。</li>
+                <li>以为读模型字段就是原表字段的复制；default_knowledge_version_id 是解析和投影出来的派生字段。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>项目作用域聚合与会话生命周期约束</td><td>项目作用域提供 project_id 关联，头指针解析必须围绕某个项目定位当前版本。</td></tr>
+                <tr><td>后台刷新与本地编辑状态保护</td><td>前端后台刷新等待并消费 project 读模型中的 default_knowledge_version_id，是头指针投影的下游使用者。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>head 指针从旧版本切换到新版本时，版本密封、发布记录和指针更新如何保证处于一致状态？</li>
+                <li>知识版本的不可变性到底由数据库约束、迁移触发器还是应用层写入规则保证？</li>
+                <li>读模型解析失败时的 404 应该如何映射到前端轮询和用户提示，而不是被误当成权限问题？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念连成一条状态边界链：数据库约束先定义项目聚合内哪些会话结构合法，头指针解析再把已发布知识版本解析并投影成项目读模型字段，前端后台刷新最后消费这个字段，并且只合并缺失字段以保护本地编辑。它们共同说明：状态一致性不是靠一个“刷新”或一个“字段”完成，而是靠约束、只读边界、显式失败和合并策略协作。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">状态一致性不是靠一次刷新或一个字段完成，而是靠约束、只读边界、显式失败和合并策略协作。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>研究会话应该采用级联删除还是归档保留，二者的数据生命周期边界如何选择？</li>
+            <li>后台刷新遇到服务器新值与本地未保存编辑冲突时，应该自动合并、提示用户还是显式失败？</li>
+            <li>head 指针从旧版本切换到新版本时，版本密封、发布记录和指针更新如何保证处于一致状态？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
