@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-11-07 学习笔记日报</title>
+    <meta name="description" content="今日围绕研究域与知识域读写分离、研究会话读模型状态分层、原子创建回执与重复创建防护，梳理读侧、写侧与权限边界。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261107-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-11-07</p>
+        <h1>2026-11-07 学习笔记日报</h1>
+        <p>今天是无变更复习日，内容来自 2026-11-06 的局部提交证据，围绕研究会话的读侧、写侧与权限边界展开。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>研究会话的读侧、写侧与权限边界</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>研究域与知识域的读写职责分离</strong>
+                <small>展厅只读，工作台可写；引用已发布版…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>研究会话读模型的状态分层</strong>
+                <small>读模型像存档界面：当前章节、上次章…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>原子创建回执与重复创建防护</strong>
+                <small>同一创建意图要能凭 key 被识别…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念共同围绕研究会话如何安全地读知识、展示状态和记录创建事实。研究域与知识域的读写职责分离先划定边界：知识域只读发布版本，研究域拥有会话和创建回执。研究会话读模型的状态分层再说明读侧不能只给一个状态字段，而要把当前发布版本、最近执行版本、当前尝试、可用动作和项目证据标记分开。原子创建回执与重复创建防护则说明写侧需要用复合主键和指纹线索锚定同一创建意图，为后续幂等闭环提供结构基础。这里基于当日材料可确认的是局部 diff 中的字段、表结构、说明和读取结构；完整状态机、强制只读机制、冲突返回、重放语义和运行验证均未完整采样。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["研究会话的读侧、写侧与权限边界"])
+  concept1["研究域与知识域的读写职责分离"]
+  hub --&gt; concept1
+  concept2["研究会话读模型的状态分层"]
+  hub --&gt; concept2
+  concept3["原子创建回执与重复创建防护"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["机器可读契约同步与契约检查"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept2 --&gt; related1
+  concept3 --&gt; related1
+  concept3 --&gt; concept2
+  related2["有数据拒绝降级的 schema 回退保护"]
+  concept3 --&gt; related2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="research-knowledge-read-write-separation">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 数据建模 / 安全</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>研究域与知识域的读写职责分离</h3>
+              <p>Research-Knowledge Read/Write Separation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">展厅只读，工作台可写；引用已发布版本，不直接改知识源。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>研究域拥有 sessions 和 creation receipts，知识域保持只读。</li>
+                <li>knowledge_read.latest_published 只读取 sealed = true 的已发布知识版本。</li>
+                <li>研究过程产生的变化应留在研究域，知识源变化应走发布流程。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="research-knowledge-read-write-separation" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="research-session-read-model-state-layering">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 数据建模 / 计算机科学</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>研究会话读模型的状态分层</h3>
+              <p>Research Session Read Model State Layering</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">读模型像存档界面：当前章节、上次章节、当前挑战、可点按钮、有无证据要分开显示。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>ResearchStore.view 同时暴露 latest_knowledge_version_id、last_execution_knowledge_version_id、current_attempt_id、available_actions 和 no_project_evidence。</li>
+                <li>这些字段分别回答当前发布版本、最近执行版本、当前尝试、允许动作和项目证据标记。</li>
+                <li>合并成单一 status 会丢失语义，例如无法区分当前发布版本和最近执行版本不一致。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="research-session-read-model-state-layering" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="atomic-creation-receipt-duplicate-protection">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 分布式系统 / 数据建模</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>原子创建回执与重复创建防护</h3>
+              <p>Atomic Creation Receipt and Duplicate Creation Protection</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">同一创建意图要能凭 key 被识别，内容变化要能靠指纹线索提示冲突。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>research_create_commands 以 project_id、actor_id、key 的复合主键锚定同一项目、同一操作者、同一调用键的创建意图。</li>
+                <li>fingerprint 字段与 content_digest 导入提示载荷摘要可能参与区分同一键下的不同内容。</li>
+                <li>唯一约束可以阻止完全相同意图的重复插入，但完整幂等闭环仍需冲突、重放和事务边界确认。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="atomic-creation-receipt-duplicate-protection" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="research-knowledge-read-write-separation">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 数据建模 / 安全</p>
+                <h3>研究域与知识域的读写职责分离</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>可以把系统想象成博物馆：知识域是展厅，只展示已经密封发布的版本；研究域是研究员工作台，可以写会话、记录创建回执，但不能直接改展厅里的展品。文件说明写明 “Research owns sessions and creation receipts; Knowledge remains read-only”，并且 knowledge_read.latest_published 只读取 sealed = true 的已发布知识版本。研究域引用知识域时，拿到的是已发布、已密封的稳定来源，而不是可被研究过程随意修改的草稿。这个设计的好处是责任清楚：研究过程产生的变化应留在研究域，知识源的变化应走发布流程。需要谨慎的是，材料只确认了说明和读取结构，数据库约束、触发器或应用层如何强制只读尚未采样，因此不能断言不可变性已经被某一层完全强制。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>领域边界：研究域负责可变研究状态，知识域负责稳定发布来源。</li>
+                <li>读取约束：latest_published 只读 sealed = true，使引用指向已发布版本。</li>
+                <li>变更路径：研究过程不直接修改知识版本，而是生成研究域记录或新的知识发布版本。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一个研究项目引用知识版本 KV-100，研究会话中 latest_knowledge_version_id = KV-100。研究员想新增一条知识，正确做法是在研究域创建新的会话、回执或待发布版本，而不是直接 UPDATE 知识域中 KV-100 的内容。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把“知识域只读”当成一句注释约定，认为只要代码里写了只读就一定有强制机制。</li>
+                <li>认为研究域引用了某个知识版本后，就可以直接修改这个版本，而不是基于它生成新的研究域记录或新的知识发布版本。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>研究会话读模型的状态分层</td><td>研究域与知识域的读写职责分离为研究会话读模型的状态分层提供读取边界，因为 latest_knowledge_version_id 只能来自知识域已发布版本。</td></tr>
+                <tr><td>原子创建回执与重复创建防护</td><td>研究域与知识域的读写职责分离和原子创建回执与重复创建防护共同构成写入边界，研究域拥有创建回执，但知识域不被研究命令直接改写。</td></tr>
+                <tr><td>机器可读契约同步与契约检查</td><td>研究域与知识域的读写职责分离也可由机器可读契约同步与契约检查进一步表达为接口约束，但当前材料只确认领域说明和读取结构，未确认契约覆盖细节。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>知识版本的不可变性到底由数据库约束、迁移触发器还是应用层写入规则保证？</li>
+                <li>如果研究域需要基于旧知识版本生成新知识，应通过哪个写入路径创建新版本？</li>
+                <li>如何设计接口错误，让调用方明确知道不能直接修改知识域？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="research-session-read-model-state-layering">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 数据建模 / 计算机科学</p>
+                <h3>研究会话读模型的状态分层</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>读模型可以理解为给前端或调用方看的状态快照，它不是把数据库表原样丢出去，而是把不同时间维度和操作维度拆成清楚的字段。ResearchStore.view 同时暴露 latest_knowledge_version_id、last_execution_knowledge_version_id、current_attempt_id、available_actions 和 no_project_evidence。这些字段分别回答不同问题：当前已发布知识版本是哪个，最近一次执行绑定的是哪个版本，当前尝试是哪一次，现在允许做哪些动作，以及是否存在项目证据的派生标记。若把它们合并成一个 status 字段，就会丢失语义，比如无法区分当前发布版本和最近执行版本不一致的情况。需要谨慎的是，材料确认了这些字段存在，但完整状态机、空值语义和动作生成规则未完整采样，因此不能断言所有状态迁移规则已经实现。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>读模型是状态快照，不是数据库表原样输出。</li>
+                <li>不同时间维度需要不同字段：当前发布版本与最近执行版本不能合并。</li>
+                <li>动作字段 available_actions 是当前状态可迁移动作的投影，不只是前端按钮。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>某研究会话返回 latest_knowledge_version_id = V12，last_execution_knowledge_version_id = V11，current_attempt_id = ATT-9，available_actions 包含 retry 和 view_report，no_project_evidence = false。前端可以据此判断：当前已发布版本是 V12，但上次执行基于 V11，当前尝试是 ATT-9，用户现在可以重试或查看报告。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为两个版本 ID 字段可以合并，因为它们看起来都是版本号。</li>
+                <li>认为 available_actions 只是前端按钮，和数据模型无关，其实它是读模型对当前状态可迁移动作的投影。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>研究域与知识域的读写职责分离</td><td>研究会话读模型的状态分层引用研究域与知识域的读写职责分离，因为 latest_knowledge_version_id 来自知识域只读发布版本。</td></tr>
+                <tr><td>原子创建回执与重复创建防护</td><td>研究会话读模型的状态分层依赖原子创建回执与重复创建防护提供的创建事实，例如 current_attempt_id 和 available_actions 可能反映创建或执行状态，但完整依赖链未采样。</td></tr>
+                <tr><td>机器可读契约同步与契约检查</td><td>研究会话读模型的状态分层与机器可读契约同步与契约检查相关，因为字段缺失、404 或 422 等错误语义需要契约和公共错误测试来约束，但具体映射待确认。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>available_actions 由哪些数据库状态和领域规则生成？</li>
+                <li>当 latest_knowledge_version_id 存在但 last_execution_knowledge_version_id 为空时，读模型应返回 404、空值还是派生状态？</li>
+                <li>数据库约束能否表达从 active 到 archived 的合法状态迁移，而不只是状态取值？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="atomic-creation-receipt-duplicate-protection">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 分布式系统 / 数据建模</p>
+                <h3>原子创建回执与重复创建防护</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>创建命令经常会被客户端重试，比如网络超时后用户再次点击创建。系统需要判断第二次请求是同一个创建意图，还是另一个新请求。research_create_commands 以 project_id、actor_id、key 的复合主键锚定同一项目、同一操作者、同一调用键的创建意图，并且存在 fingerprint 字段与 content_digest 导入，提示载荷摘要可能参与区分同一键下的不同内容。这个结构提供了幂等回执的基础：调用方用 key 表达意图，服务端用回执表保存事实，唯一约束可以阻止完全相同意图的重复插入。需要谨慎的是，材料没有展示键冲突时返回旧结果、报错还是重放，也没有展示去重表清理、事务边界或运行验证，因此只能确认结构基础，不能声称完整幂等闭环已经实现。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>幂等创建需要稳定意图标识：project_id、actor_id、key 共同锚定同一创建意图。</li>
+                <li>载荷摘要 fingerprint 提供内容线索，帮助判断同一 key 是否对应不同内容。</li>
+                <li>完整幂等闭环还需明确冲突返回、重放语义、事务边界和清理策略。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>项目 P1 的用户 U1 用 key = create-session-001 创建研究会话，第一次成功写入 research_create_commands。客户端超时后重发同一 key，服务端可依据主键判断该创建意图已存在；如果 payload fingerprint 不同，则可能提示同一 key 对应不同内容，具体返回旧回执、409 还是 422 仍待确认。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为只要数据库有复合主键，就自动拥有完整幂等能力。</li>
+                <li>认为 fingerprint 能单独证明内容完全相同，因为材料未展示摘要算法、输入规范化和碰撞概率，它只是载荷摘要线索。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>机器可读契约同步与契约检查</td><td>原子创建回执与重复创建防护受机器可读契约同步与契约检查约束，因为创建接口字段和冲突错误需要接口契约表达，但具体字段与错误映射未完整采样。</td></tr>
+                <tr><td>研究会话读模型的状态分层</td><td>原子创建回执与重复创建防护为研究会话读模型的状态分层提供创建事实，例如 current_attempt_id 和 available_actions 可能依赖创建或执行状态，完整依赖链未采样。</td></tr>
+                <tr><td>有数据拒绝降级的 schema 回退保护</td><td>原子创建回执与重复创建防护与有数据拒绝降级的 schema 回退保护相关，因为降级检查包含 research_create_commands，防止创建回执数据在 schema 回退中丢失。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当 project_id、actor_id、key 已存在但 fingerprint 不同时，系统应返回旧回执、409 冲突还是 422 校验错误？</li>
+                <li>幂等键、请求摘要和服务端去重表三者如何叠加使用，才能同时处理网络重试和内容变更？</li>
+                <li>research_create_commands 的回执是否有清理策略，长期保留还是归档？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念共同围绕研究会话如何安全地读知识、展示状态和记录创建事实。研究域与知识域的读写职责分离先划定边界：知识域只读发布版本，研究域拥有会话和创建回执。研究会话读模型的状态分层再说明读侧不能只给一个状态字段，而要把当前发布版本、最近执行版本、当前尝试、可用动作和项目证据标记分开。原子创建回执与重复创建防护则说明写侧需要用复合主键和指纹线索锚定同一创建意图，为后续幂等闭环提供结构基础。这里基于当日材料可确认的是局部 diff 中的字段、表结构、说明和读取结构；完整状态机、强制只读机制、冲突返回、重放语义和运行验证均未完整采样。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">研究域写会话和创建回执，知识域只读已发布版本；读模型分层展示状态，创建回执用复合主键防重。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>知识版本的不可变性到底由数据库约束、迁移触发器还是应用层写入规则保证？</li>
+            <li>available_actions 由哪些数据库状态和领域规则生成？</li>
+            <li>幂等键、请求摘要和服务端去重表三者如何叠加使用，才能同时处理网络重试和内容变更？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
