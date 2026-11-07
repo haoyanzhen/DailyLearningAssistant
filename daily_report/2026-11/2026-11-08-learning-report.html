@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-11-08 学习笔记日报</title>
+    <meta name="description" content="把契约检查、拒绝丢数据的 schema 回退、不可变发布的强制边界串成一条线：安全边界要可表达、可检查，并在不允许的变化发生时显式失败。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261108-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-11-08</p>
+        <h1>把安全边界写成可检查、会拒绝的机制</h1>
+        <p>今天是无变更复习日，不新增技术事实，而是从接口侧、数据库演进侧和写入强制侧重新理解三个概念：契约如何被机器比对，回退如何拒绝丢数据，不可变发布为什么要追问强制层。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>可检查的安全边界：谁在什么位置拒绝…</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>机器可读契约同步与契约检查</strong>
+                <small>契约要能被机器比对：菜单改了，后厨…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>有数据拒绝降级的 sche…</strong>
+                <small>仓库里还有货，就不准拆货架。</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>不可变发布的约束-触发器-…</strong>
+                <small>阅览架上的书不能改，不等于书库后门…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">这三个概念分别位于接口侧、数据库演进侧和写入强制侧：契约检查让接口形状、覆盖范围和公共错误成为机器可检查对象；有数据拒绝降级让 schema 回退可能造成的数据丢失变成显式失败；不可变发布的强制边界则提醒我们，读取到已发布版本和文档说只读，不等于数据库、触发器或应用层已经真正禁止修改。它们共同说明，安全边界要分清楚「谁在什么位置拒绝什么」：接口契约检查不能替代数据库写入约束，读取侧过滤也不能替代写入侧强制。当前材料只支持局部机制和线索，不能把待确认的强制层说成已经实现。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["可检查的安全边界：谁在什么位置拒绝什么"])
+  concept1["机器可读契约同步与契约检查"]
+  hub --&gt; concept1
+  concept2["有数据拒绝降级的 schema 回退保护"]
+  hub --&gt; concept2
+  concept3["不可变发布的约束-触发器-应用层强制边界"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["可检查的安全边界：谁在什么位置拒绝什么"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="machine-readable-contract-check">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学 / 数据契约</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>机器可读契约同步与契约检查</h3>
+              <p>Machine-Readable Contract Sync &amp; Contract Check</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">契约要能被机器比对：菜单改了，后厨也得跟着改。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>契约不只是给人看的文档，而是程序能读、能比较、能检查的文件，接口长什么样、覆盖哪些行为、失败返回什么公共错误都被写入同一检查面。</li>
+                <li>材料中出现的 contracts/p0.openapi.json、contracts/p0.coverage.json、scripts/check_api_contracts.py、test_api_contracts.py 和 test_public_errors.py 说明形状、覆盖与公共错误被放进同一可检查范围。</li>
+                <li>核心原理不是「多写文档」，而是让实现与契约之间的漂移在提交前后更早暴露出来。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="machine-readable-contract-check" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="schema-downgrade-guard">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 数据库 / 数据建模</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>有数据拒绝降级的 schema 回退保护</h3>
+              <p>No-Downgrade-With-Data Guard</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">仓库里还有货，就不准拆货架。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>回退前先对相关表加 ACCESS EXCLUSIVE 锁，让其他写入先停下或排队，再检查表里有没有数据。</li>
+                <li>如果 research_catalogs、research_sessions、research_create_commands 已有数据，就抛 RuntimeError 拒绝降级，而不是静默丢表丢列。</li>
+                <li>材料只确认了锁后检查、有数据抛错拒绝的局部迁移 diff，完整事务边界、锁持有范围和导出清理流程仍待确认。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="schema-downgrade-guard" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="immutable-publish-enforcement-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 数据库 / 安全 / 数据建模</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>不可变发布的约束-触发器-应用层强制边界</h3>
+              <p>Immutability Enforcement Boundary: Constraint, Trigger, Application Rule</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">阅览架上的书不能改，不等于书库后门已经上锁。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>查询只取出 sealed = true 的已发布知识版本，属于读取侧过滤和消费边界，只证明读者看到的是已发布版本。</li>
+                <li>文件说明研究侧负责会话和创建回执、知识侧保持只读，属于职责说明，不能替代写入侧强制。</li>
+                <li>数据库约束、迁移触发器或应用层写入规则到底哪一层在强制不可变，材料未采样，属于待确认线索。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="immutable-publish-enforcement-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="machine-readable-contract-check">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学 / 数据契约</p>
+                <h3>机器可读契约同步与契约检查</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>可以把接口契约想成餐厅菜单和插座标准。菜单如果只靠口头说，厨房可能做出和顾客点到的不一样；插座如果只靠大家自觉，插头就可能对不上。机器可读契约就是把接口应该长什么样、覆盖哪些行为、失败时返回什么公共错误，写成程序能读、能比较、能检查的文件。最近有效日材料里出现了 contracts/p0.openapi.json、contracts/p0.coverage.json、scripts/check_api_contracts.py、test_api_contracts.py 和 test_public_errors.py 这些路径线索，说明接口形状、覆盖范围和公共错误被放进了同一个机器检查面。它的核心原理不是「多写文档」，而是让实现和契约之间的漂移更早暴露出来。像一家连锁店把菜单印成标准表，后厨每改一道菜都必须同步改表，系统再自动比对「菜单上有的」和「后厨能做的」是否一致，这样顾客点单时就不会遇到菜单写了但厨房根本做不出来的情况；契约检查就是这种自动比对，只是对象换成了接口、字段、覆盖项和错误响应。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>把接口形状与公共错误写进程序可读的文件，实现与契约才能被机器逐项比较，而不是靠人工记忆。</li>
+                <li>检查脚本与契约测试把「实现漂移」从评审会上的口头提醒，变成可重复执行的比对动作。</li>
+                <li>覆盖范围也被纳入同一检查面，说明检查对象不只是字段名，还包括行为与失败响应是否被覆盖。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设某个接口新增一个字段或错误码，但实现改了、契约文件没改。机器检查脚本或契约测试就可能发现两边不一致，提醒开发者同步。这里可确认的是材料中存在 OpenAPI、coverage、检查脚本和测试的路径与更新线索；具体检查了哪些字段、如何判断覆盖、运行结果如何，仍待补充。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为只要仓库里有 OpenAPI 文件或测试文件，就说明契约已经完整、测试已经通过、未知字段一定被拒绝。</li>
+                <li>认为有了契约检查就等于只读写入边界已被强制；材料没有展示具体只读错误映射，不能把契约检查说成已经强制了只读边界。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>有数据拒绝降级的 schema 回退保护</td><td>两者都体现「变更前先检查、失败要显式」的原则，但契约检查面向接口形状和公共错误，降级保护面向数据库回退和数据丢失风险。</td></tr>
+                <tr><td>不可变发布的约束-触发器-应用层强制边界</td><td>公共错误测试可能表达只读拒绝或冲突错误，但材料未展示具体错误码映射，因此不能据此断言只读写入已经被契约强制。</td></tr>
+                <tr><td>可检查的安全边界：谁在什么位置拒绝什么</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>完整 OpenAPI 契约是否把 scope、targets、kind、id 等字段约束表达得和局部实现 diff 一致？</li>
+                <li>系统是否明确拒绝未知字段，还是只校验已知字段？这需要完整契约或测试断言来确认。</li>
+                <li>公共错误测试是否覆盖了只读拒绝、冲突和校验错误的具体映射，例如 403、409、422 分别对应什么场景？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="schema-downgrade-guard">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 数据库 / 数据建模</p>
+                <h3>有数据拒绝降级的 schema 回退保护</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>schema 迁移可以理解为给数据库换房间布局，降级则是把布局改回旧版本。问题在于，旧布局可能没有新布局里那些柜子，如果直接回退，就可能把已经放进去的数据丢掉。有数据拒绝降级的保护做法是：回退前先给相关表加 ACCESS EXCLUSIVE 锁，让别的写入先停下或排队，再检查表里有没有数据；如果 research_catalogs、research_sessions、research_create_commands 这些表已有数据，就抛 RuntimeError 拒绝降级。这样，原本可能静默丢数据的回退，变成了一个明确的失败信号。比喻来说，仓库要把新货架拆回旧货架，工人先锁上仓库门，检查里面还有没有货；只要发现还有货，就停止拆迁，要求先安排出库或转移，而不是直接把货架连货一起拆掉。锁门和检查就是排他锁与数据存在性检查，停止拆迁就是显式拒绝降级。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>破坏性回退的风险在于旧结构承载不了新数据，因此第一道动作是把可能并发的写入先挡住。</li>
+                <li>锁之后再做数据存在性检查，让「有没有会丢的数据」成为可判定的条件，而不是事后才发现。</li>
+                <li>条件成立时抛错拒绝降级，把静默的数据损失转化为一次必须人工处理的显式失败。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设 research_sessions 里已经有一条研究会话记录，此时执行降级脚本。保护逻辑先加排他锁，再检查到表非空，于是抛出 RuntimeError 拒绝降级，而不是直接删表或丢列。这个例子能说明「有数据即拒绝」的边界；至于拒绝后如何导出、清理、再降级，材料没有展示完整流程。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为「有检查就一定有完整并发安全」；材料只确认锁后检查，完整事务边界与锁持有范围未采样。</li>
+                <li>认为「拒绝降级就等于数据导出清理流程已经实现」；拒绝之后如何安全导出、清理再降级，材料未展示。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>机器可读契约同步与契约检查</td><td>两者都强调变更前检查，但契约检查约束接口形状和公共错误，降级保护约束数据库回退不能静默破坏已有数据。</td></tr>
+                <tr><td>不可变发布的约束-触发器-应用层强制边界</td><td>二者共同构成数据保护面：前者防止 schema 回退丢数据，后者讨论已发布对象写入不可变由哪一层强制，都要求不安全的写或迁移显式失败。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>锁表检查与迁移事务如何保证原子性，避免检查之后又有新数据写入？</li>
+                <li>哪些表应被标记为禁止破坏性降级，哪些表可以通过归档后清理再降级？当前迁移 diff 只给出三张受保护表的局部线索。</li>
+                <li>在拒绝丢弃之前，如何安全导出并清理已有数据，再允许降级？这个补偿流程在当天材料中未展示。</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="immutable-publish-enforcement-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 数据库 / 安全 / 数据建模</p>
+                <h3>不可变发布的约束-触发器-应用层强制边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>不可变发布可以想成博物馆展品：观众看到的是密封展柜里的版本，读取查询只取出 sealed = true 的已发布知识版本，这属于读取侧过滤和消费边界。但「展品不能被改写」还需要另一种保证：书库门是否上锁、封条是否有效、管理员是否拒绝修改。对应到系统里，就是数据库约束、迁移触发器或应用层写入规则到底哪一层在强制不可变。材料可确认的是文件说明写着研究侧负责会话和创建回执，知识侧保持只读，以及 knowledge_read.latest_published 只读取 sealed = true 的版本；但数据库约束、触发器或应用层写入规则是否已经强制不可变，未采样，属于待确认线索。像图书馆只把盖过章的书放上阅览架，读者看到的都是已发布版本，但读者看不到书库后门：如果后门没锁，管理员或别的程序仍可能进去改书。阅览架过滤只能证明读者看到的是已发布版本，不能证明书本身被制度、门锁或管理员规则真正保护起来。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>读取侧过滤只决定「谁被看到」，它约束的是查询输出，而不是写入路径是否可能改写已发布对象。</li>
+                <li>领域只读说明和接口契约属于约定与表达层，只有在写入侧被某一层真正拒绝，才构成强制。</li>
+                <li>数据库约束、触发器、应用层写入规则是三种不同的强制位置，必须逐一确认谁在什么条件下拒绝了什么操作。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设知识版本表里有一条 sealed = true 的记录，读取接口只返回这种已发布版本。但如果没有数据库约束、触发器或应用层写入规则拒绝更新，其他写入路径仍可能改到这一行。材料目前只展示了读取过滤和领域只读说明，因此这个例子只能用来说明「读取过滤不等于写入强制」，不能断言实际强制层已经存在。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为查询里写了 sealed = true，就等于数据库已经禁止更新。</li>
+                <li>认为文档说 Knowledge remains read-only，就等于触发器或应用层写入规则已经实现。</li>
+                <li>把读取侧过滤、接口契约和领域说明当成写入侧强制的证据。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>机器可读契约同步与契约检查</td><td>两者都在意「边界是否可验证」：契约测试可能表达只读拒绝或冲突错误，但材料未展示具体错误映射，不能把接口契约当成数据库写入强制。</td></tr>
+                <tr><td>有数据拒绝降级的 schema 回退保护</td><td>两者都要求不允许的操作显式失败，但前者关注已发布对象写入不可变，后者关注数据库回退时不要静默丢数据，强制位置和风险面不同。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>知识版本的不可变性到底由数据库约束、迁移触发器还是应用层写入规则保证？当前材料未采样具体强制层。</li>
+                <li>数据库约束能否表达状态迁移而不仅是状态取值，例如从 active 到 archived 的合法路径？</li>
+                <li>head 切换时如何保持一致性，并且不会绕过 sealed 版本保护？需要补充事务、约束和写入路径证据。</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">这三个概念分别位于接口侧、数据库演进侧和写入强制侧：契约检查让接口形状、覆盖范围和公共错误成为机器可检查对象；有数据拒绝降级让 schema 回退可能造成的数据丢失变成显式失败；不可变发布的强制边界则提醒我们，读取到已发布版本和文档说只读，不等于数据库、触发器或应用层已经真正禁止修改。它们共同说明，安全边界要分清楚「谁在什么位置拒绝什么」：接口契约检查不能替代数据库写入约束，读取侧过滤也不能替代写入侧强制。当前材料只支持局部机制和线索，不能把待确认的强制层说成已经实现。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">重要的安全边界不能只靠口头约定，而要能被表达、被检查，并在不允许的变化发生时显式失败。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>完整 OpenAPI 契约是否把字段约束、覆盖项和公共错误码映射表达得和实现一致，并且真的被脚本与测试执行过？</li>
+            <li>锁表检查与迁移事务如何保证原子性，避免检查之后又有新数据写入？拒绝降级后如何安全导出并清理数据再降级？</li>
+            <li>知识版本的不可变性到底由数据库约束、迁移触发器还是应用层写入规则保证？当前材料未采样具体强制层。</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
