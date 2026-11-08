@@ -3,6 +3,96 @@
   "year_month": "2026-11",
   "threads": [
     {
+      "id": "2026-11-09-concept-f32549f42f",
+      "question": "available_actions 应该由数据库字段直接映射，还是由领域规则根据 latest、last_execution、sealed、权限等组合计算？",
+      "source_date": "2026-11-09",
+      "source_concept": "读模型中引用存在与执行完成的空值语义",
+      "domain": "软件工程 / 数据建模 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-11-09T06:13:26.094446+08:00",
+      "updated_at": "2026-11-09T06:13:26.094446+08:00"
+    },
+    {
+      "id": "2026-11-09-concept-cafba88d44",
+      "question": "服务端去重表应保存哪些字段、保留多长时间，才能同时支持网络重试、内容变更检测和审计追溯？",
+      "source_date": "2026-11-09",
+      "source_concept": "幂等键与内容指纹不一致的冲突语义",
+      "domain": "软件工程 / 分布式系统 / 数据建模",
+      "status": "open",
+      "created_at": "2026-11-09T06:13:26.094446+08:00",
+      "updated_at": "2026-11-09T06:13:26.094446+08:00"
+    },
+    {
+      "id": "2026-11-09-concept-c377b14703",
+      "question": "当幂等键相同但 fingerprint 不同时，系统应优先返回旧回执、409 冲突还是 422 校验错误，这取决于哪些业务规则？",
+      "source_date": "2026-11-09",
+      "source_concept": "幂等键与内容指纹不一致的冲突语义",
+      "domain": "软件工程 / 分布式系统 / 数据建模",
+      "status": "open",
+      "created_at": "2026-11-09T06:13:26.094446+08:00",
+      "updated_at": "2026-11-09T06:13:26.094446+08:00"
+    },
+    {
+      "id": "2026-11-09-concept-c0a2023b61",
+      "question": "前端轮询遇到 null 字段、404 和派生状态时，应分别采用哪种提示、重试和停止策略？",
+      "source_date": "2026-11-09",
+      "source_concept": "读模型中引用存在与执行完成的空值语义",
+      "domain": "软件工程 / 数据建模 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-11-09T06:13:26.094446+08:00",
+      "updated_at": "2026-11-09T06:13:26.094446+08:00"
+    },
+    {
+      "id": "2026-11-09-concept-a595fc0361",
+      "question": "fingerprint 应覆盖哪些请求字段，哪些字段变化不应触发冲突，例如时间戳、客户端随机 ID 或展示字段？",
+      "source_date": "2026-11-09",
+      "source_concept": "幂等键与内容指纹不一致的冲突语义",
+      "domain": "软件工程 / 分布式系统 / 数据建模",
+      "status": "open",
+      "created_at": "2026-11-09T06:13:26.094446+08:00",
+      "updated_at": "2026-11-09T06:13:26.094446+08:00"
+    },
+    {
+      "id": "2026-11-09-concept-5dbba69d2d",
+      "question": "当全局主键用于存储、项目内 ID 用于展示时，API 返回和数据库外键应该分别使用哪一层身份？",
+      "source_date": "2026-11-09",
+      "source_concept": "项目作用域唯一键与全局主键的命名空间设计",
+      "domain": "软件工程 / 数据库 / 数据建模",
+      "status": "open",
+      "created_at": "2026-11-09T06:13:26.094446+08:00",
+      "updated_at": "2026-11-09T06:13:26.094446+08:00"
+    },
+    {
+      "id": "2026-11-09-concept-36dceebd76",
+      "question": "当 latest_knowledge_version_id 存在但 last_execution_knowledge_version_id 为空时，API 应返回 200 加派生状态、202 还是 404？",
+      "source_date": "2026-11-09",
+      "source_concept": "读模型中引用存在与执行完成的空值语义",
+      "domain": "软件工程 / 数据建模 / 计算机科学",
+      "status": "open",
+      "created_at": "2026-11-09T06:13:26.094446+08:00",
+      "updated_at": "2026-11-09T06:13:26.094446+08:00"
+    },
+    {
+      "id": "2026-11-09-concept-2bb8aeb202",
+      "question": "项目删除或迁移时，如何保证 (project_id, id) 与全局主键的映射不产生孤儿引用或审计断链？",
+      "source_date": "2026-11-09",
+      "source_concept": "项目作用域唯一键与全局主键的命名空间设计",
+      "domain": "软件工程 / 数据库 / 数据建模",
+      "status": "open",
+      "created_at": "2026-11-09T06:13:26.094446+08:00",
+      "updated_at": "2026-11-09T06:13:26.094446+08:00"
+    },
+    {
+      "id": "2026-11-09-concept-0417125348",
+      "question": "如果项目内 ID 允许跨项目复用，跨项目引用应该始终携带 project_id，还是逐步迁移到全局主键？",
+      "source_date": "2026-11-09",
+      "source_concept": "项目作用域唯一键与全局主键的命名空间设计",
+      "domain": "软件工程 / 数据库 / 数据建模",
+      "status": "open",
+      "created_at": "2026-11-09T06:13:26.094446+08:00",
+      "updated_at": "2026-11-09T06:13:26.094446+08:00"
+    },
+    {
       "id": "2026-11-08-schema-ff8b1f09f7",
       "question": "锁表检查与迁移事务如何保证原子性，避免检查之后又有新数据写入？",
       "source_date": "2026-11-08",

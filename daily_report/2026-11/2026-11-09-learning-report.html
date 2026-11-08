@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-11-09 学习笔记日报</title>
+    <meta name="description" content="当天围绕身份、状态与冲突三条线索，复习项目内 ID 与全局主键、读模型空值语义，以及幂等键与内容指纹不一致时的裁决边界。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261109-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-11-09</p>
+        <h1>2026-11-09 学习笔记日报</h1>
+        <p>今天没有新增工程进展，而是围绕最近有效概念关联和 open 问题，复习身份分层、状态解释与冲突裁决。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>系统如何准确表达身份和状态</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>项目作用域唯一键与全局主键…</strong>
+                <small>班级学号管班级，学籍号管跨校；项目…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>读模型中引用存在与执行完成…</strong>
+                <small>订单已创建不等于骑手已接单；lat…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>幂等键与内容指纹不一致的冲…</strong>
+                <small>流水号相同且摘要相同可返回旧回执；…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念共同围绕“系统如何准确表达身份和状态”。项目作用域唯一键与全局主键先解决身份分层：项目内 ID 面向业务命名空间，全局主键面向跨项目存储和引用。读模型空值语义接着解决状态投影：latest 字段存在不等于 last_execution 已完成，null、404 和派生状态必须分别表达不同含义。幂等键与内容指纹不一致最后解决重试与变更的边界：同一幂等键可能只是重复请求，也可能表示同一身份被用于不同内容，需要显式裁决。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["系统如何准确表达身份和状态"])
+  concept1["项目作用域唯一键与全局主键的命名空间设计"]
+  hub --&gt; concept1
+  concept2["读模型中引用存在与执行完成的空值语义"]
+  hub --&gt; concept2
+  concept3["幂等键与内容指纹不一致的冲突语义"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["系统如何准确表达身份和状态"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="project-scoped-unique-key-global-primary-key-namespace">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 数据库 / 数据建模</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>项目作用域唯一键与全局主键的命名空间设计</h3>
+              <p>Project-Scoped Unique Keys and Global Primary Keys</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">班级学号管班级，学籍号管跨校；项目内 ID 管业务，全局主键管跨项目。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>(project_id, id) 保证项目内部 ID 稳定且无重复，全局主键保证跨项目存储、引用和迁移时不会混淆。</li>
+                <li>API 面向业务时可返回项目内 ID 并携带 project_id；内部存储和跨项目引用需要唯一性时使用全局主键。</li>
+                <li>两层身份并不冲突，关键是映射关系要稳定，查询、引用、删除、审计和迁移要明确使用哪一层。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="project-scoped-unique-key-global-primary-key-namespace" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="read-model-reference-existence-execution-completion-null-semantics">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 数据建模 / 计算机科学</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>读模型中引用存在与执行完成的空值语义</h3>
+              <p>Reference Existence and Execution Completion in Read Models</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">订单已创建不等于骑手已接单；latest 存在不等于 last_execution 完成。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>latest_knowledge_version_id 存在表示系统里有一个可引用的知识版本，类似订单已经创建。</li>
+                <li>last_execution_knowledge_version_id 为空表示还没有执行版本绑定或执行完成，类似骑手还没有接单。</li>
+                <li>404 表示资源不存在，空值表示资源存在但字段尚未填充，派生状态表示系统能解释当前组合。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="read-model-reference-existence-execution-completion-null-semantics" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="idempotency-key-content-fingerprint-conflict-semantics">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 分布式系统 / 数据建模</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>幂等键与内容指纹不一致的冲突语义</h3>
+              <p>Idempotency Key and Content Fingerprint Conflict Semantics</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">流水号相同且摘要相同可返回旧回执；流水号相同但摘要不同必须显式裁决。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>幂等键处理“同一请求身份是否重复”，fingerprint 处理“请求内容是否变化”。</li>
+                <li>服务端去重表保存“服务端已经见过什么”，是重复请求和内容变更检测的事实基础。</li>
+                <li>幂等键相同但 fingerprint 不同时，需要裁决返回旧回执、409 冲突还是 422 校验错误。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="idempotency-key-content-fingerprint-conflict-semantics" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="project-scoped-unique-key-global-primary-key-namespace">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 数据库 / 数据建模</p>
+                <h3>项目作用域唯一键与全局主键的命名空间设计</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>可以把项目内 ID 想象成班级学号，把全局主键想象成全校学籍号。班级学号在班里够用，但两个班都可能有 1 号学生；全校学籍号则跨班级唯一，适合转学、档案查询和跨部门引用。数据系统里也常有这种两层身份：(project_id, id) 保证某个项目内部 ID 稳定且无重复，全局主键保证跨项目存储、引用和迁移时不会混淆。这里基于当日材料可确认的是，concept_relevance.md 汇总的历史问题提出了 (project_id, id) 复合唯一约束与全局主键关系的设计问题，但没有采样 DDL、索引、外键、引用路径和运行验证，因此不能声称项目已经采用某种主键策略。讲清楚这一概念的关键，是明确查询、引用、删除、审计和迁移分别使用哪一层身份：如果 API 面向业务，可以返回项目内 ID 并始终携带 project_id；如果内部存储和跨项目引用需要唯一性，则使用全局主键。两层身份并不冲突，关键是映射关系要稳定。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>项目内 ID 解决业务命名空间中的稳定识别，不要求跨项目唯一。</li>
+                <li>全局主键解决跨项目存储、引用、迁移和审计中的无歧义身份。</li>
+                <li>两层身份通过稳定映射连接，避免把数据库主键直接等同于业务 ID。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>项目 A 和项目 B 都有一条知识版本 id=42。如果读模型只返回 id=42，跨项目引用会歧义；如果返回 project_id=A 且 id=42，业务侧知道它属于项目 A；如果内部还需要全局唯一，则再映射到 global_id=9001，用于存储、审计和跨项目查询。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把数据库主键直接等同于业务 ID。</li>
+                <li>认为项目内 ID 必须全局唯一，忽略业务命名空间和存储身份可以分层。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>读模型中引用存在与执行完成的空值语义</td><td>为 latest_knowledge_version_id 等字段提供稳定身份基础，先确认引用的是项目内 ID 还是全局主键。</td></tr>
+                <tr><td>幂等键与内容指纹不一致的冲突语义</td><td>都要求身份字段在重试、引用、删除和审计中保持稳定，避免同一业务对象被误判为不同对象。</td></tr>
+                <tr><td>系统如何准确表达身份和状态</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果项目内 ID 允许跨项目复用，跨项目引用应该始终携带 project_id，还是逐步迁移到全局主键？</li>
+                <li>当全局主键用于存储、项目内 ID 用于展示时，API 返回和数据库外键应该分别使用哪一层身份？</li>
+                <li>项目删除或迁移时，如何保证 (project_id, id) 与全局主键的映射不产生孤儿引用或审计断链？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="read-model-reference-existence-execution-completion-null-semantics">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 数据建模 / 计算机科学</p>
+                <h3>读模型中引用存在与执行完成的空值语义</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>读模型像把数据库里的原始字段翻译成用户能理解的状态。latest_knowledge_version_id 存在，表示系统里有一个可引用的知识版本，类似“订单已经创建”；last_execution_knowledge_version_id 为空，表示还没有执行版本绑定或执行完成，类似“骑手还没有接单”。这两件事不是同一状态，不能合并成“没有知识版本”。这里基于当日材料可确认的是，concept_relevance.md 汇总的历史问题提出了 latest_knowledge_version_id 存在但 last_execution_knowledge_version_id 为空时应返回 404、空值还是派生状态的问题，但没有采样读模型代码、状态枚举、前端轮询处理和测试断言，因此不能声称系统已经采用某种映射。讲清楚这一概念的关键，是区分三种外部语义：404 表示资源不存在；空值表示资源存在但某个字段尚未填充；派生状态如 pending、not_executed 表示系统能解释当前组合。available_actions 也依赖这种状态组合，例如“有可用版本但尚未执行”时可以给出 execute 动作。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>引用存在和执行完成是两个独立事实，不能合并成同一个状态。</li>
+                <li>null、404 和派生状态分别表达字段未填充、资源不存在和可解释状态。</li>
+                <li>available_actions 应根据状态组合计算，而不是只依赖单个字段。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>API 返回 latest_knowledge_version_id 为 7、last_execution_knowledge_version_id 为空、available_actions 包含 execute。前端应展示“已有可用版本，但尚未执行”，而不是提示“知识版本不存在”；如果 latest_knowledge_version_id 也为空，则可能需要展示“暂无可用版本”或触发其他加载逻辑。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把 null 一律当成 404。</li>
+                <li>把 latest 为空和 last_execution 为空混成同一个“未完成”。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>项目作用域唯一键与全局主键的命名空间设计</td><td>latest_knowledge_version_id 和 last_execution_knowledge_version_id 的解析需要先确认引用的是项目内 ID 还是全局主键。</td></tr>
+                <tr><td>幂等键与内容指纹不一致的冲突语义</td><td>都要求把内部状态组合翻译成调用方可理解的外部语义，避免把未完成误报为不存在或冲突。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当 latest_knowledge_version_id 存在但 last_execution_knowledge_version_id 为空时，API 应返回 200 加派生状态、202 还是 404？</li>
+                <li>available_actions 应该由数据库字段直接映射，还是由领域规则根据 latest、last_execution、sealed、权限等组合计算？</li>
+                <li>前端轮询遇到 null 字段、404 和派生状态时，应分别采用哪种提示、重试和停止策略？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="idempotency-key-content-fingerprint-conflict-semantics">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 分布式系统 / 数据建模</p>
+                <h3>幂等键与内容指纹不一致的冲突语义</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>幂等键像银行转账的流水号，内容指纹像转账金额、收款账户和用途的摘要。网络重试时，如果流水号相同且摘要相同，服务端可以返回旧回执，避免重复扣款；如果流水号相同但摘要不同，说明同一身份被用于不同内容，系统必须裁决：返回旧回执、409 冲突，还是 422 校验错误。这里基于当日材料可确认的是，concept_relevance.md 汇总的历史问题提出了 project_id、actor_id、key 已存在但 fingerprint 不同时如何返回的问题，但没有采样服务端去重表、摘要算法、错误码实现和运行验证，因此不能声称 ResearchPaperBase_codex 已经实现上述机制。讲清楚这一概念的关键，是把三层机制分开：幂等键处理“同一请求身份是否重复”，fingerprint 处理“请求内容是否变化”，服务端去重表保存“服务端已经见过什么”。如果只按幂等键判断，会把内容变更误当成重复；如果只按指纹判断，会丢失重试语义。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>幂等键识别请求身份，用于判断是否重复请求。</li>
+                <li>内容指纹识别请求内容变化，用于判断是否同一身份对应不同载荷。</li>
+                <li>服务端去重表保存事实，使重试、冲突和审计可以可靠裁决。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>创建命令使用 project_id=1、actor_id=7、key 为 create-report。第一次请求 fingerprint 为 abc123，服务端保存回执；重试时 fingerprint 仍为 abc123，服务端返回旧回执；若客户端把参数改成 fingerprint 为 xyz789 但仍使用同一 key，服务端可返回 409“同一幂等键已对应不同内容”，而不是直接覆盖旧回执。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为幂等键能解决所有重复问题。</li>
+                <li>认为 fingerprint 相同就一定能安全返回旧结果，忽略服务端事实保存和业务规则。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>项目作用域唯一键与全局主键的命名空间设计</td><td>幂等键中的 project_id、actor_id、key 需要稳定且无歧义的身份字段。</td></tr>
+                <tr><td>读模型中引用存在与执行完成的空值语义</td><td>都要求把内部状态组合映射为明确外部语义，例如旧回执、409、422、404、空值或派生状态。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当幂等键相同但 fingerprint 不同时，系统应优先返回旧回执、409 冲突还是 422 校验错误，这取决于哪些业务规则？</li>
+                <li>服务端去重表应保存哪些字段、保留多长时间，才能同时支持网络重试、内容变更检测和审计追溯？</li>
+                <li>fingerprint 应覆盖哪些请求字段，哪些字段变化不应触发冲突，例如时间戳、客户端随机 ID 或展示字段？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念共同围绕“系统如何准确表达身份和状态”。项目作用域唯一键与全局主键先解决身份分层：项目内 ID 面向业务命名空间，全局主键面向跨项目存储和引用。读模型空值语义接着解决状态投影：latest 字段存在不等于 last_execution 已完成，null、404 和派生状态必须分别表达不同含义。幂等键与内容指纹不一致最后解决重试与变更的边界：同一幂等键可能只是重复请求，也可能表示同一身份被用于不同内容，需要显式裁决。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">项目内 ID、全局主键、null、404 和派生状态不是同一层信息，系统必须先分清身份、状态和冲突，再对外表达。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>跨项目引用应始终携带 project_id，还是逐步迁移到全局主键？</li>
+            <li>latest 存在但 last_execution 为空时，API 应返回 200 加派生状态、202 还是 404？</li>
+            <li>幂等键相同但 fingerprint 不同时，应优先返回旧回执、409 冲突还是 422 校验错误？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>

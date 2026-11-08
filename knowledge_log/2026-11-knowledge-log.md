@@ -14,6 +14,30 @@
   <tbody>
     <tr>
       <td rowspan="3">
+        <a href="../daily_report/2026-11/2026-11-09-learning-report.html">2026-11-09</a>
+      </td>
+      <td>项目作用域唯一键与全局主键的命名空间设计</td>
+      <td>软件工程 / 数据库 / 数据建模</td>
+      <td>★★</td>
+      <td>项目内 ID 负责业务命名空间，全局主键负责跨项目存储身份，两者分工清楚才能避免引用歧义。</td>
+      <td>下一次可结合 ResearchPaperBase_codex 中相关表的完整 DDL、唯一索引、外键、引用路径和迁移脚本，确认 (project_id, id) 与全局主键的实际约束和查询方式；当前只能确认 open 问题提出的设计边界。</td>
+    </tr>
+    <tr>
+      <td>读模型中引用存在与执行完成的空值语义</td>
+      <td>软件工程 / 数据建模 / 计算机科学</td>
+      <td>★★★</td>
+      <td>读模型要把“引用存在”和“执行完成”分开表达，避免把空值、404 和可解释状态混为一谈。</td>
+      <td>下一次可结合 ResearchStore.view 或读模型查询、状态枚举、available_actions 生成规则、前端轮询处理和测试断言，确认 latest 与 last_execution 组合的实际映射；当前只能确认 open 问题中的字段组合和 404 映射待确认。</td>
+    </tr>
+    <tr>
+      <td>幂等键与内容指纹不一致的冲突语义</td>
+      <td>软件工程 / 分布式系统 / 数据建模</td>
+      <td>★★★★</td>
+      <td>幂等键识别同一请求身份，内容指纹识别请求内容是否变化，两者不一致时需要显式冲突裁决。</td>
+      <td>下一次可结合 research_create_commands 或创建命令事务、唯一约束冲突处理、服务端去重表、fingerprint 计算字段和重放测试，确认幂等回执闭环；当前只能确认 open 问题中的字段线索和冲突裁决待确认。</td>
+    </tr>
+<tr>
+      <td rowspan="3">
         <a href="../daily_report/2026-11/2026-11-08-learning-report.html">2026-11-08</a>
       </td>
       <td>机器可读契约同步与契约检查</td>
