@@ -3,6 +3,96 @@
   "year_month": "2026-11",
   "threads": [
     {
+      "id": "2026-11-10-concept-d30b77612f",
+      "question": "retrieval_proof_version 升级后，旧运行结果应标记为不可复用、可重放还是可降级解释，版本字段应绑定哪些条件？",
+      "source_date": "2026-11-10",
+      "source_concept": "集合完整性证明中的快照语义与分页漂移",
+      "domain": "计算机科学 / 数据工程 / 数学",
+      "status": "open",
+      "created_at": "2026-11-10T06:11:33.526341+08:00",
+      "updated_at": "2026-11-10T06:11:33.526341+08:00"
+    },
+    {
+      "id": "2026-11-10-concept-ccd5f31823",
+      "question": "当应用层已经做状态机校验，数据库层还需要保留哪些最低限度约束，才能在并发或手工 SQL 下兜底？",
+      "source_date": "2026-11-10",
+      "source_concept": "状态迁移约束与合法路径表达",
+      "domain": "软件工程 / 数据库 / 数据建模",
+      "status": "open",
+      "created_at": "2026-11-10T06:11:33.526341+08:00",
+      "updated_at": "2026-11-10T06:11:33.526341+08:00"
+    },
+    {
+      "id": "2026-11-10-concept-8285208b8f",
+      "question": "如果数据库 CHECK 只能看当前行，怎样用触发器或状态迁移表表达 from_status 到 to_status 的合法边？",
+      "source_date": "2026-11-10",
+      "source_concept": "状态迁移约束与合法路径表达",
+      "domain": "软件工程 / 数据库 / 数据建模",
+      "status": "open",
+      "created_at": "2026-11-10T06:11:33.526341+08:00",
+      "updated_at": "2026-11-10T06:11:33.526341+08:00"
+    },
+    {
+      "id": "2026-11-10-concept-57d3e13b0f",
+      "question": "如果表级保护分为禁止破坏性降级和可归档后清理，怎样用迁移脚本或配置表达不同表的策略？",
+      "source_date": "2026-11-10",
+      "source_concept": "迁移保护中检查、清理与放行的原子性边界",
+      "domain": "软件工程 / 数据库 / 分布式系统",
+      "status": "open",
+      "created_at": "2026-11-10T06:11:33.526341+08:00",
+      "updated_at": "2026-11-10T06:11:33.526341+08:00"
+    },
+    {
+      "id": "2026-11-10-concept-2c0b5f1770",
+      "question": "集合相等失败时，missing、extra、duplicate、out_of_scope 四类字段应如何命名和汇总，才能避免把来源异常误报为集合缺失？",
+      "source_date": "2026-11-10",
+      "source_concept": "集合完整性证明中的快照语义与分页漂移",
+      "domain": "计算机科学 / 数据工程 / 数学",
+      "status": "open",
+      "created_at": "2026-11-10T06:11:33.526341+08:00",
+      "updated_at": "2026-11-10T06:11:33.526341+08:00"
+    },
+    {
+      "id": "2026-11-10-concept-277647c8ac",
+      "question": "对于 archived 到 active 这类恢复操作，应禁止、允许还是要求人工审批，如何把审批结果变成可审计的状态迁移记录？",
+      "source_date": "2026-11-10",
+      "source_concept": "状态迁移约束与合法路径表达",
+      "domain": "软件工程 / 数据库 / 数据建模",
+      "status": "open",
+      "created_at": "2026-11-10T06:11:33.526341+08:00",
+      "updated_at": "2026-11-10T06:11:33.526341+08:00"
+    },
+    {
+      "id": "2026-11-10-concept-24bdb5eff4",
+      "question": "在不能长期锁表的情况下，怎样用短事务、版本戳或重新检查来降低 TOCTOU 风险？",
+      "source_date": "2026-11-10",
+      "source_concept": "迁移保护中检查、清理与放行的原子性边界",
+      "domain": "软件工程 / 数据库 / 分布式系统",
+      "status": "open",
+      "created_at": "2026-11-10T06:11:33.526341+08:00",
+      "updated_at": "2026-11-10T06:11:33.526341+08:00"
+    },
+    {
+      "id": "2026-11-10-concept-0860869794",
+      "question": "检查通过后若清理失败，系统应回滚、标记失败还是进入补偿队列，如何避免半清理状态？",
+      "source_date": "2026-11-10",
+      "source_concept": "迁移保护中检查、清理与放行的原子性边界",
+      "domain": "软件工程 / 数据库 / 分布式系统",
+      "status": "open",
+      "created_at": "2026-11-10T06:11:33.526341+08:00",
+      "updated_at": "2026-11-10T06:11:33.526341+08:00"
+    },
+    {
+      "id": "2026-11-10-concept-00ac79e92b",
+      "question": "当提供方只有 total 和 cursor，没有 snapshot_id 时，怎样设计重试策略才能证明最终集合完整？",
+      "source_date": "2026-11-10",
+      "source_concept": "集合完整性证明中的快照语义与分页漂移",
+      "domain": "计算机科学 / 数据工程 / 数学",
+      "status": "open",
+      "created_at": "2026-11-10T06:11:33.526341+08:00",
+      "updated_at": "2026-11-10T06:11:33.526341+08:00"
+    },
+    {
       "id": "2026-11-09-concept-f32549f42f",
       "question": "available_actions 应该由数据库字段直接映射，还是由领域规则根据 latest、last_execution、sealed、权限等组合计算？",
       "source_date": "2026-11-09",

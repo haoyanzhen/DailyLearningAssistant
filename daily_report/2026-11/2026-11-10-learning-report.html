@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-11-10 学习笔记日报</title>
+    <meta name="description" content="今日复习状态迁移、迁移保护原子性与集合完整性证明，从取值合法推进到路径、执行和读取过程可验证。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261110-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-11-10</p>
+        <h1>2026-11-10 学习笔记日报</h1>
+        <p>今天是无变更复习日，主线是把最近 7 天 open 问题中反复出现、但尚未讲透的三类边界问题从易到难串起来。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>从取值合法到过程可验证</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>状态迁移约束与合法路径表达</strong>
+                <small>合法状态要看边，不只看节点。</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>迁移保护中检查、清理与放行…</strong>
+                <small>检查通过不等于执行时仍安全。</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>集合完整性证明中的快照语义…</strong>
+                <small>集合完整不是数量对上，而是读取过程…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三者都围绕同一个核心问题：当前看起来成立，不代表过程仍然成立。状态迁移约束要求状态变化路径可验证；迁移保护原子性要求检查结论在执行时仍然成立；集合完整性证明要求分页读取过程可证明来自一致快照或明确重试语义。状态迁移约束如果只靠应用层或当前值校验，可能在并发写入、迁移事务或清理流程中被绕过，因此需要迁移保护提供执行边界；迁移保护和集合完整性证明共享检查或读取时成立、执行或读取完成后失效的时间窗口问题；状态迁移约束和集合完整性证明都要求把当前取值扩展为过程可验证，前者验证对象状态路径，后者验证集合成员读取过程。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["从取值合法到过程可验证"])
+  concept1["状态迁移约束与合法路径表达"]
+  hub --&gt; concept1
+  concept2["迁移保护中检查、清理与放行的原子性边界"]
+  hub --&gt; concept2
+  concept3["集合完整性证明中的快照语义与分页漂移"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["从取值合法到过程可验证"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept2
+  concept3 --&gt; concept1
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="state-transition-constraints">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 数据库 / 数据建模</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>状态迁移约束与合法路径表达</h3>
+              <p>State Transition Constraints</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">合法状态要看边，不只看节点。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>取值约束只检查当前值是否合法，状态迁移约束还要检查 from_status 到 to_status 的边是否合法。</li>
+                <li>CHECK 约束通常只能看当前行，路径约束需要触发器、状态迁移表、应用层状态机或写入中间件补充。</li>
+                <li>非法回退必须显式定义合法边，不能依赖状态名不同或应用层单独校验。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="state-transition-constraints" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="migration-protection-atomicity-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 数据库 / 分布式系统</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>迁移保护中检查、清理与放行的原子性边界</h3>
+              <p>Migration Protection Atomicity Boundary</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">检查通过不等于执行时仍安全。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>检查通过和真正执行清理之间可能存在并发窗口，检查结论可能失效。</li>
+                <li>这类问题常被称为 TOCTOU，即检查时与使用时不一致。</li>
+                <li>锁、事务、隔离级别、补偿清理和表级保护分类共同决定检查、清理、放行是否原子。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="migration-protection-atomicity-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="collection-integrity-proof-snapshot-pagination-drift">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 数据工程 / 数学</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>集合完整性证明中的快照语义与分页漂移</h3>
+              <p>Collection Integrity Proof and Pagination Drift</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">集合完整不是数量对上，而是读取过程可证明。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>分页、游标或总数接口读取期间，数据源变化会让期望集合不再成立。</li>
+                <li>完整性证明不能只看 total 数量，要说明读取语义：快照、时间点或允许重试直到稳定。</li>
+                <li>集合相等需要双向比较，失败时区分 missing、extra、duplicate、out_of_scope、合法空结果和来源异常。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="collection-integrity-proof-snapshot-pagination-drift" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="state-transition-constraints">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 数据库 / 数据建模</p>
+                <h3>状态迁移约束与合法路径表达</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>状态字段最常见的约束是取值约束，例如 status 只能取 active 或 archived。这种约束回答的是：这个值本身合不合法？但业务真正关心的常常是：从当前值变到另一个值合不合法？如果把状态看成图里的节点，合法迁移就是节点之间的有向边。取值约束只检查节点是否存在，状态迁移约束还要检查边是否存在。数据库层面，CHECK 约束通常只能看当前行，难以直接表达上一状态到当前状态的关系；触发器、状态迁移表、应用层状态机或写入中间件可以补充路径约束。当前 open 问题只提出设计问题，未采样 DDL、触发器、状态机配置或运行验证，因此这里只能把它作为状态迁移约束问题讨论，不能声称项目已经实现某种状态机。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>把状态看成节点，把合法迁移看成有向边，取值合法只说明节点存在，路径合法还要说明边存在。</li>
+                <li>数据库 CHECK 通常只能检查当前行，难以直接表达 from_status 到 to_status 的关系，因此需要触发器、状态迁移表、应用层状态机或写入中间件补充路径约束。</li>
+                <li>应用层状态机和数据库约束不是替代关系，而是分层兜底关系，防止手工 SQL、并发写入或迁移流程绕过路径规则。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>精读例子：研究项目有 active 和 archived 两种状态。创建项目时状态为 active；归档时允许 active 到 archived；若 archived 项目直接改回 active，应被拒绝或走恢复流程。如果数据库只写 CHECK status IN ('active','archived')，那么 UPDATE 从 archived 改到 active 时，数据库不会报错，非法路径就可能漏过。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为 CHECK status IN ('active','archived') 就足够，因为取值都合法。</li>
+                <li>以为应用层做过状态机校验，数据库就可以不再关心。</li>
+                <li>以为状态名不同就自动禁止回退，其实必须显式定义合法边。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>迁移保护中检查、清理与放行的原子性边界</td><td>状态迁移规则若只在应用层判断，可能在并发写入、迁移事务或清理流程中被绕过，需要执行边界保护。</td></tr>
+                <tr><td>集合完整性证明中的快照语义与分页漂移</td><td>两者都要求把当前取值扩展为过程可验证，前者验证状态路径，后者验证集合读取过程。</td></tr>
+                <tr><td>从取值合法到过程可验证</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果数据库 CHECK 只能看当前行，怎样用触发器或状态迁移表表达 from_status 到 to_status 的合法边？</li>
+                <li>当应用层已经做状态机校验，数据库层还需要保留哪些最低限度约束，才能在并发或手工 SQL 下兜底？</li>
+                <li>对于 archived 到 active 这类恢复操作，应禁止、允许还是要求人工审批，如何把审批结果变成可审计的状态迁移记录？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="migration-protection-atomicity-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 数据库 / 分布式系统</p>
+                <h3>迁移保护中检查、清理与放行的原子性边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>破坏性降级或 schema 回退前，系统常需要检查某张表是否有数据，再决定是否允许丢弃、导出或清理。问题在于：检查通过和真正执行清理之间可能有一个时间窗口。检查时表是空的，清理前又可能有新数据写入，那么先前检查结论就失效了。这类问题常被称为 TOCTOU，即检查时与使用时不一致。锁、事务、隔离级别、补偿清理和表级保护分类共同决定检查、清理、放行是否原子。所谓原子性边界，不是说每一步都绝对不可能失败，而是说系统必须明确：检查结论在什么条件下仍然有效，失败后如何回滚、补偿或标记不可用。当前 open 问题只给出局部迁移线索，未采样锁范围、事务边界、补偿任务或运行验证，因此这里只能作为迁移保护原子性问题讨论，不能声称项目已经采用某种锁或补偿机制。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>破坏性操作前需要检查数据存在性，但检查与执行之间必须保持同一受控边界，否则旧结论可能失效。</li>
+                <li>如果没有排他锁、事务边界、清理前重查或表级保护分类，外部写入可能让检查通过后的清理动作变成破坏性操作。</li>
+                <li>原子性边界不仅要防止误删，还要定义失败后的回滚、补偿、标记不可用和半清理状态恢复路径。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>精读例子：降级前检查 papers 表是否有数据。若检查为空，准备 DROP TABLE；但另一个事务正在插入一条 paper。如果没有排他锁、事务边界或清理前重查，可能插入成功而表随后被删。保护策略可以是对表加锁、使用事务、在清理前重查、标记禁止破坏性降级，或先归档导出再清理。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为 SELECT COUNT 等于 0 之后 DROP TABLE 就安全。</li>
+                <li>以为事务能自动覆盖所有外部写入。</li>
+                <li>以为有数据拒绝降级已经等于整个清理流程原子，忽略锁范围、隔离级别、补偿失败和半清理状态。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>状态迁移约束与合法路径表达</td><td>状态迁移规则如果只在应用层判断，可能在并发迁移或清理流程中被绕过，需要事务和锁保护。</td></tr>
+                <tr><td>集合完整性证明中的快照语义与分页漂移</td><td>两者共享检查或读取时成立、执行或读取完成后失效的时间窗口问题，都需要快照、重试、补偿或原子边界。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果表级保护分为禁止破坏性降级和可归档后清理，怎样用迁移脚本或配置表达不同表的策略？</li>
+                <li>检查通过后若清理失败，系统应回滚、标记失败还是进入补偿队列，如何避免半清理状态？</li>
+                <li>在不能长期锁表的情况下，怎样用短事务、版本戳或重新检查来降低 TOCTOU 风险？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="collection-integrity-proof-snapshot-pagination-drift">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 数据工程 / 数学</p>
+                <h3>集合完整性证明中的快照语义与分页漂移</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>从分页、游标或总数接口读取一个集合时，如果数据源在读取期间变化，最初确定的期望集合可能不再成立。比如系统先看到 total 是 100，读取第一页和下一页时，数据源又新增或删除了记录，最后拼出来的集合可能少一项、多一项、重复一项，或出现不属于当前查询范围的项。完整性证明不能只说数量对上了，而要说明读取语义：读取的是某个快照、某个时间点，还是允许重试直到稳定。集合相等需要双向比较，即 A 包含于 B 且 B 包含于 A；失败时还要把差集、重复项、越界项、空结果和来源服务异常分开表达。空集合可能是合法结果，也可能是来源服务异常，不能合并为同一个失败。retrieval_proof_version 变化会影响旧证明是否可复用，因为证明绑定的条件变了。当前 open 问题只给出字段和场景线索，未采样证明结构、分页实现或运行验证，因此这里只能作为集合完整性证明问题讨论，不能声称项目已经实现某种证明算法。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>分页读取不是原子操作，跨页期间数据源新增、删除或重复，都会造成集合漂移。</li>
+                <li>集合相等必须双向比较，数量相等不能证明成员一致，因此需要 missing、extra、duplicate、out_of_scope 等分类字段。</li>
+                <li>证明需要绑定 proof_version、查询条件、读取窗口或快照标识，并在失败时区分合法空结果与来源服务异常。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>精读例子：论文检索返回 total 等于 100，系统读取第一页 1 到 50，再读取第二页 51 到 100。读取期间新增一篇论文，旧 total 100 变成 101，第二页可能少一篇或多一篇。完整性证明应记录 proof_version、查询条件、读取窗口或快照标识，并报告 missing_ids、extra_ids、duplicate_ids、out_of_scope_ids；空结果要区分合法无结果和来源服务异常。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为 total 对上就完整。</li>
+                <li>以为空列表一定是错误。</li>
+                <li>以为集合比较只看数量，忽略重复项和越界项。</li>
+                <li>把来源异常和合法空结果混在一起。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>迁移保护中检查、清理与放行的原子性边界</td><td>前者是读取期间集合变化，后者是检查后数据变化，二者都需要明确快照、重试或补偿边界。</td></tr>
+                <tr><td>状态迁移约束与合法路径表达</td><td>两者都要求过程可验证，状态迁移验证对象路径，集合证明验证成员读取过程。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当提供方只有 total 和 cursor，没有 snapshot_id 时，怎样设计重试策略才能证明最终集合完整？</li>
+                <li>集合相等失败时，missing、extra、duplicate、out_of_scope 四类字段应如何命名和汇总，才能避免把来源异常误报为集合缺失？</li>
+                <li>retrieval_proof_version 升级后，旧运行结果应标记为不可复用、可重放还是可降级解释，版本字段应绑定哪些条件？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三者都围绕同一个核心问题：当前看起来成立，不代表过程仍然成立。状态迁移约束要求状态变化路径可验证；迁移保护原子性要求检查结论在执行时仍然成立；集合完整性证明要求分页读取过程可证明来自一致快照或明确重试语义。状态迁移约束如果只靠应用层或当前值校验，可能在并发写入、迁移事务或清理流程中被绕过，因此需要迁移保护提供执行边界；迁移保护和集合完整性证明共享检查或读取时成立、执行或读取完成后失效的时间窗口问题；状态迁移约束和集合完整性证明都要求把当前取值扩展为过程可验证，前者验证对象状态路径，后者验证集合成员读取过程。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">当前看起来成立，不代表过程仍然成立。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如果数据库 CHECK 只能看当前行，怎样用触发器或状态迁移表表达 from_status 到 to_status 的合法边？</li>
+            <li>检查通过后若清理失败，系统应回滚、标记失败还是进入补偿队列，如何避免半清理状态？</li>
+            <li>当提供方只有 total 和 cursor，没有 snapshot_id 时，怎样设计重试策略才能证明最终集合完整？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
