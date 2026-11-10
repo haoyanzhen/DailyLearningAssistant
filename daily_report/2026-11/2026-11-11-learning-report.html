@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-11-11 学习笔记日报</title>
+    <meta name="description" content="今日复习契约校验、不可变版本写入与参数冻结请求，讲清外部输入、内部版本和上游依赖的显式失败边界。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261111-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-11-11</p>
+        <h1>失败边界复习：契约、版本与冻结请求</h1>
+        <p>今天是无变更复习日，围绕契约校验、不可变版本写入和参数冻结请求，把外部输入、内部版本与上游依赖的失败边界讲清楚。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>失败边界：外部输入、内部版本与上游…</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>契约校验中未知字段拒绝与错…</strong>
+                <small>未知字段要拒绝，错误要分类，字段级…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>不可变版本写入的强制层选择…</strong>
+                <small>不可变不是读时过滤，而是写侧强制加…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>参数冻结请求中上游依赖失效…</strong>
+                <small>参数冻结后上游变化要显式失败，不能…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念形成从外部接口到内部存储再到跨服务依赖的失败边界链。契约校验处理外部请求如何被识别、拒绝和分类；不可变版本写入处理内部版本对象如何被强制保护，并让 head、sealed 和发布记录保持一致；参数冻结请求处理固定输入后上游模型或参数变化时如何显式失败。它们的共同点是把边界变成可识别、可检查、可失败的机制，而不是靠默认值、静默替换、读取侧过滤或统一错误掩盖问题。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["失败边界：外部输入、内部版本与上游依赖"])
+  concept1["契约校验中未知字段拒绝与错误分类"]
+  hub --&gt; concept1
+  concept2["不可变版本写入的强制层选择与一致性边界"]
+  hub --&gt; concept2
+  concept3["参数冻结请求中上游依赖失效的显式失败边界"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["状态迁移约束与合法路径表达"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  related2["迁移保护中检查、清理与放行的原子性边界"]
+  concept2 --&gt; related2
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  related3["集合完整性证明中的快照语义与分页漂移"]
+  concept3 --&gt; related3
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="contract-unknown-field-rejection-error-classification">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程 / 数据契约</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>契约校验中未知字段拒绝与错误分类</h3>
+              <p>Unknown Field Rejection &amp; Error Classification</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">未知字段要拒绝，错误要分类，字段级提示才能定位问题。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>未知字段策略需要明确选择忽略、警告或拒绝，避免拼错字段或误传字段被静默掩盖。</li>
+                <li>权限不足、状态或版本冲突、字段校验错误应分别映射到 403、409、422，而不是统一错误。</li>
+                <li>前端应把 422 字段级错误定位到具体输入项，让调用方知道修改哪个字段。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="contract-unknown-field-rejection-error-classification" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="immutable-version-write-enforcement-consistency">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 数据库 / 安全 / 数据建模</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>不可变版本写入的强制层选择与一致性边界</h3>
+              <p>Immutable Version Write Enforcement &amp; Consistency Boundary</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">不可变不是读时过滤，而是写侧强制加 head、sealed、发布记录一致。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>不可变版本必须明确强制层，数据库约束、触发器或应用层写入规则至少要有可检查的写侧保护。</li>
+                <li>读取侧过滤 sealed=true 只能影响可见性，不能替代阻止 UPDATE 或 DELETE 的强制机制。</li>
+                <li>head 指针、sealed 状态和发布记录必须保持一致，避免未密封版本被暴露或发布依据缺失。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="immutable-version-write-enforcement-consistency" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="parameter-freeze-upstream-failure-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">大语言模型 / 软件工程 / 分布式系统</span>
+                <span class="tag warm">★★★★</span>
+              </div>
+              <h3>参数冻结请求中上游依赖失效的显式失败边界</h3>
+              <p>Upstream Dependency Failure Boundary in Frozen Parameter Requests</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">参数冻结后上游变化要显式失败，不能静默换模型或旧版本写入。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>参数冻结请求要求模型、参数、上下文版本等输入固定，失败时应显式暴露而不是静默替换。</li>
+                <li>模型下线、参数不可用或状态版本变化应返回可识别错误，由调用方决定重试、换模型或人工处理。</li>
+                <li>状态版本窗口可用比较并交换或乐观锁收窄，幂等重试需结合请求摘要、幂等键或服务端去重表。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="parameter-freeze-upstream-failure-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="contract-unknown-field-rejection-error-classification">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程 / 数据契约</p>
+                <h3>契约校验中未知字段拒绝与错误分类</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>把 API 请求想象成报名表单：契约不仅规定哪些字段必填、类型是什么、枚举有哪些，还要规定表单之外多出来的字段怎么处理。未知字段策略通常有三种：忽略、警告、拒绝。拒绝未知字段相当于把输入空间限制为契约声明字段的合法组合，能防止调用方把 target 拼成 target_ids 后被静默忽略，也防止未来字段被误传后悄悄进入业务逻辑。错误分类则要求把不同失败映射到不同类别：权限不足通常对应 403，资源状态或版本冲突通常对应 409，字段格式或取值不合法通常对应 422，上游服务不可用则不能伪装成普通校验错误。前端还需要把 422 的字段级错误展示到具体输入项，而不是只显示一句通用错误。这里基于当日材料可确认的是：最近 7 天 open 问题提到完整 OpenAPI 是否表达 scope、targets、kind、id 约束，公共错误测试是否覆盖 403、409、422，系统是否拒绝未知字段，以及 AssociationRemoval.tsx 如何展示 422 字段级错误；当前没有采样完整契约、测试断言或运行验证，因此不能声称项目已经实现某种未知字段拒绝或错误映射。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>契约定义输入空间：合法请求是契约声明字段的合法组合，未知字段策略决定输入空间是否封闭。</li>
+                <li>错误分类表达失败原因：403 表示权限不足，409 表示状态或版本冲突，422 表示字段格式或取值不合法。</li>
+                <li>字段级错误提升可修复性：把错误定位到具体字段、具体取值和修复建议，比通用错误文本更能驱动调用方修正。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>删除关联接口要求 scope、targets、kind、id，其中 kind 只能是 paper 或 note，targets 必须是非空数组。调用方误传 target_ids 时，拒绝未知字段应返回 422 并指出 target_ids 未知、targets 缺失；权限不足返回 403，目标已被移除或版本冲突返回 409。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为校验只检查字段类型，或所有失败都返回 500 或统一 error 字段就行。</li>
+                <li>认为未知字段永远无害，可以一直忽略；拼错字段、误传敏感字段或未来字段冲突都可能被静默掩盖。</li>
+                <li>认为前端显示 HTTP 状态码就等于字段级错误，真正可用的是定位到具体字段、取值和修复建议。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>不可变版本写入的强制层选择与一致性边界</td><td>契约校验需要不可变版本写入的强制层支撑，因为外部契约只能拒绝非法请求，不能保证内部知识版本不被直接修改。</td></tr>
+                <tr><td>参数冻结请求中上游依赖失效的显式失败边界</td><td>契约校验与参数冻结请求共享失败可识别问题，因为参数冻结失败时调用方也需要通过错误类别判断是模型不存在、参数不可用还是请求冲突。</td></tr>
+                <tr><td>状态迁移约束与合法路径表达</td><td>契约校验关注输入空间边界和错误分类，而不是状态字段从哪个状态迁移到哪个状态。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果完整 OpenAPI 已声明拒绝未知字段，是否所有接口都能一致执行 additionalProperties 策略，而不是部分接口静默忽略？</li>
+                <li>公共错误测试是否覆盖 403、409、422 三类失败，并返回可机器解析的字段级错误而不是通用错误文本？</li>
+                <li>前端 AssociationRemoval.tsx 是否能把 422 的字段级错误映射到具体输入项，让调用方知道该修改哪个字段？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="immutable-version-write-enforcement-consistency">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 数据库 / 安全 / 数据建模</p>
+                <h3>不可变版本写入的强制层选择与一致性边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>不可变版本像已经盖章的档案：创建后不能涂改，只能另起一份新档案。强制层选择要回答：到底由谁阻止修改？数据库约束可以直接禁止对 sealed=true 版本的 UPDATE 或 DELETE；触发器可以在状态回退或非法写入时拒绝；应用层写入规则可以规定只能通过创建新版本来更新内容；迁移保护可以提供兜底。不能只靠文档说只读，也不能只靠读取时过滤 sealed=true，因为读取侧过滤只能影响看见什么，不能阻止写侧篡改。一致性边界还要处理 head 指针、sealed 状态和发布记录：head 指向当前对外可见版本，sealed 表示版本已密封，发布记录表示版本已经对外发布。三者必须一致，避免 head 指向未密封版本、发布记录指向不存在版本、或旧版本在 head 切换过程中被修改。这里基于当日材料可确认的是：最近 7 天 open 问题反复询问知识版本不可变性由数据库约束、迁移触发器还是应用层写入规则保证，head 切换如何不绕过 sealed 保护，基于旧知识版本生成新知识应走哪个写入路径，以及如何设计接口错误让调用方明确知道不能直接修改知识域；当前未采样 DDL、触发器、写入路径、事务边界或运行验证，因此不能声称项目已经采用某一层强制不可变。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>不可变性是写侧约束：必须阻止对 sealed 版本的 UPDATE 或 DELETE，而不是只靠文档或读取过滤。</li>
+                <li>强制层需要可检查：数据库约束、触发器或应用层写入规则要能明确回答由谁阻止修改。</li>
+                <li>一致性边界连接可见性：head 指向当前对外可见版本，sealed 表示版本已密封，发布记录提供对外发布依据。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>知识版本 v1 已 sealed=true，head 指向 v1。基于 v1 生成 v2 时，应创建 v2、设置 base_version=v1、完成校验并 sealed=true，再在同一事务中更新 head 到 v2 并写入发布记录；若允许 UPDATE v1.content，或 head 先切到未密封 v2，或发布记录缺失，都会破坏一致性。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为读取时过滤 sealed=true 就等于不可变，其实只影响读路径，不阻止直接 UPDATE。</li>
+                <li>认为应用层自觉足够，但绕过应用层的脚本、迁移、数据库工具仍可能修改数据。</li>
+                <li>认为 head 切换只是更新一个字段，不需要检查目标版本是否 sealed、发布记录是否存在、旧 head 是否可追溯。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>契约校验中未知字段拒绝与错误分类</td><td>不可变版本写入需要契约校验提供外部错误表达，因为调用方需要知道不能直接修改知识域，而不是收到模糊的服务器错误。</td></tr>
+                <tr><td>参数冻结请求中上游依赖失效的显式失败边界</td><td>不可变版本写入与参数冻结请求共享固定输入问题，因为版本对象和冻结请求都要求输入固定后上游变化应显式失败，而不是静默替换。</td></tr>
+                <tr><td>迁移保护中检查、清理与放行的原子性边界</td><td>不可变版本写入关注强制层选择和一致性字段，而不是检查、清理、放行之间的原子边界。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>知识版本表的 DDL 是否通过约束、触发器或应用层写入规则阻止对 sealed=true 版本的 UPDATE 或 DELETE？</li>
+                <li>head 切换事务是否同时检查目标版本 sealed=true、发布记录存在、旧 head 可追溯，避免绕过 sealed 保护？</li>
+                <li>基于旧知识版本生成新知识时，写入路径是否只创建新版本，而不是修改旧版本或知识域？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="parameter-freeze-upstream-failure-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 大语言模型 / 软件工程 / 分布式系统</p>
+                <h3>参数冻结请求中上游依赖失效的显式失败边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>参数冻结请求像拍立得：按下快门后，镜头、胶片、曝光参数都固定，不能中途换。它要求模型、参数、上下文版本等输入固定，以便结果可解释、可复现、可审计。当上游模型下线、参数不可用或上下文资源变化时，原请求无法按原参数执行，系统应显式失败，而不是静默替换模型、降低参数或继续执行。失败边界要回答：由谁检测、谁通知、谁返回错误？模型目录可以检测模型不存在，请求网关可以检测参数不可用，业务服务可以检测状态版本冲突，调用方则需要根据错误类别决定重试、换模型或人工处理。分布式场景下，读取状态版本与写入状态版本之间可能有窗口：请求读到 version=7，执行前上游变成 version=8，如果系统不检查就会用旧状态继续写。比较并交换或乐观锁可以检查版本是否变化，变化则返回冲突；幂等重试则依赖请求摘要、幂等键或服务端去重表，避免同一冻结请求产生重复副作用。这里基于当日材料可确认的是：最近 7 天 open 问题提出模型下线时失败边界划在哪一层、由谁通知调用方，以及状态版本窗口、比较并交换、乐观锁、重试幂等；当前未采样冻结请求实现、模型目录、失败通知路径或运行验证，因此不能声称项目已经实现某种冻结请求机制。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>冻结请求固定输入：模型、参数、上下文版本等固定后，结果才可解释、可复现、可审计。</li>
+                <li>上游失效要显式失败：模型下线、参数不可用或状态版本变化时，不能静默替换、降低参数或继续执行。</li>
+                <li>并发窗口需要版本检查：比较并交换或乐观锁可识别状态版本变化，幂等重试避免同一冻结请求产生重复副作用。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>请求冻结 model_id=m-100、max_tokens=1024、context_version=7。执行前模型目录把 m-100 下线时，不应静默改用 m-101，而应返回冻结模型不可用；若状态版本从 7 变成 8，比较并交换失败，应返回状态版本冲突，调用方带幂等键重试或人工处理。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为冻结只是把参数存下来，其实冻结还包括状态版本和上游依赖边界。</li>
+                <li>认为模型下线时可以用默认模型替换，这会破坏可复现性。</li>
+                <li>认为重试就能解决所有冲突，但如果没有状态版本检查，重试可能继续用旧状态写。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>契约校验中未知字段拒绝与错误分类</td><td>参数冻结请求需要契约校验提供错误分类，因为调用方需要区分模型不存在、参数不可用、状态冲突和上游服务不可用。</td></tr>
+                <tr><td>不可变版本写入的强制层选择与一致性边界</td><td>参数冻结请求与不可变版本写入共享固定输入问题，因为两者都要求输入固定后上游变化时显式失败，而不是静默替换。</td></tr>
+                <tr><td>集合完整性证明中的快照语义与分页漂移</td><td>参数冻结请求关注上游依赖失效和并发版本窗口，而不是分页读取集合时集合相等是否失效。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>参数冻结请求遇到模型下线时，失败边界应划在模型目录、请求网关还是业务服务，由谁返回错误并通知调用方？</li>
+                <li>状态版本窗口是否通过比较并交换或乐观锁收窄，冲突时返回可识别错误而不是继续执行？</li>
+                <li>重试幂等是否结合请求摘要、幂等键或服务端去重表，避免同一冻结请求产生重复副作用？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念形成从外部接口到内部存储再到跨服务依赖的失败边界链。契约校验处理外部请求如何被识别、拒绝和分类；不可变版本写入处理内部版本对象如何被强制保护，并让 head、sealed 和发布记录保持一致；参数冻结请求处理固定输入后上游模型或参数变化时如何显式失败。它们的共同点是把边界变成可识别、可检查、可失败的机制，而不是靠默认值、静默替换、读取侧过滤或统一错误掩盖问题。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">把边界变成可识别、可检查、可失败的机制，而不是靠默认值、静默替换、读取侧过滤或统一错误掩盖问题。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>未知字段拒绝能否在所有接口一致执行，并把 403、409、422 映射成可机器解析的字段级错误？</li>
+            <li>不可变版本能否由数据库约束、触发器或应用层写入规则明确强制，并保持 head、sealed、发布记录一致？</li>
+            <li>参数冻结请求遇到模型下线或状态版本变化时，能否显式失败并用乐观锁和幂等重试避免重复副作用？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
