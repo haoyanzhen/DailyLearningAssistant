@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-11-13 学习笔记日报</title>
+    <meta name="description" content="围绕身份命名空间、状态迁移合法边、迁移保护原子性，复习数据引用、状态审计与清理放行边界的要点。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261113-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-11-13</p>
+        <h1>2026-11-13 数据完整性复习日报</h1>
+        <p>今日是无变更复习日，围绕身份命名空间、状态迁移合法边、迁移保护原子性三条主线，深化数据引用、状态审计与迁移清理边界。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>数据完整性复习：身份引用、状态审计…</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>项目作用域唯一键与全局主键…</strong>
+                <small>局部 ID 管展示，全局主键管引用。</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>状态迁移合法边与审批审计记…</strong>
+                <small>状态不仅要取值合法，迁移也要留痕。</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>迁移保护中检查、清理与放行…</strong>
+                <small>检查、清理、放行必须同边界。</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念形成一条数据完整性复习链：身份命名空间解决对象如何被稳定引用，状态迁移合法边解决状态如何被合法改变并留下审计，迁移保护原子性解决检查、清理、放行如何避免半状态。它们与已讲的异步轮询、幂等回执、检索证明版本不同：前者关注读取侧响应新鲜度、请求身份和旧结果复用，今天转向存储、引用和迁移侧，重点是不让身份断链、状态乱跳、迁移半完成。这里基于当日材料可确认的是 open 问题提出的设计边界，未确认具体仓库已经实现相应约束、触发器、迁移脚本或补偿队列。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["数据完整性复习：身份引用、状态审计与迁移保护"])
+  concept1["项目作用域唯一键与全局主键的命名空间设计"]
+  hub --&gt; concept1
+  concept2["状态迁移合法边与审批审计记录的数据表达"]
+  hub --&gt; concept2
+  concept3["迁移保护中检查、清理与放行的原子性边界"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["幂等回执的保留窗口与审计追溯字段设计"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept2 --&gt; related1
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  related2["检索证明版本升级后的旧结果复用裁决"]
+  concept3 --&gt; related2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="project-scope-namespace">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 数据库 / 数据建模</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>项目作用域唯一键与全局主键的命名空间设计</h3>
+              <p>Project-Scope Unique Key and Global Primary Key Namespace</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">局部 ID 管展示，全局主键管引用。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>局部身份与全局身份分层：项目内 ID 保证项目内稳定，全局主键保证跨项目唯一。</li>
+                <li>复合唯一约束 (project_id, id) 与全局主键共同避免跨项目歧义和孤儿引用。</li>
+                <li>API、外键、迁移映射需要明确身份层，项目删除或迁移时保留映射或显式失败。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="project-scope-namespace" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="state-transition-edges">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 数据库 / 数据建模 / 计算机科学</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>状态迁移合法边与审批审计记录的数据表达</h3>
+              <p>Legal State Transition Edges and Audit Records</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">状态不仅要取值合法，迁移也要留痕。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>状态取值约束只回答当前状态是否合法，迁移边约束还要回答这次变化是否合法。</li>
+                <li>CHECK 难以表达 from_status 到 to_status，可用触发器、状态迁移表或应用层状态机加数据库兜底。</li>
+                <li>审批结果应成为迁移事件记录，包含对象身份、from_status、to_status、操作者、审批者、原因、时间。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="state-transition-edges" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="migration-protection-atomic-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 数据库 / 分布式系统</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>迁移保护中检查、清理与放行的原子性边界</h3>
+              <p>Atomic Boundary for Check, Cleanup, and Release</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">检查、清理、放行必须同边界。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>检查、清理、放行之间存在时间窗口，检查通过不等于执行时仍安全。</li>
+                <li>短事务、版本戳、重新检查或锁表可缩小 TOCTOU 风险，但需权衡可用性。</li>
+                <li>清理失败要回滚、标记失败或进入补偿队列，避免半清理状态和孤儿引用。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="migration-protection-atomic-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="project-scope-namespace">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 数据库 / 数据建模</p>
+                <h3>项目作用域唯一键与全局主键的命名空间设计</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>项目作用域唯一键与全局主键的命名空间设计，核心是区分局部身份和全局身份。项目内 ID 只在项目内有效，跨项目可能重复；全局主键在整个系统内唯一，适合跨项目引用、外键关联和审计追溯。复合唯一约束 (project_id, id) 用来保证项目内 ID 稳定，全局主键用来避免跨项目歧义。API 返回时可以同时给展示身份和存储身份，数据库外键和跨项目引用优先使用全局主键，项目删除或迁移时要保留映射或显式失败，避免孤儿引用和审计断链。这里基于当日材料可确认的是 open 问题提出了身份层选择、映射完整性和跨项目引用问题；未采样完整 DDL、API 契约、外键策略或迁移脚本，因此具体实现仍待确认。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>身份分层：局部 ID 降低业务展示成本，全局主键保证系统级唯一性。</li>
+                <li>引用稳定：跨项目引用、外键和审计需要可解析的稳定身份，避免 project_id 缺失造成歧义。</li>
+                <li>迁移保护：项目删除或迁移时保留身份映射，旧引用可继续解析或显式失败。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>研究项目 A 和 B 都有 note id=1001。API 返回 project_id=A、id=1001、global_id=g-note-1；跨项目引用使用 global_id，项目 A 迁移时保留 project_id、id 到 global_id 的映射，旧引用仍可解析。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为一个 ID 可以同时满足展示、存储、跨项目引用和审计。</li>
+                <li>认为项目内 ID 可以跨项目复用而不携带 project_id，或全局主键只是换一种字符串。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>状态迁移合法边与审批审计记录的数据表达</td><td>状态迁移记录需要稳定身份来记录谁在哪个项目里从哪个状态变到哪个状态。</td></tr>
+                <tr><td>迁移保护中检查、清理与放行的原子性边界</td><td>迁移保护依赖全局主键和 project_id 判断引用是否完整，避免清理后出现孤儿引用。</td></tr>
+                <tr><td>幂等回执的保留窗口与审计追溯字段设计</td><td>幂等回执需要稳定结果身份，身份命名空间是审计和版本绑定能追溯的基础。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果项目内 ID 允许跨项目复用，跨项目引用应始终携带 project_id，还是逐步迁移到只使用全局主键？</li>
+                <li>项目删除或迁移时，如何保证 project_id 与 id 到全局主键的映射不产生孤儿引用或审计断链？</li>
+                <li>API 返回项目内 ID 和全局主键时，调用方应优先使用哪一层身份，契约如何表达？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="state-transition-edges">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 数据库 / 数据建模 / 计算机科学</p>
+                <h3>状态迁移合法边与审批审计记录的数据表达</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>状态迁移合法边与审批审计记录的数据表达，核心是把状态系统从取值集合升级为路径约束。状态取值约束只能回答当前状态是否合法，状态迁移边约束还要回答这次变化是否合法。例如 active 到 archived 可以是一条允许边，archived 到 active 可以是禁止边或需要审批的边。数据库 CHECK 通常只能看当前行，难以直接表达 from_status 到 to_status，因此可以用触发器比较 OLD 和 NEW，也可以用状态迁移表记录哪些边允许、哪些边需要审批。应用层状态机是主要业务校验，数据库层兜底可以防止手工 SQL、并发或绕过应用层写入。审批结果不应只是普通日志，而应成为迁移事件的一部分，记录对象身份、from_status、to_status、操作者、审批者、原因、审批单和时间。这里基于当日材料可确认的是 open 问题提出了 CHECK 局限、触发器、状态迁移表、审批和审计记录问题；未采样触发器、迁移表或审批实现，因此具体行为仍待确认。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>状态取值是点约束，状态迁移边是路径约束。</li>
+                <li>数据库约束需要覆盖应用层之外的写入路径，如手工 SQL 和并发写入。</li>
+                <li>审批不是附属日志，而是迁移事件的一部分，必须与状态变化绑定。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>研究会话有 active 和 archived 两个状态。active 到 archived 允许；archived 到 active 需要人工审批。触发器发现 OLD.status=archived 且 NEW.status=active 时，检查是否存在 approval_id=appr-123 的审批记录；不存在则拒绝，并写入迁移记录。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为 status 枚举合法就足够，应用层校验后数据库就可以不管。</li>
+                <li>认为审批日志可以事后补写，只要最终状态正确就行。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>项目作用域唯一键与全局主键的命名空间设计</td><td>状态迁移记录必须引用稳定身份，否则审计记录无法准确指向被迁移对象。</td></tr>
+                <tr><td>迁移保护中检查、清理与放行的原子性边界</td><td>某些状态允许归档后清理，某些状态禁止破坏性降级，迁移保护可能依赖合法状态边。</td></tr>
+                <tr><td>幂等回执的保留窗口与审计追溯字段设计</td><td>审计追溯字段为状态迁移审批记录提供字段组织参考，例如操作者、时间、结果身份和保留窗口。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>数据库 CHECK 只能看当前行时，怎样用触发器或状态迁移表表达 from_status 到 to_status 的合法边？</li>
+                <li>应用层已经做状态机校验时，数据库层还需要保留哪些最低限度约束，才能在并发或手工 SQL 下兜底？</li>
+                <li>对于 archived 到 active 这类恢复操作，应禁止、允许还是要求人工审批，如何把审批结果变成可审计的状态迁移记录？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="migration-protection-atomic-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 数据库 / 分布式系统</p>
+                <h3>迁移保护中检查、清理与放行的原子性边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>迁移保护中检查、清理与放行的原子性边界，核心是检查、清理、放行之间有时间窗口，不能把检查通过当成永久安全。TOCTOU 风险指检查时条件成立，执行时条件可能变化，例如检查时表里没有新数据，清理前又有新数据写入。短事务可以缩小窗口，版本戳或重新检查可以验证状态没有变化，锁表更强但会影响可用性。清理失败时，系统可以选择回滚、标记失败或进入补偿队列，但不能留下看起来清理了一半的状态。表级保护策略也要区分禁止破坏性降级和可归档后清理，迁移脚本或配置要能表达不同表的策略。这里基于当日材料可确认的是 open 问题提出了表级策略、TOCTOU、短事务、版本戳、重新检查、补偿队列和半清理状态问题；未采样迁移事务、锁范围、补偿队列或运行验证，因此具体实现仍待确认。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>TOCTOU 的本质是检查与执行之间状态可能变化。</li>
+                <li>原子边界可以通过事务、锁、版本戳或重新检查来缩小风险窗口。</li>
+                <li>失败恢复必须显式表达失败状态、补偿路径和禁止半清理。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>降级前检查表 T 是否还有数据。若不能长期锁表，可记录 version=7，清理前重新检查 version 是否仍为 7 且 count 为 0；若变化则拒绝，清理失败时标记 cleanup_failed 并进入补偿队列。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为检查通过就永远安全，或长期锁表是最简单可靠的方案。</li>
+                <li>认为清理失败只要重试就行，不需要失败状态、补偿队列和半状态隔离。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>项目作用域唯一键与全局主键的命名空间设计</td><td>迁移保护检查需要判断引用是否完整，避免清理后出现孤儿引用或审计断链。</td></tr>
+                <tr><td>状态迁移合法边与审批审计记录的数据表达</td><td>迁移保护可能依赖合法状态边，例如某些状态允许归档后清理，某些状态禁止破坏性降级。</td></tr>
+                <tr><td>检索证明版本升级后的旧结果复用裁决</td><td>两者都依赖版本绑定和快照语义，判断旧条件是否仍可复用。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>在不能长期锁表的情况下，怎样用短事务、版本戳或重新检查来降低 TOCTOU 风险？</li>
+                <li>检查通过后若清理失败，系统应回滚、标记失败还是进入补偿队列，如何避免半清理状态？</li>
+                <li>哪些表应被标记为禁止破坏性降级，哪些表可以通过归档后清理再降级，迁移脚本或配置如何表达？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念形成一条数据完整性复习链：身份命名空间解决对象如何被稳定引用，状态迁移合法边解决状态如何被合法改变并留下审计，迁移保护原子性解决检查、清理、放行如何避免半状态。它们与已讲的异步轮询、幂等回执、检索证明版本不同：前者关注读取侧响应新鲜度、请求身份和旧结果复用，今天转向存储、引用和迁移侧，重点是不让身份断链、状态乱跳、迁移半完成。这里基于当日材料可确认的是 open 问题提出的设计边界，未确认具体仓库已经实现相应约束、触发器、迁移脚本或补偿队列。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">身份要分层，状态要留边，迁移要防半状态。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>项目内 ID 与全局主键如何分层，跨项目引用和审计应优先使用哪一层身份？</li>
+            <li>状态迁移合法边如何从 CHECK 局限扩展到触发器、状态迁移表和审批审计记录？</li>
+            <li>不能长期锁表时，迁移保护如何用短事务、版本戳、重新检查和补偿队列避免半清理？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
