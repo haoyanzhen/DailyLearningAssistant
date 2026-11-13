@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-11-14 学习笔记日报</title>
+    <meta name="description" content="当天无新增变更，围绕失败可解析、集合完整证明和参数冻结显式失败，复习三类底层协作关键边界。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261114-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-11-14</p>
+        <h1>失败解析、集合证明与冻结失败边界</h1>
+        <p>当天没有新增工程事实，因此围绕最近 7 天 open 问题中可继续讲清楚的底层原理进行复习。三个概念分别回答失败如何被机器解析、集合读取如何被证明完整、上游依赖失效时谁负责显式失败。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>无变更复习日：失败可解析、集合可证…</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>机器可读错误分类与字段级错…</strong>
+                <small>失败也要可解析：先分类，再定位字段。</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>无快照标识下的集合完整性证…</strong>
+                <small>数量相等不等于集合相等，差异必须分…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>参数冻结请求中上游依赖失效…</strong>
+                <small>冻结参数一旦失效，就要显式停，而不…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">今天三个概念形成一条复习链：机器可读错误分类与字段级错误契约解决“失败如何被机器解析和定位”，无快照标识下的集合完整性证明与分页漂移控制解决“结果集合如何在缺少稳定快照时证明完整”，参数冻结请求中上游依赖失效的显式失败边界解决“上游依赖失效时谁负责失败以及如何避免重复副作用”。三者不是同一工程环节的多节课，而是分别对应接口失败表达、数据读取证明和服务边界控制三个不同底层问题。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["无变更复习日：失败可解析、集合可证明、依赖失效显式停止"])
+  concept1["机器可读错误分类与字段级错误契约"]
+  hub --&gt; concept1
+  concept2["无快照标识下的集合完整性证明与分页漂移控制"]
+  hub --&gt; concept2
+  concept3["参数冻结请求中上游依赖失效的显式失败边界"]
+  hub --&gt; concept3
+  concept1 --&gt; concept3
+  concept1 --&gt; concept2
+  related1["无变更复习日：失败可解析、集合可证明、依赖失效显式停止"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept3
+  concept2 --&gt; concept1
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="machine-readable-error-contract">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程 / 数据契约</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>机器可读错误分类与字段级错误契约</h3>
+              <p>Machine-Readable Error Classification and Field-Level Error Contract</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">失败也要可解析：先分类，再定位字段。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>状态码表达失败大类：403 表示权限不足，409 表示冲突，422 表示请求内容校验失败。</li>
+                <li>错误码或错误字段表达机器可解析原因，例如 permission_denied、conflict、validation_failed。</li>
+                <li>字段级定位告诉调用方具体修改哪个字段，例如 targets、scope、kind、id。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="machine-readable-error-contract" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="set-completeness-proof-without-snapshot">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 数据工程 / 数学</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>无快照标识下的集合完整性证明与分页漂移控制</h3>
+              <p>Set Completeness Proof and Pagination Drift Control Without Snapshot ID</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">数量相等不等于集合相等，差异必须分类。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>total 提供期望基数，回答“应该有多少个”。</li>
+                <li>cursor 提供遍历位置，回答“从哪里继续读”。</li>
+                <li>集合比较把差异分类为 missing、extra、duplicate、out_of_scope，避免把来源异常误报为缺失。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="set-completeness-proof-without-snapshot" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="explicit-failure-boundary-for-frozen-requests">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">大语言模型 / 软件工程 / 分布式系统</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>参数冻结请求中上游依赖失效的显式失败边界</h3>
+              <p>Explicit Failure Boundary for Upstream Dependency Failure in Frozen-Parameter Requests</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">冻结参数一旦失效，就要显式停，而不是悄悄换。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>模型、模型版本、推理参数、状态版本等固定后，不应在执行中静默替换或降级。</li>
+                <li>模型目录、请求网关、业务服务要分别承担失败检测、错误返回和调用方通知责任。</li>
+                <li>版本窗口冲突用比较并交换或乐观锁收窄，重试幂等用请求摘要、幂等键或服务端去重表避免重复副作用。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="explicit-failure-boundary-for-frozen-requests" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="machine-readable-error-contract">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程 / 数据契约</p>
+                <h3>机器可读错误分类与字段级错误契约</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>可以把 API 错误想象成快递异常通知。如果系统只说“出错了”，调用方就像收到一张只写“包裹异常”的纸条，不知道是地址错、权限不足、还是货物冲突。机器可读错误契约要求把失败分成三层：第一层是 HTTP 状态码，表达失败的大类，例如 403 表示权限不足，409 表示冲突，422 表示请求内容校验失败；第二层是错误码或错误字段，表达机器可解析的原因，例如 permission_denied、conflict、validation_failed；第三层是字段级定位，告诉调用方具体该改哪个字段，例如 targets 为空、id 格式错误、scope 不允许。这样调用方不需要人工阅读模糊文本，就能自动判断下一步是改权限、刷新版本还是修改输入。OpenAPI 的 additionalProperties 策略和未知字段拒绝也是这个契约的一部分：如果契约声明不接受未知字段，系统就应该明确拒绝，而不是部分接口静默忽略，否则调用方可能以为字段生效了，实际上被丢掉。这里基于当日材料可确认的是：该概念来自最近 7 天 open 问题中的 403、409、422、字段级错误、OpenAPI additionalProperties、未知字段拒绝、前端 AssociationRemoval.tsx 映射等线索，证据层级为 C，不能据此断言完整错误 schema、契约一致性或前端映射已经实现。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>第一层 HTTP 状态码表达失败大类，让调用方快速判断是权限、冲突还是校验问题。</li>
+                <li>第二层错误码表达机器可解析原因，避免通用文本导致人工判断和不可自动处理。</li>
+                <li>第三层字段级定位把失败落到具体字段，支持前端映射、自动修复和契约一致性检查。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一个关联删除请求提交时 targets 为空，接口返回 422，错误体包含 code 为 validation_failed，fields 数组中有一条 name 为 targets、rule 为 min_items、message 为“至少选择一个目标”的字段级错误；如果当前用户只读，则返回 403 和 permission_denied；如果版本已被他人修改，则返回 409 和 conflict。前端可以把 fields 中 name 为 targets 的错误显示在对应输入项旁边。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为返回 500 加一句通用错误文本就够了，或者把权限拒绝、冲突、校验失败混成同一类错误。</li>
+                <li>未知字段被静默忽略，调用方以为字段生效，实际上契约外字段被丢掉了。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>参数冻结请求中上游依赖失效的显式失败边界</td><td>为模型下线、版本冲突或权限不足提供可机器解析的状态码和错误码输出格式。</td></tr>
+                <tr><td>无快照标识下的集合完整性证明与分页漂移控制</td><td>missing、extra、duplicate、out_of_scope 等集合差异可以进一步映射为字段级错误，帮助调用方判断失败类型。</td></tr>
+                <tr><td>无变更复习日：失败可解析、集合可证明、依赖失效显式停止</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>完整 OpenAPI 是否在所有接口一致执行 additionalProperties 策略，从而拒绝未知字段而不是部分接口静默忽略？</li>
+                <li>公共错误测试是否覆盖 403、409、422 三类失败，并断言返回可机器解析的字段级错误而不是通用错误文本？</li>
+                <li>前端 AssociationRemoval.tsx 是否能把 422 的字段级错误映射到具体输入项，让调用方知道该修改哪个字段？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="set-completeness-proof-without-snapshot">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 数据工程 / 数学</p>
+                <h3>无快照标识下的集合完整性证明与分页漂移控制</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>集合完整性证明要回答的问题是：我从一个提供方分页读取了一批数据，最终拿到的集合到底完整不完整。如果有 snapshot_id，事情会简单很多，因为它像一个稳定照片编号，表示“我读的是哪一个固定版本”。但如果没有 snapshot_id，系统只能依靠 total、cursor 和集合比较来约束完整性。total 提供期望基数，回答“应该有多少个”；cursor 提供遍历位置，回答“我从哪里继续读”；集合比较提供元素归属判断，回答“我拿到的元素是否属于期望集合，是否有遗漏、多余、重复或超范围”。分页漂移是指同一逻辑集合在不同时间呈现不同顺序或边界，例如数据被新增、删除、重新排序，导致第一页读到的内容和后面页读到的内容不再属于同一个稳定集合。此时不能把来源异常直接误报为集合缺失，而要把差异分类为 missing、extra、duplicate、out_of_scope：missing 表示应有但没有拿到，extra 表示拿到了但不在期望范围，duplicate 表示同一元素重复出现，out_of_scope 表示元素属于其他范围。这里基于当日材料可确认的是：该概念来自最近 7 天 open 问题中 snapshot_id 缺失、total、cursor、集合比较、重试策略和四类差异字段线索，证据层级为 C，未采样具体证明算法、分页实现或运行验证。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>没有 snapshot_id 时，不能用单一请求成功证明集合完整，需要绑定 total 和 cursor 的读取过程。</li>
+                <li>分页漂移会让同一逻辑集合在不同时间呈现不同边界，因此必须识别新增、删除、重排带来的边界变化。</li>
+                <li>差异分类把 missing、extra、duplicate、out_of_scope 分开，才能区分数据缺失、来源异常、重复读取和范围错误。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>系统期望读取 120 个知识条目 ID，实际分页收集到 120 个 ID，但集合比较发现 missing 2 个、extra 1 个、duplicate 1 个、out_of_scope 1 个。系统不应直接宣布完整，而应标记差异来源并触发重取；重试后如果 missing 为 0、total 稳定、cursor 正常完成，且 extra、duplicate、out_of_scope 都能归因于来源异常或范围错误，才输出完整证明。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为 HTTP 请求成功就代表集合完整，或者只比较 total 数量就认为集合相同。</li>
+                <li>把来源超时、权限异常、提供方故障直接当成 missing，从而把系统问题误报为数据缺失。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>参数冻结请求中上游依赖失效的显式失败边界</td><td>冻结请求可能依赖模型目录、参数集合或知识结果集合，必须先判断集合完整再决定是否执行。</td></tr>
+                <tr><td>机器可读错误分类与字段级错误契约</td><td>集合相等失败时的 missing、extra、duplicate、out_of_scope 可以映射为机器可读错误字段，帮助调用方区分集合缺失、来源异常和范围错误。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>没有 snapshot_id 时，total 和 cursor 如何绑定同一逻辑集合，避免分页过程中集合边界发生变化？</li>
+                <li>重试策略如何区分来源异常、集合缺失和游标失效，从而避免把提供方故障误报为集合不完整？</li>
+                <li>missing、extra、duplicate、out_of_scope 四类差异如何命名和汇总，才能支持调用方判断失败原因并决定重试或人工处理？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="explicit-failure-boundary-for-frozen-requests">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 大语言模型 / 软件工程 / 分布式系统</p>
+                <h3>参数冻结请求中上游依赖失效的显式失败边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>参数冻结请求可以理解为一次“带着固定参数走完全程”的请求：模型、模型版本、推理参数、状态版本等都被固定下来，请求执行过程中不应悄悄替换。上游依赖失效指的是这些固定参数依赖的东西发生变化，例如模型目录中某个模型下线、模型版本窗口冲突、或上游服务不可用。此时系统需要明确失败边界：模型目录负责声明模型不可用，请求网关负责拦截请求并返回明确错误，业务服务负责解释失败、记录日志并通知调用方。不能由某一层静默替换模型、静默降级或继续执行，因为这会破坏参数冻结的意义。版本窗口冲突可以用比较并交换或乐观锁来收窄：请求声明“我依赖当前版本 X，只有版本仍是 X 时才继续”，如果版本已经变成 Y，就返回可识别冲突错误，而不是继续执行旧条件。重试幂等则要求同一冻结请求不能产生重复副作用，例如重复调用模型、重复写入结果或重复扣费。这里可以结合请求摘要、幂等键或服务端去重表来判断“这是同一次请求的重试，还是新的请求”。这里基于当日材料可确认的是：该概念来自最近 7 天 open 问题中模型下线、模型目录、请求网关、业务服务、比较并交换、乐观锁、请求摘要、幂等键和服务端去重表等线索，证据层级为 C，未采样模型目录、网关、业务服务或幂等实现。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>参数冻结请求要求执行过程中保持模型、版本和推理参数不变，上游依赖变化会破坏冻结语义。</li>
+                <li>显式失败边界要求不同服务层各司其职：目录声明不可用，网关拦截并返回错误，业务服务解释失败并记录。</li>
+                <li>乐观锁或比较并交换把版本窗口冲突变成可识别错误，幂等控制保证重试不产生重复副作用。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一次参数冻结请求固定 model_version 为 2026-10-01 和一组推理参数。执行前模型目录返回该版本 offline，请求网关返回 409 和 model_version_unavailable，业务服务记录 idempotency_key 和 request_digest，不重复调用模型。如果版本窗口被其他请求更新，则返回 409 和 state_revision_conflict，调用方需要重新读取版本后再决定是否重试。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>模型下线时静默换模型或降级执行，让调用方以为原参数仍然有效。</li>
+                <li>网关吞掉上游错误并返回成功，导致业务层无法判断失败原因。</li>
+                <li>重试没有幂等保护，导致同一冻结请求产生重复副作用。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>机器可读错误分类与字段级错误契约</td><td>模型下线、权限不足或版本冲突都需要用 403、409、422 等可机器解析错误告诉调用方下一步。</td></tr>
+                <tr><td>无快照标识下的集合完整性证明与分页漂移控制</td><td>冻结请求可能依赖模型目录、参数集合或知识结果集合，必须先判断这些集合是否完整，再决定是否执行。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>模型下线时，模型目录、请求网关和业务服务分别负责哪类失败检测、错误返回和调用方通知？</li>
+                <li>状态版本窗口如何通过比较并交换或乐观锁收窄，使冲突时返回可识别错误而不是继续执行？</li>
+                <li>重试幂等如何结合请求摘要、幂等键或服务端去重表，避免同一冻结请求产生重复副作用？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">今天三个概念形成一条复习链：机器可读错误分类与字段级错误契约解决“失败如何被机器解析和定位”，无快照标识下的集合完整性证明与分页漂移控制解决“结果集合如何在缺少稳定快照时证明完整”，参数冻结请求中上游依赖失效的显式失败边界解决“上游依赖失效时谁负责失败以及如何避免重复副作用”。三者不是同一工程环节的多节课，而是分别对应接口失败表达、数据读取证明和服务边界控制三个不同底层问题。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">失败也要可解析：状态码分类失败，错误码说明原因，字段级定位告诉调用方该改哪里。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>完整 OpenAPI 是否在所有接口一致执行 additionalProperties 策略，从而拒绝未知字段而不是部分接口静默忽略？</li>
+            <li>没有 snapshot_id 时，total 和 cursor 如何绑定同一逻辑集合，避免分页过程中集合边界发生变化？</li>
+            <li>模型下线时，模型目录、请求网关和业务服务分别负责哪类失败检测、错误返回和调用方通知？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
