@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-11-15 学习笔记日报</title>
+    <meta name="description" content="今日复习异步轮询新鲜度、幂等冲突裁决与不可变版本写入，围绕状态变化中的覆盖、重复与保护建立判断框架。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261115-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-11-15</p>
+        <h1>状态变化下的覆盖、重复与保护</h1>
+        <p>这是一天无变更复习，重点不是工程进展，而是把最近 open 问题归并成三个可迁移判断框架：异步响应是否新鲜、同一请求身份下内容变化如何裁决、sealed 版本如何保持只读与指针一致。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>无变更复习日：从 open 问题提…</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>异步轮询中的响应新鲜度判定…</strong>
+                <small>轮询不是问得勤，而是只接受更可信的…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>幂等请求中身份键与内容指纹…</strong>
+                <small>幂等键认身份，指纹认内容，身份相同…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>不可变版本写入的强制层选择…</strong>
+                <small>封存版本不能改，只能追加新版本；h…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念共同回答一个核心问题：当系统状态随时间变化时，如何避免错误覆盖、重复副作用和保护被绕过。异步轮询的新鲜度判定解决读取侧问题，让客户端知道哪个响应更新、何时停止、如何避免旧响应覆盖新状态；幂等请求的身份键与内容指纹冲突裁决解决写入侧问题，让系统区分同一请求重试和同一身份下内容变化；不可变版本写入的强制层选择与版本指针一致性解决版本保护问题，让 sealed 版本只读、写入只追加、head 切换不绕过保护。这里基于当日材料可确认的是，三者都来自最近 7 天 open 问题，证据层级为 C，缺少当日 diff、运行验证和完整实现采样，因此讲解只展开原理、边界和待确认线索，不声称任何仓库已经实现上述机制。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["无变更复习日：从 open 问题提炼状态一致性判断框架"])
+  concept1["异步轮询中的响应新鲜度判定与停止条件"]
+  hub --&gt; concept1
+  concept2["幂等请求中身份键与内容指纹的冲突裁决"]
+  hub --&gt; concept2
+  concept3["不可变版本写入的强制层选择与版本指针一致性"]
+  hub --&gt; concept3
+  concept1 --&gt; concept3
+  concept1 --&gt; concept2
+  related1["无变更复习日：从 open 问题提炼状态一致性判断框架"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept3
+  concept2 --&gt; concept1
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="async-polling-freshness-stop-conditions">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 前端状态管理 / 计算机科学</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>异步轮询中的响应新鲜度判定与停止条件</h3>
+              <p>Async Polling Freshness and Stop Conditions</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">轮询不是问得勤，而是只接受更可信的响应，并在明确条件下停止。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>新鲜度判定要比较资源版本、请求序号和取消状态，避免迟到的旧响应覆盖新状态。</li>
+                <li>停止条件包括完成、失败、权限不足、资源不存在、解析失败、超时和旧响应不可覆盖。</li>
+                <li>404 需要细分权限不足、资源不存在、读模型解析失败或执行未完成，不能一律按资源不存在处理。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="async-polling-freshness-stop-conditions" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="idempotency-key-fingerprint-conflict">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 分布式系统 / 数据建模</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>幂等请求中身份键与内容指纹的冲突裁决</h3>
+              <p>Idempotency Key and Fingerprint Conflict Resolution</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">幂等键认身份，指纹认内容，身份相同内容不同必须显式裁决。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>幂等键用于识别同一业务意图，内容指纹用于判断请求载荷是否变化。</li>
+                <li>幂等键相同且指纹相同通常返回旧回执，不重复执行副作用。</li>
+                <li>幂等键相同但指纹不同需要显式裁决，并保留最小审计字段支持追溯。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="idempotency-key-fingerprint-conflict" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="immutable-version-write-pointer-consistency">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 数据库 / 安全 / 数据建模</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>不可变版本写入的强制层选择与版本指针一致性</h3>
+              <p>Immutable Version Write Enforcement and Pointer Consistency</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">封存版本不能改，只能追加新版本；head 切换必须可追溯。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>sealed 版本应视为只读节点，后续变化只能创建新版本，而不是修改旧版本。</li>
+                <li>强制层可分布在数据库约束、触发器和应用层，分别承担兜底、复杂拦截和业务语义。</li>
+                <li>head 切换不是简单改指针，要检查目标版本 sealed、发布记录存在、旧 head 可追溯。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="immutable-version-write-pointer-consistency" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="async-polling-freshness-stop-conditions">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 前端状态管理 / 计算机科学</p>
+                <h3>异步轮询中的响应新鲜度判定与停止条件</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>异步轮询可以理解为客户端反复询问服务器：任务到哪一步了？难点不是问得勤，而是服务器返回的消息可能晚到、乱序或过期。如果前端只按最后收到就更新界面，就可能把已经显示到执行中的状态，被一个迟到的旧响应覆盖回等待中。因此需要新鲜度判定：资源版本表示资源本身变化到了哪一版，请求序号表示某次请求或某条响应在会话中的先后，取消状态表示用户或系统是否已经放弃当前轮询。这里基于当日材料可确认的是，open 问题提出了资源版本与请求序号同时存在时的优先级，但没有采样具体实现，因此只能讲判断框架，不能断言项目已采用某一种字段。停止条件同样重要。轮询不是永远继续，它需要知道什么时候该停：任务完成、任务失败、权限不足、资源不存在、读模型解析失败、超时、旧响应不可覆盖等，都可以成为停止或提示谓词。404 也不能一概当成资源不存在，需要区分资源确实不存在、当前用户没有权限、读模型解析失败或执行未完成。页面隐藏时暂停轮询后，重新可见应先补拉最新状态，再丢弃隐藏期间延迟返回的旧响应。对于 latest_knowledge_version_id 存在但 last_execution_knowledge_version_id 为空，这里基于当日材料可确认的是，它可能表示版本引用存在但执行未完成，API 应返回 200 加派生状态、202 还是 404，取决于业务语义，而不是简单按字段为空报错。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>资源版本表示资源本身变化到了哪一版，请求序号表示某次请求或响应在会话中的先后，取消状态表示是否放弃当前轮询。</li>
+                <li>客户端应以可比较的新鲜度信号决定是否合并状态，而不是以 HTTP 200 或最后收到为准。</li>
+                <li>停止或提示谓词应覆盖任务完成、失败、权限不足、资源不存在、解析失败、超时和旧响应不可覆盖等状态。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>前端轮询知识生成任务时，本地状态保存 resource_version=12 和 request_seq=6。新响应返回 resource_version=12、request_seq=7，客户端认为它更新，可以合并状态；另一个迟到的响应返回 resource_version=11、request_seq=8，虽然请求序号更大，但资源版本更旧，客户端应丢弃或标记为过期。若返回 404 且错误体区分权限不足，则停止轮询并提示申请权限；若 latest_knowledge_version_id 存在但 last_execution_knowledge_version_id 为空，则显示版本已选择但执行未完成，并继续按停止条件轮询。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把轮询成功等同于状态最新，认为只要 HTTP 返回 200 就可以更新界面。</li>
+                <li>把 404 一律理解为资源不存在，不区分权限不足、读模型解析失败和执行未完成。</li>
+                <li>页面隐藏后恢复时不补拉最新状态，让旧响应继续覆盖新状态。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>不可变版本写入的强制层选择与版本指针一致性</td><td>异步轮询的新鲜度判定会依赖版本指针一致性，因为当 head 或资源版本切换不一致时，客户端无法判断旧响应是否可以覆盖当前状态。</td></tr>
+                <tr><td>幂等请求中身份键与内容指纹的冲突裁决</td><td>轮询中的重试或补拉请求可能触发幂等冲突，因此客户端需要区分资源状态变化和请求内容变化，避免重复副作用。</td></tr>
+                <tr><td>无变更复习日：从 open 问题提炼状态一致性判断框架</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果一个轮询响应同时带有资源版本和请求序号，应优先用哪个字段判断新鲜度，为什么？</li>
+                <li>页面隐藏后重新可见时，如何补拉最新状态并丢弃延迟返回的旧响应？</li>
+                <li>当 latest_knowledge_version_id 存在但 last_execution_knowledge_version_id 为空时，API 应返回 200 加派生状态、202 还是 404？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="idempotency-key-fingerprint-conflict">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 分布式系统 / 数据建模</p>
+                <h3>幂等请求中身份键与内容指纹的冲突裁决</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>幂等请求的目标是让网络重试不会造成重复副作用。幂等键像请求的身份，用来回答这是哪一次业务意图；内容指纹像请求内容的摘要，用来回答这次请求的载荷是否和之前相同。网络重试时，如果幂等键相同且指纹相同，系统通常应返回旧回执，而不是再次执行；如果幂等键相同但指纹不同，就出现身份一致但内容不一致的冲突。这里基于当日材料可确认的是，open 问题提出了应返回旧回执、409 冲突还是 422 校验错误，但没有采样具体冲突策略，因此这里只讲裁决框架。裁决的关键是业务规则。如果内容变化只是客户端随机 ID、时间戳或展示字段变化，而业务意图没有变，就不应触发冲突；如果变化的是模型、参数、金额、目标版本等会改变副作用的字段，系统应显式冲突，而不是静默覆盖旧回执。去重表需要保存幂等键、请求指纹、结果身份、状态、创建时间和保留窗口等字段，以便支持网络重试、内容变更检测和审计追溯。保留窗口要覆盖网络重试时限，也要满足审计周期，同时考虑存储成本。清理时不能直接删除整条回执，而应保留最小审计字段，让事后仍能回答当时为什么返回旧回执或冲突。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>幂等键回答“这是哪一次业务意图”，内容指纹回答“这次请求载荷是否和之前相同”。</li>
+                <li>内容变化是否触发冲突，取决于变化字段是否改变业务副作用，而不是所有字段都参与指纹。</li>
+                <li>去重表需要保存幂等键、请求指纹、结果身份、状态、创建时间和保留窗口，以支持重试、变更检测和审计。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>创建知识生成命令时，客户端使用幂等键 cmd-123，第一次载荷包含 model=alpha 和 prompt_id=p-1，服务端计算 fingerprint=hash1 并保存回执。网络超时后客户端重放相同载荷，fingerprint=hash1，服务端返回旧回执，不重复创建。若客户端重放时把 model 改为 beta，fingerprint=hash2，服务端应返回 409 冲突，错误体说明同一幂等键下 fingerprint 不一致，并保留 hash1、hash2、旧回执 ID 和请求时间，而不是执行 beta 或覆盖旧回执。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为幂等键相同就一定能返回旧结果，忽略内容指纹可能已经变化。</li>
+                <li>把时间戳、客户端随机 ID 等无关字段纳入指纹，导致每次重试都产生假冲突。</li>
+                <li>在冲突时静默覆盖旧回执，使审计无法追溯调用方到底提交了哪一版内容。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>不可变版本写入的强制层选择与版本指针一致性</td><td>幂等请求的冲突裁决需要与不可变版本写入协同，因为当请求要创建或引用知识版本时，sealed 版本不能被覆盖，冲突时只能返回旧回执、冲突错误或拒绝执行，而不是修改已封存版本。</td></tr>
+                <tr><td>异步轮询中的响应新鲜度判定与停止条件</td><td>幂等请求中的重试场景与异步轮询相关，因为重试请求可能带来新的请求序号或资源版本，系统需要判断这是同一请求重复、资源状态变化还是请求内容变化。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当幂等键相同但 fingerprint 不同时，系统应返回旧回执、409 冲突还是 422 校验错误，这取决于哪些业务规则？</li>
+                <li>fingerprint 应覆盖哪些请求字段，哪些字段变化不应触发冲突，例如时间戳、客户端随机 ID 或展示字段？</li>
+                <li>去重表保留窗口如何根据网络重试时限、审计周期和存储成本确定，清理时如何保留最小审计字段而不是直接删除整条回执？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="immutable-version-write-pointer-consistency">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 数据库 / 安全 / 数据建模</p>
+                <h3>不可变版本写入的强制层选择与版本指针一致性</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>不可变版本写入的核心是把 sealed 版本视为只读节点。sealed 可以理解为封存：版本一旦封存，就不能再修改内容、状态或知识域，后续变化只能创建新版本。这里基于当日材料可确认的是，open 问题提出了写入路径是否只创建新版本、DDL 是否阻止对 sealed=true 版本的 UPDATE 或 DELETE、head 切换是否绕过 sealed 保护，但没有采样具体 DDL、触发器或事务实现，因此这里只讲强制层边界，不声称某一层已经实现。强制层可以分布在数据库约束、触发器和应用层。数据库约束适合表达简单且必须兜底的规则，例如唯一键、外键、CHECK 约束，能防止手工 SQL 直接破坏数据；触发器适合表达较复杂的写入拦截，例如在 UPDATE 或 DELETE 前检查 sealed=true 并拒绝；应用层写入规则适合提供业务语义、友好错误和事务协调，例如在创建新版本前校验来源版本、发布记录和 head 状态。三层不是互斥，而是各有边界：应用层负责业务清晰，数据库层负责最终兜底，触发器负责复杂拦截。版本指针一致性同样重要。head 表示当前对外可见版本，切换 head 不是简单改一个字段，而应满足目标版本 sealed=true、发布记录存在、旧 head 可追溯等条件。若 head 切换绕过 sealed 保护，系统可能把未封存版本暴露为当前版本；若旧 head 不可追溯，审计就无法回答当前版本是如何从旧版本切换来的。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>数据库约束适合表达简单且必须兜底的规则，例如唯一键、外键、CHECK 约束。</li>
+                <li>触发器适合在 UPDATE 或 DELETE 前检查 sealed=true 并拒绝复杂写入拦截。</li>
+                <li>应用层写入规则适合提供业务语义、友好错误和事务协调，例如校验来源版本、发布记录和 head 状态。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>知识版本 v1 已 sealed=true，v2 是 draft。基于 v1 生成新知识时，写入路径应创建 v3 draft，而不是 UPDATE v1.content 或修改 v1 所属知识域。发布 v3 时，系统先写发布记录并把 v3 标记为 sealed=true，然后在同一事务中把 head 从 v1 切到 v3，同时检查 v3 sealed=true、发布记录存在、旧 head v1 可追溯。若有人尝试 UPDATE v1.content，数据库约束或触发器应拒绝；若 v3 尚未 sealed，head 切换应失败。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为字段 sealed=true 或文档说明只读就等于不可变，忽略数据库、触发器或应用层是否真正阻止 UPDATE 和 DELETE。</li>
+                <li>head 切换时只更新指针，不检查目标版本是否 sealed、发布记录是否存在、旧 head 是否可追溯。</li>
+                <li>把不可变完全交给应用层，导致手工 SQL 或异常路径可以绕过保护。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>异步轮询中的响应新鲜度判定与停止条件</td><td>不可变版本写入的强制层选择会影响异步轮询的新鲜度判定，因为 sealed 版本和 head 指针是否一致，决定了轮询读到的版本状态是否可信，以及旧响应是否可以覆盖当前状态。</td></tr>
+                <tr><td>幂等请求中身份键与内容指纹的冲突裁决</td><td>不可变版本写入与幂等请求冲突裁决协同保护副作用，因为幂等请求若基于旧版本创建新版本，不能修改 sealed 版本，而应在指纹冲突时返回旧回执或拒绝执行。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>知识版本的不可变性到底由数据库约束、迁移触发器还是应用层写入规则保证？</li>
+                <li>head 切换事务是否同时检查目标版本 sealed=true、发布记录存在、旧 head 可追溯，以避免绕过 sealed 保护？</li>
+                <li>基于旧知识版本生成新知识时，写入路径如何只创建新版本，而不是修改旧版本或知识域？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念共同回答一个核心问题：当系统状态随时间变化时，如何避免错误覆盖、重复副作用和保护被绕过。异步轮询的新鲜度判定解决读取侧问题，让客户端知道哪个响应更新、何时停止、如何避免旧响应覆盖新状态；幂等请求的身份键与内容指纹冲突裁决解决写入侧问题，让系统区分同一请求重试和同一身份下内容变化；不可变版本写入的强制层选择与版本指针一致性解决版本保护问题，让 sealed 版本只读、写入只追加、head 切换不绕过保护。这里基于当日材料可确认的是，三者都来自最近 7 天 open 问题，证据层级为 C，缺少当日 diff、运行验证和完整实现采样，因此讲解只展开原理、边界和待确认线索，不声称任何仓库已经实现上述机制。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">状态变化时，先判断哪个响应更新，再区分同一请求重试与内容变化，最后确保 sealed 版本只读且 head 指针可追溯。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如果一个轮询响应同时带有资源版本和请求序号，应优先用哪个字段判断新鲜度，为什么？</li>
+            <li>当幂等键相同但 fingerprint 不同时，系统应返回旧回执、409 冲突还是 422 校验错误，这取决于哪些业务规则？</li>
+            <li>head 切换事务是否同时检查目标版本 sealed=true、发布记录存在、旧 head 可追溯，以避免绕过 sealed 保护？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
