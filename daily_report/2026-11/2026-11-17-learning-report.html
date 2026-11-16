@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-11-17 学习笔记日报</title>
+    <meta name="description" content="当天从错误表达、集合差异裁决到模型下线依赖失效，复习失败如何变成可定位、可分类、可处理事实。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261117-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-11-17</p>
+        <h1>2026-11-17 失败表达与裁决学习笔记</h1>
+        <p>无变更复习日，从最近 7 天 open 问题延展三个概念：错误如何表达、差异如何裁决、依赖失效如何归属。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>系统失败的可判定化：表达、裁决与归属</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>字段级错误定位中的路径表达…</strong>
+                <small>失败不只是请求失败，而是哪类失败…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>集合差异分类中的缺失、多余…</strong>
+                <small>对不上不能只说对不上，要说缺什么…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>模型下线场景中的依赖失效检…</strong>
+                <small>依赖失效要显式失败、明确归属，重试…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念共同回答一个更一般的问题：系统失败时，如何把模糊异常变成可判定事实。字段级错误定位提供表达层，用状态码、字段路径和错误聚合告诉调用方失败类别和修改位置；集合差异分类提供裁决层，用 missing、extra、duplicate、out_of_scope 把集合不相等拆成可处理原因；模型下线依赖失效提供分布式责任层，用模型目录、请求网关、业务服务、CAS 和幂等机制说明谁检测、谁返回错误、谁避免重复副作用。三者之间的关联是递进且互补的：字段级错误为集合差异和依赖失效提供机器可读字段；集合差异与依赖失效共享重试裁决，需要区分来源异常、集合缺失、游标失效和上游依赖失效；三者都避免静默忽略、静默降级或误报。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["系统失败的可判定化：表达、裁决与归属"])
+  concept1["字段级错误定位中的路径表达与错误聚合"]
+  hub --&gt; concept1
+  concept2["集合差异分类中的缺失、多余、重复与越界判定"]
+  hub --&gt; concept2
+  concept3["模型下线场景中的依赖失效检测与错误归属"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["系统失败的可判定化：表达、裁决与归属"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="field-level-error-location">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程 / 数据契约</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>字段级错误定位中的路径表达与错误聚合</h3>
+              <p>Field-level Error Location and Aggregation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">失败不只是请求失败，而是哪类失败、哪个字段、还有几个问题。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>状态码表达失败类别：403 通常表示权限不足，409 通常表示资源冲突，422 通常表示请求语义校验失败。</li>
+                <li>字段路径表达错误位置，例如 items[0].source_id 表示第 0 个条目的 source_id 字段出错。</li>
+                <li>错误聚合表达一次请求中的多个违规，未知字段拒绝表达契约边界，避免部分接口静默忽略未知字段。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="field-level-error-location" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="set-difference-classification">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 计算机科学 / 数据工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>集合差异分类中的缺失、多余、重复与越界判定</h3>
+              <p>Set Difference Classification</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">对不上不能只说对不上，要说缺什么、多什么、重复什么、越界什么。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>missing、extra、duplicate、out_of_scope 分别表示期望有观察无、观察有期望无、重复出现和不属于当前请求范围。</li>
+                <li>无 snapshot_id 时，total 和 cursor 必须绑定同一逻辑集合，否则分页过程中集合边界变化会让差异判定失真。</li>
+                <li>重试策略要基于差异类别裁决：来源异常可能适合重试，游标失效可能需要重新定位，集合缺失可能需要人工处理或重新拉取。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="set-difference-classification" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="model-offline-dependency-failure">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">大语言模型 / 软件工程 / 分布式系统</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>模型下线场景中的依赖失效检测与错误归属</h3>
+              <p>Model Offline Dependency Failure Attribution</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">依赖失效要显式失败、明确归属，重试还要幂等。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>LLM 请求绑定具体模型、版本或目录状态后，上游依赖失效时应显式失败，而不是静默降级或换模型。</li>
+                <li>失败检测点可分层：模型目录表达模型不可用，请求网关拦截依赖失效请求，业务服务结合请求上下文返回更具体错误。</li>
+                <li>版本比较或 CAS/乐观锁用于检测请求时依赖状态是否仍成立；幂等机制用请求摘要、幂等键或服务端去重表避免重复副作用。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="model-offline-dependency-failure" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="field-level-error-location">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程 / 数据契约</p>
+                <h3>字段级错误定位中的路径表达与错误聚合</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>字段级错误定位中的路径表达与错误聚合，核心是把 API 失败从一句“请求失败”变成可定位、可分类、可聚合的契约对象。状态码表达失败类别：403 通常表示权限不足，409 通常表示资源冲突，422 通常表示请求语义校验失败。字段路径表达错误位置，例如 items[0].source_id 表示第 0 个条目的 source_id 字段出错。错误聚合表达一次请求中的多个违规，而不是只返回第一个错误。未知字段拒绝表达契约边界，避免部分接口静默忽略未知字段。一个外卖下单接口如果只返回“订单创建失败”，用户会反复猜测是手机号、地址、优惠券还是备注有问题；字段级错误就像餐厅退菜单，直接列出第 2 项辣度不能为负数、地址缺少门牌号、优惠券字段不在允许列表。当前无 diff，错误结构、字段路径、OpenAPI 策略和前端映射实现均待确认。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>状态码先回答“失败属于哪一类”，让调用方选择权限处理、冲突处理或校验修正。</li>
+                <li>字段路径再回答“失败发生在哪个位置”，使数组下标、嵌套对象和未知字段都能被机器解析。</li>
+                <li>错误聚合和未知字段拒绝把多个违规与契约边界一次性暴露，避免只返回第一个错误或静默忽略。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>删除关联接口返回 422，响应体可设计为 code='VALIDATION_FAILED'，errors 数组包含 path='items[0].source_id' 的 NOT_FOUND、path='items[1].reason' 的 TOO_LONG、path='unknown_field' 的 ADDITIONAL_PROPERTIES，前端根据 path 把错误显示到对应输入项。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为只要返回 422 就算清楚，或者只返回第一个错误。</li>
+                <li>把未知字段静默忽略，或者把 409 和 422 混用，错误文本只给人看而不写成机器可解析路径。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>集合差异分类中的缺失、多余、重复与越界判定</td><td>为集合差异提供机器可读的错误字段，使 missing、extra、duplicate、out_of_scope 能被调用方解析并决定重试或人工处理。</td></tr>
+                <tr><td>模型下线场景中的依赖失效检测与错误归属</td><td>共享错误契约，使模型不可用、版本冲突和权限问题都能用明确错误码和字段路径表达。</td></tr>
+                <tr><td>系统失败的可判定化：表达、裁决与归属</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果 OpenAPI 声明 additionalProperties 为 false，如何在所有接口一致执行未知字段拒绝并返回可解析字段路径？</li>
+                <li>前端如何把 422 错误中的字段路径映射到具体输入项，同时处理数组下标、嵌套对象和未知字段？</li>
+                <li>公共错误测试如何断言 403、409、422 三类失败都返回机器可解析的字段级错误而不是通用错误文本？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="set-difference-classification">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 计算机科学 / 数据工程</p>
+                <h3>集合差异分类中的缺失、多余、重复与越界判定</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>集合差异分类中的缺失、多余、重复与越界判定，核心是把“两个集合不相等”拆成可判定事实。missing 表示期望有而观察无，extra 表示观察有而期望无，duplicate 表示观察中同一元素出现次数超过期望，out_of_scope 表示观察项不属于当前请求范围。无 snapshot_id 时，total 和 cursor 必须绑定同一逻辑集合，否则分页过程中集合边界变化会让差异判定失真。重试策略也要基于差异类别裁决：来源异常可能适合重试，游标失效可能需要重新定位，集合缺失可能需要人工处理或重新拉取。超市盘点时，账本有 10 件商品，货架数出 9 件，其中 1 件重复、1 件不属于本店、1 件缺失；只说“对不上”无法处理，必须分类成缺什么、多什么、重复什么、越界什么。当前无 diff，集合比较、游标绑定和重试分类实现待确认。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>集合比较不能只输出布尔结果，要输出可分类的差异事实，才能驱动后续动作。</li>
+                <li>无快照时，total 与 cursor 必须绑定同一逻辑集合，否则分页漂移会污染 missing、extra、duplicate 和 out_of_scope 判定。</li>
+                <li>重试裁决要区分来源异常、游标失效和集合缺失，避免把提供方故障误报为集合不完整。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>期望集合 E={a,b,c,d}，观察集合 O={a,a,c,e}，可判定 missing={d}、duplicate={a}，e 可归为 extra 或 out_of_scope；若提供方返回 500，则应归为来源异常而不是 missing。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为 total 相同就代表集合完整，或者分页请求成功就代表数据完整。</li>
+                <li>把提供方网络故障误报为集合缺失，或者在没有 snapshot_id 时仍假设 total 与 cursor 指向稳定不变集合。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>字段级错误定位中的路径表达与错误聚合</td><td>依赖字段级错误定位把差异结果表达为机器可读字段，调用方才能判断失败原因并决定重试或人工处理。</td></tr>
+                <tr><td>模型下线场景中的依赖失效检测与错误归属</td><td>共享重试裁决逻辑，需要区分集合缺失、游标失效、来源异常和上游依赖失效，避免误报。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>没有 snapshot_id 时，如何用 total、cursor 和集合比较判断最终集合是否完整？</li>
+                <li>missing、extra、duplicate、out_of_scope 四类差异应如何命名和汇总，才能支持调用方决定重试或人工处理？</li>
+                <li>重试策略如何区分来源异常、集合缺失和游标失效，从而避免把提供方故障误报为集合不完整？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="model-offline-dependency-failure">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 大语言模型 / 软件工程 / 分布式系统</p>
+                <h3>模型下线场景中的依赖失效检测与错误归属</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>模型下线场景中的依赖失效检测与错误归属，核心是 LLM 请求绑定具体模型、版本或目录状态后，上游依赖失效时应显式失败，而不是静默降级或换模型。参数冻结请求通常依赖请求时确定的模型、版本或目录状态；如果模型下线，继续执行可能造成语义漂移。失败检测点可以分层：模型目录表达模型不可用，请求网关拦截依赖失效请求，业务服务结合请求上下文返回更具体错误。错误归属要明确谁检测、谁返回错误、谁通知调用方。版本比较或 CAS/乐观锁用于检测请求时依赖状态是否仍成立；如果版本窗口冲突，应返回可识别错误。幂等机制用请求摘要、幂等键或服务端去重表，避免同一冻结请求重试产生重复副作用。你预约了一位医生看诊，挂号时医生已排班，但看诊前医生临时停诊；医院不能悄悄换另一位医生，而应明确告知原医生停诊，并说明是排班系统、挂号网关还是科室系统发出通知。当前无 diff，模型目录、网关、业务服务、CAS 或幂等去重实现待确认。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>参数冻结请求依赖请求时确定的模型、版本或目录状态，依赖失效后继续执行可能造成语义漂移。</li>
+                <li>失败检测要分层并归属：模型目录、请求网关和业务服务分别承担不同检测、返回和通知职责。</li>
+                <li>CAS/乐观锁检测状态版本窗口是否仍成立，幂等键和去重表保证重试不产生重复副作用。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>冻结请求包含 model='gpt-x'、model_version='2026-10'、state_revision=7，执行前模型目录把该版本下线，CAS 比较 state_revision 失败，网关返回 409，错误体包含 code='MODEL_DEPENDENCY_INVALID'、attribution='model_catalog'、retryable=false 和 request_fingerprint，重试同一幂等键时返回原失败回执，不重复产生副作用。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>模型下线时自动切换到其他模型或默认模型，把依赖失效当成普通超时。</li>
+                <li>只返回“服务不可用”而不说明是模型目录、网关还是业务服务，或者重试没有幂等导致重复创建、重复计费或重复写入。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>字段级错误定位中的路径表达与错误聚合</td><td>依赖字段级错误定位，使模型不可用、版本冲突和权限问题都能返回可解析错误而不是通用错误文本。</td></tr>
+                <tr><td>集合差异分类中的缺失、多余、重复与越界判定</td><td>与集合差异分类共享重试裁决，需要区分集合缺失、游标失效、来源异常和上游依赖失效，避免把模型下线误报为集合不完整。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>模型下线时，模型目录、请求网关和业务服务分别应负责哪类失败检测、错误返回和调用方通知？</li>
+                <li>状态版本窗口如何通过比较并交换或乐观锁收窄，使冲突时返回可识别错误而不是继续执行？</li>
+                <li>重试幂等如何结合请求摘要、幂等键或服务端去重表，避免同一冻结请求产生重复副作用？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念共同回答一个更一般的问题：系统失败时，如何把模糊异常变成可判定事实。字段级错误定位提供表达层，用状态码、字段路径和错误聚合告诉调用方失败类别和修改位置；集合差异分类提供裁决层，用 missing、extra、duplicate、out_of_scope 把集合不相等拆成可处理原因；模型下线依赖失效提供分布式责任层，用模型目录、请求网关、业务服务、CAS 和幂等机制说明谁检测、谁返回错误、谁避免重复副作用。三者之间的关联是递进且互补的：字段级错误为集合差异和依赖失效提供机器可读字段；集合差异与依赖失效共享重试裁决，需要区分来源异常、集合缺失、游标失效和上游依赖失效；三者都避免静默忽略、静默降级或误报。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">系统失败时，把模糊异常变成可判定事实，才能定位、裁决并避免重复副作用。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何把 403、409、422 的字段级错误、集合差异类别和模型依赖失效错误统一成一套机器可读契约？</li>
+            <li>无 snapshot_id 时，如何用 total、cursor、差异分类和重试策略避免把来源异常误报为集合不完整？</li>
+            <li>模型下线时，如何用 CAS、错误归属和幂等键确保显式失败不触发静默降级或重复副作用？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
