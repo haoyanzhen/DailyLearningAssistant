@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-11-18 学习笔记日报</title>
+    <meta name="description" content="当天围绕无变化状态、读取失败与候选归并，建立证据边界：弱线索只作观察，不升级为可讲解知识原理。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261118-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-11-18</p>
+        <h1>2026-11-18 学习笔记日报</h1>
+        <p>当天没有可确认的新实现候选，因此学习重点转向证据边界与候选归并，避免把状态备注和访问诊断误当成技术原理。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>证据边界与候选归并</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>无变化状态的知识边界</strong>
+                <small>无变化只是今日没有看到新提交证据。</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>读取失败时的证据边界</strong>
+                <small>没接通不等于对方没说话，读取失败不…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>候选归并中的证据层级与底层…</strong>
+                <small>先找底层原理，再判断证据是否足够。</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念共同围绕知识讲解必须建立在可确认证据上。无变化状态说明没有新增候选，读取失败说明当前无法确认远端状态，候选归并则提供判断证据层级和合并重复线索的方法。它们与依赖具体字段、状态、diff 或幂等机制的讲解形成对照：当证据缺失时，先判断证据是否足够，再决定讲解深度。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["证据边界与候选归并"])
+  concept1["无变化状态的知识边界"]
+  hub --&gt; concept1
+  concept2["读取失败时的证据边界"]
+  hub --&gt; concept2
+  concept3["候选归并中的证据层级与底层原理去重"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["证据边界与候选归并"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="no-change-knowledge-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 知识管理 / 证据层级</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>无变化状态的知识边界</h3>
+              <p>No-Change Knowledge Boundary</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">无变化只是今日没有看到新提交证据。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>“无新增变化”是观察结果，不是实现变更证明。</li>
+                <li>没有提交、diff、文件变化或运行证据时，只能记录状态，不能升级为原理课。</li>
+                <li>无变化状态可作学习记录的一部分，但不能替代可确认证据。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="no-change-knowledge-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="read-failure-evidence-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程 / 分布式系统</span>
+                <span class="tag warm">★★</span>
+              </div>
+              <h3>读取失败时的证据边界</h3>
+              <p>Read-Failure Evidence Boundary</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">没接通不等于对方没说话，读取失败不等于仓库没变化。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>远端 ref 读取失败是观察失败，不是实现结论。</li>
+                <li>当前 SHA 未读取到表示未确认变化，不等于一定没有变化。</li>
+                <li>应把状态标记为未知，等待成功读取后再比较历史 SHA 与当前 SHA。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="read-failure-evidence-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="candidate-merge-evidence-hierarchy">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 知识工程 / 数据建模</span>
+                <span class="tag warm">★★★</span>
+              </div>
+              <h3>候选归并中的证据层级与底层原理去重</h3>
+              <p>Candidate Merge Evidence Hierarchy</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">先找底层原理，再判断证据是否足够。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>候选归并按来源仓库、提交或历史来源、底层原理合并重复线索。</li>
+                <li>强证据如 diff、DDL、测试断言可支撑原理讲解；弱线索如访问诊断、监控备注只能作为观察项。</li>
+                <li>同一机制的目录、脚本、配置和测试应归并成一节课，而不是按载体拆成多节。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="candidate-merge-evidence-hierarchy" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="no-change-knowledge-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 知识管理 / 证据层级</p>
+                <h3>无变化状态的知识边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>把“无新增变化”理解成一句话：今天没有看到新的提交证据。它像一个仓库门口的牌子，写着“今日无新书上架”。这个牌子能告诉你没有新增上架动作，但不能告诉你旧书内容是否被修改、仓库内部是否重构、接口行为是否变化。对知识讲解来说，真正可讲的概念通常来自提交、diff、文件变化、数据结构、算法机制或运行证据。若只有“无变化”状态，最多只能记录观察结果，不能升级为原理课。这里基于当日材料可确认的是：11 个仓库明确无新增变化，且不提供概念候选，因此不能从状态文本中编造实现细节。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>可讲解概念需要可确认证据，如提交、diff、文件变化、数据结构、算法机制或运行证据。</li>
+                <li>“无新增变化”只否定新增提交候选，不证明系统稳定、无风险或实现未变。</li>
+                <li>证据不足时应停止推断，把状态作为观察项记录，等待更强证据再升级。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>某仓库总结写“无新增变化；仅保留仓库状态”，今天不能讲“它优化了缓存策略”，只能记录“今日未观察到新增提交候选”。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把“无新增变化”当成“系统一定稳定”或“今天一定没有风险”。</li>
+                <li>把状态备注直接写成技术结论，例如从“无新增变化”推出缓存策略优化。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>读取失败时的证据边界</td><td>两者共同构成无证据场景下的判断边界：无变化状态和读取失败都不能直接推出实现变更。</td></tr>
+                <tr><td>候选归并中的证据层级与底层原理去重</td><td>只有在证据层级足够时，无变化状态才适合作为学习记录的一部分，而不是概念候选。</td></tr>
+                <tr><td>证据边界与候选归并</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果仓库状态显示无新增变化，但运行日志或接口行为发生变化，应该如何区分实现未变和观测异常？</li>
+                <li>在知识日报中，怎样记录“无候选”才不会把监控状态误写成技术结论？</li>
+                <li>无变化状态能否作为回归测试或稳定性观察的输入，还是必须等待新的 diff 才能形成概念？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="read-failure-evidence-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程 / 分布式系统</p>
+                <h3>读取失败时的证据边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>读取失败像打电话没接通：你只知道此刻没连上，不能推出对方没搬家、没换号或没说话。chunkcat、gatherpakvcache、slicev2 的总结只说明远端 ref 读取失败，历史 SHA 有记录，当前 SHA 未读取到，指针变化为否。这里的“否”是观察层面的“未确认变化”，不是证明层面的“一定没有变化”。网络失败、SSL 错误或分支不存在都可能造成当前 SHA 读不到。若把这种失败当成代码缺陷，或者当成仓库今天修改了某个机制，都会越过证据边界。正确做法是把当前状态标记为未知，等待成功读取后再比较历史 SHA 与当前 SHA。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>读取失败属于观察通道失败，可能来自网络、SSL、权限或分支不存在。</li>
+                <li>“当前 SHA 未读取到”只能形成未知状态，不能直接等价于“远端没有提交”或“指针未变”。</li>
+                <li>后续判断需要成功读取后比较历史 SHA 与当前 SHA，或用可验证信号区分故障类型。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>chunkcat 的远端 ref 读取失败，历史 SHA 有记录，当前 SHA 未读取到；今天不能讲“chunkcat 今天修改了分片逻辑”，只能记录“当前远端状态未读取，需要后续重试确认”。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把 network_failed 或 SSL 错误直接当成代码 bug。</li>
+                <li>把“当前 SHA 未读取到”当成“远端没有提交”或“指针一定未变”。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>无变化状态的知识边界</td><td>两者互补：无变化状态说明没有新增候选，读取失败说明无法读取远端时不能推断仓库状态。</td></tr>
+                <tr><td>候选归并中的证据层级与底层原理去重</td><td>读取失败只能作为弱线索，不能升级为可讲解的底层原理。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当远端 ref 读取失败时，应该用哪些可验证信号来区分网络故障、权限问题和远端分支确实不存在？</li>
+                <li>如果历史 SHA 存在而当前 SHA 未读取到，怎样设计重试或降级策略才能避免把未知状态当成未变化？</li>
+                <li>读取失败与集合差异中的无快照漂移有什么共同点，如何用版本绑定或游标控制降低误判？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="candidate-merge-evidence-hierarchy">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 知识工程 / 数据建模</p>
+                <h3>候选归并中的证据层级与底层原理去重</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>候选归并像把一堆作业按知识点整理，而不是按题号、草稿纸、打印页分别命名。今天材料里没有可确认候选，但“候选归并说明”本身给出了方法：按来源仓库、提交或历史来源、底层原理来合并重复线索。若同一仓库的目录、审查脚本、配置和测试都服务于同一机制，它们应归并成一节课，而不是拆成多节。证据层级也很关键：强证据如 diff、DDL、测试断言可以支撑原理讲解；弱线索如访问诊断、监控备注只能作为观察项。这里基于当日材料可确认的是：访问诊断、SSL 错误、脱敏说明和监控备注均不构成当天实际工作知识来源，因此不能把它们当作候选概念。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>归并维度是来源仓库、提交或历史来源、底层原理，避免按页面、脚本、测试等载体拆课。</li>
+                <li>证据层级决定候选能否升级：强证据支撑原理，弱线索只能观察或待确认。</li>
+                <li>候选归并前先判断当天是否有可确认候选，再决定讲解深度。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>如果某仓库同时有 OpenAPI 文件、契约检查脚本和测试断言，且它们都服务于同一套接口契约，应归并成“机器可读契约同步”一节课，而不是拆成文件、脚本、测试三节课。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把同一工作的目录、审查脚本、配置和测试分别当成多节课。</li>
+                <li>把监控备注、访问诊断或 SSL 错误当成技术原理。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>无变化状态的知识边界</td><td>候选归并必须先判断当天是否有可确认候选，再决定是否展开讲解。</td></tr>
+                <tr><td>读取失败时的证据边界</td><td>归并时要把网络失败、SSL 错误等访问诊断排除在工作知识来源之外。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>怎样用“来源仓库 + 提交/历史来源 + 底层原理”三个维度建立候选去重表？</li>
+                <li>当多个文件、脚本和测试都围绕同一机制时，如何判断它们属于同一课还是多个独立原理？</li>
+                <li>证据层级不足时，应该把候选标记为待确认、降级为观察项，还是直接丢弃？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念共同围绕知识讲解必须建立在可确认证据上。无变化状态说明没有新增候选，读取失败说明当前无法确认远端状态，候选归并则提供判断证据层级和合并重复线索的方法。它们与依赖具体字段、状态、diff 或幂等机制的讲解形成对照：当证据缺失时，先判断证据是否足够，再决定讲解深度。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">先判断证据是否足够，再决定讲解深度。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如果仓库状态显示无新增变化，但运行日志或接口行为发生变化，应如何区分实现未变和观测异常？</li>
+            <li>当远端 ref 读取失败时，应如何设计重试或降级策略，避免把未知状态当成未变化？</li>
+            <li>证据层级不足时，候选应标记为待确认、降级为观察项，还是直接丢弃？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
