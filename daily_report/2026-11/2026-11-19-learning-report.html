@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-11-19 学习笔记日报</title>
+    <meta name="description" content="今日围绕字段错误契约、集合完整性与幂等冲突裁决，把失败边界整理成可定位、可证明、可裁决的机器可读信息。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261119-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-11-19</p>
+        <h1>失败边界、集合完整性与幂等冲突裁决</h1>
+        <p>今天没有新增提交可引用，因此把历史 open 问题归并成三条可迁移原理：错误如何定位、集合如何证明完整、重复请求如何避免副作用。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>把不确定性变成可解析、可定位、可裁…</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>字段级错误路径的规范化表达…</strong>
+                <small>错误不是提示文本，而是让调用方定位…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>无快照集合的边界绑定与差异…</strong>
+                <small>集合完整不等于数量对，而要看边界…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>幂等身份键与内容指纹的冲突…</strong>
+                <small>幂等键管身份，指纹管内容，冲突必须…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念共同回答一个工程问题：当系统不能默认成功时，如何把不确定性变成可解析、可定位、可裁决的失败信息。字段级错误路径让调用方知道哪个输入项需要修改；无快照集合边界绑定让调用方知道读取结果是否完整；幂等身份键与内容指纹冲突裁决让系统知道同一请求身份遇到不同内容时该如何停止或返回旧结果。它们的关联在于都强调稳定标识和显式边界：字段路径是错误定位的稳定标识，集合边界是读取完整性的稳定标识，幂等键和 fingerprint 是请求身份与内容的稳定标识。三者都反对把未知状态静默当作成功，也都需要在机器可读错误、审计记录和重试策略之间保持一致。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["把不确定性变成可解析、可定位、可裁决的失败信息"])
+  concept1["字段级错误路径的规范化表达与聚合"]
+  hub --&gt; concept1
+  concept2["无快照集合的边界绑定与差异分类"]
+  hub --&gt; concept2
+  concept3["幂等身份键与内容指纹的冲突裁决"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  related1["状态机合法迁移边在数据层的表达与兜底"]
+  concept3 --&gt; related1
+  related2["上游依赖失效的显式失败边界与错误归属"]
+  concept3 --&gt; related2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="field-error-path-normalization">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程 / 数据契约</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>字段级错误路径的规范化表达与聚合</h3>
+              <p>Field-Level Error Path Normalization</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">错误不是提示文本，而是让调用方定位字段并自动修正输入的机器可读契约。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>状态码负责分类：422 通常表示输入校验失败，403 表示权限不足，409 表示资源状态冲突。</li>
+                <li>字段路径负责定位：需要稳定表达顶层字段、嵌套对象和数组下标。</li>
+                <li>错误聚合负责一次返回多个问题，unknown field 在 additionalProperties=false 下应被一致拒绝。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="field-error-path-normalization" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="snapshotless-set-boundary-diff">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 计算机科学 / 数据工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>无快照集合的边界绑定与差异分类</h3>
+              <p>Snapshotless Set Boundary Binding and Diff Classification</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">集合完整不等于数量对，而要看边界、成员、计数和版本是否指向同一集合。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>没有 snapshot_id 时，total 和 cursor 可能来自不同时间点或不同范围。</li>
+                <li>集合完整要看边界、成员、计数和版本条件是否共同指向同一集合。</li>
+                <li>missing、extra、duplicate、out_of_scope 分类用于判断分页漂移和集合差异。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="snapshotless-set-boundary-diff" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="idempotency-fingerprint-conflict">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 分布式系统 / 数据建模</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>幂等身份键与内容指纹的冲突裁决</h3>
+              <p>Idempotency Key and Content Fingerprint Conflict Resolution</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">幂等键管身份，指纹管内容，冲突必须显式裁决。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>幂等键回答是否同一请求身份，fingerprint 回答请求内容是否一致。</li>
+                <li>fingerprint 应覆盖会改变副作用的字段，不应覆盖时间戳、客户端随机 ID 或纯展示字段。</li>
+                <li>去重表保留窗口要覆盖网络重试时限和审计周期，清理时保留最小审计字段。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="idempotency-fingerprint-conflict" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="field-error-path-normalization">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程 / 数据契约</p>
+                <h3>字段级错误路径的规范化表达与聚合</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>字段级错误路径的核心，是把接口失败从一句通用提示，变成调用方可以自动处理的错误清单。该主题来自 2026-11-17 和 2026-11-14 的历史 open 问题延展，没有当日 diff 或运行验证，因此只能作为待确认原理讲解。理解它可以从三个层次开始：第一，状态码负责分类，422 通常表示输入校验失败，403 表示权限不足，409 表示资源状态冲突；第二，字段路径负责定位，它要能表达顶层字段、嵌套对象和数组下标；第三，错误聚合负责把多个问题一次说清楚，而不是只返回第一个错误。对于 OpenAPI 中 additionalProperties=false 的场景，未知字段不能悄悄忽略，而应被一致拒绝，并返回可解析路径，让调用方知道哪个字段不该出现。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>状态码负责分类失败类型，让调用方先判断是权限、冲突还是校验问题。</li>
+                <li>字段路径负责定位违规位置，需要稳定表达顶层字段、嵌套对象和数组下标。</li>
+                <li>错误聚合负责一次返回多个问题，避免只暴露第一个错误导致反复试错。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一个创建项目接口返回 422，响应中包含 errors 数组：第一项 path 为 members[1].email，code 为 format，message 为邮箱格式不正确；第二项 path 为 title，code 为 required，message 为标题不能为空。前端可以据此把红色提示直接定位到第二个成员邮箱输入框和标题输入框。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为错误消息只要给人看得懂就够了，忽略机器可解析路径和错误码。</li>
+                <li>把 403、409、422 混用，导致调用方无法区分换身份、刷新状态或修改输入。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>无快照集合的边界绑定与差异分类</td><td>两者都要求把失败定位到稳定可解析单元：字段错误定位字段，集合差异定位 missing、extra、duplicate、out_of_scope。</td></tr>
+                <tr><td>幂等身份键与内容指纹的冲突裁决</td><td>两者都要求错误可机器解析，调用方需要知道是权限、冲突还是字段校验问题。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果数组元素本身是一个对象，字段路径应使用 items[0].name 还是 items.name[0]，哪种表达更稳定？</li>
+                <li>当 OpenAPI 声明 additionalProperties=false 时，未知字段应返回 422 还是其他状态码，字段路径如何表达？</li>
+                <li>多个字段错误应聚合在一个响应里还是只返回第一个，如何保证公共错误测试可以稳定断言？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="snapshotless-set-boundary-diff">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 计算机科学 / 数据工程</p>
+                <h3>无快照集合的边界绑定与差异分类</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>无快照集合的边界绑定与差异分类，解决的是“我读到的这一批数据，是不是完整集合”的问题。该主题来自 2026-11-17、2026-11-14、2026-11-12 的历史 open 问题延展，没有当日 diff 或运行验证，因此只能作为待确认原理讲解。如果没有 snapshot_id，total 和 cursor 可能来自不同时间点或不同范围：第一页看到 total 是 100，翻页时上游新增或删除了数据，最后读到的集合可能已经漂移。此时不能只问“请求成功吗”，而要问“我读到的元素集合是否和预期边界一致”。差异分类就是把这个判断拆开：missing 表示应有但没有读到，extra 表示读到了但不在预期范围，duplicate 表示同一元素重复出现，out_of_scope 表示元素越界或不属于当前集合。集合完整性因此不只是一个数量问题，而是边界、成员、计数和版本条件共同构成的判断。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>没有 snapshot_id 时，total 和 cursor 可能来自不同时间点，集合边界会漂移。</li>
+                <li>集合比较要拆成 missing、extra、duplicate、out_of_scope 等可判定差异类别。</li>
+                <li>完整性证明需要边界、成员、计数和版本条件共同指向同一集合。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一个导出接口声称 total=100，调用方分页读完所有 cursor 后，把读到的记录集合与预期集合比较，发现缺 3 条、多 2 条、重复 1 条。系统不应返回成功，而应返回 incomplete，并给出 missing、extra、duplicate 的具体 ID 或摘要，让调用方决定补拉、重试或人工处理。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为 total 匹配或请求成功就代表集合完整。</li>
+                <li>数量一致只说明计数可能一致，不能证明成员一致，重复和越界也可能让数量看起来正确。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>字段级错误路径的规范化表达与聚合</td><td>集合差异需要 missing、extra、duplicate、out_of_scope 分类，字段错误需要稳定路径，二者都依赖稳定可解析单元。</td></tr>
+                <tr><td>幂等身份键与内容指纹的冲突裁决</td><td>两者都涉及一致性边界：前者保证读取集合边界稳定，后者保证同一请求身份在不同内容下不产生不一致副作用。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>没有 snapshot_id 时，能否用 total、cursor 和范围摘要共同证明集合完整，还是必须引入版本标识？</li>
+                <li>missing、extra、duplicate、out_of_scope 四类差异应如何汇总，调用方才能决定重试、补拉或人工处理？</li>
+                <li>分页过程中上游数据新增或删除时，应返回漂移错误还是允许调用方按最终集合重新拉取？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="idempotency-fingerprint-conflict">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 分布式系统 / 数据建模</p>
+                <h3>幂等身份键与内容指纹的冲突裁决</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>幂等身份键与内容指纹的冲突裁决，处理的是“同一个请求身份，但请求内容不一样”时系统该怎么办。该主题来自 2026-11-15、2026-11-12、2026-11-17、2026-11-14 的历史 open 问题延展，没有当日 diff 或运行验证，因此只能作为待确认原理讲解。幂等键像订单号，回答“是不是同一请求”；fingerprint 像内容摘要，回答“这次请求内容和上次是否一致”。如果幂等键相同但 fingerprint 不同，系统不能简单按旧请求执行，也不能默默按新请求执行，而必须根据业务规则裁决：可以返回旧回执，可以返回 409 冲突，也可以返回 422 校验错误。fingerprint 应覆盖会改变副作用的字段，比如金额、对象 ID、操作类型；不应覆盖时间戳、客户端随机 ID 或纯展示字段，否则正常重试会被误判为冲突。去重表还要有保留窗口，既要覆盖网络重试时限，也要满足审计周期，清理时不能直接删掉整条回执，而应保留最小审计字段。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>幂等键回答是否同一请求身份，用于识别重复请求。</li>
+                <li>fingerprint 回答请求内容是否一致，用于检测副作用相关字段变化。</li>
+                <li>身份键相同但指纹不同时，必须显式裁决旧回执、409 冲突或 422 校验错误。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一个创建支付请求使用 idempotency_key=order-123。第一次请求 fingerprint=A，系统创建支付并返回回执。第二次请求仍使用 order-123，但金额变化导致 fingerprint=B。系统应返回 409 IDEMPOTENCY_KEY_CONFLICT，并说明同一幂等键对应不同内容，而不是再次扣款或返回旧回执。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为幂等键相同就一定是同一请求。</li>
+                <li>把 fingerprint 当成身份键，忽略身份键与内容指纹的分工。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>状态机合法迁移边在数据层的表达与兜底</td><td>两者都涉及状态或版本一致性：幂等冲突防止同一身份键在不同内容下产生不一致副作用，状态迁移边防止非法状态迁移。</td></tr>
+                <tr><td>上游依赖失效的显式失败边界与错误归属</td><td>两者都涉及重试和副作用控制：幂等机制避免重复副作用，依赖失效机制避免失败来源不明时继续执行或误报。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当幂等键相同但 fingerprint 不同时，什么业务场景应返回旧回执，什么场景应返回 409 冲突？</li>
+                <li>fingerprint 应覆盖哪些请求字段，哪些字段如时间戳、客户端随机 ID、展示字段不应触发冲突？</li>
+                <li>去重表保留窗口如何根据网络重试时限、审计周期和存储成本确定，清理时如何保留最小审计字段？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念共同回答一个工程问题：当系统不能默认成功时，如何把不确定性变成可解析、可定位、可裁决的失败信息。字段级错误路径让调用方知道哪个输入项需要修改；无快照集合边界绑定让调用方知道读取结果是否完整；幂等身份键与内容指纹冲突裁决让系统知道同一请求身份遇到不同内容时该如何停止或返回旧结果。它们的关联在于都强调稳定标识和显式边界：字段路径是错误定位的稳定标识，集合边界是读取完整性的稳定标识，幂等键和 fingerprint 是请求身份与内容的稳定标识。三者都反对把未知状态静默当作成功，也都需要在机器可读错误、审计记录和重试策略之间保持一致。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">失败不是静默成功，而是可定位、可证明、可裁决的机器可读边界。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>字段路径、集合差异和幂等冲突如何统一成一套机器可读错误码、审计字段和重试策略？</li>
+            <li>没有 snapshot_id 时，如何设计完整性证明接口让 total、cursor 和集合成员共同绑定同一边界？</li>
+            <li>幂等键与 fingerprint 冲突时，如何在旧回执、409 和 422 之间制定可测试的业务裁决规则？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
