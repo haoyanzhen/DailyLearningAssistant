@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-11-20 学习笔记日报</title>
+    <meta name="description" content="今日围绕状态迁移边、版本窗口原子检查与上游依赖失效错误归属，学习把执行边界显式化并让失败可识别、可审计。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261120-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-11-20</p>
+        <h1>2026-11-20 学习笔记日报</h1>
+        <p>当天没有新增实现证据，因此从最近有效开放问题中归并三个边界问题：状态迁移边、版本窗口原子检查和上游依赖失效归属。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>执行边界的显式化与失败归属</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>状态机合法迁移边在数据层的…</strong>
+                <small>状态取值合法不等于迁移边合法，数据…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>版本窗口中的比较并交换式原…</strong>
+                <small>读一次版本只证明读取时刻可用，执行…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>上游依赖失效的显式失败边界…</strong>
+                <small>失败不应只出现在最后一步，而应在正…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念共享同一底层思想：系统不能只依赖调用方自觉，而要把允许继续执行的边界显式写出来。状态机把边界写成合法迁移边，版本窗口把边界写成可比较的版本区间，上游依赖失效把边界写成模型、目录、网关和业务服务之间的责任边界。边界不满足时，应返回可识别错误并留下审计记录或错误归属。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["执行边界的显式化与失败归属"])
+  concept1["状态机合法迁移边在数据层的表达与兜底"]
+  hub --&gt; concept1
+  concept2["版本窗口中的比较并交换式原子检查"]
+  hub --&gt; concept2
+  concept3["上游依赖失效的显式失败边界与错误归属"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["执行边界的显式化与失败归属"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="state-machine-legal-transition-edges">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 数据库 / 数据建模 / 计算机科学</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>状态机合法迁移边在数据层的表达与兜底</h3>
+              <p>State Machine Legal Transition Edges in Data Layer</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">状态取值合法不等于迁移边合法，数据库要守住最后一道边。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>CHECK 约束通常只能检查当前行状态值是否合法，难以直接表达旧状态到新状态的迁移边。</li>
+                <li>应用层状态机适合复杂业务规则，数据库层应保留状态枚举、迁移表、触发器或审计记录等最低限度兜底。</li>
+                <li>高风险恢复操作如 archived 到 active 可要求先存在审批记录，再允许状态迁移，并写入可追溯审计字段。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="state-machine-legal-transition-edges" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="version-window-cas-atomic-check">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 分布式系统 / 数据库</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>版本窗口中的比较并交换式原子检查</h3>
+              <p>Compare-And-Swap Atomic Check in Version Window</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">读一次版本只证明读取时刻可用，执行前还要原子确认版本边界未漂移。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>版本窗口表示请求只允许在某个版本范围内继续，例如 state_revision 落在允许区间内。</li>
+                <li>CAS 或乐观锁在写入前检查当前版本是否仍等于读取时版本，若不等则说明中间有变更。</li>
+                <li>冲突时应返回类似 STATE_REVISION_CONFLICT 的可识别错误，让调用方决定重试、刷新或放弃。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="version-window-cas-atomic-check" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="upstream-dependency-failure-boundary-error-attribution">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">大语言模型 / 软件工程 / 分布式系统</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>上游依赖失效的显式失败边界与错误归属</h3>
+              <p>Explicit Failure Boundary and Error Attribution for Upstream Dependency Failure</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">失败不应只出现在最后一步，而应在正确责任层以正确错误身份出现。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>上游依赖失效包括模型下线、版本不可用、目录状态过期或参数冻结条件不再成立。</li>
+                <li>模型目录、请求网关和业务服务应分别承担不同层级的失败检测、错误返回和调用方通知。</li>
+                <li>每类失败都要有明确责任层和可识别错误码，例如 MODEL_OFFLINE、STATE_REVISION_CONFLICT 或业务错误。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="upstream-dependency-failure-boundary-error-attribution" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="state-machine-legal-transition-edges">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 数据库 / 数据建模 / 计算机科学</p>
+                <h3>状态机合法迁移边在数据层的表达与兜底</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>由于没有新增 diff 或实现验证，这里只讲原理，不声称项目已经实现。状态可以想象成车站，合法迁移边是允许通行的轨道。订单可能处于 draft、submitted、approved、archived 等状态，但并非任意两个状态之间都能直接切换。数据库 CHECK 通常只能检查当前行状态值是否合法，例如 status 是否属于允许列表；它不容易直接表达从旧状态到新状态是否合法，因为迁移关系需要一次更新动作才能体现。因此数据层要分层兜底：应用层状态机表达审批、权限、配额和跨表条件；数据库层保留状态枚举约束、状态迁移表、触发器或审计记录。当手工 SQL、并发更新或旧客户端绕过应用层时，数据库层可以拒绝明显非法迁移，并把拒绝原因写入日志或审计表。对于 archived 到 active 这类高风险恢复操作，还可以要求审批记录先存在，再允许状态迁移，使每次恢复都能追溯到审批人、审批时间、审批结果和失败原因。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>当前状态合法只是必要条件，不是充分条件；迁移合法性取决于 from_status 到 to_status 的边。</li>
+                <li>数据库层不能替代应用层复杂规则，但必须提供最低限度约束，防止绕过应用层写入非法状态。</li>
+                <li>审计记录把失败原因、操作者和审批结果结构化，使拒绝可解释、可追溯、可重试。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设订单有 draft、submitted、approved、archived 四个状态。业务规则允许 draft 到 submitted、submitted 到 approved、approved 到 archived，但 archived 到 active 必须经过人工审批。数据库可以保留 status 枚举约束，再用 status_transitions(from_status, to_status, requires_approval) 表保存合法边；UPDATE 触发器读取旧状态和新状态，若边不存在或需要审批但没有有效审批记录，就拒绝更新并写入 status_transition_log，记录 order_id、from_status、to_status、actor、approval_id、reason、created_at。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为 CHECK status IN (...) 足够，只能保证当前状态不越界，不能保证迁移边合法。</li>
+                <li>以为应用层校验后数据库就可以不管，手工 SQL、并发更新或旧客户端仍可能产生非法状态。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>版本窗口中的比较并交换式原子检查</td><td>两者都涉及并发和手工绕过场景，需要数据库层做最低限度兜底，而不能只依赖应用层自觉。</td></tr>
+                <tr><td>上游依赖失效的显式失败边界与错误归属</td><td>两者都要求把允许继续执行的边界显式化，边界不满足时返回可识别错误并留下审计或错误归属。</td></tr>
+                <tr><td>执行边界的显式化与失败归属</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果数据库 CHECK 只能检查当前行，触发器查询状态迁移表时的性能成本和锁范围应该如何评估？</li>
+                <li>应用层状态机与数据库触发器同时存在时，错误码、错误消息和审计字段应如何统一，避免调用方看到两套不一致的失败原因？</li>
+                <li>archived 到 active 的审批拒绝、审批撤销和审批过期分别应写入哪些字段，才能支持后续审计和重试？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="version-window-cas-atomic-check">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 分布式系统 / 数据库</p>
+                <h3>版本窗口中的比较并交换式原子检查</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>由于没有新增 diff 或实现验证，这里只作为一般原理讲解，不声称项目已经实现。版本窗口可以理解为这次请求只允许在某个版本范围内继续。请求开始时读取模型、目录或资源的状态版本，例如 state_revision=7，并确认 7 落在允许窗口内。执行前或提交前，系统再检查这个版本是否仍然成立。比较并交换，简称 CAS，是其中的原子操作：如果当前版本仍等于我看到的旧版本，就允许更新；如果不等于，就说明中间有人改过，操作失败并返回可识别错误。乐观锁的思路类似：先读版本，不做长时间阻塞；写入时带上版本条件，条件不满足就冲突。这样做的好处是避免检查时可用、执行时已下线的窗口。若冲突，系统不应静默改用新版本，也不应假装成功，而应返回类似 STATE_REVISION_CONFLICT 的错误，让调用方知道失败来自版本边界变化，并决定重试、刷新或放弃。这里的关键不是锁住所有写操作，而是把版本边界变成可检查、可比较、可报错的显式条件。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>版本窗口把外部状态变化转化为可比较的边界条件，而不是依赖最终调用失败。</li>
+                <li>CAS 的原子性保证检查与更新之间没有窗口，避免读到旧版本后又被并发修改。</li>
+                <li>冲突错误必须可识别，调用方才能区分版本边界变化、业务冲突、网络抖动和权限问题。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设模型目录表 model_directory 有 model_id、status、state_revision 字段。请求冻结 model_id=m1、state_revision=7，允许窗口是 [5,8]。执行前用 UPDATE model_directory SET state_revision=8 WHERE model_id='m1' AND state_revision=7 做 CAS；如果影响行数为 0，说明状态已被其他请求或管理员改变，系统返回 STATE_REVISION_CONFLICT，并记录 request_id、model_id、expected_revision=7、actual_revision、error_owner=version_window。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为读一次版本就足够，读一次只能证明读取时刻可用，不能证明执行时刻仍可用。</li>
+                <li>冲突时自动重试或静默使用新版本，可能把业务冲突掩盖成网络抖动，或在用户未同意的模型或参数下继续执行。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>状态机合法迁移边在数据层的表达与兜底</td><td>两者都要求数据库层对边界做兜底检查，防止并发更新或手工 SQL 绕过应用层校验。</td></tr>
+                <tr><td>上游依赖失效的显式失败边界与错误归属</td><td>版本窗口 CAS 是上游依赖失效处理中的并发控制手段，它让模型目录或资源状态变化时产生可识别冲突错误。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>CAS 冲突后应该立即重试、提示用户刷新、还是回滚整个请求，如何根据业务副作用选择策略？</li>
+                <li>版本窗口过宽会导致冲突少但风险高，窗口过窄会导致频繁冲突，应如何结合模型下线、参数冻结和资源生命周期确定窗口？</li>
+                <li>在分布式多节点或多数据库分片场景下，如何保证版本窗口检查和状态更新仍然具有可预期的原子性？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="upstream-dependency-failure-boundary-error-attribution">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 大语言模型 / 软件工程 / 分布式系统</p>
+                <h3>上游依赖失效的显式失败边界与错误归属</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>由于没有新增 diff 或实现验证，这里只讲可迁移原理，不声称项目已经实现。上游依赖失效指的是系统依赖的外部对象不再满足执行条件，例如模型下线、模型版本不可用、目录状态过期或参数冻结条件不再成立。此时系统不能只靠最后调用模型失败来发现问题，而要在每一层设置显式失败边界。模型目录负责声明模型是否可用、版本是否有效；请求网关负责在请求进入业务逻辑前拦截明显不可用的模型或版本；业务服务负责检查与本次请求绑定的前置条件，例如审批、配额、状态版本窗口。错误归属要求每类失败都有明确责任层和可识别错误码。比如模型目录状态为 offline，应返回 MODEL_OFFLINE 并归属目录或网关；版本窗口冲突应返回 STATE_REVISION_CONFLICT 并归属版本检查层；业务前置条件不满足应返回业务错误。这样调用方才知道失败来自哪里，运维才知道该修哪一层，重试和幂等控制也才有明确依据。显式失败边界的核心不是尽量不报错，而是一旦边界不满足，就让失败在正确的位置以正确的身份出现。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>依赖失效检测要前置到目录、网关和业务服务，而不是等到最终模型调用失败。</li>
+                <li>错误归属把失败绑定到责任层，使调用方、运维和重试策略能区分处理路径。</li>
+                <li>显式失败边界优先于静默降级，避免在用户未同意的模型、版本或参数下继续执行。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设请求携带 model_id=m1、state_revision=7 和幂等键 request_id=req-001。模型目录中 m1 状态为 offline，state_revision=9。网关查询目录后发现模型不可用，直接返回 HTTP 409 或 410，错误码 MODEL_OFFLINE，error_owner=model_catalog，details 包含 model_id、expected_revision=7、actual_revision=9。业务服务不执行模型调用，日志记录 request_id、model_id、state_revision、error_owner 和 action_taken=blocked_at_gateway。调用方看到错误后可提示用户选择其他模型或刷新目录，而不是继续等待或重复提交。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为只要最终调用模型失败就够了，最终调用失败太晚，错误信息可能混入网络、超时和模型下线。</li>
+                <li>所有层都返回同一个 500，会让调用方无法区分可重试、需刷新、需人工处理还是依赖已下线。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>状态机合法迁移边在数据层的表达与兜底</td><td>两者都要求把允许继续执行的边界显式化，并在边界不满足时返回可识别错误和审计记录。</td></tr>
+                <tr><td>版本窗口中的比较并交换式原子检查</td><td>版本窗口检查提供并发冲突信号，错误归属决定该信号应返回给哪类调用方和哪类处理流程。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>模型下线后，已经排队但尚未执行的请求应该拒绝、降级、重试还是人工确认，如何根据业务副作用和幂等性选择？</li>
+                <li>网关和业务服务都可能检测模型不可用，如何设计错误码和日志字段，避免重复检测造成误报或责任不清？</li>
+                <li>模型下线、版本冲突、网络超时和权限拒绝应分别映射到哪些 HTTP 状态码和错误码，才能让调用方准确处理？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念共享同一底层思想：系统不能只依赖调用方自觉，而要把允许继续执行的边界显式写出来。状态机把边界写成合法迁移边，版本窗口把边界写成可比较的版本区间，上游依赖失效把边界写成模型、目录、网关和业务服务之间的责任边界。边界不满足时，应返回可识别错误并留下审计记录或错误归属。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">一旦边界不满足，就让失败在正确的位置以正确的身份出现。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>触发器查询状态迁移表时，性能成本和锁范围应该如何评估？</li>
+            <li>CAS 冲突后应根据业务副作用选择立即重试、提示刷新还是回滚请求？</li>
+            <li>模型下线、版本冲突、网络超时和权限拒绝应如何映射到 HTTP 状态码和错误码？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
