@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-11-21 学习笔记日报</title>
+    <meta name="description" content="当天围绕异常信号归一化、副作用可逆性恢复动作和重复故障事件合并，构建从证据判断到安全响应的学习主线。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261121-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-11-21</p>
+        <h1>2026-11-21 学习笔记日报</h1>
+        <p>当天没有新增提交或实现证据，学习围绕最近有效日的 open 问题延展，重点讨论异常信号如何被统一、恢复动作如何被约束、重复故障如何被合并。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>异常发生后系统如何安全响应</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>多观测点故障证据的归一化</strong>
+                <small>先统一信号类别，再判断故障责任。</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>副作用可逆性驱动的恢复动作…</strong>
+                <small>先问副作用改变了什么，再决定恢复动…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>重复故障事件的合并与误报抑制</strong>
+                <small>合并事件是为了避免重复响应，而不是…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念共同构成异常发生后系统如何安全响应的判断链：归一化先回答异常信号是否真实、来自哪一层、应归为哪类故障；副作用可逆性再回答在该故障类别下，系统执行哪种恢复动作才不会造成不可接受副作用；重复事件合并与误报抑制则回答同一故障被多个观测点看见时，如何避免重复触发告警、重试或错误返回。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["异常发生后系统如何安全响应"])
+  concept1["多观测点故障证据的归一化"]
+  hub --&gt; concept1
+  concept2["副作用可逆性驱动的恢复动作选择"]
+  hub --&gt; concept2
+  concept3["重复故障事件的合并与误报抑制"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["异常发生后系统如何安全响应"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="multi-observation-fault-evidence-normalization">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">分布式系统 / 软件工程 / 可观测性</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>多观测点故障证据的归一化</h3>
+              <p>Multi-Observation Fault Evidence Normalization</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">先统一信号类别，再判断故障责任。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>原始信号必须被翻译成统一语言，至少回答来源层、故障类别、时间窗、证据强度和归因层。</li>
+                <li>同一个故障在不同观测点可能表现为不同错误，不能只根据单一观测点判断根因。</li>
+                <li>归一化字段可包括 model_id、request_id、revision、source_layer、fault_category、time_window、attribution_layer。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="multi-observation-fault-evidence-normalization" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="side-effect-reversibility-recovery-action">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 分布式系统 / 计算机科学</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>副作用可逆性驱动的恢复动作选择</h3>
+              <p>Side-Effect Reversibility-Driven Recovery Action</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">先问副作用改变了什么，再决定恢复动作。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>异常类型本身不直接决定恢复动作，真正决定动作的是副作用是否已经发生、是否可逆、是否幂等。</li>
+                <li>未发生副作用或幂等动作更适合自动重试；已发生外部副作用的动作需要回滚、补偿或人工确认。</li>
+                <li>判断顺序可围绕副作用是否发生、是否可逆、是否幂等、是否影响用户输入或外部资源展开。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="side-effect-reversibility-recovery-action" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="duplicate-fault-event-merging-suppression">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">分布式系统 / 软件工程 / 可观测性</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>重复故障事件的合并与误报抑制</h3>
+              <p>Duplicate Fault Event Merging and False-Alarm Suppression</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">合并事件是为了避免重复响应，而不是丢失证据。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>误报抑制不是删除重复日志，而是对事件做关联、合并和根因绑定。</li>
+                <li>合并需要同时考虑同一故障类别、同一时间窗、同一资源或同一归因层。</li>
+                <li>合并规则太粗会掩盖真实问题，太细会退化成每个观测点各自告警。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="duplicate-fault-event-merging-suppression" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="multi-observation-fault-evidence-normalization">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 分布式系统 / 软件工程 / 可观测性</p>
+                <h3>多观测点故障证据的归一化</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>这个概念要解决同一个故障在不同观测点看起来像不同故障的问题。原始信号可能是超时、连接失败、401、403、404、上游返回 unavailable、本地资源不足等。归一化的核心是把它们翻译成统一语言，回答信号来自哪一层、属于哪类故障、发生在哪个时间窗、当前证据强度如何、最终应归因到哪一层。可落地设计通常包含来源观测点、原始信号、归一化故障类别、时间窗、相关资源 ID、归因层和证据强度。由于今天没有实现验证，这里只能确认它是一种设计原则，不能声称系统已经具备这种归一化能力。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>不同观测点的原始信号必须先分类，才能比较和追溯。</li>
+                <li>观测点只是看见故障的位置，不一定等于故障根因所在层。</li>
+                <li>统一类别、来源层和时间窗是后续告警、重试和人工排查的稳定依据。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设系统读取远端 ref 失败，出现网络超时、403 权限不足和 404 分支不存在三类信号；归一化后分别映射为“网络不可达”“权限拒绝”“资源不存在”，再结合同时间窗内其他 ref 是否成功判断证据强度。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为只要日志里出现 error，就能直接判断故障类别。</li>
+                <li>认为网关报错就一定是网关问题，业务服务报错就一定是业务服务问题。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>副作用可逆性驱动的恢复动作选择</td><td>归一化先提供故障类别和证据来源，系统才能判断该拒绝、降级还是重试。</td></tr>
+                <tr><td>重复故障事件的合并与误报抑制</td><td>只有信号被统一分类后，才能判断多个事件是否来自同一根因。</td></tr>
+                <tr><td>异常发生后系统如何安全响应</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何为网络超时、权限拒绝、资源不存在和上游不可用设计稳定的故障类别枚举？</li>
+                <li>当多个观测点给出互相矛盾的故障类别时，应使用什么优先级规则做最终归因？</li>
+                <li>如何把时间窗、来源层和证据强度写入日志字段，以便后续事件合并？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="side-effect-reversibility-recovery-action">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 分布式系统 / 计算机科学</p>
+                <h3>副作用可逆性驱动的恢复动作选择</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>这个概念要回答失败或冲突发生后，系统应该拒绝、降级、自动重试、提示刷新、回滚、补偿，还是转人工确认。副作用可以理解为动作执行后系统或外部世界是否被改变。如果动作尚未产生副作用或动作是幂等的，自动重试通常更安全；如果已经调用外部 API、扣费、发送消息或写入知识版本，简单重试可能造成重复副作用。一个实用判断顺序是：副作用是否已经发生、是否可逆、是否幂等、是否影响用户输入或外部资源。今天没有 diff、运行日志或实现验证，因此只能把它作为历史 open 问题延展出的设计原则，不能声称某个项目已经实现了这套恢复策略。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>无副作用或幂等动作的失败，重试风险较低。</li>
+                <li>已产生外部副作用的失败，需要判断可逆性和补偿路径。</li>
+                <li>恢复动作要同时考虑用户输入、外部资源、计费和审计，而不是只看错误名称。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设请求先读取版本、再更新数据、最后调用外部服务；CAS 冲突发生在写入前可提示刷新，事务可回滚时可回滚，外部服务已扣费时不能简单重试，而应记录补偿任务或转人工确认。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为所有失败都应该自动重试，或者所有冲突都应该回滚整个请求。</li>
+                <li>把“模型下线”直接映射成“拒绝所有排队请求”，忽略请求是否已经触发外部副作用。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>多观测点故障证据的归一化</td><td>只有故障类别和证据来源可信，恢复动作才不会基于误报执行。</td></tr>
+                <tr><td>重复故障事件的合并与误报抑制</td><td>重复执行恢复动作可能放大副作用，因此告警和重试也需要抑制。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何为不同副作用等级定义可执行的恢复动作矩阵？</li>
+                <li>当用户输入、外部资源和计费同时存在时，应如何排序恢复动作优先级？</li>
+                <li>如何设计人工确认流程，使系统既避免自动重试，又不造成请求静默丢失？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="duplicate-fault-event-merging-suppression">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 分布式系统 / 软件工程 / 可观测性</p>
+                <h3>重复故障事件的合并与误报抑制</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>这个概念要解决同一个根因故障被多个观测点看见时，系统如何避免把它当成很多个独立故障处理。误报抑制不是简单把重复日志删掉，而是对事件做关联和合并。一个故障可能在网关产生不可用信号，在业务服务产生超时信号，在监控日志产生 502 信号，在用户侧产生失败提示。如果每个信号都独立告警、独立重试、独立返回错误，就会出现告警风暴、重复副作用和责任不清。正确做法是引入事件关联键、时间窗、来源层和根因事件，例如同一个 model_id、revision、request_id 或 upstream_endpoint 在短时间窗内出现相似故障信号时合并。由于今天没有实现验证，这里只能确认它是一种设计方向，不能声称已有系统完成事件合并和告警抑制。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>多个相似事件需要关联键、时间窗和来源层共同判断是否重复。</li>
+                <li>不同故障类别不能随便合并，否则可能掩盖真实问题。</li>
+                <li>合并事件应保留每个观测点的原始证据，同时绑定到同一根因事件。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>模型下线后，网关检测到模型目录不可用、业务服务调用超时、监控日志出现 502；如果它们发生在同一时间窗并指向同一 model_id 和 revision，可合并为一个“上游模型不可用”事件，只触发一次告警和一次恢复决策。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为告警越多越安全，或者认为只要错误码相同就是同一故障。</li>
+                <li>认为合并事件就是丢掉重复日志，而不是把多个观测点事件关联到同一根因。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>多观测点故障证据的归一化</td><td>必须先统一信号类别，才能判断多个事件是否重复。</td></tr>
+                <tr><td>副作用可逆性驱动的恢复动作选择</td><td>如果系统基于重复事件多次重试或回滚，可能造成副作用放大。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何设计 correlation_id、root_cause_id 和时间窗，使多个观测点事件能合并为同一故障？</li>
+                <li>当两个故障类别相似但证据强度不同时应如何避免错误合并？</li>
+                <li>如何设置告警抑制窗口，使重复事件不丢失关键证据又不触发过多告警？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念共同构成异常发生后系统如何安全响应的判断链：归一化先回答异常信号是否真实、来自哪一层、应归为哪类故障；副作用可逆性再回答在该故障类别下，系统执行哪种恢复动作才不会造成不可接受副作用；重复事件合并与误报抑制则回答同一故障被多个观测点看见时，如何避免重复触发告警、重试或错误返回。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">恢复动作不能只看错误类型，还要看副作用是否已经发生、是否可逆、是否幂等。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何为网络超时、权限拒绝、资源不存在和上游不可用设计稳定的故障类别枚举？</li>
+            <li>如何为不同副作用等级定义可执行的恢复动作矩阵？</li>
+            <li>如何设计 correlation_id、root_cause_id 和时间窗，使多个观测点事件能合并为同一故障？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
