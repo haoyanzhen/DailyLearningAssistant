@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-11-22 学习笔记日报</title>
+    <meta name="description" content="无变更复习日围绕证据边界、集合完整性与轮询新鲜度，说明表面成功不等于状态可信，需明确边界版本和停止条件。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261122-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-11-22</p>
+        <h1>2026-11-22 学习笔记日报：表面成功不等于状态可信</h1>
+        <p>今天没有新增提交候选，但通过三个历史 open 问题延展，讨论证据边界、集合完整性和轮询新鲜度。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>无变更日的可信判断：证据边界、集合…</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>无新增提交日的证据边界与候…</strong>
+                <small>材料里出现过不等于系统已经实现。</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>无快照集合的完整性证明与漂…</strong>
+                <small>total 没变不等于集合没漂移。</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>异步轮询中资源版本与请求序…</strong>
+                <small>响应到达不等于状态最新。</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念都围绕当前信息是否可信展开，但对象不同：第一题看知识候选本身，第二题看数据集合边界，第三题看异步响应新鲜度。它们共同反对把表面信号当成证明：无新增变化不等于原理已实现，读取成功不等于集合完整，响应到达不等于状态最新。与 2026-11-21 的故障证据归一化相比，今天不再把多个故障观测点合并成统一故障类别，而是把证明边界作为主线，回答在证据不足时如何表达不确定。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["无变更日的可信判断：证据边界、集合完整性与轮询新鲜度"])
+  concept1["无新增提交日的证据边界与候选归并"]
+  hub --&gt; concept1
+  concept2["无快照集合的完整性证明与漂移分类"]
+  hub --&gt; concept2
+  concept3["异步轮询中资源版本与请求序号的新鲜度裁决"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["无变更日的可信判断：证据边界、集合完整性与轮询新鲜度"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept2
+  concept3 --&gt; concept1
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="no-commit-evidence-boundary">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">知识工程 / 软件工程 / 证据层级</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>无新增提交日的证据边界与候选归并</h3>
+              <p>Evidence Boundary and Candidate Merging on No-Commit Days</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">材料里出现过不等于系统已经实现。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>无新增变化只能说明当前没有观察到新增提交候选。</li>
+                <li>历史 open 问题可以作为讲解线索，但必须标明来源和待确认。</li>
+                <li>同一来源、同一底层原理的多个问题要先归并，再判断是否值得讲解。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="no-commit-evidence-boundary" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="snapshotless-set-integrity-drift">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 计算机科学 / 数据工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>无快照集合的完整性证明与漂移分类</h3>
+              <p>Integrity Proof and Drift Classification for Snapshotless Sets</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">total 没变不等于集合没漂移。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>total 只能说明某次读取看到的数量，不能单独证明集合完整。</li>
+                <li>cursor 只能说明读到哪个位置，不能单独证明读取期间集合未变化。</li>
+                <li>差异要分类为 missing、extra、duplicate、out_of_scope，并区分来源异常、集合漂移、游标失效。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="snapshotless-set-integrity-drift" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="async-polling-freshness-arbitration">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 前端状态管理 / 计算机科学</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>异步轮询中资源版本与请求序号的新鲜度裁决</h3>
+              <p>Freshness Arbitration by Resource Version and Request Sequence in Async Polling</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">响应到达不等于状态最新。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>资源版本表示资源状态变化，请求序号表示请求因果顺序。</li>
+                <li>后到的响应不一定更新，必须用单调版本或序号判断旧响应是否应丢弃。</li>
+                <li>页面隐藏后重新可见时要补拉最新状态，并丢弃延迟返回的旧响应。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="async-polling-freshness-arbitration" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="no-commit-evidence-boundary">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 知识工程 / 软件工程 / 证据层级</p>
+                <h3>无新增提交日的证据边界与候选归并</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>这题是从当日候选归并说明中谨慎提炼的弱线索，不是当天提交概念。对高中基础读者来说，可以把知识候选想象成待批改的旧题。旧题可以拿来复习，但如果老师没有看到新实验报告，就不能说实验方法今天被验证了。无新增提交日的证据边界有三层：第一，无变化状态只能说明当前没有观察到新增提交候选；第二，历史 open 问题可以作为讲解线索，但必须标明来源和待确认；第三，同一来源、同一底层原理的多个问题要先归并，再判断是否值得讲解。这样做的目的，是避免把材料里出现过误认为系统已经实现，也避免把同一机制拆成多节课。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>无变化状态是证据边界，不是技术结论。</li>
+                <li>历史问题进入日报前要先标注来源层级和待确认状态。</li>
+                <li>候选归并按底层原理合并，避免同一机制重复成课。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>如果 14 个 work_summary 都写无新增变化，正确结论是今日无新增提交候选；继续讲 2026-11-19 的分页漂移问题，应写成历史 open 问题延展，待确认，而不是今天实现了分页漂移检测。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把无新增变化理解成系统没有问题。</li>
+                <li>把历史 open 问题直接当作当天实现证据。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>无快照集合的完整性证明与漂移分类</td><td>前者提醒历史 open 问题只能作为待确认候选，后者提供具体可讲的历史问题内容。</td></tr>
+                <tr><td>异步轮询中资源版本与请求序号的新鲜度裁决</td><td>两者都要求把材料存在或字段存在与证据充分分开，前者用于知识候选，后者用于异步响应。</td></tr>
+                <tr><td>无变更日的可信判断：证据边界、集合完整性与轮询新鲜度</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果连续多天无新增提交，如何设计候选池，使历史 open 问题按证据层级、重复度和可讲性排序？</li>
+                <li>怎样用字段或标签区分已实现证据、open 问题延展和纯推测，避免知识日志把弱线索升级成事实？</li>
+                <li>当历史问题与当天无变化状态冲突时，应该停止讲解、降级为待确认，还是寻找新的实现证据？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="snapshotless-set-integrity-drift">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 计算机科学 / 数据工程</p>
+                <h3>无快照集合的完整性证明与漂移分类</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>这题来自 2026-11-19 的三个历史 open 问题，不是 2026-11-22 的新提交，因此属于历史 open 问题延展，待确认。对高中基础读者来说，可以把集合想象成图书馆书架。你按第 1 排到第 10 排翻页读，如果读的过程中有人上架新书或下架旧书，最后你说我读完全部了就不可信。没有 snapshot_id 时，total 只能说明某次读取看到的数量，cursor 只能说明读到哪个位置，范围摘要只能说明某段范围的线索；它们都不能单独证明整个集合在读取期间没有变化。无快照集合的完整性证明要回答：没有版本标识时，怎样表达我可能没读完整？方法是把差异分类成 missing、extra、duplicate、out_of_scope，并区分来源异常、集合漂移、游标失效。若需要强完整证明，需要引入 snapshot_id、版本标识、快照或可验证的范围摘要。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>无快照时，读取成功只是局部边界，不是集合完整证明。</li>
+                <li>差异分类让调用方知道是缺失、多余、重复还是越界。</li>
+                <li>强完整证明需要版本绑定、快照或可验证范围摘要。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一个 API 分页返回 total=100，调用方从 cursor=start 读到 cursor=end；期间上游删除 1 条、新增 1 条，total 仍为 100。若没有 snapshot_id，调用方不能证明集合完整，差异报告可写 missing=1、extra=1，并建议重新拉取或人工确认。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>total 没变就认为集合完整。</li>
+                <li>cursor 能走到最后或请求返回 200 就认为数据一致。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>无新增提交日的证据边界与候选归并</td><td>历史 open 问题只能作为待确认候选，集合完整性讲解也必须标明缺少 snapshot_id 时的证明边界。</td></tr>
+                <tr><td>异步轮询中资源版本与请求序号的新鲜度裁决</td><td>两者都要求用可比较边界判断信息是否可信，集合场景用 snapshot、total、cursor 和差异分类，轮询场景用版本、序号和停止条件。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果必须用 total、cursor 和范围摘要做弱证明，怎样设计字段让调用方明确知道这是弱证明？</li>
+                <li>missing、extra、duplicate、out_of_scope 的汇总规则如何影响调用方选择重试、补拉或人工处理？</li>
+                <li>引入 snapshot_id 后，分页漂移错误和允许最终集合重拉应如何区分错误码和重试策略？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="async-polling-freshness-arbitration">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 前端状态管理 / 计算机科学</p>
+                <h3>异步轮询中资源版本与请求序号的新鲜度裁决</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>这题来自 2026-11-15 的三个历史 open 问题，不是 2026-11-22 的新提交，因此属于历史 open 问题延展，待确认。对高中基础读者来说，异步轮询像反复问快递到哪了。你第 1 次问、第 2 次问、第 3 次问，客服回复可能乱序或延迟。资源版本表示资源状态变化，例如包裹从仓库到运输；请求序号表示你第几次请求，表达请求因果顺序。两者可能不一致：后到的响应不一定更新，先到的响应也不一定过期。新鲜度裁决要做三件事：第一，用单调版本或序号判断旧响应是否应丢弃；第二，用停止条件判断何时停止轮询；第三，用派生状态表达中间语义，例如 latest 版本存在但 last_execution 版本为空，说明已有目标版本但尚未执行完成。页面隐藏后重新可见时，要补拉最新状态，并丢弃延迟返回的旧响应。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>新鲜度需要可比较的单调版本或请求序号。</li>
+                <li>停止条件决定轮询何时结束，避免无限请求。</li>
+                <li>派生状态可以表达 latest 存在但 last_execution 为空的中间语义。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>前端轮询任务状态：请求序号 req=10 返回 resource_version=100；请求序号 req=11 延迟返回 resource_version=99。界面应丢弃 version=99，因为版本落后。若 latest_knowledge_version_id 存在但 last_execution_knowledge_version_id 为空，可考虑返回 200 加派生状态 awaiting_execution 或 202，而不是简单返回 404；该设计仍为待确认。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>后到的响应一定更新。</li>
+                <li>HTTP 200 或 latest 字段存在一定代表执行完成。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>无快照集合的完整性证明与漂移分类</td><td>集合完整性回答边界是否完整，轮询新鲜度回答当前响应是否仍然最新，两者都拒绝把表面成功当作状态可信。</td></tr>
+                <tr><td>无新增提交日的证据边界与候选归并</td><td>轮询响应字段存在不等于新鲜，正如知识候选出现不等于已实现，两者都需要单调或版本证据。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当资源版本和请求序号不一致时，应优先用哪个字段丢弃旧响应，如何设计字段说明来避免前端误判？</li>
+                <li>页面隐藏后重新可见时，如何组合 AbortController、visibilitychange 和请求序号，避免旧响应覆盖最新状态？</li>
+                <li>latest 版本存在但 last_execution 为空时，200 派生状态、202 和 404 的语义边界如何划分？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念都围绕当前信息是否可信展开，但对象不同：第一题看知识候选本身，第二题看数据集合边界，第三题看异步响应新鲜度。它们共同反对把表面信号当成证明：无新增变化不等于原理已实现，读取成功不等于集合完整，响应到达不等于状态最新。与 2026-11-21 的故障证据归一化相比，今天不再把多个故障观测点合并成统一故障类别，而是把证明边界作为主线，回答在证据不足时如何表达不确定。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">返回成功、字段存在或材料出现都不等于状态可信。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如果连续多天无新增提交，如何设计候选池，使历史 open 问题按证据层级、重复度和可讲性排序？</li>
+            <li>如果必须用 total、cursor 和范围摘要做弱证明，怎样设计字段让调用方明确知道这是弱证明？</li>
+            <li>当资源版本和请求序号不一致时，应优先用哪个字段丢弃旧响应，如何设计字段说明来避免前端误判？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
