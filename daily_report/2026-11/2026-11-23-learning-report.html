@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-11-23 学习笔记日报</title>
+    <meta name="description" content="当天围绕重复请求、状态迁移与模型下线三类失败语义，建立可判定、可审计、可重试、可落地的设计边界。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261123-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-11-23</p>
+        <h1>2026-11-23 学习笔记日报</h1>
+        <p>今天没有新增提交证据，因此围绕最近 7 天 open 问题延展，把重复请求、状态迁移和模型下线失败整理为可判定、可审计、可处理的设计语义。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>重复、状态与依赖失效的可判定失败语义</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>幂等键与内容指纹的重复请求…</strong>
+                <small>身份相同且内容相同可返回旧回执，身…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>状态迁移审批失效的审计字段…</strong>
+                <small>状态变化要记录迁移边、审批事件和重…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>模型下线请求的失败检测责任…</strong>
+                <small>模型下线要说明谁检测、属于哪类错误…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念共同回答不确定、并发、重复或外部失效场景下，系统如何给出可判定、可审计、可处理的失败语义。幂等键与内容指纹先判断同一请求是否重放；状态迁移审批失效再判断旧状态到新状态是否合法、审批为何失效、能否重试；模型下线失败检测最后判断谁检测、谁报错、调用方下一步怎么办。三者都要求把失败原因写成稳定错误码、审计字段和重试资格，避免调用方只看到一句失败。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["重复、状态与依赖失效的可判定失败语义"])
+  concept1["幂等键与内容指纹的重复请求冲突裁决"]
+  hub --&gt; concept1
+  concept2["状态迁移审批失效的审计字段与重试资格"]
+  hub --&gt; concept2
+  concept3["模型下线请求的失败检测责任与错误码映射"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["重复、状态与依赖失效的可判定失败语义"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="idempotency-key-content-fingerprint-conflict">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 分布式系统 / 数据建模</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>幂等键与内容指纹的重复请求冲突裁决</h3>
+              <p>Idempotency Key and Content Fingerprint Conflict Arbitration</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">身份相同且内容相同可返回旧回执，身份相同但业务内容变化要显式冲突。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>幂等键回答是不是同一次业务意图，内容指纹回答关键内容是否变化。</li>
+                <li>幂等键相同且指纹相同可返回旧回执，避免重复执行副作用。</li>
+                <li>幂等键相同但指纹不同需判断差异是否重要，关键字段变化应返回 409 或人工确认。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="idempotency-key-content-fingerprint-conflict" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="state-transition-approval-audit-retry">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 数据库 / 数据建模 / 计算机科学</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>状态迁移审批失效的审计字段与重试资格</h3>
+              <p>State Transition Approval Audit and Retry Eligibility</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">状态变化要记录迁移边、审批事件和重试资格，不能只记录状态没变。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>状态系统要检查旧状态到新状态是否是合法边，而不是只检查当前状态是否合法。</li>
+                <li>审批拒绝、审批撤销、审批过期应写入审计字段，包括 from_status、to_status、event_type、失效原因、操作者、发生时间、是否允许重试。</li>
+                <li>应用层状态机负责正常路径，数据库约束、CHECK、触发器或状态迁移表负责兜底，并统一错误码和审计字段。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="state-transition-approval-audit-retry" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="model-offline-failure-responsibility-error-mapping">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">大语言模型 / 软件工程 / 分布式系统</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>模型下线请求的失败检测责任与错误码映射</h3>
+              <p>Model Offline Failure Detection Responsibility and Error Code Mapping</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">模型下线要说明谁检测、属于哪类错误、能否重试，不能只返回失败。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>失败检测要先明确责任层：模型目录、网关、业务服务或网络层分别说明不同失败原因。</li>
+                <li>失败类别要映射到稳定错误码和 HTTP 状态，例如 MODEL_OFFLINE、VERSION_CONFLICT、UPSTREAM_TIMEOUT、PERMISSION_DENIED。</li>
+                <li>日志字段应包含 model_id、model_version、dependency_version、failure_category、responsible_layer、retryable、request_id 和 idempotency_key。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="model-offline-failure-responsibility-error-mapping" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="idempotency-key-content-fingerprint-conflict">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 分布式系统 / 数据建模</p>
+                <h3>幂等键与内容指纹的重复请求冲突裁决</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>幂等键可以理解成请求的身份证号，内容指纹可以理解成请求内容的摘要。幂等键回答这是不是同一次业务意图，例如同一笔支付、同一个创建任务、同一次模型调用；内容指纹回答这次请求的关键内容是否变化，例如金额、模型、参数、目标对象是否变了。第一次请求成功后，服务端把幂等键、内容指纹和结果回执保存一段时间。客户端因为网络超时重发时，如果幂等键相同且指纹相同，系统知道这是同一请求的重复到达，可以直接返回旧回执，而不是再次执行副作用。如果幂等键相同但指纹不同，就要判断差异是否重要：如果差异只是时间戳、客户端随机 ID、展示文案，不应触发冲突；如果差异是金额、模型版本、目标实体等关键字段，说明调用方用同一个身份提交了不同业务内容，应返回 409 冲突或要求人工确认。去重表的保留窗口要同时考虑网络重试时限、审计周期和存储成本：太短会导致重试失去保护，太长会增加存储和清理成本。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>请求身份与请求内容必须分开表达，身份键负责去重，内容指纹负责变更检测。</li>
+                <li>重复到达的判定不能只看幂等键，还要比较关键字段摘要，避免内容变化被误认为安全重试。</li>
+                <li>去重表保留窗口要平衡网络重试时限、审计周期和存储成本，保证重试保护与清理可控。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>创建研究任务接口要求客户端传 idempotency_key 和任务参数。第一次请求 idempotency_key 为 task-create-001，参数包含标题、模型和输入文件，服务端成功创建任务并返回 task_id。网络超时后客户端重试，如果标题、模型和输入文件未变，fingerprint 相同，服务端返回第一次的 task_id；如果客户端把模型从 A 改成 B，fingerprint 不同，服务端返回 409 IDEMPOTENCY_CONFLICT，并说明关键字段变化，调用方必须使用新的幂等键或人工确认。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>只靠幂等键判断重复，认为只要幂等键相同就是安全重试，忽略内容变化可能表示业务字段被修改。</li>
+                <li>把所有请求字段都纳入指纹，导致时间戳、随机 ID、展示文案变化造成误冲突，或把 409 当成系统故障而盲目重试。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>状态迁移审批失效的审计字段与重试资格</td><td>两者都处理同一业务动作在重复、并发或状态变化下如何保持可判定，前者用身份键和内容摘要判断重复请求，后者用合法迁移边和审批事件判断状态变化是否可重试。</td></tr>
+                <tr><td>模型下线请求的失败检测责任与错误码映射</td><td>模型下线后的重试、降级或人工确认必须依赖幂等机制，避免同一请求产生重复副作用。</td></tr>
+                <tr><td>重复、状态与依赖失效的可判定失败语义</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>fingerprint 应覆盖哪些业务关键字段，哪些字段如时间戳、客户端随机 ID、展示字段应排除？</li>
+                <li>幂等键相同但 fingerprint 不同时，哪些场景返回旧回执，哪些场景返回 409，哪些场景进入人工确认？</li>
+                <li>去重表保留窗口如何根据网络重试时限、审计周期和存储成本确定，清理时如何保留最小审计字段？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="state-transition-approval-audit-retry">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 数据库 / 数据建模 / 计算机科学</p>
+                <h3>状态迁移审批失效的审计字段与重试资格</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>状态系统不能只检查当前状态是否合法，还要检查从旧状态到新状态是否是合法边。以 archived 到 active 为例，系统不能因为 active 是合法状态，就允许任何对象直接变成 active；它必须检查是否满足 archived 到 active 这条迁移边，而这条边可能需要审批。审批失效不是简单把状态改回去，而是迁移边上的事件，例如审批拒绝、审批撤销、审批过期。这些事件需要写入审计字段，包括 from_status、to_status、event_type、失效原因、操作者、发生时间、是否允许重试。应用层状态机负责正常路径检查，数据库约束、CHECK、触发器或状态迁移表负责兜底，防止绕过应用层直接改数据。CHECK 通常只能检查当前行，触发器可以查询状态迁移表，但会增加性能成本和锁范围，因此需要评估触发器只在关键写入时查询、迁移表保持小且索引良好、并发测试覆盖非法迁移。错误码和审计字段要统一，避免应用层说状态不允许，数据库说触发器异常，调用方无法判断到底发生了什么。重试资格要明确：审批过期可以重新发起，审批撤销可能需要人工确认，审批拒绝可以修改后重新提交。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>状态合法性包括取值合法和迁移边合法，缺少迁移边约束会让数据库出现应用层认为不可能的状态。</li>
+                <li>审批失效是迁移边上的事件，必须记录原因、操作者、时间和重试资格，才能支持审计与恢复。</li>
+                <li>数据库兜底要评估 CHECK、触发器和状态迁移表的性能、锁范围与并发风险，并与应用层错误码统一。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>论文项目对象当前状态是 archived，用户请求恢复为 active。应用层先检查 archived 到 active 是合法边，然后查询审批记录，发现审批已过期。系统写入迁移审计记录：from_status 为 archived，to_status 为 active，event_type 为 approval_expired，reason 为 approval_window_passed，actor 为 system，occurred_at 为当前时间，retry_allowed 为 true。接口返回 409 STATE_TRANSITION_APPROVAL_EXPIRED，并提示调用方可以重新发起审批，而不是直接返回 500。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>只检查当前状态取值，不检查状态迁移边，导致手工 SQL 或旧版本代码写入应用层认为不可能的状态。</li>
+                <li>把审批过期、审批撤销和审批拒绝写成同一条失败日志，缺少失效原因、操作者和重试资格，导致后续无法判断该重新发起还是人工处理。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>幂等键与内容指纹的重复请求冲突裁决</td><td>两者都要求把重复、并发或状态变化下的失败原因写成可判定字段，前者记录请求身份和内容摘要，后者记录状态迁移边和审批事件。</td></tr>
+                <tr><td>模型下线请求的失败检测责任与错误码映射</td><td>两者都要求统一错误码和审计字段，避免应用层、数据库层或上游依赖层向调用方暴露不一致失败语义。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>审批拒绝、审批撤销和审批过期分别应写入哪些字段，才能支持后续审计和重试？</li>
+                <li>应用层状态机与数据库触发器同时存在时，错误码、错误消息和审计字段如何统一，避免调用方看到两套不一致失败原因？</li>
+                <li>如果数据库 CHECK 只能检查当前行，触发器查询状态迁移表时的性能成本和锁范围应该如何评估？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="model-offline-failure-responsibility-error-mapping">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 大语言模型 / 软件工程 / 分布式系统</p>
+                <h3>模型下线请求的失败检测责任与错误码映射</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>模型下线属于上游依赖失效，失败可能来自模型目录、请求网关、业务服务或上游提供方。系统首先要明确失败检测责任层：模型目录可以说明某个模型已下线或版本不存在；网关可以说明上游返回不可用或路由失败；业务服务可以说明参数版本冲突或权限不足；网络层可以说明超时或连接失败。责任层明确后，再把失败类别映射到稳定错误码和 HTTP 状态，例如模型下线可映射为 409 或 410 加 MODEL_OFFLINE，版本冲突可映射为 409 VERSION_CONFLICT，网络超时可映射为 503 或 504 UPSTREAM_TIMEOUT，权限拒绝可映射为 403 PERMISSION_DENIED。日志字段应包含 model_id、model_version、dependency_version、failure_category、responsible_layer、retryable、request_id 和 idempotency_key，方便追踪是谁检测到失败、是否可以重试、是否已经产生副作用。已经排队但尚未执行的请求不能一刀切：如果请求无副作用且可安全重放，可以重试或换模型；如果会产生重复计费、重复写入或不可逆操作，应拒绝或人工确认；如果可以降级且业务允许，可以降级到替代模型并明确记录。网关和业务服务都可能检测模型不可用时，要避免重复检测和误报，通常让目录状态作为权威来源，网关只做快速失败，业务服务只补充业务层冲突信息。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>上游依赖失效要先定位责任层，再决定错误码和重试策略，避免把不同失败混成同一句失败。</li>
+                <li>稳定错误码和日志字段要让调用方知道失败类别、责任层、是否可重试和是否已产生副作用。</li>
+                <li>排队请求处理要按副作用和幂等性选择拒绝、降级、重试或人工确认，避免自动替换造成重复计费或审计断链。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>用户提交 LLM 任务，指定模型 gpt-4o-old 和版本 2026-10。任务进入队列后，模型目录更新该模型为 offline。网关检测到 catalog 状态 offline，返回 409 MODEL_OFFLINE，日志记录 model_id 为 gpt-4o-old，model_version 为 2026-10，failure_category 为 model_offline，responsible_layer 为 model_catalog，retryable 为 false。如果调用方想换模型重试，需要判断新模型请求是否属于同一业务意图；如果是同一意图且内容变化，应使用新的幂等键或人工确认，避免重复副作用。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把所有上游失败都返回 500，让调用方无法区分模型下线、版本冲突、网络超时和权限拒绝。</li>
+                <li>网关和业务服务都检测模型不可用却互不协调，导致重复告警、重复错误和重复恢复动作。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>幂等键与内容指纹的重复请求冲突裁决</td><td>错误码中的 retryable 必须与幂等键、内容指纹和副作用等级配合，才能判断重试是否安全。</td></tr>
+                <tr><td>状态迁移审批失效的审计字段与重试资格</td><td>两者都要求把失败原因写成可审计、可解析字段，前者记录依赖责任层和失败类别，后者记录状态迁移边和审批失效原因。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>模型下线后已经排队但尚未执行的请求，应拒绝、降级、重试还是人工确认，如何根据业务副作用和幂等性选择？</li>
+                <li>网关和业务服务都可能检测模型不可用时，如何设计错误码和日志字段，避免重复检测造成误报或责任不清？</li>
+                <li>模型下线、版本冲突、网络超时和权限拒绝应分别映射到哪些 HTTP 状态码和错误码，才能让调用方准确处理？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念共同回答不确定、并发、重复或外部失效场景下，系统如何给出可判定、可审计、可处理的失败语义。幂等键与内容指纹先判断同一请求是否重放；状态迁移审批失效再判断旧状态到新状态是否合法、审批为何失效、能否重试；模型下线失败检测最后判断谁检测、谁报错、调用方下一步怎么办。三者都要求把失败原因写成稳定错误码、审计字段和重试资格，避免调用方只看到一句失败。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">在不确定、并发、重复或外部失效场景下，系统不能只返回一句失败，而要给出可判定、可审计、可处理的语义。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>fingerprint 应覆盖哪些业务关键字段，哪些字段如时间戳、客户端随机 ID、展示字段应排除？</li>
+            <li>审批拒绝、审批撤销和审批过期分别应写入哪些字段，才能支持后续审计和重试？</li>
+            <li>模型下线后已经排队但尚未执行的请求，应拒绝、降级、重试还是人工确认，如何根据业务副作用和幂等性选择？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
