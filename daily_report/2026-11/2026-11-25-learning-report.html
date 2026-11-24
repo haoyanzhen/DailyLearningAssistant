@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-11-25 学习笔记日报</title>
+    <meta name="description" content="今日三个概念围绕候选归并、远端读取失败分层与乐观并发版本窗口，把未知、弱证据和过期基线转化为可决策边界。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261125-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-11-25</p>
+        <h1>不确定状态的可决策化：候选、读取与并发边界</h1>
+        <p>今天没有新增提交，三个概念均作为历史 open 问题延展。它们围绕知识候选、远端读取和并发写入中的不确定状态，建立可验证字段与边界规则。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>不确定状态的可决策化</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>候选归并中的底层原理键与证…</strong>
+                <small>先按底层原理建键，再按证据层级定可…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>远端引用读取失败的信号分层…</strong>
+                <small>没拿到当前 SHA，不等于没有变化。</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>乐观并发控制中版本窗口宽度…</strong>
+                <small>版本窗口不是越宽越安全，而是风险与…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念都围绕不确定状态的可决策化。候选归并处理知识生产中的不确定：一条线索是否属于同一原理、证据是否足够；远端引用读取失败处理外部状态读取中的不确定：读取失败是网络、权限、资源不存在还是未知；乐观并发控制处理并发写入中的不确定：当前版本窗口是否仍允许更新。共同方法是先定义可验证字段，再定义状态边界，最后选择动作。由于今天没有 diff、运行日志或实现验证，这些讲解只能作为历史 open 问题延展，后续需要真实提交、日志或测试来确认落地。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["不确定状态的可决策化"])
+  concept1["候选归并中的底层原理键与证据层级标记"]
+  hub --&gt; concept1
+  concept2["远端引用读取失败的信号分层与未知状态边界"]
+  hub --&gt; concept2
+  concept3["乐观并发控制中版本窗口宽度与原子性边界"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["不确定状态的可决策化"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept2
+  concept3 --&gt; concept1
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="candidate-merge-principle-key-evidence-level">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 知识工程 / 数据建模</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>候选归并中的底层原理键与证据层级标记</h3>
+              <p>Candidate Merging by Principle Key and Evidence Level</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">先按底层原理建键，再按证据层级定可信度。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>按来源仓库、提交或历史来源、底层原理组成复合键，不按文件、脚本、配置或测试拆题。</li>
+                <li>证据层级区分实现证据、历史 open 问题延展和推测，弱线索保留为待确认或观察项。</li>
+                <li>同一底层原理合并为一个候选，不同底层原理即使同一提交也保留多个候选。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="candidate-merge-principle-key-evidence-level" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="remote-ref-read-failure-signal-layering">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 分布式系统 / 软件工程</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>远端引用读取失败的信号分层与未知状态边界</h3>
+              <p>Remote Reference Read Failure Signal Layering</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">没拿到当前 SHA，不等于没有变化。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>先采集可验证信号：退出码、错误文本、认证状态、ref 是否存在、历史 SHA 是否存在、重试次数和超时边界。</li>
+                <li>状态边界写清楚：确认未变化、确认变化、未知；当前 SHA 未读取到或关键信号缺失是未知。</li>
+                <li>读取失败不能直接写成 no_change，只对可重试原因有限重试，权限或资源不存在标记待确认或降级。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="remote-ref-read-failure-signal-layering" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="optimistic-concurrency-version-window-atomicity">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 分布式系统 / 数据库</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>乐观并发控制中版本窗口宽度与原子性边界</h3>
+              <p>Optimistic Concurrency Version Window and Atomicity Boundary</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">版本窗口不是越宽越安全，而是风险与效率的平衡。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>版本窗口决定允许基线变化到什么范围仍接受更新，过宽增加误覆盖，过窄增加重试和协调成本。</li>
+                <li>CAS 比较旧版本并交换新值，失败时返回可识别冲突错误，而不是静默继续。</li>
+                <li>跨节点或多分片下，原子性要看事务边界、锁范围、复制一致性、冲突检测位置和版本可见性。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="optimistic-concurrency-version-window-atomicity" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="candidate-merge-principle-key-evidence-level">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 知识工程 / 数据建模</p>
+                <h3>候选归并中的底层原理键与证据层级标记</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>候选归并要解决的是：每天从仓库、提交、历史问题里收集很多线索，怎样判断它们是不是同一课。如果按文件、脚本、配置、测试分别拆，就会把同一原理拆成很多重复主题。更稳定的做法是建立复合键：来源仓库、提交或历史来源、底层原理。来源仓库说明线索来自哪里，提交或历史来源说明它是当天实现还是历史问题，底层原理说明它真正可迁移的机制是什么。比如同一仓库里 OpenAPI 文件、check_api_contracts.py 和测试断言都提到未知字段拒绝，底层原理相同，就合并为一个候选；同一提交里既有未知字段拒绝又有数据库唯一键，则保留两个候选。证据层级也很关键：有 diff、测试或运行日志的是实现证据，只有历史 open 问题的是待确认延展，只有推测的要降级或丢弃。当前材料没有新增提交，所以候选归并这个主题本身也来自历史 open 问题延展，需要后续用真实提交和去重表字段确认。
+
+有趣事例：班级整理错题本时，同一道二次函数最值题出现在数学作业、周测卷和草稿纸上。如果按纸张分，就会有三份重复错题；如果按底层原理分，就归入同一题，并把来源标记为作业、周测、草稿。如果某题只有同学口述没有答案，就标记待确认，不直接写成已掌握。候选归并就是给知识线索做这种错题本。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>用复合键降低重复：来源仓库、提交或历史来源、底层原理共同决定候选身份。</li>
+                <li>用证据层级控制可信度：实现证据、历史 open 问题延展、推测分别对应不同处理。</li>
+                <li>用可讲边界避免弱线索升级：证据不足时保留待确认或观察项，不直接讲成事实。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>某仓库一次提交修改了 OpenAPI 文件、check_api_contracts.py 和测试断言，三处都围绕未知字段拒绝，因此合并为一个候选。如果同一次提交还修改了数据库唯一键约束，则数据库唯一键作为另一个底层原理保留。若某条候选只来自历史 open 问题，没有 diff 和测试，就标记为历史 open 问题延展、待确认。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>以为文件不同、脚本不同、测试不同就是不同概念。</li>
+                <li>证据不足时直接丢弃或直接讲，把弱线索升级成事实。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>远端引用读取失败的信号分层与未知状态边界</td><td>共享证据分层思想：两者都要把弱信号分类并标记可信度，避免把未知状态误当成确定事实。</td></tr>
+                <tr><td>乐观并发控制中版本窗口宽度与原子性边界</td><td>共享边界思维：候选归并用底层原理键和证据层级划定候选可讲边界，版本窗口用版本边界划定更新可执行边界。</td></tr>
+                <tr><td>不确定状态的可决策化</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果同一底层原理出现在两个仓库，复合键应合并还是保留来源仓库维度？</li>
+                <li>当证据层级从 open 问题延展升级为实现证据时，需要哪些最小字段，例如 diff、测试断言和运行日志？</li>
+                <li>候选池中可讲性、重复度和证据强度如何排序，才能避免弱线索挤掉高价值候选？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="remote-ref-read-failure-signal-layering">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 分布式系统 / 软件工程</p>
+                <h3>远端引用读取失败的信号分层与未知状态边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>远端引用读取失败时，系统最容易犯的错误是把失败当成仓库没有变化。更稳的做法是先采集可验证信号，再分层分类。可验证信号包括退出码、错误文本、认证状态、ref 是否存在、历史 SHA 是否存在、重试次数和超时边界。网络故障常见信号是超时、DNS 失败或连接中断；权限或认证问题常见信号是 401、403、token 失效；远端分支不存在常见信号是 remote ref not found 且认证成功；服务端限流常见信号是 429 或限流文本；本地缓存过期则表现为本地有旧 SHA 但远端读取失败。状态边界要写清楚：确认未变化是成功读取当前 SHA 且与历史 SHA 相同；确认变化是成功读取当前 SHA 且与历史 SHA 不同；未知是当前 SHA 未读取到或关键信号缺失。当前材料没有真实读取日志，所以这个概念来自历史 open 问题延展，当前只能讲状态边界和策略，不声称某个仓库已经实现。
+
+有趣事例：你打电话问朋友是否到家，对方没有接。你不能因为没接通就判断他仍在原地。要先判断是没信号、没电、拒接还是号码不存在。如果之前知道他出门，现在没接通，应标记位置未知，而不是仍在原地。远端读取失败也像这个电话：没拿到当前 SHA 不等于没有变化。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>读取失败先转成可验证信号，而不是直接下结论。</li>
+                <li>用状态边界区分 unknown、no_change、changed，避免未知被误读为安全。</li>
+                <li>用重试和降级策略控制动作：可重试有限重试，不可重试标记待确认或降级。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>任务要比较历史 SHA=abc 与当前 SHA。第一次读取远端 ref 超时，退出码非 0，错误文本包含 timeout，认证状态正常，历史 SHA 存在，当前 SHA 缺失。系统应标记 unknown，不写 no_change；重试两次仍超时，则降级为待确认，等待下次成功读取后再比较。如果第二次读取返回 remote ref not found 且认证成功，则分类为 ref_not_found，不继续无限重试，而是标记资源不存在或配置错误。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把读取失败当成仓库无变化。</li>
+                <li>把所有失败都无限重试，或只看错误文本不看认证状态和 ref 存在性。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>候选归并中的底层原理键与证据层级标记</td><td>共享证据层级标记：unknown、not_found、no_change 都是不同证据状态，不能混写成同一结论。</td></tr>
+                <tr><td>乐观并发控制中版本窗口宽度与原子性边界</td><td>共享未知状态边界：CAS 不确定并发写入是否仍基于有效版本，远端读取不确定远端 ref 是否真实存在，两者都要用可验证信号避免把未知当成安全。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当远端返回 404 时，如何区分 ref 不存在、权限不足和服务端路由错误？</li>
+                <li>历史 SHA 存在而当前 SHA 缺失时，重试次数、超时窗口和降级条件应如何设计？</li>
+                <li>未知状态在日志、API 响应和知识候选中应分别用什么字段表达，才能避免被下游误读为 no_change？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="optimistic-concurrency-version-window-atomicity">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 分布式系统 / 数据库</p>
+                <h3>乐观并发控制中版本窗口宽度与原子性边界</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>乐观并发控制的核心是：先读一个版本或基线，写回时再检查这个基线是否仍然有效。版本窗口就是允许基线变化到什么范围仍然接受更新。窗口过宽，比如允许 version 100 到 105 都接受，冲突会变少，但可能把别人重要修改覆盖掉，误覆盖风险变高。窗口过窄，比如只允许 version 100 接受，别人稍一修改就会冲突，重试和协调成本变高。因此窗口不是单纯配置项，它要结合资源生命周期：模型下线、参数冻结、资源删除、版本封存等高风险阶段通常要更窄，普通更新可以稍宽。CAS 是 compare-and-swap，比较旧版本并交换新值，失败时返回可识别冲突错误，而不是静默继续。跨节点或多数据库分片下，单库事务不再足以保证原子性，还要看事务边界、锁范围、复制一致性、冲突检测位置和版本可见性。可预期原子性不是绝对强一致，而是明确知道在什么边界内检查与更新是原子的，失败时能知道为什么。当前材料没有 state_revision、CAS SQL、复制日志或运行验证，所以这个概念来自历史 open 问题延展，当前只能讲边界和机制，不声称项目已实现。
+
+有趣事例：图书馆改同一本书的备注。你看到第 3 版，写下建议，交回时系统检查是否还是第 3 版。如果窗口宽到第 5 版也接受，可能覆盖别人第 4 版的重要修改；如果只接受第 3 版，别人稍一修改你就失败。图书馆可以规定：普通备注用宽窗口，删除、下架或参数冻结等高风险操作用窄窗口。版本窗口宽度就是这种风险与效率的平衡。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>乐观并发控制先读基线，写回时检查基线是否仍有效。</li>
+                <li>版本窗口宽度影响冲突概率和误覆盖风险，应结合资源生命周期选择。</li>
+                <li>跨节点原子性不是绝对强一致，而是明确知道在什么边界内检查与更新是原子的，失败时能知道为什么。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>模型参数冻结请求带 state_revision=100。如果窗口宽，允许 100 到 102 都接受，当实际版本已经到 102 时系统仍可能更新，但 102 可能已经包含模型版本切换或参数冻结变化，误覆盖风险高。如果窗口窄，只允许 100，当实际版本到 101 时返回 STATE_REVISION_CONFLICT。跨节点场景中，节点 A 检查到 revision=100，节点 B 已复制为 101 但 A 尚未可见，A 可能误判。系统应明确冲突检测在哪个节点或库执行，复制延迟下是否允许，失败时记录基线版本、实际版本和窗口边界。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为版本窗口越宽越好，因为冲突少。</li>
+                <li>认为 CAS 失败就是系统故障，或认为单库事务能保证跨节点原子性。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>远端引用读取失败的信号分层与未知状态边界</td><td>共享未知状态处理：CAS 检查失败或版本不可见时，不能默认安全继续，而要标记冲突或未知，并选择重试、刷新基线或回滚。</td></tr>
+                <tr><td>候选归并中的底层原理键与证据层级标记</td><td>共享边界与证据：版本窗口用版本边界判断更新是否可执行，候选归并用底层原理键和证据层级判断候选是否可讲，两者都避免把过期基线或弱线索当成确定结论。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>模型下线、参数冻结和资源删除等不同生命周期阶段，应分别使用多宽的版本窗口？</li>
+                <li>在复制延迟或多分片场景下，CAS 检查应放在读节点、写节点还是协调层，才能给出可预期原子性？</li>
+                <li>CAS 失败后，如何根据副作用可逆性和业务代价决定立即重试、刷新基线后重试还是转人工确认？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念都围绕不确定状态的可决策化。候选归并处理知识生产中的不确定：一条线索是否属于同一原理、证据是否足够；远端引用读取失败处理外部状态读取中的不确定：读取失败是网络、权限、资源不存在还是未知；乐观并发控制处理并发写入中的不确定：当前版本窗口是否仍允许更新。共同方法是先定义可验证字段，再定义状态边界，最后选择动作。由于今天没有 diff、运行日志或实现验证，这些讲解只能作为历史 open 问题延展，后续需要真实提交、日志或测试来确认落地。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">先定义可验证字段，再定义状态边界，最后选择动作。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>同一底层原理出现在两个仓库时，候选复合键应合并还是保留来源仓库维度？</li>
+            <li>远端返回 404 时，如何区分 ref 不存在、权限不足和服务端路由错误？</li>
+            <li>模型下线、参数冻结和资源删除等不同生命周期阶段，应分别使用多宽的版本窗口？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
