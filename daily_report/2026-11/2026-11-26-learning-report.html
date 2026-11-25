@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-11-26 学习笔记日报</title>
+    <meta name="description" content="今日围绕重复请求、状态迁移和无快照集合，用字段分离身份、原因、证明强度，把不确定状态转为可决策状态。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261126-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-11-26</p>
+        <h1>2026-11-26 学习笔记日报</h1>
+        <p>今天没有新增实现，重点把历史 open 问题延展为三个可决策字段模型：请求身份、迁移原因、集合证明。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>无变更复习日：用字段表达不确定状态</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>重复请求裁决中可重试性与冲…</strong>
+                <small>幂等键认身份，指纹认内容，窗口认证…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>状态迁移审计中失效原因与重…</strong>
+                <small>失败要写原因，重试要派生字段，审计…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>无快照集合中弱完整性证明的…</strong>
+                <small>没有快照，只有弱证明；漂移要分类…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念都把不同语义写入不同字段：重复请求裁决分开身份键与内容指纹，状态迁移审计分开迁移事实、失效原因和重试资格，无快照集合分开边界字段、证明强度和漂移类别。它们共同提醒：弱证据不能升级成强结论，只有字段明确表达证明强度和适用范围，调用方才能选择旧回执、重试、补拉或人工处理。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["无变更复习日：用字段表达不确定状态"])
+  concept1["重复请求裁决中可重试性与冲突性的语义分离"]
+  hub --&gt; concept1
+  concept2["状态迁移审计中失效原因与重试资格的字段分离"]
+  hub --&gt; concept2
+  concept3["无快照集合中弱完整性证明的字段表达与漂移分类"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["无变更复习日：用字段表达不确定状态"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept1
+  concept3 --&gt; concept2
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="duplicate-request-retry-conflict-separation">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程 / 数据建模</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>重复请求裁决中可重试性与冲突性的语义分离</h3>
+              <p>Retryability and Conflict Separation in Duplicate Request Arbitration</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">幂等键认身份，指纹认内容，窗口认证据。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>幂等键回答是否同一次请求的重复发送，内容指纹回答业务内容是否等价。</li>
+                <li>fingerprint 应排除时间戳、客户端随机 ID、展示字段等易变噪声，只保留业务关键字段。</li>
+                <li>去重表保留窗口决定旧回执可复用边界，窗口外应拒绝或转人工确认。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="duplicate-request-retry-conflict-separation" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="state-transition-reason-retry-separation">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 数据库 / 数据建模</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>状态迁移审计中失效原因与重试资格的字段分离</h3>
+              <p>Failure Reason and Retry Eligibility in State Transition Audit</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">失败要写原因，重试要派生字段，审计要能统计。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>迁移事实记录源状态、目标状态、操作者、时间和审批事件。</li>
+                <li>失效原因区分审批拒绝、审批撤销、审批过期，而不是只写失败。</li>
+                <li>重试资格是由原因、时间、权限和当前状态派生的判断，不能硬编码在错误消息里。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="state-transition-reason-retry-separation" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="snapshotless-weak-proof-drift-classification">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数学 / 计算机科学 / 数据工程</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>无快照集合中弱完整性证明的字段表达与漂移分类</h3>
+              <p>Weak Completeness Proof and Drift Classification for Snapshotless Collections</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">没有快照，只有弱证明；漂移要分类，动作才明确。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>total、cursor 和范围摘要只能证明边界大致一致，不能证明分页期间没有新增、删除或重复。</li>
+                <li>字段应显式标记证明强度，如 proof_strength=weak、snapshot_bound=false、total_at_start、total_at_end。</li>
+                <li>集合差异分类为 missing、extra、duplicate、out_of_scope，并据此决定重试、补拉、过滤或人工确认。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="snapshotless-weak-proof-drift-classification" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="duplicate-request-retry-conflict-separation">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程 / 数据建模</p>
+                <h3>重复请求裁决中可重试性与冲突性的语义分离</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>该概念来自历史 open 问题延展，不是当天新增实现。想象一个快递系统：幂等键像运单号，表示同一次发货意图；内容指纹像包裹内容摘要，表示包裹里装的东西是否一致。可重试性回答这次请求是不是同一次请求的重复发送，冲突性回答这次请求的内容是否和之前业务上等价。如果幂等键相同且内容指纹一致，通常可以返回旧回执，避免重复创建订单、重复扣款或重复执行副作用；如果幂等键相同但内容指纹不一致，系统不能默认覆盖，而要判断是返回 409 冲突还是进入人工确认。内容指纹计算时要排除时间戳、客户端随机 ID、展示字段等易变噪声，只保留业务关键字段，否则一次普通重发也可能被误判为内容变化。去重表保留窗口决定旧回执可复用的时间边界：窗口内可以查旧结果，窗口外旧证据不足，需要拒绝或转人工。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>请求身份与内容等价是两个不同语义维度，必须分别建模，不能由幂等键单独推出内容一致。</li>
+                <li>内容指纹只纳入业务关键字段，排除易变噪声，才能区分普通重发和真实内容变化。</li>
+                <li>保留窗口为旧回执提供证据有效期，窗口外不能可靠复用，应进入过期或人工确认路径。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>创建订单接口要求携带 idempotency_key=order-123。第一次请求 payload 为商品 A 1 件，服务端计算 fingerprint 后成功创建订单 9001，并写入去重表。网络超时后客户端重发相同 payload，幂等键相同且 fingerprint 一致，服务端返回旧回执 order_id=9001。如果第二次请求把商品 A 改成商品 B，幂等键相同但 fingerprint 不同，服务端返回 409 并说明内容冲突，不自动修改订单；若该幂等键已超过保留窗口，服务端无法可靠复用旧回执，应提示过期或转人工确认。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为幂等键相同就一定能返回旧结果，忽略内容指纹可能不一致。</li>
+                <li>认为 fingerprint 不同就一定是攻击或错误，忽略时间戳、随机 ID 和展示字段可能造成误判。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>状态迁移审计中失效原因与重试资格的字段分离</td><td>都要求把不同语义维度写入不同字段，避免调用方把不同原因混成同一个失败。</td></tr>
+                <tr><td>无快照集合中弱完整性证明的字段表达与漂移分类</td><td>都依赖证明强度决定调用方动作，请求裁决用身份键和内容指纹判断等价，集合完整性用边界字段提供弱证明。</td></tr>
+                <tr><td>无变更复习日：用字段表达不确定状态</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>哪些业务字段应进入 fingerprint，哪些易变字段应排除，才能避免普通重发被误判为内容冲突？</li>
+                <li>去重表保留窗口如何根据网络重试时限、审计周期和存储成本确定，清理时保留哪些最小审计字段？</li>
+                <li>当 fingerprint 不一致但业务允许覆盖时，如何设计人工确认字段和错误码？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="state-transition-reason-retry-separation">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 数据库 / 数据建模</p>
+                <h3>状态迁移审计中失效原因与重试资格的字段分离</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>该概念来自历史 open 问题延展，不是当天新增实现。状态迁移审计像审批记录：一次从 active 到 archived 的迁移，不能只写失败。更好的做法是把三类信息分开。第一类是迁移事实，包括源状态、目标状态、操作者、时间和审批事件；第二类是失效原因，例如审批拒绝、审批撤销、审批过期；第三类是重试资格，它不是简单抄写原因，而是根据原因、时间、权限和当前状态计算出来的派生判断。拒绝可能意味着需要修改材料后重新提交，撤销可能意味着可以重新发起，过期可能意味着在有效期内可重试或需要重新审批。应用层状态机和数据库触发器同时存在时，错误码、错误消息和审计字段必须统一，否则调用方会看到两套失败原因。触发器查询状态迁移表时还要评估性能成本和锁范围，避免为了审计完整而放大数据库锁竞争。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>状态迁移审计要把发生了什么、为什么失败、能否再试拆成可独立查询的字段。</li>
+                <li>重试资格是派生语义，应由原因、时间、权限和当前状态共同计算，而不是由错误文本承载。</li>
+                <li>应用层与数据层的错误码、错误消息和审计字段必须统一，避免调用方看到两套失败原因。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>论文状态从 active 迁移到 archived 需要审批。若审批人拒绝，系统写入 source_state=active、target_state=archived、reason_code=approval_rejected、retry_allowed=false、retry_after=null；若审批人撤销，写入 reason_code=approval_revoked、retry_allowed=true、retry_after=now；若审批过期，写入 reason_code=approval_expired、retry_allowed=true、retry_after=deadline_plus_one_day。API 对三者都返回统一错误码 STATE_TRANSITION_INVALID，但 reason_code 和 retry_allowed 不同，调用方可据此决定停止、重新提交或等待。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把失败当成唯一状态，导致无法统计原因和判断重试资格。</li>
+                <li>把重试资格硬编码在错误消息文本里，调用方无法稳定解析和自动化处理。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>重复请求裁决中可重试性与冲突性的语义分离</td><td>都要求把不同语义维度写入不同字段，避免系统把不同原因混成同一个失败。</td></tr>
+                <tr><td>无快照集合中弱完整性证明的字段表达与漂移分类</td><td>都把系统状态映射到调用方动作，稳定类别和字段是自动处理与人工确认的基础。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>审批拒绝、审批撤销和审批过期分别应写入哪些最小字段，才能同时支持审计和重试？</li>
+                <li>应用层状态机与数据库触发器同时存在时，如何统一错误码、错误消息和审计字段？</li>
+                <li>数据库 CHECK 只能检查当前行时，触发器查询状态迁移表的性能成本和锁范围如何评估？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="snapshotless-weak-proof-drift-classification">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数学 / 计算机科学 / 数据工程</p>
+                <h3>无快照集合中弱完整性证明的字段表达与漂移分类</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>该概念来自历史 open 问题延展，不是当天新增实现。无快照集合的完整性证明像在没有冻结名单的情况下核对人群：total、cursor 和范围摘要只能证明边界大致一致，不能证明分页期间没有新增、删除或重复。因此它是弱证明，不是强一致快照。字段设计要让调用方明确知道证明强度，例如 proof_strength=weak、snapshot_bound=false、total_at_start、total_at_end、cursor、range_summary。集合差异应分类为 missing、extra、duplicate、out_of_scope：missing 是应有但没有，extra 是出现了范围外对象，duplicate 是重复出现，out_of_scope 是不属于本次范围。汇总规则决定动作：missing 较多可能重试或补拉，extra 或 duplicate 可能需要过滤、去重或人工确认，out_of_scope 可能需要调整范围或报告数据归属问题。若边界字段不一致，比如 total 在分页前后变化，调用方应优先重拉而不是继续拼接。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>无 snapshot_id 时，边界字段只能提供弱证明，不能单独推出集合在分页期间未变化。</li>
+                <li>漂移必须分类为 missing、extra、duplicate、out_of_scope，才能让调用方选择不同处理动作。</li>
+                <li>当 total、cursor 或范围摘要不一致时，应优先重拉或重新拉取，而不是继续拼接弱证据。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>客户端分页导出项目论文列表。服务端返回 total=120、cursor=page3、range_summary=min_id=100,max_id=219、proof_strength=weak、snapshot_bound=false。客户端把已拉取集合与预期集合比较，发现 missing=2、extra=1、duplicate=1、out_of_scope=0。因为 proof_strength=weak 且 missing 大于 0，客户端选择按 cursor 补拉或重新拉取；如果 extra 来自其他项目，则标记为 out_of_scope 并转人工确认，而不是直接当作本次集合的一部分。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为 total 不变就代表集合完整，忽略新增、删除和重复可能同时发生。</li>
+                <li>认为 cursor 没变就证明集合没有变化，把边界线索误读为强一致快照。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>重复请求裁决中可重试性与冲突性的语义分离</td><td>都依赖证明强度决定调用方动作，请求裁决用身份键和内容指纹证明等价，集合完整性用边界字段提供弱证明。</td></tr>
+                <tr><td>状态迁移审计中失效原因与重试资格的字段分离</td><td>都把系统状态映射到调用方动作，漂移类别和失效原因都需要稳定字段。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>没有 snapshot_id 时，total、cursor 和范围摘要能证明到什么强度，哪些结论不能由它们单独推出？</li>
+                <li>missing、extra、duplicate、out_of_scope 的汇总规则如何映射到重试、补拉或人工处理？</li>
+                <li>引入 snapshot_id 后，分页漂移错误和允许最终集合重拉应如何区分错误码和重试策略？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念都把不同语义写入不同字段：重复请求裁决分开身份键与内容指纹，状态迁移审计分开迁移事实、失效原因和重试资格，无快照集合分开边界字段、证明强度和漂移类别。它们共同提醒：弱证据不能升级成强结论，只有字段明确表达证明强度和适用范围，调用方才能选择旧回执、重试、补拉或人工处理。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">身份相同不等于内容相同，读取成功不等于集合完整，状态失败不等于不可重试。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>哪些业务字段应进入 fingerprint，哪些易变字段应排除，才能避免普通重发被误判为内容冲突？</li>
+            <li>审批拒绝、审批撤销和审批过期分别应写入哪些最小字段，才能同时支持审计和重试？</li>
+            <li>没有 snapshot_id 时，total、cursor 和范围摘要能证明到什么强度，哪些结论不能由它们单独推出？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
