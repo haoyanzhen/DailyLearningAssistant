@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-11-27 学习笔记日报</title>
+    <meta name="description" content="无新增提交日围绕字段级错误路径、副作用可逆性恢复排序和多观测点故障证据归一化，把失败信号转化为可决策结构。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261127-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-11-27</p>
+        <h1>2026-11-27 学习笔记日报</h1>
+        <p>今天没有新增提交，只把历史 open 问题作为待确认设计线索。三个概念共同把失败信号整理成可定位、可恢复、可归因的结构。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>失败信号的可决策化</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>字段级错误路径的规范化与聚…</strong>
+                <small>错误不是只给人看的一句话，而是可定…</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>副作用可逆性约束下的恢复动…</strong>
+                <small>恢复动作不是看错误码，而是看副作用…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>多观测点故障证据的时间窗…</strong>
+                <small>多源故障信号要先归一化为时间、来源…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">三个概念共同把失败或不确定信号转化为可决策结构：字段级错误路径回答哪里失败，副作用可逆性回答能做什么，多观测点归一化回答为什么失败。连接起来后，系统能先知道哪里失败，再判断能否自动恢复，最后把分散证据归因为可审计根因，从而减少静默丢失、重复副作用和误报合并。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["失败信号的可决策化"])
+  concept1["字段级错误路径的规范化与聚合表达"]
+  hub --&gt; concept1
+  concept2["副作用可逆性约束下的恢复动作排序"]
+  hub --&gt; concept2
+  concept3["多观测点故障证据的时间窗、来源层与证据强度归一化"]
+  hub --&gt; concept3
+  concept1 --&gt; concept2
+  concept1 --&gt; concept3
+  related1["失败信号的可决策化"]
+  concept1 --&gt; related1
+  concept2 --&gt; concept1
+  concept2 --&gt; concept3
+  concept3 --&gt; concept2
+  concept3 --&gt; concept1
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="field-level-error-path-normalization">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程 / 数据契约</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>字段级错误路径的规范化与聚合表达</h3>
+              <p>Field-Level Error Path Normalization and Aggregation</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">错误不是只给人看的一句话，而是可定位、可分类、可聚合的机器结构。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>用稳定 path 标识请求或响应树中的失败字段，例如 body.name、items[1].quantity。</li>
+                <li>用稳定错误类别区分权限拒绝、类型错误、缺失字段、未知字段等可枚举原因。</li>
+                <li>用聚合上限控制同一路径重复失败时的样本、计数和路径模板，避免响应爆炸。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="field-level-error-path-normalization" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="side-effect-reversibility-recovery-ordering">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 分布式系统 / 计算机科学</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>副作用可逆性约束下的恢复动作排序</h3>
+              <p>Side-Effect Reversibility-Constrained Recovery Ordering</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">恢复动作不是看错误码，而是看副作用能不能撤销、代价有多大、失败请求最终去哪里。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>失败后先判断副作用是否可逆、代价多大，再决定自动重试、禁止执行或人工确认。</li>
+                <li>当用户输入、外部资源和计费同时失败时，优先保证证据，再保资金，再保体验。</li>
+                <li>人工确认队列超时不能静默丢弃，必须进入升级提醒、补偿任务或人工处理状态。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="side-effect-reversibility-recovery-ordering" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="multi-observability-fault-evidence-normalization">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">分布式系统 / 软件工程 / 可观测性 / 计算机科学</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>多观测点故障证据的时间窗、来源层与证据强度归一化</h3>
+              <p>Multi-Observability Fault Evidence Normalization</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">多源故障信号要先归一化为时间、来源和强度，再决定合并、归因和告警抑制。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>用时间窗判断多个观测点信号是否属于同一次故障，避免跨故障误合并。</li>
+                <li>用来源层区分网关、业务服务、客户端等信号权重，使强证据可覆盖弱证据但弱证据仍保留。</li>
+                <li>用稳定故障类别和证据强度约束归因，避免客户端超时弱证据被合并成上游不可用。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="multi-observability-fault-evidence-normalization" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="field-level-error-path-normalization">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程 / 数据契约</p>
+                <h3>字段级错误路径的规范化与聚合表达</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>字段级错误路径的目标，是让调用方不必只读一句通用 message，就能知道哪个字段失败、失败属于哪一类、重复失败有多少。这里基于当日材料可确认的是，该概念来自 2026-11-24 open 问题延展，没有当日 diff 或运行日志，因此只能作为待确认设计原则。可以把 API 请求想象成一张表格：普通错误只说表格有问题，字段级错误则说第 2 行收件人电话格式不对。稳定路径是字段在请求或响应树中的地址，例如 body.name、items[1].quantity；稳定类别是权限拒绝、类型错误、缺失字段、未知字段等枚举；聚合上限控制同一路径重复出现时保留多少证据。对于 403 权限拒绝，如果系统能安全判断失败字段，可以返回字段路径；如果安全策略要求隐藏细节，也可以只返回资源级路径和稳定错误码，但不应让调用方完全无法机器解析。对于数组元素对象未知字段同时出现在多个元素中，可以保留第一个样例、总次数、路径模板和少量索引，而不把每个元素都展开，避免响应爆炸。对于多个接口使用 body.name 与 name 的情况，需要统一根节点命名空间，例如请求字段统一从 request.body 开始，响应字段统一从 response.data 开始，使前端、测试和日志能跨接口聚合。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>路径稳定：字段位置必须能用统一语法表达，使前端、测试和日志可以解析同一失败位置。</li>
+                <li>类别稳定：失败原因必须枚举化，避免把权限拒绝、类型错误和未知字段混成一句 message。</li>
+                <li>聚合可控：重复错误需要计数、样本和截断规则，既保留证据又控制响应大小。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>假设 POST /orders 请求中 body.items[1].quantity 是字符串而不是数字，body.items[1].coupon 是未知字段，body.name 因权限不足被拒绝。机器可解析响应可以包含 errors 数组：第一条 path 为 body.items[1].quantity，code 为 type_mismatch；第二条 path 为 body.items[1].coupon，code 为 unknown_field，count 为 3，samples 为 items[1]、items[2]、items[4]；第三条 path 为 body.name，code 为 permission_denied。若同类错误超过上限，只保留摘要和总数。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>常见误区是以为错误路径只是给人看的提示文字，只要写清楚就行；实际上它必须稳定、可解析、可测试。</li>
+                <li>另一个误区是以为 403 权限拒绝永远不能返回字段级信息；问题讨论的是能否返回机器可解析字段级错误，而不是要求泄露敏感资源结构。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>副作用可逆性约束下的恢复动作排序</td><td>字段级错误路径提供机器可解析的失败位置与失败类别，使系统能判断该字段失败是否可自动重试。</td></tr>
+                <tr><td>多观测点故障证据的时间窗、来源层与证据强度归一化</td><td>两者都依赖稳定命名，前者统一单请求内字段路径，后者统一跨请求故障类别和来源层。</td></tr>
+                <tr><td>失败信号的可决策化</td><td>今日主题作为三张知识卡之外的统摄概念，用来说明这些概念如何共同指向同一条学习主线。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如果 403 权限拒绝涉及敏感资源，字段路径应返回到字段级还是只返回资源级，如何避免信息泄露？</li>
+                <li>当数组元素对象未知字段在 1000 个元素中出现时，聚合上限应保留哪些样本、计数和路径模板，才能既保留证据又控制响应大小？</li>
+                <li>多个接口使用 body.name 与 name 时，应如何设计根节点命名空间，使前端、测试和日志能统一聚合？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="side-effect-reversibility-recovery-ordering">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 分布式系统 / 计算机科学</p>
+                <h3>副作用可逆性约束下的恢复动作排序</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>副作用可逆性约束下的恢复动作排序，核心是失败后不能只问要不要重试，而要先问这个动作造成的影响能不能撤销、代价有多大、失败请求最终去哪里。这里基于当日材料可确认的是，该概念来自 2026-11-24 open 问题延展，没有当日实现验证，因此只能作为待确认设计原则。可以把副作用想象成不同不可撤销程度：写草稿可以删除，发通知可以撤回但会打扰用户，扣款则很难自动恢复。因此可逆且低代价的动作可以自动重试；不可逆或高代价的动作应禁止自动执行，或先查询状态、进入补偿任务、转人工确认。当用户输入、外部资源和计费同时失败时，优先级可以理解为先保证据、再保资金、再保体验：原始请求、失败日志和状态版本要先保存，资金相关动作要防止重复扣减或漏扣，用户体验类动作可以后续补偿。人工确认队列超时也不能自动丢弃，而应进入升级提醒、补偿任务或人工处理状态，使每个失败请求都有明确去向。不同副作用等级可以定义最大自动重试次数、禁止动作和人工确认条件，形成可测试矩阵。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>可逆性优先：可逆且低代价动作可自动重试，不可逆或高代价动作应禁止自动执行或先查询状态。</li>
+                <li>风险分层：证据保全、资金安全和用户体验需要不同优先级，避免重复扣减、漏扣或静默丢失。</li>
+                <li>兜底闭环：人工确认超时必须有升级、补偿或人工处理状态，使每个失败请求都有明确去向。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>创建订单时同时发生三类失败：用户输入缺少地址，外部库存扣减超时，计费预扣失败。系统先保存原始请求、失败证据和状态版本；对用户输入失败返回字段错误，不自动猜测修改；对库存扣减超时禁止直接再次扣减，先查询库存服务状态，若未扣减则进入补偿任务；对计费预扣失败若确认可安全重试，则最多重试一次并记录幂等键。若仍失败，进入人工确认队列；队列超时后不丢弃，而是升级提醒值班人员并创建补偿任务。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>常见误区是以为所有失败都应该重试，尤其网络超时要反复尝试；实际上如果动作不可逆，重试可能造成重复扣费、重复写入或重复通知。</li>
+                <li>另一个误区是以为人工确认只是等待用户点按钮，超时就可以静默丢弃；实际上超时必须有升级、补偿或人工兜底。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>字段级错误路径的规范化与聚合表达</td><td>副作用可逆性约束下的恢复动作排序依赖字段级错误路径提供的失败位置和类别，才能把错误映射到允许、禁止或人工确认动作。</td></tr>
+                <tr><td>多观测点故障证据的时间窗、来源层与证据强度归一化</td><td>两者共同限制不确定故障下的自动动作，弱证据不应触发不可逆操作。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当用户输入、外部资源和计费同时失败时，如何设计恢复优先级矩阵，使证据保全、资金安全和用户体验可测试？</li>
+                <li>人工确认队列超时后，应如何定义升级提醒、补偿任务和人工处理三者的触发条件，避免请求静默丢失？</li>
+                <li>不同副作用等级应如何定义最大自动重试次数、禁止动作和人工确认条件，才能避免重复扣费或重复写入？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="multi-observability-fault-evidence-normalization">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 分布式系统 / 软件工程 / 可观测性 / 计算机科学</p>
+                <h3>多观测点故障证据的时间窗、来源层与证据强度归一化</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>多观测点故障证据的时间窗、来源层与证据强度归一化，处理的是同一故障被网关、服务、客户端等多个观测点看到时，如何避免误合并和误归因。这里基于当日材料可确认的是，该概念来自 2026-11-24 open 问题延展，没有当日日志或实现验证，因此只能作为待确认设计原则。可以把系统故障想象成交通事故：司机说堵车，摄像头说事故，交警说施工，三者时间、位置和证据强度不同。系统需要把每个信号归一化为事件：时间戳、来源层、故障类别、证据强度。时间窗决定哪些事件属于同一次故障；来源层决定网关、业务服务、客户端等信号权重；证据强度决定弱线索能否参与合并。稳定故障类别例如网络超时、权限拒绝、资源不存在、上游不可用，不能因为客户端超时弱证据就合并成上游不可用。多个观测点矛盾时，可用来源层优先级和强度阈值消解：直接服务日志通常比客户端猜测更强，强证据可覆盖弱证据，但弱证据仍应保留为线索。告警抑制窗口可以固定或动态调整，但不能简单删除重复事件，而应保留首次证据、最强证据和关键状态变化，使后续归因可解释、可测试、可审计。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>事件归一化：每个观测点信号都转成时间戳、来源层、故障类别和证据强度。</li>
+                <li>证据约束：弱证据只能作为线索，不能单独把相似故障类别合并成强结论。</li>
+                <li>抑制保真：告警抑制不能删除首次证据、最强证据和关键状态变化，而应保留可审计线索。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>10:00:01 客户端记录请求超时，10:00:02 网关返回 502 upstream timeout，10:00:03 业务服务日志记录 model_unavailable。归一化后，事件共享 incident_id 和时间窗 10:00:00 到 10:00:30：客户端事件类别 network_timeout，来源层 client，强度 weak；网关事件类别 upstream_unavailable，来源层 gateway，强度 medium；服务事件类别 model_unavailable，来源层 service，强度 strong。最终归因优先采用服务层强证据，判定为上游模型不可用，而不是客户端网络超时。告警抑制时保留首次客户端超时、最强服务日志和状态从 normal 到 degraded 的关键变化。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>常见误区是以为告警抑制就是删掉重复日志，这样会丢失首次证据和关键状态变化。</li>
+                <li>另一个误区是以为客户端超时就能证明上游不可用；实际上弱证据不能错误合并相似故障类别，必须用来源层和证据强度约束。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>副作用可逆性约束下的恢复动作排序</td><td>多观测点故障证据归一化提供故障类别和证据强度，弱证据不应直接触发不可逆恢复动作。</td></tr>
+                <tr><td>字段级错误路径的规范化与聚合表达</td><td>两者都依赖稳定类别或路径，前者统一跨请求故障信号，后者统一单请求内失败位置。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>如何设计稳定故障类别枚举，使网络超时、权限拒绝、资源不存在和上游不可用不因弱证据被错误合并？</li>
+                <li>当网关、服务和客户端给出矛盾故障类别时，来源层优先级和证据强度阈值应如何定义，使最终归因可解释且可测试？</li>
+                <li>告警抑制窗口使用固定时长还是动态调整时，如何保证首次证据、最强证据和关键状态不被丢失？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">三个概念共同把失败或不确定信号转化为可决策结构：字段级错误路径回答哪里失败，副作用可逆性回答能做什么，多观测点归一化回答为什么失败。连接起来后，系统能先知道哪里失败，再判断能否自动恢复，最后把分散证据归因为可审计根因，从而减少静默丢失、重复副作用和误报合并。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">弱证据不能直接触发不可逆动作，也不能把不同故障类别合并成强结论。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>如何设计字段路径、错误类别和聚合上限，使 403、数组未知字段和跨接口字段都能机器解析且不泄露敏感结构？</li>
+            <li>如何定义副作用等级、最大自动重试、禁止动作和人工确认超时兜底，避免重复扣费、重复写入或请求静默丢失？</li>
+            <li>如何设计时间窗、来源层优先级和证据强度阈值，使多观测点故障归因可解释、可测试，并在告警抑制中保留关键证据？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
