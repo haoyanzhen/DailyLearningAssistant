@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2026-11-28 学习笔记日报</title>
+    <meta name="description" content="当天围绕研究知识版本化改造，讲解证据引用校验、确认凭据哈希失效与数据库约束延迟迁移保护，让生成内容、人工确认和版本事实都可追溯。" />
+    <link rel="stylesheet" href="../../style/main.css?v=20261128-map3" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar" aria-label="学习日报导航">
+        <a class="brand" href="../../index.html" aria-label="返回最新学习日报">
+          <span class="brand-mark" aria-hidden="true">日</span>
+          <span>
+            <strong>每日拾光学习簿</strong>
+            <small>把今天学到的东西，留成明天能继续走的路</small>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="快速入口">
+          <a href="../../index.html">最新日报</a>
+          <a href="../../index.html?archive=1">学习归档</a>
+          <a href="../../index.html?knowledge=1">教学记录</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <p class="eyebrow">Learning Report · 2026-11-28</p>
+        <h1>2026-11-28 学习笔记日报</h1>
+        <p>当天只确认 ResearchPaperBase_codex 的三个提交，围绕研究/评审知识基础设施的版本化改造，讲解证据引用、确认凭据和数据库保护。</p>
+      </section>
+
+      <section class="section lesson-section" data-read-mode="brief" id="lesson-section">
+        <div class="lesson-overview-panel panel">
+          <div class="lesson-toolbar">
+            <div>
+              <p class="eyebrow">Read Mode</p>
+              <h2 class="section-title">今日三节小课</h2>
+            </div>
+            <div class="read-mode-toggle" role="group" aria-label="阅读模式">
+              <button class="is-active" type="button" data-mode="brief">简读</button>
+              <button type="button" data-mode="deep">精读</button>
+            </div>
+          </div>
+
+          <div class="relationship-map" aria-label="三节小课关系图">
+            <div class="relationship-map-visual">
+              <div class="relationship-orbit" role="img" aria-label="今日主题连接三节小课，三节小课彼此形成学习闭环。">
+                <div class="relationship-orbit-line relationship-orbit-line-a"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-b"></div>
+                <div class="relationship-orbit-line relationship-orbit-line-c"></div>
+                <div class="relationship-hub">
+                  <span>今日主题</span>
+                  <strong>研究/评审知识基础设施的版本化改造</strong>
+                </div>
+              <article class="relationship-node relationship-node-1">
+                <span class="relationship-node-index">01</span>
+                <strong>证据引用一致性校验与生成内…</strong>
+                <small>引用要能查、版本要对、内容要一致。</small>
+              </article>
+              <article class="relationship-node relationship-node-2">
+                <span class="relationship-node-index">02</span>
+                <strong>确认凭据哈希与确认失效</strong>
+                <small>确认不是按钮状态，而是绑定版本和内…</small>
+              </article>
+              <article class="relationship-node relationship-node-3">
+                <span class="relationship-node-index">03</span>
+                <strong>数据库约束延迟与迁移数据保护</strong>
+                <small>约束可以延迟到事务末尾，回退不能静…</small>
+              </article>
+              </div>
+              <p class="relationship-map-summary">这三个概念共同说明：研究/评审系统不是只保存生成文本，而是把文本、证据、确认和任务都放进版本边界里。证据引用一致性校验要求章节引用必须属于同一 project 和 knowledge version，并且 evidence body 与注册证据一致；确认凭据哈希要求人工确认必须绑定 confirmed_revision 和 content_state，内容或版本变化后旧确认失效；数据库约束延迟与迁移数据保护则把版本 pin 检查放到事务末尾，并在迁移回退时保护已有数据。它们不是并列关系，而是层层支撑：版本绑定提供稳定基线，不可变证据提供可比较对象，引用校验让生成内容可追溯，确认凭据让人工判断可审计，数据库延迟约束和回退保护让版本事实能安全落库。</p>
+              <pre class="mermaid mermaid-source" aria-hidden="true">
+flowchart LR
+  hub(["研究/评审知识基础设施的版本化改造"])
+  concept1["证据引用一致性校验与生成内容证据锚定"]
+  hub --&gt; concept1
+  concept2["确认凭据哈希与确认失效"]
+  hub --&gt; concept2
+  concept3["数据库约束延迟与迁移数据保护"]
+  hub --&gt; concept3
+  related1["版本绑定与不可变依赖"]
+  concept1 --&gt; related1
+  related2["不可变证据存储与触发器保护"]
+  concept1 --&gt; related2
+  related3["多轮研究会话的版本绑定与原子接受"]
+  concept1 --&gt; related3
+  concept2 --&gt; related1
+  related4["幂等命令和预览契约"]
+  concept2 --&gt; related4
+  concept2 --&gt; concept1
+  concept3 --&gt; related1
+  concept3 --&gt; related2
+  related5["项目级联取消和运行事实采集"]
+  concept3 --&gt; related5
+  classDef hub fill:#fbefcb,stroke:#c89b3c,color:#243027,stroke-width:1px
+  classDef primary fill:#e6f0e4,stroke:#3f7f58,color:#243027,stroke-width:2px
+  classDef related fill:#e4edf0,stroke:#496a7b,color:#243027,stroke-width:1px
+  class hub hub
+  class concept1,concept2,concept3 primary
+  class related1,related2,related3,related4,related5 related
+              </pre>
+            </div>
+          </div>
+
+          <div class="lesson-grid">
+          <article class="lesson-card" id="evidence-reference-consistency-check">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">计算机科学 / 软件工程 / 大语言模型</span>
+                <span class="tag warm">★★☆☆☆</span>
+              </div>
+              <h3>证据引用一致性校验与生成内容证据锚定</h3>
+              <p>Evidence Reference Consistency Check</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">引用要能查、版本要对、内容要一致。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>引用校验要同时检查 project_id、knowledge_version_id 和 evidence id，确认引用属于当前项目与知识版本。</li>
+                <li>还要比较章节引用中的 evidence body 与注册证据内容，防止编号存在但内容不一致。</li>
+                <li>校验失败返回 PERMISSION_RESOURCE_UNAVAILABLE 和 404，阻止后续确认或发布。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="evidence-reference-consistency-check" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="confirmation-credential-hash">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">软件工程 / 计算机科学 / 安全</span>
+                <span class="tag warm">★★★☆☆</span>
+              </div>
+              <h3>确认凭据哈希与确认失效</h3>
+              <p>Confirmation Credential Hash</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">确认不是按钮状态，而是绑定版本和内容状态的票。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>确认凭据把 basis 纳入 confirmed_revision 和 content_state，并用 SHA-256 计算 basis_hash。</li>
+                <li>basis_hash 固定“确认的是哪个版本、哪份内容状态”，让确认可审计、可比较。</li>
+                <li>新稿成功提交导致内容状态变化时，追加 confirmation_invalidation，旧确认显式失效。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="confirmation-credential-hash" aria-expanded="false">阅读精读</button>
+          </article>
+          <article class="lesson-card" id="deferred-constraints-migration-protection">
+            <header class="lesson-card-header">
+              <div class="tag-row">
+                <span class="tag">数据库 / 软件工程 / 计算机科学</span>
+                <span class="tag warm">★★★★☆</span>
+              </div>
+              <h3>数据库约束延迟与迁移数据保护</h3>
+              <p>Deferred Constraints and Migration Data Protection</p>
+            </header>
+
+            <div class="lesson-brief">
+              <div class="highlight lesson-memory">约束可以延迟到事务末尾，回退不能静默删数据。</div>
+
+              <h4>核心要点</h4>
+              <ul>
+                <li>版本 pin 外键可设为 DEFERRABLE INITIALLY DEFERRED，让同事务项目级联变更先完成。</li>
+                <li>数据库在事务提交前统一检查版本 pin，既保留原子性，又避免中间状态失败。</li>
+                <li>迁移 downgrade 遇到已有数据时先加锁并显式拒绝删除，防止 schema 回退静默丢数据。</li>
+              </ul>
+            </div>
+
+            <button class="lesson-expand" type="button" data-lesson="deferred-constraints-migration-protection" aria-expanded="false">阅读精读</button>
+          </article>
+          </div>
+        </div>
+
+        <div class="lesson-detail-panel" id="lesson-detail-panel" aria-live="polite">
+          <div class="lesson-detail-shell">
+            <article class="lesson-detail" data-lesson-detail="evidence-reference-consistency-check">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 计算机科学 / 软件工程 / 大语言模型</p>
+                <h3>证据引用一致性校验与生成内容证据锚定</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>这个概念可以理解为“作文引用不能只写编号，还要核对编号是否真的属于当前资料”。当天 c8afb0f1 中的 verify_chapter_references 会读取章节里的 evidence 引用，然后按 project_id、knowledge_version_id 和 evidence id 去查询 knowledge_evidence 表，并把查询结果与章节引用对象逐项比较。如果证据缺失、不属于当前项目或当前知识版本，或者引用内容 body 与注册证据不一致，系统会抛出 PERMISSION_RESOURCE_UNAVAILABLE 和 404。这里基于当日材料可确认的是引用校验逻辑和 knowledge_evidence 表创建、不可变保护；LLM 如何生成引用、prompt 或模型调用细节未展示，因此仍属于待确认线索。它背后的原理是：生成内容不能只是自由文本，而要被“证据锚定”到稳定对象上；只有引用对象可查、版本一致、内容一致，生成内容才可追溯。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>生成内容必须可追溯，因此引用不能只是自由文本，而要锚定到稳定证据对象。</li>
+                <li>证据对象要可比较，因此必须绑定 project 和 knowledge_version_id，避免跨项目或旧版本引用。</li>
+                <li>证据内容要稳定，因此 body 必须与注册证据一致，否则引用不能证明生成内容来源。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>某个章节草稿引用了 evidence id E123。系统按 project P1、knowledge version V7 查询 E123：如果 E123 属于 V6，或者 E123 的 body 与章节引用中保存的内容不一致，系统就返回 404 和 PERMISSION_RESOURCE_UNAVAILABLE，不进入后续确认或发布流程。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为只要保存了 evidence id，引用就可追溯。</li>
+                <li>实际上 evidence id 可能属于旧版本、其他项目，或者内容已经变化，必须联合 project、knowledge version 和 body 校验。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>版本绑定与不可变依赖</td><td>引用必须属于同一 project 和 knowledge version，才能被证明有效。</td></tr>
+                <tr><td>不可变证据存储与触发器保护</td><td>evidence body 必须稳定，逐项比较才有意义。</td></tr>
+                <tr><td>多轮研究会话的版本绑定与原子接受</td><td>引用校验为生成内容进入知识体系提供校验边界。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>当章节引用同时存在多个 evidence 版本时，如何设计版本选择策略和冲突错误码？</li>
+                <li>如果 evidence body 很长，逐项比较 body 的性能成本如何控制，是否需要摘要字段辅助？</li>
+                <li>当引用校验失败返回 404 时，如何区分证据不存在、版本不匹配和内容不一致，以便前端给出不同提示？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="confirmation-credential-hash">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 软件工程 / 计算机科学 / 安全</p>
+                <h3>确认凭据哈希与确认失效</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>这个概念可以理解为“人工确认不是点一下按钮就永久有效，而是一张绑定场次和座位的票”。当天 c8afb0f1 中 review_protection.py 会把确认依据 basis 纳入 target 的 confirmed_revision 字段和 content 的 content_state 字段，并用 hashlib.sha256(json.dumps(basis, sort_keys=True).encode()).hexdigest() 计算 basis_hash。basis_hash 的作用是把“当时确认的是哪个版本、哪份内容状态”压缩成一个稳定指纹。当天还确认：当章节目标且 action 为 generate 且 protected 时，会追加 content_change；如果存在 confirmed_revision，会追加 confirmation_invalidation，reason 为“新稿成功提交后，当前章节的确认失效。”原理是：人工确认必须绑定确认版本和内容状态；内容或版本变化后，旧确认不能继续作为有效凭据。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>人工确认要可审计，因此不能只记录 confirmed 布尔值，而要记录确认依据 basis。</li>
+                <li>basis_hash 用稳定指纹固定 confirmed_revision 和 content_state，使确认能绑定版本与内容状态。</li>
+                <li>内容或版本变化后，旧凭据不再代表当前事实，因此要显式追加 confirmation_invalidation。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>用户确认了章节 V7 的 content_state S1，系统计算 basis_hash。后来用户触发 generate 并成功提交新稿，content_state 变为 S2。系统追加 confirmation_invalidation，reason 为“新稿成功提交后，当前章节的确认失效。”此时旧的 basis_hash 不再代表有效确认，必须基于新版本和新内容状态重新确认。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>把 confirmed 当成布尔值，认为 true 就代表永久有效。</li>
+                <li>确认必须绑定版本和内容状态，否则内容变化后系统无法判断旧确认是否仍然有效。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>版本绑定与不可变依赖</td><td>confirmed_revision 和 content_state 是版本与内容状态字段，确认凭据建立在版本绑定之上。</td></tr>
+                <tr><td>幂等命令和预览契约</td><td>confirm_chapter 是写命令，需要幂等、过期和来源追踪。</td></tr>
+                <tr><td>证据引用一致性校验</td><td>章节确认前应先证明引用属于同一版本且内容一致。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>basis_hash 的字段集合应包含哪些最小字段，才能同时支持审计和重新确认？</li>
+                <li>confirmation_invalidation 的 reason 是否需要结构化枚举，而不是自由文本？</li>
+                <li>当多个用户并发确认同一章节时，如何保证确认凭据和失效记录不互相覆盖？</li>
+              </ol>
+            </article>
+            <article class="lesson-detail" data-lesson-detail="deferred-constraints-migration-protection">
+              <header class="lesson-detail-header">
+                <p class="eyebrow">精读文章 · 数据库 / 软件工程 / 计算机科学</p>
+                <h3>数据库约束延迟与迁移数据保护</h3>
+                <button class="lesson-close" type="button">收起精读</button>
+              </header>
+
+              <h4>完整讲解</h4>
+              <p>这个概念可以理解为“检查不一定越早越好，有些检查要等到事务末尾才安全”。当天 32dd12fc 中的 0028_review_pin_deferral.py 将 review_generation_tasks_project_id_knowledge_version_id_fkey 改为 DEFERRABLE INITIALLY DEFERRED，迁移说明是“Check Review version pins after all same-transaction Project cascades.”。意思是：同一个事务里可能先发生项目级联变更，再更新评审任务与版本 pin；如果外键约束立即检查，可能在中间状态就失败，导致整个事务无法完成。把约束设为可延迟且初始延迟后，数据库会在事务提交前统一检查版本 pin，从而既保留原子性，又允许级联变更先完成。另外，多个迁移 downgrade 时会先加锁，如果表中已有数据，就抛出 RuntimeError 或拒绝删除，防止已落盘事实被 schema 回退静默清除。这里基于当日材料可确认的是迁移 diff 和约束延迟机制；并发性能、锁范围成本未展示，不能声称当天评估了性能成本。</p>
+
+              <h4>原理逻辑</h4>
+              <ol>
+                <li>同事务内可能存在项目级联变更，外键立即检查会在中间状态失败。</li>
+                <li>DEFERRABLE INITIALLY DEFERRED 把版本 pin 检查推迟到事务提交前，保留原子性并允许级联完成。</li>
+                <li>迁移回退可能删除已有数据，因此 downgrade 要在数据存在时显式拒绝，保护已落盘事实。</li>
+              </ol>
+
+              <h4>具体例子</h4>
+              <p>一个事务内要同时更新项目级联字段和 review_generation_tasks 的版本 pin。如果外键立即检查，可能因为项目字段还没更新完而报版本 pin 不一致；改为 DEFERRABLE INITIALLY DEFERRED 后，事务末尾统一检查版本 pin，全部一致才提交。若后续执行 downgrade 想删除相关表，但表中已有数据，迁移脚本会拒绝删除，避免静默丢数据。</p>
+
+              <h4>常见误区</h4>
+              <ul>
+                <li>认为外键约束越早检查越好。</li>
+                <li>认为迁移回退只是改表结构、不会伤数据；过早检查可能阻塞合法级联，回退删除已有业务数据会静默抹掉历史事实。</li>
+              </ul>
+
+              <h4>概念关联</h4>
+              <table class="mini-table">
+                <tr><th>关联概念</th><th>关系说明</th></tr>
+                <tr><td>版本绑定与不可变依赖</td><td>版本 pin 外键需要事务末尾校验，支撑版本绑定与不可变依赖。</td></tr>
+                <tr><td>不可变证据存储与触发器保护</td><td>同属数据库层保护，一个控制检查时机，一个控制对象不可变。</td></tr>
+                <tr><td>项目级联取消和运行事实采集</td><td>项目级联变更和取消需要知道版本与任务事实。</td></tr>
+              </table>
+
+              <h4>继续深入问题</h4>
+              <ol>
+                <li>DEFERRABLE INITIALLY DEFERRED 在并发事务下如何避免版本 pin 检查被绕过？</li>
+                <li>迁移 downgrade 拒绝回退后，应提供哪些人工清理或导出路径？</li>
+                <li>当项目级联取消与版本 pin 延迟检查同时发生时，如何确定取消顺序和事务边界？</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">概念之间的关联</h2>
+        <p class="lead">这三个概念共同说明：研究/评审系统不是只保存生成文本，而是把文本、证据、确认和任务都放进版本边界里。证据引用一致性校验要求章节引用必须属于同一 project 和 knowledge version，并且 evidence body 与注册证据一致；确认凭据哈希要求人工确认必须绑定 confirmed_revision 和 content_state，内容或版本变化后旧确认失效；数据库约束延迟与迁移数据保护则把版本 pin 检查放到事务末尾，并在迁移回退时保护已有数据。它们不是并列关系，而是层层支撑：版本绑定提供稳定基线，不可变证据提供可比较对象，引用校验让生成内容可追溯，确认凭据让人工判断可审计，数据库延迟约束和回退保护让版本事实能安全落库。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">今日最值得记住的一句话</h2>
+        <p class="lead">生成内容不能只保存引用 ID，还要证明引用属于同一项目、同一知识版本，并且引用内容与注册证据一致。</p>
+      </section>
+
+      <section class="section panel">
+        <h2 class="section-title">可继续探索的问题</h2>
+        <ol>
+            <li>当章节引用同时存在多个 evidence 版本时，如何设计版本选择策略和冲突错误码？</li>
+            <li>confirmation_invalidation 的 reason 是否需要结构化枚举，而不是自由文本？</li>
+            <li>DEFERRABLE INITIALLY DEFERRED 在并发事务下如何避免版本 pin 检查被绕过？</li>
+        </ol>
+      </section>
+
+    </main>
+
+    <script>
+      const lessonSection = document.querySelector("#lesson-section");
+      const modeButtons = document.querySelectorAll("[data-mode]");
+      const expandButtons = document.querySelectorAll("[data-lesson]");
+      const detailPanel = document.querySelector("#lesson-detail-panel");
+      const details = document.querySelectorAll("[data-lesson-detail]");
+      const closeButtons = document.querySelectorAll(".lesson-close");
+
+      function setMode(mode) {
+        lessonSection.dataset.readMode = mode;
+        modeButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.mode === mode));
+        if (mode === "brief") {
+          detailPanel.classList.remove("is-open");
+          expandButtons.forEach((button) => button.setAttribute("aria-expanded", "false"));
+        }
+      }
+
+      function openLesson(id) {
+        setMode("deep");
+        detailPanel.classList.add("is-open");
+        details.forEach((detail) => detail.classList.toggle("is-active", detail.dataset.lessonDetail === id));
+        expandButtons.forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.lesson === id)));
+        detailPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      modeButtons.forEach((button) => button.addEventListener("click", () => setMode(button.dataset.mode)));
+      expandButtons.forEach((button) => button.addEventListener("click", () => openLesson(button.dataset.lesson)));
+      closeButtons.forEach((button) => button.addEventListener("click", () => setMode("brief")));
+    </script>
+  </body>
+</html>
